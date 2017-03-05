@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Helper</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ helper.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ helper.title }}</td>
+            </tr>
+            <tr>
+                <th>Command</th>
+                <td>{{ helper.command }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ helper.description }}</td>
+            </tr>
+            <tr>
+                <th>Isactive</th>
+                <td>{% if helper.isActive %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Deleted</th>
+                <td>{% if helper.deleted %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Created_at</th>
+                <td>{% if helper.createdat %}{{ helper.createdat|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Updated_at</th>
+                <td>{% if helper.updatedat %}{{ helper.updatedat|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('helper_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('helper_edit', { 'id': helper.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

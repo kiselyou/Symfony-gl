@@ -1,0 +1,42 @@
+AppBundle\Entity\Helper:
+    repositoryClass: AppBundle\Repository\HelperRepository
+    type: entity
+    table: helper
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    fields:
+        title:
+            type: string
+            length: 255
+            nullable: true
+            options:
+                default: null
+        command:
+            type: text
+            length: 2000
+            nullable: true
+            options:
+                default: null
+        description:
+            type: text
+            length: 2000
+            nullable: true
+            options:
+                default: null
+        isActive:
+            type: boolean
+            name: is_active
+            options:
+                default: true
+        deleted:
+            type: boolean
+            options:
+                default: false
+        created_at:
+            type: datetime
+            nullable: false
+        updated_at:
+            type: datetime
+            nullable: false

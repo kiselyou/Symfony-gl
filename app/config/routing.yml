@@ -1,0 +1,15 @@
+test:
+    resource: "@TestBundle/Resources/config/routing.yml"
+    prefix:   /testbundle
+
+app:
+    path: /{_locale}
+    defaults:  { _controller: AppBundle:Default:index, _locale: ru }
+    requirements:
+        _locale: '%app.locales%'
+
+app_routes:
+    resource: '@AppBundle/Resources/config/routing.yml'
+    prefix:   /{_locale}/app
+    requirements:
+        _locale: '%app.locales%'

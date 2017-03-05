@@ -1,0 +1,73 @@
+{% if page > 0 and page <= count and count > 1 %}
+
+<div class="text-center">
+    <ul class="pagination">
+
+        {% set max = 6 %}
+        {% set start = 1 %}
+        {% set end = count %}
+        {% set half = max / 2 %}
+
+        {% if page <= count and page > half %}
+            {% set start = page - half %}
+        {% endif %}
+
+        {% if ( page + half ) <= count %}
+            {% set end = page + half %}
+        {% endif %}
+
+        {% set prev = page - 1 %}
+        {% if  page == 1 %}
+            {% set prev = count %}
+        {% endif %}
+
+        {% if  count > max %}
+
+            <li class="previous {{ page == 1 ? 'disabled' : '' }}">
+                <a class="group-tooltip" href="{{ page == 1 ? '#' : path(route) }}" title="{{ page == 1 ? '' : 'Go to page - 1' }}" data-placement="left">
+                    &laquo;&laquo;
+                </a>
+            </li>
+
+            <li class="previous">
+                <a class="group-tooltip" href="{{ path(route, { 'page': prev }) }}" title="Go to page - {{ prev }}" data-placement="top">
+                    &laquo;
+                </a>
+            </li>
+
+        {% endif %}
+
+        {% for i in start..end %}
+
+            {% if i == page %}
+                <li class="active"><a class="disabled" href="#">{{ i }}</a></li>
+            {% else %}
+                <li><a href="{{ path(route, { 'page': i }) }}">{{ i }}</a></li>
+            {% endif %}
+
+        {% endfor %}
+
+        {% set next = page + 1 %}
+
+        {% if  page == end %}
+            {% set next = 1 %}
+        {% endif %}
+
+        {% if  count > max %}
+
+            <li class="next">
+                <a class="group-tooltip" href="{{ path(route, { 'page': next }) }}" title="Go to page - {{ next }}" data-placement="top">
+                    &raquo;
+                </a>
+            </li>
+
+            <li class="next {{ page == count ? 'disabled' : '' }}">
+                <a class="group-tooltip" href="{{ page == count ? '#' : path(route, { 'page': count }) }}" title="{{ page == count ? '' : 'Go to page - ' ~ count }}" data-placement="right">
+                    &raquo;&raquo;
+                </a>
+            </li>
+
+        {% endif %}
+    </ul>
+</div>
+{% endif %}

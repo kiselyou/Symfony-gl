@@ -1,0 +1,26 @@
+helper_index:
+    path:     /{page}
+    defaults: { _controller: "AppBundle:Helper:index", page: 1 }
+    requirements:
+        page: '\d+'
+    methods:  GET
+
+helper_show:
+    path:     /{id}/show
+    defaults: { _controller: "AppBundle:Helper:show" }
+    methods:  GET
+
+helper_new:
+    path:     /new
+    defaults: { _controller: "AppBundle:Helper:new" }
+    methods:  [GET, POST]
+
+helper_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "AppBundle:Helper:edit" }
+    methods:  [GET, POST]
+
+helper_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "AppBundle:Helper:delete" }
+    methods:  DELETE

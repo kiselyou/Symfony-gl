@@ -1,0 +1,12 @@
+.form-group>textarea {
+    resize: vertical;
+    height: 80px;
+}
+.btn-theme {
+    min-width: 100px;
+}
+.table-show th {
+    width: 20%;
+    text-align: right;
+    border-right: 1px solid #dddddd;
+}

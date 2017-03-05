@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    {% set vars = {'foo': 'header'} %}
+    {% include 'header.html.twig' with vars %}
+{% endblock %}
+
+{% block body %}
+
+    {% block conteiner %}{% endblock %}
+
+{% endblock %}
+
+{% block footer %}
+    {% set vars = {'foo': 'footer'} %}
+    {% include 'footer.html.twig' with vars %}
+{% endblock %}
