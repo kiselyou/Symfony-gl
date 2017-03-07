@@ -13,14 +13,7 @@ class HelperType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('title')
-            ->add('command')
-            ->add('description')
-            ->add('isActive')
-            ->add('deleted')
-            ->add('created_at')
-            ->add('updated_at');
+        $builder->add('title')->add('command')->add('description')->add('isActive')->add('deleted')->add('created_at')->add('updated_at');
     }
     
     /**

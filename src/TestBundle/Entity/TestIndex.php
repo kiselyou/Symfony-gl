@@ -226,4 +226,3 @@ class TestIndex
         return $this->updated_at;
     }
 }
-

@@ -1,11 +1,13 @@
 {% extends 'body.html.twig' %}
 
-{% block conteiner %}
+{% block container %}
     {#<div class="col-lg-3">#}
         {#<div>LEFT</div>#}
     {#</div>#}
     {#<div class="col-lg-6">#}
+        <div class="load-container">
         {% block content %}{% endblock %}
+        </div>
     {#</div>#}
     {#<div class="col-lg-3">#}
         {#<div>RIGHT</div>#}

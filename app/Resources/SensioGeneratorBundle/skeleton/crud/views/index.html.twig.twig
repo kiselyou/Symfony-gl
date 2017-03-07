@@ -1,5 +1,5 @@
 {% block extends %}
-{{ "{% extends 'conteiner.html.twig' %}" }}
+{{ "{% extends 'container.html.twig' %}" }}
 {% endblock extends %}
 
 {% block body %}
@@ -42,7 +42,11 @@
                     </thead>
                     <tbody>
                     {{ '{% for ' ~ entity_singularized ~ ' in ' ~ entity_pluralized ~ ' %}' }}
-                        <tr>
+
+                        {% set date_create = "Create: {{" ~ entity_singularized ~ ".createdat|date('Y-m-d H:i:s') }}" %}
+                        {% set date_update = "Update: {{" ~ entity_singularized ~ ".updatedat|date('Y-m-d H:i:s') }}" %}
+
+                        <tr class="table-popover" data-trigger="hover" data-placement="auto" data-html="true" data-content="{{ date_update }} <br/> {{ date_create }}" title="Date">
 
                     {%- for field, metadata in fields %}
                         {%- if loop.first and ('show' in actions) %}
@@ -69,6 +73,10 @@
 
                             <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}Yes{% else %}No{% endif %}' }}</td>
 
+                        {%- elseif metadata.type in ['text'] %}
+
+                            <td>{{ '{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' | raw }}' }}</td>
+
                         {%- else %}
 
                             <td>{{ '{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' }}' }}</td>
@@ -90,9 +98,13 @@
 
                                     <a href="{{ "{{ path('" ~ route_name_prefix ~ "_" ~ action ~ "', params) }}" }}" class="btn btn-default group-tooltip" title="{{ action|capitalize }}" data-placement="top">
                                     {% if action == 'show' %}
+
                                         <i class="glyphicon glyphicon-eye-open"></i>
+
                                     {% elseif action == 'edit' %}
+
                                         <i class="glyphicon glyphicon-edit"></i>
+
                                     {% endif %}
                                     </a>
 

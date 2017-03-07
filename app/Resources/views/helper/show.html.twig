@@ -1,56 +1,79 @@
-{% extends 'base.html.twig' %}
+{% extends 'container.html.twig' %}
 
-{% block body %}
-    <h1>Helper</h1>
+{% block content %}
 
-    <table>
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ helper.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ helper.title }}</td>
-            </tr>
-            <tr>
-                <th>Command</th>
-                <td>{{ helper.command }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ helper.description }}</td>
-            </tr>
-            <tr>
-                <th>Isactive</th>
-                <td>{% if helper.isActive %}Yes{% else %}No{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Deleted</th>
-                <td>{% if helper.deleted %}Yes{% else %}No{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Created_at</th>
-                <td>{% if helper.createdat %}{{ helper.createdat|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Updated_at</th>
-                <td>{% if helper.updatedat %}{{ helper.updatedat|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="page-header">
+        <h1>Helper</h1>
+    </div>
 
-    <ul>
-        <li>
-            <a href="{{ path('helper_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('helper_edit', { 'id': helper.id }) }}">Edit</a>
-        </li>
-        <li>
+    <div class="clearfix well-sm">
+
+                
+    <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-left">
+        <a href="{{ path('helper_index', {'page': app.request.query.get('back')}) }}" class="btn-theme btn btn-default group-tooltip" title="Go to the list" data-placement="top">
+            <i class="glyphicon glyphicon-list"></i>
+            List
+        </a>
+    </div>
+
+    <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-right">
             {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
+                <a href="{{ path('helper_new') }}" class="btn-theme btn btn-default group-tooltip" title="Create new record" data-placement="top">
+                    <i class="glyphicon glyphicon-file"></i>
+                    New
+                </a>
+            <button type="submit" class="btn-theme btn btn-danger group-tooltip active" title="Delete this record" data-placement="top">
+                <i class="glyphicon glyphicon-trash"></i>
+                Delete
+            </button>
+
             {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    </div>
+</div>
+
+    <div class="clearfix well-sm">
+
+        <div class="table-responsive">
+
+            <table class="table table-show table-hover">
+                <tbody>
+                    <tr>
+                        <th>Id</th>
+                        <td>{{ helper.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Title</th>
+                        <td>{{ helper.title }}</td>
+                    </tr>
+                    <tr>
+                        <th>Command</th>
+                        <td>{{ helper.command }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ helper.description }}</td>
+                    </tr>
+                    <tr>
+                        <th>Isactive</th>
+                        <td>{% if helper.isActive %}Yes{% else %}No{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th>Deleted</th>
+                        <td>{% if helper.deleted %}Yes{% else %}No{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th>Created_at</th>
+                        <td>{% if helper.createdat %}{{ helper.createdat|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th>Updated_at</th>
+                        <td>{% if helper.updatedat %}{{ helper.updatedat|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
 {% endblock %}

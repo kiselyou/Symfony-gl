@@ -1,7 +1,3 @@
-test_testindex:
-    resource: "@TestBundle/Resources/config/routing/testindex.yml"
-    prefix:   /testindex
-
 test_homepage:
     path:     /
     defaults: { _controller: TestBundle:Default:index }

@@ -14,6 +14,7 @@ class HelperController extends Controller
 {
     /**
      * Lists all helper entities.
+     *
      */
     public function indexAction($page)
     {
@@ -104,7 +105,7 @@ class HelperController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($helper);
-            $em->flush($helper);
+            $em->flush();
         }
 
         return $this->redirectToRoute('helper_index');
