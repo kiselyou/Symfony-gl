@@ -19,3 +19,7 @@
     text-align: right;
     border-right: 1px solid #dddddd;
 }
+
+tr[data-go-to] {
+    cursor: pointer;
+}

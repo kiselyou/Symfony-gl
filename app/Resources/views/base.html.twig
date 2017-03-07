@@ -30,6 +30,14 @@
 
                     $('.table-popover').popover();
 
+                    var tr = $('tr[data-go-to]');
+
+                    tr.each(function () {
+                        $( this ).click(function() {
+                            window.location.href = $( this ).attr('data-go-to');
+                        })
+                    });
+
                     setTimeout(function () {
                         $('.load-container').css('opacity', 1);
                     }, 100);
