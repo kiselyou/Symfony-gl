@@ -18,6 +18,12 @@
 
     <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-right">
             {{ form_start(delete_form) }}
+                <a href="{{ path('helper_edit', { 'id': helper.id }) }}" class="btn-theme btn btn-default group-tooltip" title="Edit record" data-placement="top">
+                    <i class="glyphicon glyphicon-edit"></i>
+                    Edit
+                </a>
+
+            
                 <a href="{{ path('helper_new') }}" class="btn-theme btn btn-default group-tooltip" title="Create new record" data-placement="top">
                     <i class="glyphicon glyphicon-file"></i>
                     New

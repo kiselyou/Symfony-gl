@@ -40,7 +40,7 @@
                     {% for helper in helpers %}
 
                                                                         
-                        <tr class="table-popover" data-trigger="hover" data-placement="auto" data-html="true" data-content="Update: {{helper.updatedat|date('Y-m-d H:i:s') }} <br/> Create: {{helper.createdat|date('Y-m-d H:i:s') }}" title="Date" data-go-to="{{ path('helper_show', { 'id': helper.id }) }}">
+                        <tr class="table-popover" data-trigger="hover" data-placement="bottom" data-html="true" data-content="Update: {{helper.updatedat|date('Y-m-d H:i:s') }} <br/> Create: {{helper.createdat|date('Y-m-d H:i:s') }}" title="Date" data-go-to="{{ path('helper_show', { 'id': helper.id }) }}">
                             <td><a href="{{ path('helper_show', { 'id': helper.id }) }}">{{ helper.id }}</a></td>
                             <td>{{ helper.title }}</td>
                             <td>{{ helper.command | raw }}</td>

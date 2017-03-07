@@ -12,6 +12,15 @@
 
             {{ '{{ form_start(delete_form) }}' }}
 
+            {%- if ('edit' in actions) and (not hide_edit) %}
+
+                <a href="{{ "{{ path('" ~ route_name_prefix ~ "_edit', { 'id': " ~ entity_singularized ~ "."~ identifier ~" }) }}" }}" class="btn-theme btn btn-default group-tooltip" title="Edit record" data-placement="top">
+                    <i class="glyphicon glyphicon-edit"></i>
+                    Edit
+                </a>
+
+            {% endif %}
+
             {%- if ('show' in actions) and (not hide_show) %}
 
                 <a href="{{ "{{ path('" ~ route_name_prefix ~ "_show', { 'id': " ~ entity_singularized ~ "."~ identifier ~" }) }}" }}" class="btn-theme btn btn-default group-tooltip" title="Show record" data-placement="top">

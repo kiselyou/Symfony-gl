@@ -47,7 +47,7 @@
                         {% set date_update = "Update: {{" ~ entity_singularized ~ ".updatedat|date('Y-m-d H:i:s') }}" %}
                         {% set path_to_view = "{{ path('" ~ route_name_prefix ~ "_show', { 'id': " ~ entity_singularized ~ "."~ identifier ~" }) }}" %}
 
-                        <tr class="table-popover" data-trigger="hover" data-placement="auto" data-html="true" data-content="{{ date_update }} <br/> {{ date_create }}" title="Date" data-go-to="{{ path_to_view }}">
+                        <tr class="table-popover" data-trigger="hover" data-placement="bottom" data-html="true" data-content="{{ date_update }} <br/> {{ date_create }}" title="Date" data-go-to="{{ path_to_view }}">
 
                     {%- for field, metadata in fields %}
                         {%- if loop.first and ('show' in actions) %}
