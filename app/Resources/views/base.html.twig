@@ -31,10 +31,8 @@
 
                     $('.table-popover').popover();
 
-                    var tr = $('tr[data-go-to]');
-
-                    tr.each(function () {
-                        $( this ).click(function() {
+                    $('tr[data-go-to]').each(function () {
+                        $( this ).dblclick(function() {
                             window.location.href = $( this ).attr('data-go-to');
                         })
                     });

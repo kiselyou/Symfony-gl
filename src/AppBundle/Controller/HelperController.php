@@ -18,16 +18,23 @@ class HelperController extends Controller
      */
     public function indexAction($page)
     {
+        $max = 50;
         $em = $this->getDoctrine()->getManager();
 
-        $helpers = $em->getRepository('AppBundle:Helper')->findAll();
+        $query = $em
+            ->createQuery("SELECT p FROM AppBundle:Helper p")
+            ->setFirstResult($max * ($page < 1 ? 0: $page - 1))
+            ->setMaxResults($max);
+
+        $paginator = 'Doctrine\ORM\Tools\Pagination\Paginator';
+        $pg = new $paginator($query);
 
         return $this->render('helper/index.html.twig', array(
-            'helpers' => $helpers,
+            'helpers' => $query->getResult(),
             'pagination' => [
-                'count' => 10,
                 'page' => $page,
-                'route' => 'helper_index'
+                'route' => 'helper_index',
+                'count' => ceil($pg->count() / $max)
             ]
         ));
     }

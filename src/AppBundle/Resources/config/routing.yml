@@ -2,4 +2,3 @@ app_helper:
     resource: "@AppBundle/Resources/config/routing/helper.yml"
     prefix:   /helper
 
-

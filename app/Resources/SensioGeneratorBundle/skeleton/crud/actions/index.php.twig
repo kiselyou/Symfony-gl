@@ -15,18 +15,25 @@
 {% endblock method_definition %}
     {
 {% block method_body %}
+        $max = 50;
         $em = $this->getDoctrine()->getManager();
 
-        ${{ entity_pluralized }} = $em->getRepository('{{ bundle }}:{{ entity }}')->findAll();
+        $query = $em
+            ->createQuery("SELECT p FROM {{ bundle }}:{{ entity }} p")
+            ->setFirstResult($max * ($page < 1 ? 0: $page - 1))
+            ->setMaxResults($max);
+
+        $paginator = 'Doctrine\ORM\Tools\Pagination\Paginator';
+        $pg = new $paginator($query);
 {% endblock method_body %}
 
 {% block method_return %}
         return $this->render('{{ entity|lower|replace({'\\': '/'}) }}/index.html.twig', array(
-            '{{ entity_pluralized }}' => ${{ entity_pluralized }},
+            '{{ entity_pluralized }}' => $query->getResult(),
             'pagination' => [
-                'count' => 10,
                 'page' => $page,
-                'route' => '{{ route_name_prefix }}_index'
+                'route' => '{{ route_name_prefix }}_index',
+                'count' => ceil($pg->count() / $max)
             ]
         ));
 {% endblock method_return %}
