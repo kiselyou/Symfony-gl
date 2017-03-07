@@ -1,6 +1,6 @@
 {% if page > 0 and page <= count and count > 1 %}
 
-<div class="text-center">
+<div class="text-right">
     <ul class="pagination">
 
         {% set max = 6 %}
@@ -62,7 +62,7 @@
             </li>
 
             <li class="next {{ page == count ? 'disabled' : '' }}">
-                <a class="group-tooltip" href="{{ page == count ? '#' : path(route, { 'page': count }) }}" title="{{ page == count ? '' : 'Go to page - ' ~ count }}" data-placement="right">
+                <a class="group-tooltip" href="{{ page == count ? '#' : path(route, { 'page': count }) }}" title="{{ page == count ? '' : 'Go to page - ' ~ count }}" data-placement="top">
                     &raquo;&raquo;
                 </a>
             </li>

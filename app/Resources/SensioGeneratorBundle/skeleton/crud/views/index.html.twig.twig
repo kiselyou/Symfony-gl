@@ -122,12 +122,13 @@
                     </tbody>
                 </table>
             </div>
+
+            {{ "{% if pagination is defined %}" }}
+                {{ "{% include 'pagination.html.twig' with pagination %}" }}
+            {{ "{% endif %}" }}
+
         </div>
     </div>
-
-    {{ "{% if pagination is defined %}" }}
-        {{ "{% include 'pagination.html.twig' with pagination %}" }}
-    {{ "{% endif %}" }}
 
 {{ "{% endblock %}" }}
 {% endblock body %}
