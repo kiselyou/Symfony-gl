@@ -12,9 +12,11 @@
 
     <script src="{{ asset('js/core/api/Array.js') }}"></script>
     <script src="{{ asset('js/three/three.js') }}"></script>
+    <script src="{{ asset('models/ModelData.js') }}"></script>
     <script src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
     <script src="{{ asset('js/three/controls/PlanetControls.js') }}"></script>
     <script src="{{ asset('js/three/controls/OrbitControls.js') }}"></script>
+    <script src="{{ asset('js/three/controls/ModelControls.js') }}"></script>
 
 
     <script>
@@ -74,7 +76,23 @@
             orbitControl.minDistance = 120;
             orbitControl.keyPanSpeed = 70;
             orbitControl.maxPolarAngle = 75 * Math.PI / 180;
+            orbitControl.maxDistance = 50;
 //            orbitControl.target.copy(new THREE.Vector3( 108873.53133227957, 0, 108873.53133227957 ));
+
+            var geometry = new THREE.BoxGeometry( 5, 5, 5 );
+            var material = new THREE.MeshLambertMaterial( { color: 0xffff00 } );
+            var model = new THREE.Mesh( geometry, material );
+            scene.add( model );
+
+            var modelControls = new THREE.ModelControls( camera, model, renderer.domElement, container );
+            var planeGeometry = new THREE.PlaneGeometry(100000, 100000);
+            var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 0, transparent: true });
+            var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+            plane.rotation.x = -0.5 * Math.PI;
+            scene.add(plane);
+            model.add( plane );
+            modelControls.scene = scene;
+            modelControls.mouseMoveModel( plane );
 
             var planetControls = new THREE.PlanetControls( scene, camera );
             planetControls.load( true, function ( a, b ) {
@@ -102,6 +120,15 @@
                 requestAnimationFrame( render );
                 renderer.render( scene, camera );
                 planetControls.update();
+
+                if (modelControls) {
+                    modelControls.update();
+                }
+
+                if (orbitControl && model) {
+                    orbitControl.target.copy(model.position);
+                    orbitControl.update();
+                }
             }
         });
     </script>

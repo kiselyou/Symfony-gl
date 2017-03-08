@@ -67,11 +67,11 @@ THREE.PlanetControls = function ( scene, camera ) {
 			position: new THREE.Vector3( 0, 0, 0 ),
 			glow: {
 				color: '#13FAED',
-				side: THREE.BackSide,
+				side: THREE.FrontSide,
 				blending: THREE.AdditiveBlending,
-				scalar: 1.2,
-				c: 0.5,
-				p: 6
+				scalar: 1.1,
+				c: 0.8,
+				p: 4
 			}
 		},
 		{
@@ -81,7 +81,7 @@ THREE.PlanetControls = function ( scene, camera ) {
 			radius: 173.7,
 			parentUUID: 'earth',
 			inclineY: 45 * Math.PI / 180,
-			degree: 0.1, // start degree
+			degree: 3, // start degree
 			speedDegree: 0.000019,
 			distance: 384.4, // км 384400
 			texture: 'images/textures/earch/texture_moon.jpg',

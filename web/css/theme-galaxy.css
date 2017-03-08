@@ -7,3 +7,10 @@ html, body, canvas {
     overflow: hidden;
     position: relative;
 }
+.text-label {
+    color: #FFFF00;
+    font-family: "Fira Mono", Monaco, "Andale Mono", "Lucida Console", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
+    font-size: 12px;
+    margin: -5px 0 0 15px;
+    pointer-events:none;
+}
