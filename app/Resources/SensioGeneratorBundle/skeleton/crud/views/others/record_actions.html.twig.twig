@@ -1,6 +1,6 @@
 
     <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-left">
-        <a href="{{ "{{ path('" ~ route_name_prefix ~ "_index', {'page': app.request.query.get('back')}) }}" }}" class="btn-theme btn btn-default group-tooltip" title="Go to the list" data-placement="top">
+        <a href="{{ "{{ path('" ~ route_name_prefix ~ "_index', {'page': app.request.query.get('back')}) }}" }}" class="btn-theme btn btn-default element-tooltip" title="Go to the list" data-placement="top">
             <i class="glyphicon glyphicon-list"></i>
             List
         </a>
@@ -14,7 +14,7 @@
 
             {%- if ('edit' in actions) and (not hide_edit) %}
 
-                <a href="{{ "{{ path('" ~ route_name_prefix ~ "_edit', { 'id': " ~ entity_singularized ~ "."~ identifier ~" }) }}" }}" class="btn-theme btn btn-default group-tooltip" title="Edit record" data-placement="top">
+                <a href="{{ "{{ path('" ~ route_name_prefix ~ "_edit', { 'id': " ~ entity_singularized ~ "."~ identifier ~" }) }}" }}" class="btn-theme btn btn-default element-tooltip" title="Edit record" data-placement="top">
                     <i class="glyphicon glyphicon-edit"></i>
                     Edit
                 </a>
@@ -23,7 +23,7 @@
 
             {%- if ('show' in actions) and (not hide_show) %}
 
-                <a href="{{ "{{ path('" ~ route_name_prefix ~ "_show', { 'id': " ~ entity_singularized ~ "."~ identifier ~" }) }}" }}" class="btn-theme btn btn-default group-tooltip" title="Show record" data-placement="top">
+                <a href="{{ "{{ path('" ~ route_name_prefix ~ "_show', { 'id': " ~ entity_singularized ~ "."~ identifier ~" }) }}" }}" class="btn-theme btn btn-default element-tooltip" title="Show record" data-placement="top">
                     <i class="glyphicon glyphicon-eye-open"></i>
                     Show
                 </a>
@@ -32,14 +32,14 @@
 
             {%- if ('new' in actions) and (not hide_new) %}
 
-                <a href="{{ "{{ path('" ~ route_name_prefix ~ "_new') }}" }}" class="btn-theme btn btn-default group-tooltip" title="Create new record" data-placement="top">
+                <a href="{{ "{{ path('" ~ route_name_prefix ~ "_new') }}" }}" class="btn-theme btn btn-default element-tooltip" title="Create new record" data-placement="top">
                     <i class="glyphicon glyphicon-file"></i>
                     New
                 </a>
 
             {%- endif %}
 
-            <button type="submit" class="btn-theme btn btn-danger group-tooltip active" title="Delete this record" data-placement="top">
+            <button type="submit" class="btn-theme btn btn-danger element-tooltip active" title="Delete this record" data-placement="top">
                 <i class="glyphicon glyphicon-trash"></i>
                 Delete
             </button>

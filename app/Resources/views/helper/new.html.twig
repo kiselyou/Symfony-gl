@@ -10,7 +10,7 @@
 
                 
     <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-left">
-        <a href="{{ path('helper_index', {'page': app.request.query.get('back')}) }}" class="btn-theme btn btn-default group-tooltip" title="Go to the list" data-placement="top">
+        <a href="{{ path('helper_index', {'page': app.request.query.get('back')}) }}" class="btn-theme btn btn-default element-tooltip" title="Go to the list" data-placement="top">
             <i class="glyphicon glyphicon-list"></i>
             List
         </a>
@@ -28,7 +28,7 @@
 
             {{ form_widget(form) }}
 
-            <button type="submit" class="btn-theme btn btn-primary group-tooltip active" title="Create record" data-placement="top">
+            <button type="submit" class="btn-theme btn btn-primary element-tooltip active" title="Create record" data-placement="top">
                 <i class="glyphicon glyphicon-floppy-save"></i>
                 Create
             </button>

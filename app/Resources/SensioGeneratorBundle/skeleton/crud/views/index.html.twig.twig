@@ -17,7 +17,7 @@
     {% if 'new' in actions -%}
         <div class="clearfix well-sm">
             <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12 text-left">
-                <a href="{{ "{{ path('" ~ route_name_prefix ~ "_new', params) }}" }}" class="btn-theme btn btn-default group-tooltip" title="Create a new {{ entity_singularized }}" data-placement="right">
+                <a href="{{ "{{ path('" ~ route_name_prefix ~ "_new', params) }}" }}" class="btn-theme btn btn-default element-tooltip" title="Create a new {{ entity_singularized }}" data-placement="right">
                     <i class="glyphicon glyphicon-file"></i>
                     New
                 </a>
@@ -47,7 +47,7 @@
                         {% set date_update = "Update: {{" ~ entity_singularized ~ ".updatedat|date('Y-m-d H:i:s') }}" %}
                         {% set path_to_view = "{{ path('" ~ route_name_prefix ~ "_show', { 'id': " ~ entity_singularized ~ "."~ identifier ~" }) }}" %}
 
-                        <tr class="table-popover" data-trigger="hover" data-placement="bottom" data-html="true" data-content="{{ date_update }} <br/> {{ date_create }}" title="Date" data-go-to="{{ path_to_view }}">
+                        <tr class="element-popover" data-trigger="hover" data-placement="bottom" data-html="true" data-content="{{ date_update }} <br/> {{ date_create }}" title="Date" data-go-to="{{ path_to_view }}">
 
                     {%- for field, metadata in fields %}
                         {%- if loop.first and ('show' in actions) %}
@@ -97,7 +97,7 @@
                                         {{ "{% set params = { 'id': " ~ entity_singularized ~ "."~ identifier ~", 'back': pagination.page } %}" }}
                                     {{ "{% endif %}" }}
 
-                                    <a href="{{ "{{ path('" ~ route_name_prefix ~ "_" ~ action ~ "', params) }}" }}" class="btn btn-default group-tooltip" title="{{ action|capitalize }}" data-placement="top">
+                                    <a href="{{ "{{ path('" ~ route_name_prefix ~ "_" ~ action ~ "', params) }}" }}" data-container="body" class="btn btn-default element-tooltip" title="{{ action|capitalize }}" data-placement="top">
                                     {% if action == 'show' %}
 
                                         <i class="glyphicon glyphicon-eye-open"></i>

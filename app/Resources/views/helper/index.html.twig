@@ -13,7 +13,7 @@
 
     <div class="clearfix well-sm">
             <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12 text-left">
-                <a href="{{ path('helper_new', params) }}" class="btn-theme btn btn-default group-tooltip" title="Create a new helper" data-placement="right">
+                <a href="{{ path('helper_new', params) }}" class="btn-theme btn btn-default element-tooltip" title="Create a new helper" data-placement="right">
                     <i class="glyphicon glyphicon-file"></i>
                     New
                 </a>
@@ -40,7 +40,7 @@
                     {% for helper in helpers %}
 
                                                                         
-                        <tr class="table-popover" data-trigger="hover" data-placement="bottom" data-html="true" data-content="Update: {{helper.updatedat|date('Y-m-d H:i:s') }} <br/> Create: {{helper.createdat|date('Y-m-d H:i:s') }}" title="Date" data-go-to="{{ path('helper_show', { 'id': helper.id }) }}">
+                        <tr class="element-popover" data-trigger="hover" data-placement="bottom" data-html="true" data-content="Update: {{helper.updatedat|date('Y-m-d H:i:s') }} <br/> Create: {{helper.createdat|date('Y-m-d H:i:s') }}" title="Date" data-go-to="{{ path('helper_show', { 'id': helper.id }) }}">
                             <td><a href="{{ path('helper_show', { 'id': helper.id }) }}">{{ helper.id }}</a></td>
                             <td>{{ helper.title }}</td>
                             <td>{{ helper.command | raw }}</td>
@@ -57,7 +57,7 @@
                                         {% set params = { 'id': helper.id, 'back': pagination.page } %}
                                     {% endif %}
 
-                                    <a href="{{ path('helper_show', params) }}" class="btn btn-default group-tooltip" title="Show" data-placement="top">
+                                    <a href="{{ path('helper_show', params) }}" data-container="body" class="btn btn-default element-tooltip" title="Show" data-placement="top">
                                     
                                         <i class="glyphicon glyphicon-eye-open"></i>
 
@@ -68,7 +68,7 @@
                                         {% set params = { 'id': helper.id, 'back': pagination.page } %}
                                     {% endif %}
 
-                                    <a href="{{ path('helper_edit', params) }}" class="btn btn-default group-tooltip" title="Edit" data-placement="top">
+                                    <a href="{{ path('helper_edit', params) }}" data-container="body" class="btn btn-default element-tooltip" title="Edit" data-placement="top">
                                     
                                         <i class="glyphicon glyphicon-edit"></i>
 
