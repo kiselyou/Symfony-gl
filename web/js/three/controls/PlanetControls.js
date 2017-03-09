@@ -303,7 +303,7 @@ THREE.PlanetControls = function ( scene, camera ) {
 			setting.texture,
 			// Function when resource is loaded
 			function ( texture ) {
-				var segments = 25;
+				var segments = 70;
 				var radius = Math.round( setting.radius );
 				var geometry = new THREE.SphereGeometry( radius, segments, segments );
 				var material = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture } );
