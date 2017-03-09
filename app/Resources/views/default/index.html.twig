@@ -17,6 +17,7 @@
     <script src="{{ asset('js/three/controls/PlanetControls.js') }}"></script>
     <script src="{{ asset('js/three/controls/OrbitControls.js') }}"></script>
     <script src="{{ asset('js/three/controls/ModelControls.js') }}"></script>
+    <script src="{{ asset('js/three/controls/CameraControls.js') }}"></script>
 
 
     <script>
@@ -73,33 +74,11 @@
             orbitControl.rotateSpeed = 5.9;
 //            orbitControl.target.copy(new THREE.Vector3( 108873.53133227957, 0, 108873.53133227957 ));
 
-            var model = null;
-            var modelControls = null;
-            var manager = new THREE.LoadingManager();
-            var loader = new THREE.OBJLoader( manager );
-            loader.load( 'models/M1/ship.obj', function ( object ) {
+            var modelControls = new THREE.ModelControls( camera, scene, renderer.domElement, container );
+            modelControls.loadObject( 'models/M1/ship.obj' );
 
-                object.rotation.x = 90 * Math.PI / 180;
-                object.rotation.y = 180 * Math.PI / 180;
-
-                var geometry = new THREE.SphereGeometry( 6, 25, 25 );
-                var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0.1, transparent: true } );
-                var model = new THREE.Mesh( geometry, material );
-
-                model.add( object );
-                scene.add( model );
-
-                modelControls = new THREE.ModelControls( camera, model, renderer.domElement, container );
-                var planeGeometry = new THREE.PlaneGeometry(10000, 10000);
-                var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 0, transparent: true });
-                var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-
-                plane.rotation.x = -0.5 * Math.PI;
-                model.add( plane );
-                modelControls.scene = scene;
-                modelControls.mouseMoveModel( plane );
-
-            });
+            var cameraControl = new THREE.CameraControls( camera, renderer.domElement );
+            cameraControl.listen();
 
             var planetControls = new THREE.PlanetControls( scene, camera );
             planetControls.load( true, function ( a, b ) {
@@ -111,7 +90,7 @@
             scene.add( axis );
 
             var color = new THREE.Color(0x00ffff);
-            var grid = new THREE.GridHelper( 100, 10, color, 0x888888);
+            var grid = new THREE.GridHelper( 1000, 100, color, 0x888888);
             scene.add( grid );
 
             container.appendChild( renderer.domElement );
@@ -128,12 +107,13 @@
                 renderer.render( scene, camera );
                 planetControls.update();
 
-                if (modelControls) {
+                if ( modelControls ) {
                     modelControls.update();
                 }
 
-                if (orbitControl && model) {
-                    orbitControl.target.copy( model.position );
+                // Это временно пока неработает CameraControl
+                if ( orbitControl && modelControls.getModel() ) {
+                    orbitControl.target.copy( modelControls.getModel().position );
                     orbitControl.update();
                 }
             }

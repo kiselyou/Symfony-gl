@@ -1,12 +1,12 @@
 /**
  *
  * @param {Camera} camera
- * @param {Mesh} object
+ * @param {Scene} scene
  * @param {HTMLDocument} domElement
  * @param {Element} container
  * @constructor
  */
-THREE.ModelControls = function ( camera, object, domElement, container ) {
+THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
     /**
      *
@@ -46,9 +46,15 @@ THREE.ModelControls = function ( camera, object, domElement, container ) {
 
     /**
      *
-     * @type {Mesh}
+     * @type {Scene}
      */
-    this.object = object;
+    this.scene = scene;
+
+    /**
+     *
+     * @type {(Mesh|null)}
+     */
+    this.object = null;
 
     /**
      *
@@ -62,6 +68,11 @@ THREE.ModelControls = function ( camera, object, domElement, container ) {
      */
     this.domElement = ( domElement !== undefined ) ? domElement : document;
 
+    /**
+     *
+     * @type {Element}
+     * @private
+     */
     this._container = container;
 
     /**
@@ -100,12 +111,44 @@ THREE.ModelControls = function ( camera, object, domElement, container ) {
      */
     var scope = this;
 
+    this.loadObject = function ( path ) {
+        var manager = new THREE.LoadingManager();
+        var loader = new THREE.OBJLoader( manager );
+        loader.load( path, function ( object ) {
+            object.rotation.x = 90 * Math.PI / 180;
+            object.rotation.y = 180 * Math.PI / 180;
+
+            var geometry = new THREE.SphereGeometry( 6, 25, 25 );
+            var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0.1, transparent: true } );
+            scope.object = new THREE.Mesh( geometry, material );
+
+            scope.object.add( object );
+            scope.scene.add( scope.object );
+
+            var planeGeometry = new THREE.PlaneGeometry(10000, 10000);
+            var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 0, transparent: true });
+            scope.plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
+            scope.plane.rotation.x = -0.5 * Math.PI;
+            scope.object.add( scope.plane );
+            scope.mouseMoveModel();
+
+        });
+    };
+
     /**
      *
-     * @param {Mesh} plane - It is plane geometry
+     * @returns {(Mesh|null)}
      */
-    this.mouseMoveModel = function ( plane ) {
-        this.plane = plane;
+    this.getModel = function () {
+        return this.object;
+    };
+
+    /**
+     *
+     * @returns {void}
+     */
+    this.mouseMoveModel = function () {
         this.domElement.addEventListener( 'click', moveModel, false );
         window.addEventListener( 'keydown', onKeyDown, false );
     };
@@ -668,12 +711,6 @@ THREE.ModelControls = function ( camera, object, domElement, container ) {
         v.setY( Number( v.y.toFixed( fraction ) ) );
         v.setZ( Number( v.z.toFixed( fraction ) ) );
     }
-
-    /**
-     *
-     * @type {Scene|null}
-     */
-    this.scene = null;
 
 	/**
      *
