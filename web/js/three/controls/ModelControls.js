@@ -58,12 +58,6 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
     /**
      *
-     * @type {Raycaster}
-     */
-    this.raycaster = new THREE.Raycaster();
-
-    /**
-     *
      * @type {HTMLDocument}
      */
     this.domElement = ( domElement !== undefined ) ? domElement : document;
@@ -107,6 +101,12 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
     /**
      *
+     * @type {(THREE.CameraControls|null)}
+     */
+    var cameraControl = null;
+
+    /**
+     *
      * @type {THREE.ModelControls}
      */
     var scope = this;
@@ -128,6 +128,9 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             var planeGeometry = new THREE.PlaneGeometry(10000, 10000);
             var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 0, transparent: true });
             scope.plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
+            cameraControl = new THREE.CameraControls( scope.camera, scope.plane, scope.domElement );
+            cameraControl.listen();
 
             scope.plane.rotation.x = -0.5 * Math.PI;
             scope.object.add( scope.plane );
@@ -344,8 +347,9 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
 
-        scope.raycaster.setFromCamera( mouse, camera );
-        var intersects = scope.raycaster.intersectObject( plane );
+        var raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera( mouse, camera );
+        var intersects = raycaster.intersectObject( plane );
         if ( intersects.length > 0 ) {
             return intersects[0]['point'];
         }
@@ -386,6 +390,11 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      * @return {void}
      */
     this.update = function () {
+
+        if ( cameraControl ) {
+            cameraControl.update();
+        }
+
         animationPointClick();
 
         if ( this.textlabel ) {

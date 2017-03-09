@@ -77,9 +77,6 @@
             var modelControls = new THREE.ModelControls( camera, scene, renderer.domElement, container );
             modelControls.loadObject( 'models/M1/ship.obj' );
 
-            var cameraControl = new THREE.CameraControls( camera, renderer.domElement );
-            cameraControl.listen();
-
             var planetControls = new THREE.PlanetControls( scene, camera );
             planetControls.load( true, function ( a, b ) {
                 console.log( a, b );
@@ -112,10 +109,10 @@
                 }
 
                 // Это временно пока неработает CameraControl
-                if ( orbitControl && modelControls.getModel() ) {
-                    orbitControl.target.copy( modelControls.getModel().position );
-                    orbitControl.update();
-                }
+//                if ( orbitControl && modelControls.getModel() ) {
+//                    orbitControl.target.copy( modelControls.getModel().position );
+//                    orbitControl.update();
+//                }
             }
         });
     </script>
