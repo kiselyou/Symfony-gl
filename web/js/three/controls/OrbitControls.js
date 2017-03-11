@@ -964,6 +964,9 @@ THREE.OrbitControls = function ( object, domElement ) {
 		var clientX = event.clientX;
 		var bottom = scope.domElement.height;
 		var right = scope.domElement.width;
+		var a = right / 2 - clientX;
+		var b = bottom / 2 - clientY;
+		var l = Math.sqrt( a * a + b * b );
 		var len = scope.activeArea.length;
 
 		for ( var i = 0; i < len; i++ ) {
@@ -973,35 +976,55 @@ THREE.OrbitControls = function ( object, domElement ) {
 			min = area[0];
 			max = area[1];
 
-			if (clientY > min && clientY < max) { // top
+			var x = 0, z = 0;
+			var ox = a / l * activeArea.step;
+			var oz = b / l * activeArea.step;
+            var center = new THREE.Vector2( right / 2, bottom / 2 );
+
+            if ( clientX < center.x ) {
+                // left X +
+                x = Math.abs( ox );
+            }
+            if ( clientX > center.x ) {
+                // right X -
+                x = - Math.abs( ox );
+            }
+
+            if ( clientY < center.y ) {
+                // top Z +
+                z = Math.abs( oz );
+            }
+            if ( clientY > center.y ) {
+                // bottom Z -
+                z = - Math.abs( oz );
+            }
+
+			if (clientY >= min && clientY <= max ) { // top
 
 				params.move = true;
-				params.point.setX( 0 );
-				params.point.setZ( activeArea.step );
 				break;
 
-			} else if (clientY > bottom - max && clientY < bottom - min) { // bottom
+			} else if (clientY >= bottom - max && clientY <= bottom - min) { // bottom
 
 				params.move = true;
-				params.point.setX( 0 );
-				params.point.setZ( - activeArea.step );
 				break;
 
-			} else if (clientX > min && clientX < max) { // left
+			} else if (clientX >= min && clientX <= max) { // left
 
 				params.move = true;
-				params.point.setX( activeArea.step );
-				params.point.setZ( 0 );
 				break;
 
-			} else if (clientX > right - max && clientX < right - min) { // right
+			} else if (clientX >= right - max && clientX <= right - min) { // right
 
 				params.move = true;
-				params.point.setX( - activeArea.step );
-				params.point.setZ( 0 );
 				break;
 
 			}
+
+            if ( params.move ) {
+                params.point.setX( x );
+                params.point.setZ( z );
+            }
 
 		}
 
@@ -1012,11 +1035,11 @@ THREE.OrbitControls = function ( object, domElement ) {
 			max = area[ 1 ];
 
 			if ( ( clientY > max && clientY < ( bottom - max ) ) && ( clientX > max && clientX < ( right - max ) ) ) {
+
 				stopCamera();
+
 			}
-
 		}
-
 	}
 
     /**

@@ -36,7 +36,7 @@ THREE.PlanetControls = function ( scene, camera ) {
 			UUID: 'sun',
 			name: 'Sun',
 			describe: '',
-			radius: 69570, // км 695700
+			radius: 69570 / 2, // км 695700
 			parentUUID: null,
 			inclineY: 45 * Math.PI / 180,
 			degree: 0.1, // start degree
