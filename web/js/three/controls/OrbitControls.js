@@ -891,51 +891,51 @@ THREE.OrbitControls = function ( object, domElement ) {
 	this.activeArea = [
 		{
 		    area: '0|5',
-		    step: 30
+		    step: 54
 		},
 		{
 		    area: '5|10',
-		    step: 28
+		    step: 50
 		},
 		{
 		    area: '10|15',
-		    step: 26
+		    step: 46
 		},
 		{
 		    area: '15|20',
-		    step: 24
+		    step: 42
 		},
 		{
 			area: '20|25',
-			step: 22
+			step: 38
 		},
 		{
 			area: '25|30',
-			step: 20
+			step: 34
 		},
 		{
 			area: '30|35',
-			step: 18
+			step: 30
 		},
 		{
 			area: '35|40',
-			step: 16
+			step: 26
 		},
 		{
 			area: '40|45',
-			step: 14
+			step: 22
 		},
 		{
 			area: '45|50',
-			step: 12
+			step: 18
 		},
 		{
 			area: '50|55',
-			step: 10
+			step: 14
 		},
 		{
 			area: '55|60',
-			step: 8
+			step: 10
 		},
 		{
 			area: '60|65',

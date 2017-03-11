@@ -101,12 +101,6 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
     /**
      *
-     * @type {(THREE.CameraControls|null)}
-     */
-    var cameraControl = null;
-
-    /**
-     *
      * @type {THREE.ModelControls}
      */
     var scope = this;
@@ -126,10 +120,9 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             scope.scene.add( scope.object );
 
             var planeGeometry = new THREE.PlaneGeometry(10000, 10000);
-            var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 0.2, transparent: true });
+            var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 0, transparent: true });
             // var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
-            scope.plane = new THREE.Mesh(planeGeometry, planeMaterial);
-
+            scope.plane = new THREE.Mesh( planeGeometry, planeMaterial );
             scope.plane.rotation.x = -0.5 * Math.PI;
             scope.object.add( scope.plane );
             scope.mouseMoveModel();
@@ -388,10 +381,6 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      * @return {void}
      */
     this.update = function () {
-
-        if ( cameraControl ) {
-            cameraControl.update();
-        }
 
         animationPointClick();
 

@@ -17,7 +17,8 @@
     <script src="{{ asset('js/three/controls/PlanetControls.js') }}"></script>
     <script src="{{ asset('js/three/controls/OrbitControls.js') }}"></script>
     <script src="{{ asset('js/three/controls/ModelControls.js') }}"></script>
-    <script src="{{ asset('js/three/controls/CameraControls.js') }}"></script>
+
+    
 
 
     <script>
@@ -71,7 +72,7 @@
             orbitControl.keyPanSpeed = 70;
             orbitControl.maxPolarAngle = 65 * Math.PI / 180;
             orbitControl.maxDistance = 500;
-//            orbitControl.rotateSpeed = 5.9;
+            orbitControl.rotateSpeed = 3.0;
 
             var modelControls = new THREE.ModelControls( camera, scene, renderer.domElement, container );
             modelControls.loadObject( 'models/M1/ship.obj' );
