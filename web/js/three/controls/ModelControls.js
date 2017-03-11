@@ -105,16 +105,25 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      */
     var scope = this;
 
-    this.loadObject = function ( path ) {
+    /**
+     *
+     * @param {string} path
+     * @param {function} [callback]
+     */
+    this.loadObject = function ( path, callback ) {
         var manager = new THREE.LoadingManager();
         var loader = new THREE.OBJLoader( manager );
         loader.load( path, function ( object ) {
             object.rotation.x = 90 * Math.PI / 180;
             object.rotation.y = 180 * Math.PI / 180;
 
-            var geometry = new THREE.SphereGeometry( 6, 25, 25 );
+            var geometry = new THREE.SphereGeometry( 12, 25, 25 );
             var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0.1, transparent: true } );
             scope.object = new THREE.Mesh( geometry, material );
+
+            if ( callback ) {
+                callback.call( this, object );
+            }
 
             scope.object.add( object );
             scope.scene.add( scope.object );
@@ -874,7 +883,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             return null;
         }
 
-        var geometry = new THREE.SphereGeometry( 0.1, 15, 15, 0, Math.PI * 2, 0, Math.PI * 2 );
+        var geometry = new THREE.SphereGeometry( 1, 15, 15, 0, Math.PI * 2, 0, Math.PI * 2 );
         var material = new THREE.MeshLambertMaterial( { color: color } );
         var sphere = new THREE.Mesh( geometry, material );
         sphere.position.copy( position );

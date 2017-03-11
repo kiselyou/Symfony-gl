@@ -72,14 +72,17 @@
             orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
             orbitControl.enablePan = false;
             orbitControl.enableKeys = false;
-            orbitControl.minDistance = 120;
+            orbitControl.minDistance = 20;
             orbitControl.keyPanSpeed = 70;
             orbitControl.maxPolarAngle = 65 * Math.PI / 180;
             orbitControl.maxDistance = 500;
             orbitControl.rotateSpeed = 3.0;
 
             var modelControls = new THREE.ModelControls( camera, scene, renderer.domElement, container );
-            modelControls.loadObject( 'models/M1/ship.obj' );
+            modelControls.loadObject( 'models/M1/Spaceship1.obj', function ( object ) {
+                object.children[0].rotateX(Math.PI / 2);
+                object.children[0].rotateY(Math.PI);
+            } );
 
             var planetControls = new THREE.PlanetControls( scene, camera );
             planetControls.load( true, function ( a, b ) {
