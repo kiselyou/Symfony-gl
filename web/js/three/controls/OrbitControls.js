@@ -125,6 +125,10 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		return function update() {
 
+			if ( params.move ) {
+				pan( params.point.x, params.point.z );
+			}
+
 			var position = scope.object.position;
 
 			offset.copy( position ).sub( scope.target );
@@ -312,6 +316,23 @@ THREE.OrbitControls = function ( object, domElement ) {
 			v.multiplyScalar( distance );
 
 			panOffset.add( v );
+		};
+
+	}();
+
+	var panDeep = function () {
+
+		var v = new THREE.Vector3();
+
+		return function panDeep( distance, objectMatrix ) {
+
+			var te = objectMatrix.elements;
+
+			// get elements from the Z-column of matrix
+			v.set( te[ 8 ], 0, te[ 10 ] ).normalize();
+			v.multiplyScalar( - distance );
+
+			panOffset.add( v );
 
 		};
 
@@ -338,7 +359,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 				// we actually don't use screenWidth, since perspective camera is fixed to screen height
 				panLeft( 2 * deltaX * targetDistance / element.clientHeight, scope.object.matrix );
-				panUp( 2 * deltaY * targetDistance / element.clientHeight, scope.object.matrix );
+				panDeep( 2 * deltaY * targetDistance / element.clientHeight, scope.object.matrix );
 
 			} else if ( scope.object instanceof THREE.OrthographicCamera ) {
 
@@ -866,6 +887,147 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	}
 
+	/** @type {Array} */
+	this.activeArea = [
+		{
+		    area: '0|5',
+		    step: 30
+		},
+		{
+		    area: '5|10',
+		    step: 28
+		},
+		{
+		    area: '10|15',
+		    step: 26
+		},
+		{
+		    area: '15|20',
+		    step: 24
+		},
+		{
+			area: '20|25',
+			step: 22
+		},
+		{
+			area: '25|30',
+			step: 20
+		},
+		{
+			area: '30|35',
+			step: 18
+		},
+		{
+			area: '35|40',
+			step: 16
+		},
+		{
+			area: '40|45',
+			step: 14
+		},
+		{
+			area: '45|50',
+			step: 12
+		},
+		{
+			area: '50|55',
+			step: 10
+		},
+		{
+			area: '55|60',
+			step: 8
+		},
+		{
+			area: '60|65',
+			step: 6
+		}
+	];
+
+    /**
+     *
+     * @type {{move: boolean, point: (any)}}
+     */
+	var params = {
+		move: false,
+		point: new THREE.Vector3()
+	};
+
+    /**
+     *
+     * @param {MouseEvent} event
+     * @returns {void}
+     */
+	function moveCamera( event ) {
+
+        var activeArea, area, min, max;
+		var clientY = event.clientY;
+		var clientX = event.clientX;
+		var bottom = scope.domElement.height;
+		var right = scope.domElement.width;
+		var len = scope.activeArea.length;
+
+		for ( var i = 0; i < len; i++ ) {
+
+			activeArea = scope.activeArea[i];
+			area = activeArea.area.split('|');
+			min = area[0];
+			max = area[1];
+
+			if (clientY > min && clientY < max) { // top
+
+				params.move = true;
+				params.point.setX( 0 );
+				params.point.setZ( activeArea.step );
+				break;
+
+			} else if (clientY > bottom - max && clientY < bottom - min) { // bottom
+
+				params.move = true;
+				params.point.setX( 0 );
+				params.point.setZ( - activeArea.step );
+				break;
+
+			} else if (clientX > min && clientX < max) { // left
+
+				params.move = true;
+				params.point.setX( activeArea.step );
+				params.point.setZ( 0 );
+				break;
+
+			} else if (clientX > right - max && clientX < right - min) { // right
+
+				params.move = true;
+				params.point.setX( - activeArea.step );
+				params.point.setZ( 0 );
+				break;
+
+			}
+
+		}
+
+		if ( scope.activeArea[ len - 1 ] ) {
+
+			activeArea = scope.activeArea[ len - 1 ];
+			area = activeArea.area.split( '|' );
+			max = area[ 1 ];
+
+			if ( ( clientY > max && clientY < ( bottom - max ) ) && ( clientX > max && clientX < ( right - max ) ) ) {
+				stopCamera();
+			}
+
+		}
+
+	}
+
+    /**
+     * @returns {void}
+     */
+	function stopCamera() {
+		params.move = false;
+	}
+
+	scope.domElement.addEventListener( 'mousemove', moveCamera, false );
+	scope.domElement.addEventListener( 'mouseout', stopCamera, false );
 	scope.domElement.addEventListener( 'contextmenu', onContextMenu, false );
 
 	scope.domElement.addEventListener( 'mousedown', onMouseDown, false );

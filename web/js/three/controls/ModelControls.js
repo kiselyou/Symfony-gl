@@ -126,11 +126,9 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             scope.scene.add( scope.object );
 
             var planeGeometry = new THREE.PlaneGeometry(10000, 10000);
-            var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 0, transparent: true });
+            var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 0.2, transparent: true });
+            // var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
             scope.plane = new THREE.Mesh(planeGeometry, planeMaterial);
-
-            cameraControl = new THREE.CameraControls( scope.camera, scope.plane, scope.domElement );
-            cameraControl.listen();
 
             scope.plane.rotation.x = -0.5 * Math.PI;
             scope.object.add( scope.plane );

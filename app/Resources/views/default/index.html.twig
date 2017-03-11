@@ -71,8 +71,7 @@
             orbitControl.keyPanSpeed = 70;
             orbitControl.maxPolarAngle = 65 * Math.PI / 180;
             orbitControl.maxDistance = 500;
-            orbitControl.rotateSpeed = 5.9;
-//            orbitControl.target.copy(new THREE.Vector3( 108873.53133227957, 0, 108873.53133227957 ));
+//            orbitControl.rotateSpeed = 5.9;
 
             var modelControls = new THREE.ModelControls( camera, scene, renderer.domElement, container );
             modelControls.loadObject( 'models/M1/ship.obj' );
@@ -109,10 +108,10 @@
                 }
 
                 // Это временно пока неработает CameraControl
-//                if ( orbitControl && modelControls.getModel() ) {
+                if ( orbitControl ) {
 //                    orbitControl.target.copy( modelControls.getModel().position );
-//                    orbitControl.update();
-//                }
+                    orbitControl.update();
+                }
             }
         });
     </script>
