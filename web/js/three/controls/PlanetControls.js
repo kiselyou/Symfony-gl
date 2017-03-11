@@ -25,7 +25,7 @@ THREE.PlanetControls = function ( scene, camera ) {
 	this.camera = camera;
 
 	this._arr = new api.Array();
-
+console.log(2);
 	/**
 	 * It is array of settings for build objects of planets
 	 *
@@ -36,53 +36,53 @@ THREE.PlanetControls = function ( scene, camera ) {
 			UUID: 'sun',
 			name: 'Sun',
 			describe: '',
-			radius: 69570 / 2, // км 695700
+			radius: 6957, // км 695700
 			parentUUID: null,
 			inclineY: 45 * Math.PI / 180,
 			degree: 0.1, // start degree
 			speedDegree: 0.01,
 			distance: 0,
 			texture: 'images/textures/sun/texture_sun.jpg',
-			position: new THREE.Vector3( 0, 0, 0 ),
-			glow: {
-				color: '#ffff00',
-				side: THREE.FrontSide,
-				blending: THREE.AdditiveBlending,
-				scalar: 1.2,
-				c: 0.1,
-				p: 4
-			}
+			position: new THREE.Vector3( 0, 0, 0 )
+			// glow: {
+			// 	color: '#ffff00',
+			// 	side: THREE.FrontSide,
+			// 	blending: THREE.AdditiveBlending,
+			// 	scalar: 1.2,
+			// 	c: 0.1,
+			// 	p: 4
+			// }
 		},
 		{
 			UUID: 'earth',
 			name: 'Earth',
 			describe: '',
-			radius: 637.1, // км
+			radius: 63, // км
 			parentUUID: 'sun',
 			inclineY: 45 * Math.PI / 180,
 			degree: 3.5, // start degree
-			speedDegree: 0.000029783,
-			distance: 149600, // км 149600000
+			speedDegree: 0.00001,
+			distance: 14960, // км 149600000
 			texture: 'images/textures/earch/texture_earth_clouds.jpg',
-			position: new THREE.Vector3( 0, 0, 0 ),
-			glow: {
-				color: '#13FAED',
-				side: THREE.FrontSide,
-				blending: THREE.AdditiveBlending,
-				scalar: 1.1,
-				c: 0.8,
-				p: 4
-			}
+			position: new THREE.Vector3( 0, 0, 0 )
+			// glow: {
+			// 	color: '#13FAED',
+			// 	side: THREE.FrontSide,
+			// 	blending: THREE.AdditiveBlending,
+			// 	scalar: 1.1,
+			// 	c: 0.8,
+			// 	p: 4
+			// }
 		},
 		{
 			UUID: 'moon',
 			name: 'Moon',
 			describe: '',
-			radius: 173.7,
+			radius: 17,
 			parentUUID: 'earth',
 			inclineY: 45 * Math.PI / 180,
 			degree: 3, // start degree
-			speedDegree: 0.000019,
+			speedDegree: 0.0025,
 			distance: 384.4, // км 384400
 			texture: 'images/textures/earch/texture_moon.jpg',
 			position: new THREE.Vector3( 0, 0, 0 )
@@ -93,12 +93,12 @@ THREE.PlanetControls = function ( scene, camera ) {
 			uuid: 'jupiter',
 			name: 'Jupiter',
 			describe: '',
-			radius: 6991.1,
+			radius: 699,
 			parentUUID: 'sun',
 			speedAxis: (Math.PI / 180) / 10,
 			inclineY: 45 * Math.PI / 180,
-			startDegree: Math.PI / 4,
-			distance: 778500,
+			degree: 3.5, // start degree
+			distance: 7785,
 			texture: 'images/textures/jupiter/texture_jupiter.jpg',
 			position: new THREE.Vector3( 0, 0, 0 )
 		},
@@ -110,8 +110,8 @@ THREE.PlanetControls = function ( scene, camera ) {
 			parentUUID: 'sun',
 			speedAxis: (Math.PI / 180) / 10,
 			inclineY: 45 * Math.PI / 180,
-			startDegree: Math.PI / 4,
-			distance: 227900,
+			degree: 3.5, // start degree
+			distance: 2279,
 			texture: 'images/textures/mars/texture_mars.jpg',
 			position: new THREE.Vector3( 0, 0, 0 )
 		},
@@ -123,8 +123,8 @@ THREE.PlanetControls = function ( scene, camera ) {
 			parentUUID: 'sun',
 			speedAxis: (Math.PI / 180) / 10,
 			inclineY: 45 * Math.PI / 180,
-			startDegree: Math.PI / 4,
-			distance: 57910, // км
+			degree: 3.5, // start degree
+			distance: 5791, // км
 			texture: 'images/textures/mercury/texture_mercury.jpg',
 			position: new THREE.Vector3( 0, 0, 0 ),
 			glow: {
@@ -140,12 +140,12 @@ THREE.PlanetControls = function ( scene, camera ) {
 			uuid: 'saturn',
 			name: 'Saturn',
 			describe: '',
-			radius: 5823.2,
+			radius: 582,
 			parentUUID: 'sun',
 			speedAxis: (Math.PI / 180) / 10,
 			inclineY: 45 * Math.PI / 180,
-			startDegree: Math.PI / 4,
-			distance: 1429000,
+			degree: 3.5, // start degree
+			distance: 14290,
 			texture: 'images/textures/saturn/texture_saturn.jpg',
 			position: new THREE.Vector3( 0, 0, 0 )
 		}
