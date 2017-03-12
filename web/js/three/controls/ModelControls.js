@@ -52,7 +52,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
     /**
      *
-     * @type {(Mesh|null)}
+     * @type {?Mesh}
      */
     this.object = null;
 
@@ -89,7 +89,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
     /**
      *
-     * @type {(Mesh|null)}
+     * @type {?Mesh}
      */
     this.plane = null;
 
@@ -101,9 +101,28 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
     /**
      *
-     * @type {THREE.ModelControls}
+     * @type {{SPACE: number}}
      */
+    this.keys = { STOP: 32, CHOOSE: 17 };
+
+    /** @type {boolean} */
+    var chooseElement = false;
+
+    /** @type {Array} */
+    var intersectExceptUUID = [];
+
+    /** @type {THREE.ModelControls} */
     var scope = this;
+
+    /**
+     *
+     * @param {string} uuid
+     * @return {THREE.ModelControls}
+     */
+    this.addIntersectExceptUUID = function ( uuid ) {
+        intersectExceptUUID.push( uuid );
+        return this;
+    };
 
     /**
      *
@@ -128,12 +147,16 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             scope.object.add( object );
             scope.scene.add( scope.object );
 
-            var planeGeometry = new THREE.PlaneGeometry(10000, 10000);
-            var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 0, transparent: true });
+            var planeGeometry = new THREE.PlaneGeometry( 10000, 10000 );
+            var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 0.5, transparent: true });
             // var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
             scope.plane = new THREE.Mesh( planeGeometry, planeMaterial );
             scope.plane.rotation.x = -0.5 * Math.PI;
             scope.object.add( scope.plane );
+
+            intersectExceptUUID.push( scope.plane.uuid );
+            intersectExceptUUID.push( scope.object.uuid );
+
             scope.mouseMoveModel();
 
         });
@@ -141,7 +164,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
     /**
      *
-     * @returns {(Mesh|null)}
+     * @returns {?Mesh}
      */
     this.getModel = function () {
         return this.object;
@@ -152,8 +175,48 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      * @returns {void}
      */
     this.mouseMoveModel = function () {
-        this.domElement.addEventListener( 'click', moveModel, false );
+        this.dispose();
         window.addEventListener( 'keydown', onKeyDown, false );
+        window.addEventListener( 'keyup', onKeyUp, false );
+        this.domElement.addEventListener( 'click', moveModel, false );
+
+    };
+
+    /**
+     *
+     * @returns {void}
+     */
+    this.dispose = function () {
+
+        window.removeEventListener( 'keydown', onKeyDown, false );
+        window.removeEventListener( 'keyup', onKeyUp, false );
+        this.domElement.removeEventListener( 'click', moveModel, false );
+
+    };
+
+    /**
+     *
+     * @type {?Mesh}
+     */
+    var autoFly = null;
+
+    /**
+     *
+     * @param {Mesh} object
+     * @return {THREE.ModelControls}
+     */
+    this.autoFlyTo = function ( object ) {
+        autoFly = object;
+        return this;
+    };
+
+    /**
+     *
+     * @return {THREE.ModelControls}
+     */
+    this.stopAutoFly = function () {
+        autoFly = null;
+        return this;
     };
 
     /**
@@ -162,11 +225,27 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      * @returns {void}
      */
     function moveModel ( event ) {
+
+        if ( chooseElement ) {
+            var objectIntersected = scope.getIntersect( event, scope.camera, scope.scene );
+            if ( objectIntersected ) {
+                scope.autoFlyTo(objectIntersected);
+                return;
+            } else {
+                clearActiveObject();
+                scope.stopAutoFly();
+            }
+
+        } else {
+            clearActiveObject();
+            scope.stopAutoFly();
+        }
+
         var pointA = scope.prevPosition;
         var pointB = scope.object.position;
-
         var pointC = scope.getClickPosition( event, scope.camera, scope.plane );
-        if (!pointC) {
+
+        if ( !pointC ) {
             return;
         }
 
@@ -176,19 +255,26 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
 	/**
      *
-     * @type {{SPACE: number}}
-     */
-    this.keys = { SPACE: 32 };
-
-	/**
-     *
      * @param {MouseEvent} event
      * @returns {void}
      */
     function onKeyDown ( event ) {
         switch ( event.keyCode ) {
-            case scope.keys.SPACE:
-                stopModel();
+            case scope.keys.CHOOSE:
+                chooseElement = true;
+                break;
+        }
+    }
+
+    /**
+     *
+     * @param {MouseEvent} event
+     * @returns {void}
+     */
+    function onKeyUp ( event ) {
+        switch ( event.keyCode ) {
+            case scope.keys.CHOOSE:
+                chooseElement = false;
                 break;
         }
     }
@@ -334,6 +420,8 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         params.run = true;
     };
 
+    var raycaster = new THREE.Raycaster();
+
     /**
      *
      * @param {MouseEvent} event
@@ -347,7 +435,6 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
 
-        var raycaster = new THREE.Raycaster();
         raycaster.setFromCamera( mouse, camera );
         var intersects = raycaster.intersectObject( plane );
         if ( intersects.length > 0 ) {
@@ -355,6 +442,75 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         }
         return false;
     };
+
+    /**
+     *
+     * @param {MouseEvent} event
+     * @param {Camera} camera
+     * @param {Scene} scene
+     * @return {?Mesh}
+     */
+    this.getIntersect = function ( event, camera, scene ) {
+
+        var mouse = new THREE.Vector2();
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
+        raycaster.setFromCamera( mouse, camera );
+        var intersects = raycaster.intersectObjects( scene.children );
+
+        var elements = intersects.filter( function ( value ) {
+            return intersectExceptUUID.indexOf( value.object.uuid ) < 0;
+        } );
+
+        if ( elements.length > 0 ) {
+
+            var element = elements[ 0 ].object;
+            activeObject( element );
+            return element;
+
+        } else {
+
+            clearActiveObject();
+
+        }
+
+        return null;
+    };
+
+    /**
+     *
+     * @type {?Mesh}
+     */
+    var TEMP_ELEMENT = null;
+
+    /**
+     *
+     * @param {Mesh} object
+     * @returns {void}
+     */
+    function activeObject( object ) {
+
+        if ( TEMP_ELEMENT != object ) {
+
+            TEMP_ELEMENT = object;
+            TEMP_ELEMENT.currentHex = TEMP_ELEMENT.material.color.getHex();
+            TEMP_ELEMENT.material.color.setHex( 0xff0000 );
+
+        }
+    }
+
+    /**
+     *
+     * @returns {void}
+     */
+    function clearActiveObject() {
+
+        if ( TEMP_ELEMENT ) {
+            TEMP_ELEMENT.material.color.setHex( TEMP_ELEMENT.currentHex );
+        }
+
+        TEMP_ELEMENT = null;
+    }
 
 	/**
      *
@@ -391,6 +547,12 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      * @return {void}
      */
     this.update = function () {
+
+        if ( autoFly ) {
+            scope.move( scope.prevPosition, scope.object.position, autoFly.position );
+            drawPointClick( autoFly.position );
+        }
+
 
         animationPointClick();
 
@@ -499,6 +661,10 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             this.prevPosition.setX( params.points.d.x );
             this.prevPosition.setZ( params.points.d.z );
 
+            params.lookAt.setX( params.points.c.x );
+            params.lookAt.setZ( params.points.c.z );
+            scope.object.lookAt( params.lookAt );
+
             this.object.position.x += ox;
             this.object.position.z += oz;
 
@@ -507,7 +673,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             var startLen = Number( params.points.d.distanceTo( params.points.c ).toFixed( 4 ) );
             var currentLen = Number( params.points.d.distanceTo( params.points.b ).toFixed( 4 ) );
 
-            if ( currentLen >= startLen || len.toFixed( 2 ) <= 0 ) {
+            if ( !autoFly && ( currentLen >= startLen || len.toFixed( 2 ) <= 0 ) ) {
                 stopModel();
             }
         }

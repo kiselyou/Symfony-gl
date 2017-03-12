@@ -61,7 +61,7 @@ console.log(2);
 			parentUUID: 'sun',
 			inclineY: 45 * Math.PI / 180,
 			degree: 3.5, // start degree
-			speedDegree: 0.00001,
+			speedDegree: 0.000005,
 			distance: 14960, // км 149600000
 			texture: 'images/textures/earch/texture_earth_clouds.jpg',
 			position: new THREE.Vector3( 0, 0, 0 )
@@ -82,7 +82,7 @@ console.log(2);
 			parentUUID: 'earth',
 			inclineY: 45 * Math.PI / 180,
 			degree: 3, // start degree
-			speedDegree: 0.0025,
+			speedDegree: 0.0003,
 			distance: 384.4, // км 384400
 			texture: 'images/textures/earch/texture_moon.jpg',
 			position: new THREE.Vector3( 0, 0, 0 )

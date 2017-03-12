@@ -13,7 +13,7 @@ THREE.ModelData = function () {
 	this.decelerationSpeed = { index: 1, unit: 'м.с' };                   // Торможение
 
 	this.speedDirect = {
-		index: 700,
+		index: 2700,
 		min: 200,
 		max: 5000,
 		unit: 'м/с'

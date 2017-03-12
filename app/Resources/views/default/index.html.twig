@@ -68,6 +68,20 @@
             dirLight.shadow.camera.far = 3500;
             dirLight.shadow.bias = -0.0001;
 
+            var planetControls = new THREE.PlanetControls( scene, camera );
+            planetControls.load( true, function ( a, b ) {
+                console.log( a, b );
+            } );
+
+            // HELPERS
+            var axis = new THREE.AxisHelper( 10 );
+            scene.add( axis );
+
+            // GRID
+            var color = new THREE.Color( 0x00ffff );
+            var grid = new THREE.GridHelper( 1000, 100, color, 0x888888 );
+            scene.add( grid );
+
             var orbitControl = new THREE.OrbitControls( camera, renderer.domElement );
             orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
             orbitControl.enablePan = false;
@@ -84,18 +98,9 @@
                 object.children[0].rotateY(Math.PI);
             } );
 
-            var planetControls = new THREE.PlanetControls( scene, camera );
-            planetControls.load( true, function ( a, b ) {
-                console.log( a, b );
-            } );
+            modelControls.addIntersectExceptUUID( axis.uuid );
+            modelControls.addIntersectExceptUUID( grid.uuid );
 
-            // HELPERS
-            var axis = new THREE.AxisHelper( 10 );
-            scene.add( axis );
-
-            var color = new THREE.Color(0x00ffff);
-            var grid = new THREE.GridHelper( 1000, 100, color, 0x888888);
-            scene.add( grid );
 
             container.appendChild( renderer.domElement );
             window.addEventListener( 'resize', windowResize, false );
