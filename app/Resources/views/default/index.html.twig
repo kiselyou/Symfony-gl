@@ -82,15 +82,15 @@
             var grid = new THREE.GridHelper( 1000, 100, color, 0x888888 );
             scene.add( grid );
 
-            var orbitControl = new THREE.OrbitControls( camera, renderer.domElement );
-            orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
-            orbitControl.enablePan = false;
-            orbitControl.enableKeys = false;
-            orbitControl.minDistance = 20;
-            orbitControl.keyPanSpeed = 70;
-            orbitControl.maxPolarAngle = 65 * Math.PI / 180;
-            orbitControl.maxDistance = 500;
-            orbitControl.rotateSpeed = 3.0;
+//            var orbitControl = new THREE.OrbitControls( camera, renderer.domElement );
+//            orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
+////            orbitControl.enablePan = false;
+////            orbitControl.enableKeys = false;
+//            orbitControl.minDistance = 20;
+//            orbitControl.keyPanSpeed = 70;
+//            orbitControl.maxPolarAngle = 65 * Math.PI / 180;
+//            orbitControl.maxDistance = 500;
+//            orbitControl.rotateSpeed = 3.0;
 
             var modelControls = new THREE.ModelControls( camera, scene, renderer.domElement, container );
             modelControls.loadObject( 'models/M1/Spaceship1.obj', function ( object ) {
@@ -121,10 +121,10 @@
                 }
 
                 // Это временно пока неработает CameraControl
-                if ( orbitControl ) {
-//                    orbitControl.target.copy( modelControls.getModel().position );
-                    orbitControl.update();
-                }
+//                if ( orbitControl ) {
+////                    orbitControl.target.copy( modelControls.getModel().position );
+//                    orbitControl.update();
+//                }
             }
         });
     </script>

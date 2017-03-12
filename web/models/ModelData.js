@@ -20,7 +20,7 @@ THREE.ModelData = function () {
 	};  // Скорость перемещения по прямой
 
 	this.speedRotate = {
-		index: 600,
+		index: 1600,
 		min: 100,
 		max: 3000,
 		unit: 'м/с'

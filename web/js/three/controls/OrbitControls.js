@@ -943,16 +943,17 @@ THREE.OrbitControls = function ( object, domElement ) {
 		}
 	];
 
-    /**
-     *
-     * @type {{move: boolean, point: (any)}}
+	/**
+	 *
+	 * @type {{move: boolean, point: (any)}}
      */
 	var params = {
 		move: false,
 		point: new THREE.Vector3()
 	};
 
-    /**
+
+	/**
      *
      * @param {MouseEvent} event
      * @returns {void}
@@ -964,6 +965,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 		var clientX = event.clientX;
 		var bottom = scope.domElement.height;
 		var right = scope.domElement.width;
+		var center = new THREE.Vector2( right / 2, bottom / 2 );
 		var a = right / 2 - clientX;
 		var b = bottom / 2 - clientY;
 		var l = Math.sqrt( a * a + b * b );
@@ -979,7 +981,6 @@ THREE.OrbitControls = function ( object, domElement ) {
 			var x = 0, z = 0;
 			var ox = a / l * activeArea.step;
 			var oz = b / l * activeArea.step;
-            var center = new THREE.Vector2( right / 2, bottom / 2 );
 
             if ( clientX < center.x ) {
                 // left X +

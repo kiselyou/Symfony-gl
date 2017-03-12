@@ -101,9 +101,9 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
     /**
      *
-     * @type {{SPACE: number}}
+     * @type {{FIND_MODEL: number, CHOOSE: number}}
      */
-    this.keys = { STOP: 32, CHOOSE: 17 };
+    this.keys = { FIND_MODEL: 32, CHOOSE: 17 };
 
     /**
      *
@@ -123,6 +123,14 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
     /** @type {THREE.ModelControls} */
     var scope = this;
+
+    var orbitControl = null;
+
+    function constructor() {
+
+    }
+
+    constructor();
 
     /**
      *
@@ -166,6 +174,16 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
             intersectExceptUUID.push( scope.plane.uuid );
             intersectExceptUUID.push( scope.object.uuid );
+
+            orbitControl = new THREE.OrbitControls( scope.camera, scope.domElement );
+            orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
+//            orbitControl.enablePan = false;
+//            orbitControl.enableKeys = false;
+            orbitControl.minDistance = 20;
+            orbitControl.keyPanSpeed = 70;
+            orbitControl.maxPolarAngle = 65 * Math.PI / 180;
+            orbitControl.maxDistance = 500;
+            orbitControl.rotateSpeed = 3.0;
 
             scope.mouseMoveModel();
 
@@ -271,6 +289,8 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         scope.move( pointA, pointB, pointC );
     }
 
+    var find = false;
+
 	/**
      *
      * @param {MouseEvent} event
@@ -283,6 +303,9 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         switch ( event.keyCode ) {
             case scope.keys.CHOOSE:
                 chooseElement = true;
+                break;
+            case scope.keys.FIND_MODEL:
+                find = true;
                 break;
         }
     }
@@ -300,6 +323,9 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             case scope.keys.CHOOSE:
                 chooseElement = false;
                 scope.domElement.style.cursor = scope.effects.DEFAULT_CURSOR;
+                break;
+            case scope.keys.FIND_MODEL:
+                find = false;
                 break;
         }
     }
@@ -596,6 +622,15 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      * @return {void}
      */
     this.update = function () {
+
+        if ( orbitControl ) {
+            if ( find ) {
+                var model = scope.getModel();
+                orbitControl.target.x = model.x;
+                orbitControl.target.z = model.z;
+            }
+            orbitControl.update();
+        }
 
         if ( autoFly ) {
             scope.move( scope.prevPosition, scope.object.position, autoFly.position );
