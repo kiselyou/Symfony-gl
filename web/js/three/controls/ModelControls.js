@@ -319,11 +319,11 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
         // -------------------------------------------------------------------------------------------------------------
 
-        var reduceSpeed = 100 - ( r * 100 / modelRadius );
-        params.step = stepRotate(params.angleStop, r, this.modelData.getSpeedRotate( reduceSpeed ) );
+        params.percentCutRadius = 100 - ( r * 100 / modelRadius );
+        params.step = stepRotate(params.angleStop, r, this.modelData.getSpeedRotate( params.percentCutRadius ) );
         params.speed = this.modelData.getSpeedDirect();
         params.maxIncline = this.modelData.getMaxIncline();
-        params.speedIncline = this.modelData.getSpeedIncline();
+        params.speedIncline = this.modelData.getSpeedIncline( params.percentCutRadius );
 
         params.startIteration = 0;
         params.arcLengthMax = arcLength( params.angleStop, r );
@@ -368,6 +368,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         direction: LEFT,
         angleStart: 0,
         radius: 0,
+        percentCutRadius: 0,
         step: 0,
         startIteration: 0,
         endIteration: 0,
@@ -420,15 +421,23 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
                 case LEFT:
 
                     if ( params.startIteration <= params.endIteration / 2 ) {
+
                         if ( this.modelData.getIncline() > - params.maxIncline ) {
+
                             this.object.children[0].rotateY( - params.speedIncline );
                             this.modelData.increaseIncline( - params.speedIncline );
+
                         }
+
                     } else {
+
                         if ( this.modelData.getIncline() < 0 ) {
+
                             this.object.children[0].rotateY( params.speedIncline );
                             this.modelData.increaseIncline( params.speedIncline );
+
                         }
+
                     }
 
                     params.angleStart -= params.step;
@@ -437,15 +446,23 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
                 default:
 
                     if ( params.startIteration <= params.endIteration / 2 ) {
+
                         if ( this.modelData.getIncline() < params.maxIncline ) {
-                            this.object.children[0].rotateY(params.speedIncline);
+
+                            this.object.children[0].rotateY( params.speedIncline );
                             this.modelData.increaseIncline( params.speedIncline );
+
                         }
+
                     } else {
+
                         if ( this.modelData.getIncline() > 0 ) {
+
                             this.object.children[0].rotateY( - params.speedIncline );
                             this.modelData.increaseIncline( - params.speedIncline );
+
                         }
+
                     }
 
                     params.angleStart += params.step;

@@ -30,7 +30,7 @@ THREE.ModelData = function () {
 		index: 10,                              // percent from speed rotate
 		incline: 0,                             // degree
 		maxIncline: 55 * Math.PI / 180,         // degree
-		speedIncline: ( Math.PI / 180 ) / 2,    // degree
+		speedIncline: ( Math.PI / 180 ) / 3,    // degree
 		unit: '% от скорости разварота'
 	};  // Радиус разворота
 
@@ -77,8 +77,10 @@ THREE.ModelData = function () {
 	 *
 	 * @returns {number}
 	 */
-	this.getSpeedIncline = function () {
-		return this.radius.speedIncline;
+	this.getSpeedIncline = function ( reduce ) {
+		reduce = reduce === undefined ? 0 : reduce;
+		return this.radius.speedIncline * ( 1 - reduce / 100 );
+		// return this.radius.speedIncline;
 	};
 
 	/**
