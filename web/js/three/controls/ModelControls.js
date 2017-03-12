@@ -105,6 +105,16 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      */
     this.keys = { STOP: 32, CHOOSE: 17 };
 
+    /**
+     *
+     * @type {{HOVER_CURSOR: string, DEFAULT_CURSOR: string, CHOOSE_ELEMENT_COLOR: number}}
+     */
+    this.effects = {
+        HOVER_CURSOR: 'pointer',
+        DEFAULT_CURSOR: 'default',
+        CHOOSE_ELEMENT_COLOR: 0xFF00FF
+    };
+
     /** @type {boolean} */
     var chooseElement = false;
 
@@ -227,7 +237,15 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
     function moveModel ( event ) {
 
         if ( chooseElement ) {
-            var objectIntersected = scope.getIntersect( event, scope.camera, scope.scene );
+            var objectIntersected = scope.getIntersect(
+                event,
+                function ( element ) {
+                    activeObject( element, scope.effects.CHOOSE_ELEMENT_COLOR );
+                },
+                function () {
+                    clearActiveObject();
+                }
+            );
             if ( objectIntersected ) {
                 scope.autoFlyTo(objectIntersected);
                 return;
@@ -259,6 +277,9 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      * @returns {void}
      */
     function onKeyDown ( event ) {
+
+        document.addEventListener( 'mousemove', onMouseMove, false );
+
         switch ( event.keyCode ) {
             case scope.keys.CHOOSE:
                 chooseElement = true;
@@ -272,10 +293,27 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      * @returns {void}
      */
     function onKeyUp ( event ) {
+
+        document.removeEventListener( 'mousemove', onMouseMove, false );
+
         switch ( event.keyCode ) {
             case scope.keys.CHOOSE:
                 chooseElement = false;
+                scope.domElement.style.cursor = scope.effects.DEFAULT_CURSOR;
                 break;
+        }
+    }
+
+    /**
+     *
+     * @returns {void}
+     */
+    function onMouseMove ( event ) {
+        var objectIntersected = scope.getIntersect( event );
+        if ( objectIntersected ) {
+            scope.domElement.style.cursor = scope.effects.HOVER_CURSOR;
+        } else {
+            scope.domElement.style.cursor = scope.effects.DEFAULT_CURSOR;
         }
     }
 
@@ -446,17 +484,17 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
     /**
      *
      * @param {MouseEvent} event
-     * @param {Camera} camera
-     * @param {Scene} scene
+     * @param {function} [callbackIntersected]
+     * @param {function} [callbackNoIntersected]
      * @return {?Mesh}
      */
-    this.getIntersect = function ( event, camera, scene ) {
+    this.getIntersect = function ( event, callbackIntersected, callbackNoIntersected ) {
 
         var mouse = new THREE.Vector2();
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
-        raycaster.setFromCamera( mouse, camera );
-        var intersects = raycaster.intersectObjects( scene.children );
+        raycaster.setFromCamera( mouse, scope.camera );
+        var intersects = raycaster.intersectObjects( scope.scene.children );
 
         var elements = intersects.filter( function ( value ) {
             return intersectExceptUUID.indexOf( value.object.uuid ) < 0;
@@ -465,12 +503,18 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         if ( elements.length > 0 ) {
 
             var element = elements[ 0 ].object;
-            activeObject( element );
+
+            if ( callbackIntersected ) {
+                callbackIntersected.call(this, element, elements );
+            }
+
             return element;
 
         } else {
 
-            clearActiveObject();
+            if ( callbackNoIntersected ) {
+                callbackNoIntersected.call( this );
+            }
 
         }
 
@@ -486,15 +530,20 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
     /**
      *
      * @param {Mesh} object
+     * @param {(string|number)} [color]
      * @returns {void}
      */
-    function activeObject( object ) {
+    function activeObject( object, color ) {
 
         if ( TEMP_ELEMENT != object ) {
 
+            if ( TEMP_ELEMENT ) {
+                TEMP_ELEMENT.material.color.setHex(TEMP_ELEMENT.currentHex);
+            }
+
             TEMP_ELEMENT = object;
             TEMP_ELEMENT.currentHex = TEMP_ELEMENT.material.color.getHex();
-            TEMP_ELEMENT.material.color.setHex( 0xff0000 );
+            TEMP_ELEMENT.material.color.setHex( color == undefined ? 0xff0000 : color );
 
         }
     }
