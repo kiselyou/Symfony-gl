@@ -954,12 +954,14 @@ THREE.OrbitControls = function ( object, domElement ) {
 
     /**
      *
-     * @param {!Mesh} object
+     * @param {?Mesh} object
      * @returns {THREE.OrbitControls}
      */
 	this.moveCameraTo = function ( object ) {
-        this.target.x = object.position.x;
-        this.target.z = object.position.z;
+		if ( object ) {
+			this.target.x = object.position.x;
+			this.target.z = object.position.z;
+		}
         return this;
     };
 
@@ -1048,21 +1050,23 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 			if ( ( clientY > max && clientY < ( bottom - max ) ) && ( clientX > max && clientX < ( right - max ) ) ) {
 
-				stopCamera();
+				scope.stopMoveCamera();
 
 			}
 		}
 	}
 
-    /**
-     * @returns {void}
+	/**
+	 *
+	 * @returns {THREE.OrbitControls}
      */
-	function stopCamera() {
+	this.stopMoveCamera = function () {
 		params.move = false;
-	}
+		return this;
+	};
 
 	scope.domElement.addEventListener( 'mousemove', moveCamera, false );
-	scope.domElement.addEventListener( 'mouseout', stopCamera, false );
+	scope.domElement.addEventListener( 'mouseout', scope.stopMoveCamera, false );
 	scope.domElement.addEventListener( 'contextmenu', onContextMenu, false );
 
 	scope.domElement.addEventListener( 'mousedown', onMouseDown, false );

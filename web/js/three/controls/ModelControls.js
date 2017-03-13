@@ -166,7 +166,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             scope.scene.add( scope.object );
 
             var planeGeometry = new THREE.PlaneGeometry( 10000, 10000 );
-            var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 0.5, transparent: true });
+            var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 0, transparent: true });
             // var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
             scope.plane = new THREE.Mesh( planeGeometry, planeMaterial );
             scope.plane.rotation.x = -0.5 * Math.PI;
@@ -625,7 +625,9 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
         if ( orbitControl ) {
             if ( find ) {
-                orbitControl.moveCameraTo( scope.getModel() );
+                orbitControl
+                    .stopMoveCamera()
+                    .moveCameraTo( scope.getModel() );
             }
             orbitControl.update();
         }
