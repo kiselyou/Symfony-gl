@@ -101,9 +101,9 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
     /**
      *
-     * @type {{FIND_MODEL: number, CHOOSE: number}}
+     * @type {{WATCH_FOR_MODEL: number, CHOOSE: number}}
      */
-    this.keys = { FIND_MODEL: 32, CHOOSE: 17 };
+    this.keys = { WATCH_FOR_MODEL: 32, CHOOSE: 17 };
 
     /**
      *
@@ -289,7 +289,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         scope.move( pointA, pointB, pointC );
     }
 
-    var find = false;
+    var watchForModel = false;
 
 	/**
      *
@@ -304,8 +304,8 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             case scope.keys.CHOOSE:
                 chooseElement = true;
                 break;
-            case scope.keys.FIND_MODEL:
-                find = true;
+            case scope.keys.WATCH_FOR_MODEL:
+                watchForModel = true;
                 break;
         }
     }
@@ -324,8 +324,8 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
                 chooseElement = false;
                 scope.domElement.style.cursor = scope.effects.DEFAULT_CURSOR;
                 break;
-            case scope.keys.FIND_MODEL:
-                find = false;
+            case scope.keys.WATCH_FOR_MODEL:
+                watchForModel = false;
                 break;
         }
     }
@@ -624,7 +624,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
     this.update = function () {
 
         if ( orbitControl ) {
-            if ( find ) {
+            if ( watchForModel ) {
                 orbitControl
                     .stopMoveCamera()
                     .moveCameraTo( scope.getModel() );
