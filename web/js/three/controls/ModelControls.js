@@ -625,9 +625,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
         if ( orbitControl ) {
             if ( find ) {
-                var model = scope.getModel();
-                orbitControl.target.x = model.x;
-                orbitControl.target.z = model.z;
+                orbitControl.moveCameraTo( scope.getModel() );
             }
             orbitControl.update();
         }

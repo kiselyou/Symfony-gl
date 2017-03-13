@@ -952,6 +952,17 @@ THREE.OrbitControls = function ( object, domElement ) {
 		point: new THREE.Vector3()
 	};
 
+    /**
+     *
+     * @param {!Mesh} object
+     * @returns {THREE.OrbitControls}
+     */
+	this.moveCameraTo = function ( object ) {
+        this.target.x = object.position.x;
+        this.target.z = object.position.z;
+        return this;
+    };
+
 
 	/**
      *
