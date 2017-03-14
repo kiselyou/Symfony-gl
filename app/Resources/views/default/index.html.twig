@@ -12,6 +12,14 @@
 
     <script src="{{ asset('js/core/api/Array.js') }}"></script>
     <script src="{{ asset('js/three/three.js') }}"></script>
+
+
+    <script src="{{ asset('js/three/EffectComposer.js') }}"></script>
+    <script src="{{ asset('js/three/RenderPass.js') }}"></script>
+    <script src="{{ asset('js/three/ShaderPass.js') }}"></script>
+    <script src="{{ asset('js/three/FXAAShader.js') }}"></script>
+    <script src="{{ asset('js/three/CopyShader.js') }}"></script>
+
     <script src="{{ asset('models/ModelData.js') }}"></script>
     <script src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
     <script src="{{ asset('js/three/controls/PlanetControls.js') }}"></script>
@@ -35,15 +43,10 @@
 
             var scene = new THREE.Scene();
             var renderer = new THREE.WebGLRenderer();
-            renderer.setSize( width, height );
 
 
-//            renderer.setClearColor( 0x000000, 1 );
 
-            renderer.autoClear = false;
-
-
-            var camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 100000000 );
+            var camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000000 );
             camera.aspect = aspect;
             camera.position.x = 100;
             camera.position.z = 100;
@@ -51,29 +54,40 @@
 
 
             var mapCamera, mapWidth = 240, mapHeight = 160;
-//            mapCamera = new THREE.OrthographicCamera(
-//                    width / -2,		// Left
-//                    width / 2,		// Right
-//                    height / 2,		// Top
-//                    height / -2,	// Bottom
-//                    -5000,            			// Near
-//                    1000 );           			// Far
-//            mapCamera.up = new THREE.Vector3(0,-10,-1);
-//            mapCamera.lookAt( new THREE.Vector3(0,-1,0) );
-//            scene.add(mapCamera);
-
-
-            mapCamera = new THREE.OrthographicCamera(
-                    -1000,		// Left
-                    1000,		// Right
-                    1000,		// Top
-                    -1000,		// Bottom
-                    1,            			// Near
-                    1000 );           			// Far
+            mapCamera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, -10000, 10000 );
             mapCamera.up = new THREE.Vector3(0,0,-1);
             mapCamera.lookAt( new THREE.Vector3(0,-1,0) );
-            mapCamera.position.y = 500;
+            scene.add(mapCamera);
 
+
+
+
+
+
+
+//            var composer = new THREE.EffectComposer( renderer );
+//            var renderModel = new THREE.RenderPass( scene, camera );
+//            var effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
+//            var widthddd = 500;//window.innerWidth || 2;
+//            var heightssss = 500;//window.innerHeight || 2;
+//            effectFXAA.uniforms[ 'resolution' ].value.set( 1 / widthddd, 1 / heightssss );
+//             var effectCopy = new THREE.ShaderPass( THREE.CopyShader );
+//            effectFXAA.renderToScreen = true;
+//
+//            composer.addPass( renderModel );
+//            composer.addPass( effectFXAA );
+//            composer.addPass( effectCopy );
+
+
+
+//            var mapComposer = new THREE.EffectComposer( renderer, new THREE.WebGLRenderTarget(500,500) );
+//            mapComposer.setSize( 500, 500 );
+//            var renderModel2 = new THREE.RenderPass( scene, mapCamera );
+//            mapComposer.addPass( renderModel2 );
+//            var effectFXAA2 = new THREE.ShaderPass( THREE.FXAAShader );
+//            effectFXAA2.uniforms[ 'resolution' ].value.set( 1 / widthddd, 1 / heightssss );
+//            effectFXAA2.renderToScreen = true;
+//            mapComposer.addPass( effectFXAA2 );
 
 
 
@@ -138,6 +152,11 @@
 
             container.appendChild( renderer.domElement );
             window.addEventListener( 'resize', windowResize, false );
+
+            renderer.setSize( width, height );
+
+            renderer.autoClear = false;
+
             render();
 
             function windowResize () {
@@ -147,8 +166,8 @@
 
             function render () {
                 requestAnimationFrame( render );
-
-                renderer.setViewport( 0, 0, width, height );
+                var w = window.innerWidth, h = window.innerHeight;
+                renderer.setViewport( 0, 0, w, h );
 //                renderer.clear();
                 renderer.render( scene, camera );
 
@@ -162,12 +181,14 @@
                 if (ssss) {
 
                     mapCamera.position.copy(ssss.position);
-                    mapCamera.position.y = 500;
+                    mapCamera.position.y = 1500;
                 }
-                renderer.setViewport( 10, height - mapHeight - 10, mapWidth, mapHeight );
+
+                renderer.setViewport( w - mapWidth - 10, 10, mapWidth, mapHeight );
                 renderer.render( scene, mapCamera );
 
-
+//                composer.render();
+//                mapComposer.render();
 
                 // Это временно пока неработает CameraControl
 //                if ( orbitControl ) {
