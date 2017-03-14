@@ -37,11 +37,45 @@
             var renderer = new THREE.WebGLRenderer();
             renderer.setSize( width, height );
 
+
+//            renderer.setClearColor( 0x000000, 1 );
+
+            renderer.autoClear = false;
+
+
             var camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 100000000 );
             camera.aspect = aspect;
             camera.position.x = 100;
             camera.position.z = 100;
             camera.position.y = 100;
+
+
+            var mapCamera, mapWidth = 240, mapHeight = 160;
+//            mapCamera = new THREE.OrthographicCamera(
+//                    width / -2,		// Left
+//                    width / 2,		// Right
+//                    height / 2,		// Top
+//                    height / -2,	// Bottom
+//                    -5000,            			// Near
+//                    1000 );           			// Far
+//            mapCamera.up = new THREE.Vector3(0,-10,-1);
+//            mapCamera.lookAt( new THREE.Vector3(0,-1,0) );
+//            scene.add(mapCamera);
+
+
+            mapCamera = new THREE.OrthographicCamera(
+                    -1000,		// Left
+                    1000,		// Right
+                    1000,		// Top
+                    -1000,		// Bottom
+                    1,            			// Near
+                    1000 );           			// Far
+            mapCamera.up = new THREE.Vector3(0,0,-1);
+            mapCamera.lookAt( new THREE.Vector3(0,-1,0) );
+            mapCamera.position.y = 500;
+
+
+
 
             var container = document.getElementById( SW_CONTAINER );
 
@@ -113,12 +147,27 @@
 
             function render () {
                 requestAnimationFrame( render );
+
+                renderer.setViewport( 0, 0, width, height );
+//                renderer.clear();
                 renderer.render( scene, camera );
+
                 planetControls.update();
 
                 if ( modelControls ) {
                     modelControls.update();
                 }
+
+                var ssss = modelControls.getModel();
+                if (ssss) {
+
+                    mapCamera.position.copy(ssss.position);
+                    mapCamera.position.y = 500;
+                }
+                renderer.setViewport( 10, height - mapHeight - 10, mapWidth, mapHeight );
+                renderer.render( scene, mapCamera );
+
+
 
                 // Это временно пока неработает CameraControl
 //                if ( orbitControl ) {
