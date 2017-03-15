@@ -14,6 +14,8 @@
     <script src="{{ asset('js/three/three.js') }}"></script>
 
 
+    <script src="{{ asset('js/three/dat.gui.min.js') }}"></script>
+
     <script src="{{ asset('js/three/EffectComposer.js') }}"></script>
     <script src="{{ asset('js/three/RenderPass.js') }}"></script>
     <script src="{{ asset('js/three/ShaderPass.js') }}"></script>
@@ -36,6 +38,54 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
+            var gui = new dat.GUI();
+
+            var params = {
+                near: -1000,
+                far: 1000,
+                up: {
+                    x: 0,
+                    y: 0,
+                    z: -1
+                },
+                lookAt: {
+                    x: 0,
+                    y: 1,
+                    z: 0
+                },
+
+                scale: 2,
+                ta: {
+                    w: 320,
+                    h: 240
+                },
+                s: {
+                    w: 320,
+                    h: 240
+                }
+            };
+
+            gui.add( params, 'near', -10000, 10000 );
+            gui.add( params, 'far', -10000, 10000 );
+            gui.add( params.up, 'x', -10, 10 );
+            gui.add( params.up, 'y', -10, 10 );
+            gui.add( params.up, 'z', -10, 10 );
+
+            gui.add( params.lookAt, 'x', -10, 10 );
+            gui.add( params.lookAt, 'y', -10, 10 );
+            gui.add( params.lookAt, 'z', -10, 10 );
+
+            gui.add( params, 'scale', 0.1, 10 );
+            gui.add( params.ta, 'w', -10000, 10000 );
+            gui.add( params.ta, 'h', -10000, 10000 );
+
+            gui.add( params.s, 'w', -10000, 10000 );
+            gui.add( params.s, 'h', -10000, 10000 );
+//            gui.add( params, 'exposure', 0.1, 2 );
+//            gui.add( params, 'autoRotate' );
+//            gui.add( params, 'gemColor', [ 'Blue', 'Green', 'Red', 'White', 'Black' ] );
+            gui.open();
+
             var SW_CONTAINER = 'sw-container';
             var width = window.innerWidth;
             var height = window.innerHeight;
@@ -52,12 +102,11 @@
             camera.position.z = 100;
             camera.position.y = 100;
 
-
-            var mapCamera, mapWidth = 240, mapHeight = 160;
-            mapCamera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, -10000, 10000 );
-            mapCamera.up = new THREE.Vector3(0,0,-1);
-            mapCamera.lookAt( new THREE.Vector3(0,-1,0) );
-            scene.add(mapCamera);
+            var mapCamera, mapWidth = 320, mapHeight = 240;
+            mapCamera = new THREE.OrthographicCamera( width / - params.scale, width / params.scale, height / params.scale, height / - params.scale, params.near, params.far );
+//            mapCamera.up = new THREE.Vector3(0, 0, -1);
+//            mapCamera.lookAt( new THREE.Vector3(0,-1,0) );
+//            scene.add(mapCamera);
 
 
 
@@ -68,8 +117,8 @@
 //            var composer = new THREE.EffectComposer( renderer );
 //            var renderModel = new THREE.RenderPass( scene, camera );
 //            var effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
-//            var widthddd = 500;//window.innerWidth || 2;
-//            var heightssss = 500;//window.innerHeight || 2;
+            var widthddd = window.innerWidth || 2;
+            var heightssss = window.innerHeight || 2;
 //            effectFXAA.uniforms[ 'resolution' ].value.set( 1 / widthddd, 1 / heightssss );
 //             var effectCopy = new THREE.ShaderPass( THREE.CopyShader );
 //            effectFXAA.renderToScreen = true;
@@ -79,15 +128,15 @@
 //            composer.addPass( effectCopy );
 
 
-
-//            var mapComposer = new THREE.EffectComposer( renderer, new THREE.WebGLRenderTarget(500,500) );
-//            mapComposer.setSize( 500, 500 );
-//            var renderModel2 = new THREE.RenderPass( scene, mapCamera );
-//            mapComposer.addPass( renderModel2 );
-//            var effectFXAA2 = new THREE.ShaderPass( THREE.FXAAShader );
-//            effectFXAA2.uniforms[ 'resolution' ].value.set( 1 / widthddd, 1 / heightssss );
-//            effectFXAA2.renderToScreen = true;
-//            mapComposer.addPass( effectFXAA2 );
+            var ssssssssss = new THREE.WebGLRenderTarget( params.ta.w, params.ta );
+            var mapComposer = new THREE.EffectComposer( renderer, ssssssssss );
+//            mapComposer.setSize( width * 2, height * 2 );
+            var renderModel2 = new THREE.RenderPass( scene, mapCamera );
+            mapComposer.addPass( renderModel2 );
+            var effectFXAA2 = new THREE.ShaderPass( THREE.FXAAShader );
+            effectFXAA2.uniforms[ 'resolution' ].value.set( 1 / widthddd, 1 / heightssss );
+            effectFXAA2.renderToScreen = true;
+            mapComposer.addPass( effectFXAA2 );
 
 
 
@@ -166,6 +215,10 @@
 
             function render () {
                 requestAnimationFrame( render );
+
+
+
+
                 var w = window.innerWidth, h = window.innerHeight;
                 renderer.setViewport( 0, 0, w, h );
 //                renderer.clear();
@@ -177,18 +230,44 @@
                     modelControls.update();
                 }
 
+
+                mapCamera.near = params.near;
+                mapCamera.far = params.far;
+                mapCamera.up = new THREE.Vector3().copy(params.up);
+
+                mapCamera.lookAt( new THREE.Vector3().copy(params.lookAt) );
+
+
+                mapCamera.left = width / - params.scale;
+                mapCamera.right = width / params.scale;
+                mapCamera.top = height / params.scale;
+                mapCamera.bottom = height / - params.scale;
+
+                ssssssssss.width = params.ta.w;
+                ssssssssss.height = params.ta.h;
+
+                mapComposer.setSize( params.s.w, params.s.h );
+
                 var ssss = modelControls.getModel();
                 if (ssss) {
 
-                    mapCamera.position.copy(ssss.position);
-                    mapCamera.position.y = 1500;
+//                    mapCamera.position.copy(ssss.position);
+//                    mapCamera.position.y = 1500;
                 }
 
+
+
+
                 renderer.setViewport( w - mapWidth - 10, 10, mapWidth, mapHeight );
+
+
+
+
+
                 renderer.render( scene, mapCamera );
 
 //                composer.render();
-//                mapComposer.render();
+                mapComposer.render();
 
                 // Это временно пока неработает CameraControl
 //                if ( orbitControl ) {
