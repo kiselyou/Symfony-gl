@@ -616,6 +616,8 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         }
     };
 
+    var clock = new THREE.Clock();
+
     /**
      * This method should run in requestAnimationFrame
      *

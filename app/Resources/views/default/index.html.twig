@@ -108,10 +108,6 @@
             renderer.setSize( WIDTH, HEIGHT );
             container.appendChild( renderer.domElement );
 
-            var renderer2 = new THREE.WebGLRenderer();
-            renderer2.setSize( MAP_WIDTH, MAP_HEIGHT );
-            mapCanvas.appendChild( renderer2.domElement );
-
             // CAMERA
             var camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000000 );
             camera.aspect = aspect;
@@ -120,16 +116,6 @@
             camera.position.y = 100;
             camera.lookAt(scene.position);
             scene.add(camera);
-
-            var camera2 = new THREE.OrthographicCamera(
-                    WIDTH / -2,		// Left
-                    WIDTH / 2,		// Right
-                    HEIGHT / -2,	// Top
-                    HEIGHT / 2,	    // Bottom
-                    -5000,          // Near
-                    10000 );        // Far
-            camera2.lookAt( new THREE.Vector3(0,-1,0) );
-            scene.add(camera2);
 
             // LIGHT
             var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
@@ -190,9 +176,6 @@
                 modelControls.update();
 
                 renderer.render( scene, camera );
-                camera2.position.copy(camera.position);
-
-                renderer2.render( scene, camera2 );
             }
         });
     </script>
