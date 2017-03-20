@@ -103,7 +103,19 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      *
      * @type {{WATCH_FOR_MODEL: number, CHOOSE: number}}
      */
-    this.keys = { WATCH_FOR_MODEL: 32, CHOOSE: 17 };
+    this.keys = {
+        CHOOSE: 17,
+        WATCH_FOR_MODEL: 32,
+        WEAPON_SLOT_1: 49,
+        WEAPON_SLOT_2: 50,
+        WEAPON_SLOT_3: 51,
+        WEAPON_SLOT_4: 52,
+        WEAPON_SLOT_5: 53,
+        WEAPON_SLOT_6: 54,
+        WEAPON_SLOT_7: 55,
+        WEAPON_SLOT_8: 56,
+        WEAPON_SLOT_9: 57
+    };
 
     /**
      *
@@ -291,6 +303,87 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
     var watchForModel = false;
 
+    var weapon = {
+        slot_1: {
+            active: false,
+            radius: 50,
+            shots: 10,
+            speed: 5000
+        },
+        slot_2: {
+            active: false,
+            radius: 50,
+            shots: 10,
+            speed: 5000
+        },
+        slot_3: {
+            active: false,
+            radius: 50,
+            shots: 10,
+            speed: 5000
+        },
+        slot_4: {
+            active: false,
+            radius: 50,
+            shots: 10,
+            speed: 5000
+        },
+        slot_5: {
+            active: false,
+            radius: 50,
+            shots: 10,
+            speed: 5000
+        },
+        slot_6: {
+            active: false,
+            radius: 50,
+            shots: 10,
+            speed: 5000
+        },
+        slot_7: {
+            active: false,
+            radius: 50,
+            shots: 10,
+            speed: 5000
+        },
+        slot_8: {
+            active: false,
+            radius: 50,
+            shots: 10,
+            speed: 5000
+        },
+        slot_9: {
+            active: false,
+            radius: 50,
+            shots: 10,
+            speed: 5000
+        }
+    };
+
+    /**
+     *
+     * @param {number} num - possible values '1-9'
+     * @returns {void}
+     */
+    function turnOnWeapon( num ) {
+
+        var property = 'slot_' + num;
+
+        if ( !weapon.hasOwnProperty( property ) ) {
+            console.warn( 'You have to set value from 1 to 9' );
+            return;
+        }
+
+        switch ( weapon[ property ][ 'active' ] ) {
+            case true:
+                weapon[ property ][ 'active' ] = false;
+                break;
+            case false:
+                weapon[ property ][ 'active' ] = true;
+                break;
+        }
+    }
+
 	/**
      *
      * @param {MouseEvent} event
@@ -307,7 +400,36 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             case scope.keys.WATCH_FOR_MODEL:
                 watchForModel = true;
                 break;
+            case scope.keys.WEAPON_SLOT_1:
+                turnOnWeapon( 1 );
+                break;
+            case scope.keys.WEAPON_SLOT_2:
+                turnOnWeapon( 2 );
+                break;
+            case scope.keys.WEAPON_SLOT_3:
+                turnOnWeapon( 3 );
+                break;
+            case scope.keys.WEAPON_SLOT_4:
+                turnOnWeapon( 4 );
+                break;
+            case scope.keys.WEAPON_SLOT_5:
+                turnOnWeapon( 5 );
+                break;
+            case scope.keys.WEAPON_SLOT_6:
+                turnOnWeapon( 6 );
+                break;
+            case scope.keys.WEAPON_SLOT_7:
+                turnOnWeapon( 7 );
+                break;
+            case scope.keys.WEAPON_SLOT_8:
+                turnOnWeapon( 8 );
+                break;
+            case scope.keys.WEAPON_SLOT_9:
+                turnOnWeapon( 9 );
+                break;
         }
+
+        console.log(weapon);
     }
 
     /**

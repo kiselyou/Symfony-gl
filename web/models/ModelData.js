@@ -20,14 +20,14 @@ THREE.ModelData = function () {
 	};  // Скорость перемещения по прямой
 
 	this.speedRotate = {
-		index: 1600,
+		index: 2000,
 		min: 100,
 		max: 3000,
 		unit: 'м/с'
 	};  // Скорость разварота
 
 	this.radius = {
-		index: 10,                              // percent from speed rotate
+		index: 5,                              // percent from speed rotate
 		incline: 0,                             // degree
 		maxIncline: 55 * Math.PI / 180,         // degree
 		speedIncline: ( Math.PI / 180 ) / 3,    // degree

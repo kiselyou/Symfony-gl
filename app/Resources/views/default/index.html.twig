@@ -6,14 +6,7 @@
 
 {% block body %}
 
-    <style>
-        #mapCanvas {
-            border: solid 1px #f00;
-        }
-    </style>
-
     <div id="sw-container"></div>
-    {#<div id="mapCanvas" style="position: absolute; left:100px; top:100px; width:320px; height:240px; background: #ffffff"></div>#}
 
 {% endblock %}
 
@@ -23,24 +16,11 @@
     <script src="{{ asset('js/three/three.js') }}"></script>
 
 
-    <script src="{{ asset('js/three/dat.gui.min.js') }}"></script>
-
-    <script src="{{ asset('js/three/EffectComposer.js') }}"></script>
-    <script src="{{ asset('js/three/RenderPass.js') }}"></script>
-    <script src="{{ asset('js/three/ShaderPass.js') }}"></script>
-    <script src="{{ asset('js/three/FXAAShader.js') }}"></script>
-    <script src="{{ asset('js/three/CopyShader.js') }}"></script>
-
     <script src="{{ asset('models/ModelData.js') }}"></script>
     <script src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
     <script src="{{ asset('js/three/controls/PlanetControls.js') }}"></script>
     <script src="{{ asset('js/three/controls/OrbitControls.js') }}"></script>
     <script src="{{ asset('js/three/controls/ModelControls.js') }}"></script>
-
-
-
-
-
 
 
     <script>
@@ -53,11 +33,12 @@
 
             var MAP_WIDTH = 320;
             var MAP_HEIGHT = 240;
-            var MAP_LEFT = WIDTH - MAP_WIDTH - 10;
-            var MAP_TOP = HEIGHT - MAP_HEIGHT - 10;
+            var MAP_LEFT = WIDTH - MAP_WIDTH;
+            var MAP_TOP = HEIGHT - MAP_HEIGHT;
 
             var mapCanvas = document.createElement('div');
-            mapCanvas.id = 'mapCanvas';
+            mapCanvas.id = 'sw-map';
+            mapCanvas.classList.add('sw-map');
             mapCanvas.style.position = 'absolute';
             mapCanvas.style.width = MAP_WIDTH + 'px';
             mapCanvas.style.height = MAP_HEIGHT + 'px';
@@ -65,41 +46,6 @@
             mapCanvas.style.top = MAP_TOP + 'px';
             container.parentNode.insertBefore(mapCanvas, container.nextSibling);
 
-
-
-            var gui = new dat.GUI();
-
-            var params = {
-                near: -1000,
-                far: 1000,
-                up: {
-                    x: 0,
-                    y: 0,
-                    z: -1
-                },
-                lookAt: {
-                    x: 0,
-                    y: 1,
-                    z: 0
-                },
-
-                scale: 2,
-                ta: {
-                    w: 320,
-                    h: 240
-                },
-                s: {
-                    w: 320,
-                    h: 240
-                }
-            };
-
-            gui.add( params, 'near', -10000, 10000 );
-            gui.add( params, 'far', -10000, 10000 );
-            gui.add( params.up, 'x', -10, 10 );
-            gui.add( params.up, 'y', -10, 10 );
-            gui.add( params.up, 'z', -10, 10 );
-            gui.open();
 
             var aspect =  WIDTH / HEIGHT;
 
@@ -132,7 +78,16 @@
 
             scene.add( dirLight );
 
+            // CUBES
+            for ( var i = 0; i < 500; i++ ) {
+                var geometry = new THREE.SphereGeometry( 6, 15, 15 );
+                var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0.5, transparent: true } );
+                var mesh = new THREE.Mesh( geometry, material );
 
+                mesh.position.x = getRandomArbitrary(- 500 - ( i * 25 ), 500 + ( i * 25 ) );
+                mesh.position.z = getRandomArbitrary(- 500 - ( i * 25 ), 500 + ( i * 25 ) );
+                scene.add( mesh );
+            }
 
             // PLANETS
             var planetControls = new THREE.PlanetControls( scene, camera );
@@ -141,9 +96,9 @@
             } );
 
             // GRID
-            var color = new THREE.Color( 0x00ffff );
-            var grid = new THREE.GridHelper( 1000, 100, color, 0x888888 );
-            scene.add( grid );
+//            var color = new THREE.Color( 0x00ffff );
+//            var grid = new THREE.GridHelper( 1000, 100, color, 0x888888 );
+//            scene.add( grid );
 
             // MODEL CONTROL
             var modelControls = new THREE.ModelControls( camera, scene, renderer.domElement, container );
@@ -152,7 +107,7 @@
                 object.children[0].rotateY(Math.PI);
             } );
 
-            modelControls.addIntersectExceptUUID( grid.uuid );
+//            modelControls.addIntersectExceptUUID( grid.uuid );
 
             window.addEventListener( 'resize', windowResize, false );
             render();
@@ -178,5 +133,9 @@
                 renderer.render( scene, camera );
             }
         });
+
+        function getRandomArbitrary(min, max) {
+            return Math.random() * (max - min) + min;
+        }
     </script>
 {% endblock %}

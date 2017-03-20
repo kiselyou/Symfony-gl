@@ -14,3 +14,292 @@ html, body, canvas {
     margin: -5px 0 0 15px;
     pointer-events:none;
 }
+
+
+
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    /*background: url("/app/theme/images/3.png") repeat #000;*/
+}
+
+.sw-body {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*background: url("/app/theme/images/3.png") repeat #000;*/
+}
+
+.hidden {
+    display: none;
+}
+
+.sw-block-modal {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    color: #FFFFFF;
+    font-family: Arial;
+}
+
+/*===================================================================================================================*/
+.sw-block-modal {
+    pointer-events: none;
+}
+
+.sw-block-modal a,
+.sw-block-modal input,
+.sw-block-modal button {
+    pointer-events: all;
+}
+
+/*===================================================================================================================*/
+
+.sw-logo {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.sw-naw {
+    display: inline-block;
+}
+
+/*===================================================================================================================*/
+
+.sw-modal > div {
+    margin: 10px;
+    padding: 10px;
+}
+
+.sw-modal-head {
+    min-height: 40px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(127,255,255,0.25);
+    overflow: hidden;
+}
+
+.sw-modal-body {
+
+}
+
+.sw-text-right {
+    text-align: right;
+}
+
+#sw-panel-control, .sw-map, .sw-modal {
+    color: #FFFFFF;
+    box-shadow: inset 0 0 12px rgba(0,255,255,0.5);
+}
+
+.sw-modal {
+    border: 1px solid rgba(127,255,255,0.25);
+    border-radius: 5px;
+    overflow: hidden;
+    width: 30%;
+    margin: 10% 35%;
+}
+
+@media screen and (max-width: 1200px) {
+    .sw-modal {
+        width: 40%;
+        margin: 10% 30%;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .sw-modal {
+        width: 50%;
+        margin: 10% 25%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .sw-modal {
+        width: 80%;
+        margin: 10% 10%;
+    }
+    .sw-map {
+        display: none;
+    }
+}
+
+.sw-modal-size-12 {
+    width: 98%;
+    margin: 1% 1%;
+    height: 96%;
+}
+
+.sw-map {
+    border-radius: 5px 0 0 0;
+    border-top: 1px solid rgba(127,255,255,0.25);
+    border-left: 1px solid rgba(127,255,255,0.25);
+}
+
+#sw-panel-control {
+    bottom: 0;
+    height: 80px;
+    width: 290px;
+    font-size: 8px;
+    font-weight: bold;
+    border-radius: 0 5px 0 0;
+    border-top: 1px solid rgba(127,255,255,0.25);
+}
+
+#sw-block-actions {
+    width: 100%;
+    height: 30px;
+    padding: 5px;
+}
+
+.sw-action {
+    height: 28px;
+    width: 28px;
+    margin: 2px 1px 0 0;
+    float: left;
+    text-align: center;
+    border-radius: 2px;
+    border: 1px solid rgba(127,255,255,0.5);
+    background-color: rgba(0,255,255,0.2);
+    position: relative;
+}
+
+.sw-action:hover {
+    box-shadow: 0 0 12px rgba(0,255,255,0.75);
+    border: 1px solid rgba(127,255,255,0.75);
+    cursor: pointer;
+}
+
+.sw-action-active, .sw-action:active {
+    background-color: rgba(0,255,255,0.4);
+}
+
+.sw-action img {
+    height: 26px;
+    max-width: 26px;
+    margin: 1px;
+}
+
+.sw-action-keyword {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+}
+
+#sw-block-status {
+    margin: 0 6px 0 6px;
+}
+
+#sw-block-status div div {
+    float: left;
+}
+
+.sw-status-progress {
+    width: 60%;
+    border: 1px solid rgba(127,255,255,0.75);
+    border-radius: 2px;
+    height: 6px;
+    margin: 2px 0 3px 0;
+    text-transform: uppercase;
+    color: #000000;
+}
+
+.sw-status-progress div {
+    height: 6px;
+    width: 0;
+    border-radius: 1px 0 0 1px;
+}
+
+.sw-status-text {
+    font-size: 11px;
+    font-family: Arial;
+    padding-left: 5px;
+}
+
+.sw-status-name {
+    width: 20px;
+    text-align: center;
+}
+
+.sw-status-current {
+    width: 35px;
+    text-align: right;
+}
+
+.sw-text-error {
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/*===============================================   FIELDS   =========================================================*/
+.sw-star, .sw-text-error {
+    color: #ff0000;
+}
+.sw-float {
+    float: left;
+}
+
+.sw-clear {
+    clear: both;
+}
+
+.sw-field {
+    margin: 15px 0;
+}
+
+.sw-btn {
+    display: block;
+}
+
+.sw-field label {
+    color: #FFFFFF;
+    width: 100%;
+    font-size: 12px;
+    display: block;
+}
+
+.sw-field input {
+    color: rgba(127,255,255,0.75);
+    background: transparent;
+    outline: 1px solid rgba(127,255,255,0.75);
+    border: 0;
+    padding: 5px 10px;
+    display: block;
+    width: calc(100% - 20px);
+}
+
+.sw-btn {
+    color: rgba(127,255,255,0.75);
+    background: transparent;
+    outline: 1px solid rgba(127,255,255,0.75);
+    border: 0;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline;
+}
+
+.sw-btn:hover {
+    background-color: rgba(0,255,255,0.5);
+}
+
+.sw-btn:active {
+    color: #000000;
+    background-color: rgba(0,255,255,0.75);
+}
+
+.sw-link {
+    color: #FFFFFF;
+}
+
+.sw-link:hover {
+    color: rgba(0,255,255,0.5);
+}
+
+.sw-link:focus {
+    color: rgba(0,255,255,0.75);
+}
