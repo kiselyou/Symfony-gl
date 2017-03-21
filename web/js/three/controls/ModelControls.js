@@ -184,6 +184,8 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             scope.plane.rotation.x = -0.5 * Math.PI;
             scope.object.add( scope.plane );
 
+            console.log(scope.object);
+
             intersectExceptUUID.push( scope.plane.uuid );
             intersectExceptUUID.push( scope.object.uuid );
 
@@ -306,27 +308,32 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
     var weapon = {
         slot_1: {
             active: false,
-            radius: 50,
-            shots: 10,
-            speed: 5000
+            radius: 500,
+            speed: 5000,
+            shots: [
+
+            ]
         },
         slot_2: {
             active: false,
             radius: 50,
             shots: 10,
-            speed: 5000
+            speed: 5000,
+            position: new THREE.Vector3()
         },
         slot_3: {
             active: false,
             radius: 50,
             shots: 10,
-            speed: 5000
+            speed: 5000,
+            position: new THREE.Vector3()
         },
         slot_4: {
             active: false,
             radius: 50,
             shots: 10,
-            speed: 5000
+            speed: 5000,
+            position: new THREE.Vector3()
         },
         slot_5: {
             active: false,
@@ -359,6 +366,44 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             speed: 5000
         }
     };
+
+    /**
+     *
+     * @param {Mesh} model
+     * @param {Vector3} prevPosition
+     */
+    function shot( model, prevPosition ) {
+
+        var angle = params.angleStart + ( Math.PI / 2 );
+
+        switch ( params.direction ) {
+            case LEFT:
+                angle = - params.angleStart + ( Math.PI / 2 );
+                break;
+        }
+
+        for ( var slot in weapon ) {
+
+            if ( weapon.hasOwnProperty( slot ) && weapon[ slot ][ 'active' ]) {
+
+                // var x = params.points.r.x + params.radius * Math.cos( params.angleStart );
+                // var z = params.points.r.z + params.radius * Math.sin( params.angleStart );
+
+                var radius = weapon[ slot ][ 'radius' ];
+                // var angle = model.rotation.y;
+                //
+
+                var x = model.position.x + radius * Math.cos( angle + Math.PI / 2 );
+                var z = model.position.z + radius * Math.sin( angle + Math.PI / 2 );
+
+
+
+                //
+                drawPoint( new THREE.Vector3( x, 0, z ), '#FFFF00', true );
+                weapon[ slot ][ 'active' ] = false;
+            }
+        }
+    }
 
     /**
      *
@@ -746,6 +791,8 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      * @return {void}
      */
     this.update = function () {
+
+        shot( this.object, scope.prevPosition );
 
         if ( orbitControl ) {
             if ( watchForModel ) {
