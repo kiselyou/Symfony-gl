@@ -13,15 +13,15 @@ THREE.ModelData = function () {
 	this.decelerationSpeed = { index: 1, unit: 'м.с' };                   // Торможение
 
 	this.speedDirect = {
-		index: 600,
-		min: 100,
+		index: 1000,
+		min: 1000,
 		max: 1000,
 		unit: 'м/с'
 	};  // Скорость перемещения по прямой
 
 	this.speedRotate = {
-		index: 600,
-		min: 100,
+		index: 500,
+		min: 500,
 		max: 1000,
 		unit: 'м/с'
 	};  // Скорость разварота
@@ -30,7 +30,7 @@ THREE.ModelData = function () {
 		index: 10,                              // percent from speed rotate
 		incline: 0,                             // degree
 		maxIncline: 55 * Math.PI / 180,         // degree
-		speedIncline: ( Math.PI / 180 ) / 3,    // degree
+		speedIncline: 0.004,    // degree
 		unit: '% от скорости разварота'
 	};  // Радиус разворота
 
@@ -80,7 +80,6 @@ THREE.ModelData = function () {
 	this.getSpeedIncline = function ( reduce ) {
 		reduce = reduce === undefined ? 0 : reduce;
 		return this.radius.speedIncline * ( 1 - reduce / 100 );
-		// return this.radius.speedIncline;
 	};
 
 	/**

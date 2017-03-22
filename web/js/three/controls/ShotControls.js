@@ -19,12 +19,15 @@ THREE.ShotControls = function () {
         WEAPON_SLOT_9: 57
     };
 
-    function charge() {
+    var scope = this;
+
+    function charge( color ) {
+
+        color = color == undefined ? '#FFFF00' : color;
+
         var geometry = new THREE.SphereGeometry( 0.3, 5, 5, 0, Math.PI * 2, 0, Math.PI * 2 );
         var material = new THREE.MeshLambertMaterial( { color: color } );
-        var sphere = new THREE.Mesh( geometry, material );
-        sphere.position.copy( position );
-        return sphere;
+        return new THREE.Mesh( geometry, material );
     }
 
     var weapon = {
@@ -40,59 +43,71 @@ THREE.ShotControls = function () {
                 charge(),
                 charge()
             ]
+        },
+        slot_2: {
+            active: false,
+            radius: 50,
+            speed: 5000,
+            shots: [
+
+            ]
+        },
+        slot_3: {
+            active: false,
+            radius: 50,
+            speed: 5000,
+            shots: [
+
+            ]
+        },
+        slot_4: {
+            active: false,
+            radius: 50,
+            speed: 5000,
+            shots: [
+
+            ]
+        },
+        slot_5: {
+            active: false,
+            radius: 50,
+            speed: 5000,
+            shots: [
+
+            ]
+        },
+        slot_6: {
+            active: false,
+            radius: 50,
+            speed: 5000,
+            shots: [
+
+            ]
+        },
+        slot_7: {
+            active: false,
+            radius: 50,
+            speed: 5000,
+            shots: [
+
+            ]
+        },
+        slot_8: {
+            active: false,
+            radius: 50,
+            speed: 5000,
+            shots: [
+
+            ]
+        },
+        slot_9: {
+            active: false,
+            radius: 50,
+            speed: 5000,
+            shots: [
+
+            ]
         }
-        // slot_2: {
-        //     active: false,
-        //     radius: 50,
-        //     speed: 5000,
-        //     shots: [
-        //
-        //     ]
-        // },
-        // slot_3: {
-        //     active: false,
-        //     radius: 50,
-        //     shots: 10,
-        //     speed: 5000,
-        //     position: new THREE.Vector3()
-        // },
-        // slot_4: {
-        //     active: false,
-        //     radius: 50,
-        //     shots: 10,
-        //     speed: 5000,
-        //     position: new THREE.Vector3()
-        // },
-        // slot_5: {
-        //     active: false,
-        //     radius: 50,
-        //     shots: 10,
-        //     speed: 5000
-        // },
-        // slot_6: {
-        //     active: false,
-        //     radius: 50,
-        //     shots: 10,
-        //     speed: 5000
-        // },
-        // slot_7: {
-        //     active: false,
-        //     radius: 50,
-        //     shots: 10,
-        //     speed: 5000
-        // },
-        // slot_8: {
-        //     active: false,
-        //     radius: 50,
-        //     shots: 10,
-        //     speed: 5000
-        // },
-        // slot_9: {
-        //     active: false,
-        //     radius: 50,
-        //     shots: 10,
-        //     speed: 5000
-        // }
     };
 
     /**
@@ -152,10 +167,10 @@ THREE.ShotControls = function () {
 
     /**
      *
-     * @param {MouseEvent} event
+     * @param {KeyboardEvent} event
      * @returns {void}
      */
-    function onKeyDown ( event ) {
+    this.onKeyDown = function ( event ) {
 
         switch ( event.keyCode ) {
             case scope.keys.WEAPON_SLOT_1:
@@ -187,6 +202,10 @@ THREE.ShotControls = function () {
                 break;
         }
 
-        console.log(weapon);
-    }
+        // console.log(weapon);
+    };
+
+    this.update = function () {
+
+    };
 };

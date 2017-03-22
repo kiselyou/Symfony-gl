@@ -175,8 +175,6 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             scope.plane.rotation.x = -0.5 * Math.PI;
             scope.object.add( scope.plane );
 
-            console.log(scope.object);
-
             intersectExceptUUID.push( scope.plane.uuid );
             intersectExceptUUID.push( scope.object.uuid );
 
@@ -201,6 +199,23 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      */
     this.getModel = function () {
         return this.object;
+    };
+
+    /**
+     *
+     * @returns {number}
+     */
+    this.getAngleRotate = function () {
+
+        var angle = params.angleStart + ( Math.PI / 2 );
+
+        switch ( params.direction ) {
+            case LEFT:
+                angle = params.angleStart - ( Math.PI / 2 );
+                break;
+        }
+
+        return angle;
     };
 
     /**
@@ -298,7 +313,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
 
 	/**
      *
-     * @param {MouseEvent} event
+     * @param {KeyboardEvent} event
      * @returns {void}
      */
     function onKeyDown ( event ) {
@@ -313,11 +328,13 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
                 watchForModel = true;
                 break;
         }
+
+        setAdditionalEvents( scope.EVENT_KEY_DOWN, event );
     }
 
     /**
      *
-     * @param {MouseEvent} event
+     * @param {KeyboardEvent} event
      * @returns {void}
      */
     function onKeyUp ( event ) {
@@ -333,19 +350,29 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
                 watchForModel = false;
                 break;
         }
+
+        setAdditionalEvents( scope.EVENT_KEY_UP, event );
     }
 
     /**
-     *
+     * @param {MouseEvent} event
      * @returns {void}
      */
     function onMouseMove ( event ) {
+
         var objectIntersected = scope.getIntersect( event );
+
         if ( objectIntersected ) {
+
             scope.domElement.style.cursor = scope.effects.HOVER_CURSOR;
+
         } else {
+
             scope.domElement.style.cursor = scope.effects.DEFAULT_CURSOR;
+
         }
+
+        setAdditionalEvents( scope.EVENT_MOUSE_MOVE, event );
     }
 
     /**
@@ -356,6 +383,64 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
     function stopModel () {
         params.run = false;
     }
+
+    /** @const {string} */
+    this.EVENT_MOUSE_MOVE = 'mouse_move';
+
+    /** @const {string} */
+    this.EVENT_KEY_DOWN = 'key_down';
+
+    /** @const {string} */
+    this.EVENT_KEY_UP = 'key_up';
+
+    /**
+     * @type {*}
+     */
+    var eventsModel = {};
+
+    /**
+     *
+     * @param {string} type - possible values ('mouse_move'|'key_down'|'key_up')
+     * @param {MouseEvent|KeyboardEvent} event
+     * @returns {void}
+     */
+    function setAdditionalEvents( type, event ) {
+
+        if ( eventsModel.hasOwnProperty( type ) ) {
+
+            var additionEvent = eventsModel[ type ];
+
+            for ( var i = 0; i < additionEvent.length; i++ ) {
+
+                additionEvent[ i ].call( this, event, scope );
+            }
+        }
+    }
+
+    /**
+     * Callback for adding events of model.
+     *
+     * @callback additionalEventsToModel
+     * @param {MouseEvent|KeyboardEvent} event - Mouse event
+     * @param {THREE.ModelControls} scope - It current instance ModelControl
+     */
+
+    /**
+     *
+     * @param {string} type - possible values ('mouse_move'|'key_down'|'key_up')
+     * @param {additionalEventsToModel} callback
+     * @returns {THREE.ModelControls}
+     */
+    this.addEventToModel = function ( type, callback ) {
+
+        if ( !eventsModel.hasOwnProperty( type ) ) {
+
+            eventsModel[ type ] = [];
+        }
+
+        eventsModel[ type ].push( callback );
+        return this;
+    };
 
     /**
      *

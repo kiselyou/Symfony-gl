@@ -20,6 +20,7 @@
     <script src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
     <script src="{{ asset('js/three/controls/PlanetControls.js') }}"></script>
     <script src="{{ asset('js/three/controls/OrbitControls.js') }}"></script>
+    <script src="{{ asset('js/three/controls/ShotControls.js') }}"></script>
     <script src="{{ asset('js/three/controls/ModelControls.js') }}"></script>
 
 
@@ -106,6 +107,15 @@
                 object.children[0].rotateX(Math.PI / 2);
                 object.children[0].rotateY(Math.PI);
             } );
+
+            var shot = new THREE.ShotControls();
+
+            modelControls.addEventToModel( modelControls.EVENT_KEY_DOWN, function ( e, scope ) {
+                shot.onKeyDown( e );
+                console.log( scope.object.rotation, scope.getAngleRotate() );
+            } );
+
+
 
 //            modelControls.addIntersectExceptUUID( grid.uuid );
 
