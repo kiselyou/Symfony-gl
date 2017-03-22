@@ -108,11 +108,15 @@
                 object.children[0].rotateY(Math.PI);
             } );
 
+
             var shot = new THREE.ShotControls();
 
             modelControls.addEventToModel( modelControls.EVENT_KEY_DOWN, function ( e, scope ) {
+                shot.setPreviousPositionModel( scope.getPreviousPosition() );
+                shot.setModel( scope.object );
                 shot.onKeyDown( e );
-                console.log( scope.object.rotation, scope.getAngleRotate() );
+
+//                console.log( scope.object.rotation, scope.getAngleRotate() );
             } );
 
 

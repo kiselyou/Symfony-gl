@@ -165,6 +165,17 @@ THREE.ShotControls = function () {
         }
     }
 
+    this.object = null;
+
+    this.setModel = function ( model ) {
+        this.object = model;
+    };
+
+    this.setPreviousPositionModel = function ( v ) {
+        this.previousPosition = v;
+        return this;
+    };
+
     /**
      *
      * @param {KeyboardEvent} event

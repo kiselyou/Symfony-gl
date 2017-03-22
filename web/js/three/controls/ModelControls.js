@@ -73,7 +73,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      *
      * @type {Vector3}
      */
-    this.prevPosition = new THREE.Vector3( 0, 0, -1 );
+    this.previousPosition = new THREE.Vector3( 0, 0, -1 );
 
     /**
      *
@@ -175,6 +175,9 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             scope.plane.rotation.x = -0.5 * Math.PI;
             scope.object.add( scope.plane );
 
+
+
+
             intersectExceptUUID.push( scope.plane.uuid );
             intersectExceptUUID.push( scope.object.uuid );
 
@@ -199,6 +202,14 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      */
     this.getModel = function () {
         return this.object;
+    };
+
+    /**
+     *
+     * @returns {Vector3}
+     */
+    this.getPreviousPosition = function () {
+        return this.previousPosition;
     };
 
     /**
@@ -297,7 +308,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             scope.stopAutoFly();
         }
 
-        var pointA = scope.prevPosition;
+        var pointA = scope.previousPosition;
         var pointB = scope.object.position;
         var pointC = scope.getClickPosition( event, scope.camera, scope.plane );
 
@@ -727,7 +738,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         }
 
         if ( autoFly ) {
-            scope.move( scope.prevPosition, scope.object.position, autoFly.position );
+            scope.move( scope.previousPosition, scope.object.position, autoFly.position );
             drawPointClick( autoFly.position );
         }
 
@@ -749,8 +760,8 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             var x = params.points.r.x + params.radius * Math.cos( params.angleStart ) + delta;
             var z = params.points.r.z + params.radius * Math.sin( params.angleStart ) + delta;
 
-            this.prevPosition.setX( this.object.position.x );
-            this.prevPosition.setZ( this.object.position.z );
+            this.previousPosition.setX( this.object.position.x );
+            this.previousPosition.setZ( this.object.position.z );
 
             this.object.position.x = x;
             this.object.position.z = z;
@@ -836,8 +847,8 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
                 removePointClick();
             }
 
-            this.prevPosition.setX( params.points.d.x );
-            this.prevPosition.setZ( params.points.d.z );
+            this.previousPosition.setX( params.points.d.x );
+            this.previousPosition.setZ( params.points.d.z );
 
             // params.lookAt.setX( params.points.c.x );
             // params.lookAt.setZ( params.points.c.z );
