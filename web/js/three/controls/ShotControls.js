@@ -1,5 +1,7 @@
 
-THREE.ShotControls = function () {
+THREE.ShotControls = function ( scene ) {
+
+    this._scene = scene;
 
     /**
      *
@@ -21,124 +23,134 @@ THREE.ShotControls = function () {
 
     var scope = this;
 
-    function charge( color ) {
 
-        color = color == undefined ? '#FFFF00' : color;
 
-        var geometry = new THREE.SphereGeometry( 0.3, 5, 5, 0, Math.PI * 2, 0, Math.PI * 2 );
-        var material = new THREE.MeshLambertMaterial( { color: color } );
-        return new THREE.Mesh( geometry, material );
-    }
+    var geometry = new THREE.SphereGeometry( 0.3, 5, 5, 0, Math.PI * 2, 0, Math.PI * 2 );
+    var material = new THREE.MeshLambertMaterial( { color: '#FFFF00' } );
+    var charge1 = new THREE.Mesh( geometry, material );
 
     var weapon = {
         slot_1: {
-            active: false,
-            radius: 1500,
+            active: true,
+            radius: 100,
             speed: 5000,
             interval: 10,
-            shots: [
-                charge(),
-                charge(),
-                charge(),
-                charge(),
-                charge()
-            ]
+            charges: 10
         },
         slot_2: {
             active: false,
             radius: 50,
             speed: 5000,
-            shots: [
-
-            ]
+            interval: 10,
+            charges: 10
         },
         slot_3: {
             active: false,
             radius: 50,
             speed: 5000,
-            shots: [
-
-            ]
+            interval: 10,
+            charges: 10
         },
         slot_4: {
             active: false,
             radius: 50,
             speed: 5000,
-            shots: [
-
-            ]
+            interval: 10,
+            charges: 10
         },
         slot_5: {
             active: false,
             radius: 50,
             speed: 5000,
-            shots: [
-
-            ]
+            interval: 10,
+            charges: 10
         },
         slot_6: {
             active: false,
             radius: 50,
             speed: 5000,
-            shots: [
-
-            ]
+            interval: 10,
+            charges: 10
         },
         slot_7: {
             active: false,
             radius: 50,
             speed: 5000,
-            shots: [
-
-            ]
+            interval: 10,
+            charges: 10
         },
         slot_8: {
             active: false,
             radius: 50,
             speed: 5000,
-            shots: [
-
-            ]
+            interval: 10,
+            charges: 10
         },
         slot_9: {
             active: false,
             radius: 50,
             speed: 5000,
-            shots: [
-
-            ]
+            interval: 10,
+            charges: 10
         }
     };
 
+    var freeShots = [];
+
     /**
-     *
-     *@param {Mesh} model
+     * @param {string} type
+     * @param {Vector3} position
      * @param {number} angle
      */
-    function shot( model, angle ) {
+    function shot( type, position, angle ) {
 
-        // var angle = params.angleStart + ( Math.PI / 2 );
-        //
-        // switch ( params.direction ) {
-        //     case LEFT:
-        //         angle = params.angleStart - ( Math.PI / 2 );
-        //         break;
-        // }
+        if ( weapon.hasOwnProperty( type ) && weapon[ type ][ 'active' ]) {
 
-        for ( var slot in weapon ) {
+            var radius = weapon[ type ][ 'radius' ];
+            var charges = weapon[ type ][ 'charges' ];
+            var interval = weapon[ type ][ 'interval' ];
 
-            if ( weapon.hasOwnProperty( slot ) && weapon[ slot ][ 'active' ]) {
+            if ( charges > 0 ) {
 
-                var radius = weapon[ slot ][ 'radius' ];
+                var startCharge = 0;
+                var idInterval = setInterval(function() {
 
-                var x = model.position.x + radius * Math.cos( angle );
-                var z = model.position.z + radius * Math.sin( angle );
-                var positionTo = new THREE.Vector3( x, 0, z );
+                    var mesh = charge1.clone();
 
+                    var x = position.x + radius * Math.cos( angle );
+                    var z = position.z + radius * Math.sin( angle );
 
-                weapon[ slot ][ 'active' ] = false;
+                    mesh.position.copy( position );
+                    mesh[ 'positionTo' ] = new THREE.Vector3( x, 0, z );
+                    freeShots.push( mesh );
+                    scope._scene.add( mesh );
+
+                    startCharge++;
+
+                    if ( startCharge == charges ) {
+
+                        clearInterval( idInterval );
+                    }
+
+                }, interval);
             }
         }
+    }
+
+    /**
+     *
+     * @param {Vector3} a
+     * @param {Vector3} b
+     * @param {boolean} [degree] If true return value in degree else radians
+     * @returns {number}
+     */
+    function getAngle ( a, b, degree ) {
+
+        var v = new THREE.Vector3();
+        v.subVectors( b, a );
+        var radians = Math.atan2(v.z, v.x);
+
+        return degree ? ( radians * 180 / Math.PI ) : radians;
     }
 
     /**
@@ -185,7 +197,10 @@ THREE.ShotControls = function () {
 
         switch ( event.keyCode ) {
             case scope.keys.WEAPON_SLOT_1:
-                turnOnWeapon( 1 );
+                // turnOnWeapon( 1 );
+                var angle = getAngle( scope.previousPosition, scope.object.position );
+                shot( 'slot_1', scope.object.position, angle );
+
                 break;
             case scope.keys.WEAPON_SLOT_2:
                 turnOnWeapon( 2 );
@@ -217,6 +232,12 @@ THREE.ShotControls = function () {
     };
 
     this.update = function () {
-
+        if ( freeShots.length > 0 ) {
+            for ( var i = 0; i < freeShots.length; i++ ) {
+                var mesh = freeShots[ i ];
+                var positionTo = mesh.positionTo;
+                console.log( positionTo );
+            }
+        }
     };
 };

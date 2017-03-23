@@ -176,6 +176,24 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             scope.object.add( scope.plane );
 
 
+            // var a = new THREE.Vector3().copy( scope.object.position );
+            // a.y += 15;
+            // drawPoint( a, '#FFFFFF', true );
+            //
+            //
+            // var b = new THREE.Vector3( 10, 15, 25);
+            // drawPoint( b, '#FF00FF', true );
+            //
+            //
+            // var radius = 35;
+            // // a.sub( b );
+            // var angle = a.angleTo( b );
+            // var x = b.x + radius * Math.cos( angle );
+            // var z = b.z + radius * Math.sin( angle );
+            // var positionTo = new THREE.Vector3( x, 15, z );
+            // console.log(angle, positionTo);
+            // drawPoint( positionTo, '#FFFF00', true );
+
 
 
             intersectExceptUUID.push( scope.plane.uuid );

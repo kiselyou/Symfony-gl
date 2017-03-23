@@ -109,14 +109,17 @@
             } );
 
 
-            var shot = new THREE.ShotControls();
+            var shot = new THREE.ShotControls( scene );
 
             modelControls.addEventToModel( modelControls.EVENT_KEY_DOWN, function ( e, scope ) {
+
+
+
                 shot.setPreviousPositionModel( scope.getPreviousPosition() );
                 shot.setModel( scope.object );
                 shot.onKeyDown( e );
 
-//                console.log( scope.object.rotation, scope.getAngleRotate() );
+                console.log( 'old angle = ' + ( 180 / Math.PI * scope.getAngleRotate()) );
             } );
 
 
@@ -143,6 +146,7 @@
 
                 planetControls.update();
                 modelControls.update();
+                shot.update();
 
                 renderer.render( scene, camera );
             }
