@@ -176,25 +176,6 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             scope.object.add( scope.plane );
 
 
-            // var a = new THREE.Vector3().copy( scope.object.position );
-            // a.y += 15;
-            // drawPoint( a, '#FFFFFF', true );
-            //
-            //
-            // var b = new THREE.Vector3( 10, 15, 25);
-            // drawPoint( b, '#FF00FF', true );
-            //
-            //
-            // var radius = 35;
-            // // a.sub( b );
-            // var angle = a.angleTo( b );
-            // var x = b.x + radius * Math.cos( angle );
-            // var z = b.z + radius * Math.sin( angle );
-            // var positionTo = new THREE.Vector3( x, 15, z );
-            // console.log(angle, positionTo);
-            // drawPoint( positionTo, '#FFFF00', true );
-
-
 
             intersectExceptUUID.push( scope.plane.uuid );
             intersectExceptUUID.push( scope.object.uuid );
@@ -735,16 +716,12 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         }
     };
 
-    var clock = new THREE.Clock();
-
     /**
      * This method should run in requestAnimationFrame
      *
      * @return {void}
      */
     this.update = function () {
-
-        var delta = clock.getDelta();
 
         if ( orbitControl ) {
             if ( watchForModel ) {
@@ -775,8 +752,8 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
         if ( params.startIteration <= params.endIteration ) {
             params.startIteration++;
 
-            var x = params.points.r.x + params.radius * Math.cos( params.angleStart ) + delta;
-            var z = params.points.r.z + params.radius * Math.sin( params.angleStart ) + delta;
+            var x = params.points.r.x + params.radius * Math.cos( params.angleStart );
+            var z = params.points.r.z + params.radius * Math.sin( params.angleStart );
 
             this.previousPosition.setX( this.object.position.x );
             this.previousPosition.setZ( this.object.position.z );
@@ -854,13 +831,13 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             var b = params.points.c.z - this.object.position.z;
             var len = distance( a, b );
 
-            var ox = a / len * params.speed + delta;
-            var oz = b / len * params.speed + delta;
+            var ox = a / len * params.speed;
+            var oz = b / len * params.speed;
 
             var step = distance( ox, oz );
             if ( len > 0 && len < step ) {
-                ox = a / step * ( params.speed / 2 ) + delta;
-                oz = b / step * ( params.speed / 2 ) + delta;
+                ox = a / step * ( params.speed / 2 );
+                oz = b / step * ( params.speed / 2 );
                 removeTextLabel();
                 removePointClick();
             }
@@ -868,9 +845,9 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             this.previousPosition.setX( params.points.d.x );
             this.previousPosition.setZ( params.points.d.z );
 
-            // params.lookAt.setX( params.points.c.x );
-            // params.lookAt.setZ( params.points.c.z );
-            // scope.object.lookAt( params.lookAt );
+            params.lookAt.setX( params.points.c.x );
+            params.lookAt.setZ( params.points.c.z );
+            scope.object.lookAt( params.lookAt );
 
             this.object.position.x += ox;
             this.object.position.z += oz;
@@ -892,6 +869,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
      * @param {number} step
      */
     function lookAt ( step ) {
+
         if ( params.startIteration < params.endIteration ) {
             var x = params.points.r.x + Math.cos(params.angleStart + step) * params.radius;
             var z = params.points.r.z + Math.sin(params.angleStart + step) * params.radius;

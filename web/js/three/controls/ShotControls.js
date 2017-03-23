@@ -25,73 +25,91 @@ THREE.ShotControls = function ( scene ) {
 
 
 
-    var geometry = new THREE.SphereGeometry( 0.3, 5, 5, 0, Math.PI * 2, 0, Math.PI * 2 );
+    var geometry = new THREE.SphereGeometry( 1, 5, 5, 0, Math.PI * 2, 0, Math.PI * 2 );
     var material = new THREE.MeshLambertMaterial( { color: '#FFFF00' } );
     var charge1 = new THREE.Mesh( geometry, material );
 
     var weapon = {
         slot_1: {
             active: true,
-            radius: 100,
-            speed: 5000,
+            radius: 1500,
+            speed: 0.1,
+            startSpeed: 0,
             interval: 10,
-            charges: 10
+            charges: 5,
+            positionTo: new THREE.Vector3()
         },
         slot_2: {
             active: false,
             radius: 50,
-            speed: 5000,
+            speed: 0.001,
+            startSpeed: 0,
             interval: 10,
-            charges: 10
+            charges: 10,
+            positionTo: new THREE.Vector3()
         },
         slot_3: {
             active: false,
             radius: 50,
-            speed: 5000,
+            speed: 0.001,
+            startSpeed: 0,
             interval: 10,
-            charges: 10
+            charges: 10,
+            positionTo: new THREE.Vector3()
         },
         slot_4: {
             active: false,
             radius: 50,
-            speed: 5000,
+            speed: 0.001,
+            startSpeed: 0,
             interval: 10,
-            charges: 10
+            charges: 10,
+            positionTo: new THREE.Vector3()
         },
         slot_5: {
             active: false,
             radius: 50,
-            speed: 5000,
+            speed: 0.001,
+            startSpeed: 0,
             interval: 10,
-            charges: 10
+            charges: 10,
+            positionTo: new THREE.Vector3()
         },
         slot_6: {
             active: false,
             radius: 50,
-            speed: 5000,
+            speed: 0.001,
+            startSpeed: 0,
             interval: 10,
-            charges: 10
+            charges: 10,
+            positionTo: new THREE.Vector3()
         },
         slot_7: {
             active: false,
             radius: 50,
-            speed: 5000,
+            speed: 0.001,
+            startSpeed: 0,
             interval: 10,
-            charges: 10
+            charges: 10,
+            positionTo: new THREE.Vector3()
         },
         slot_8: {
             active: false,
             radius: 50,
-            speed: 5000,
+            speed: 0.001,
+            startSpeed: 0,
             interval: 10,
-            charges: 10
+            charges: 10,
+            positionTo: new THREE.Vector3()
         },
         slot_9: {
             active: false,
             radius: 50,
-            speed: 5000,
+            speed: 0.001,
+            startSpeed: 0,
             interval: 10,
-            charges: 10
+            charges: 10,
+            positionTo: new THREE.Vector3()
         }
     };
 
@@ -115,13 +133,13 @@ THREE.ShotControls = function ( scene ) {
                 var startCharge = 0;
                 var idInterval = setInterval(function() {
 
+                    weapon[ type ][ 'positionTo' ].setX( position.x + radius * Math.cos( angle ) );
+                    weapon[ type ][ 'positionTo' ].setZ( position.z + radius * Math.sin( angle ) );
+
                     var mesh = charge1.clone();
-
-                    var x = position.x + radius * Math.cos( angle );
-                    var z = position.z + radius * Math.sin( angle );
-
                     mesh.position.copy( position );
-                    mesh[ 'positionTo' ] = new THREE.Vector3( x, 0, z );
+                    mesh[ 'param' ] = weapon[ type ];
+
                     freeShots.push( mesh );
                     scope._scene.add( mesh );
 
@@ -232,11 +250,22 @@ THREE.ShotControls = function ( scene ) {
     };
 
     this.update = function () {
+
         if ( freeShots.length > 0 ) {
+
             for ( var i = 0; i < freeShots.length; i++ ) {
+
                 var mesh = freeShots[ i ];
-                var positionTo = mesh.positionTo;
-                console.log( positionTo );
+                var param = mesh[ 'param' ];
+
+                param.startSpeed += param.speed;
+                mesh.position.lerp( param.positionTo, param.startSpeed );
+
+                if ( param.startSpeed >= 1 ) {
+                    param.startSpeed = 0;
+                    freeShots.splice( i, 1 );
+                    scope._scene.remove( mesh );
+                }
             }
         }
     };
