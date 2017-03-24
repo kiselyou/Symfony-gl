@@ -80,7 +80,7 @@
             scene.add( dirLight );
 
             // CUBES
-            for ( var i = 0; i < 500; i++ ) {
+            for ( var i = 0; i < 10; i++ ) {
                 var geometry = new THREE.SphereGeometry( 6, 15, 15 );
                 var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0.5, transparent: true } );
                 var mesh = new THREE.Mesh( geometry, material );
@@ -119,7 +119,6 @@
                 shot.setModel( scope.object );
                 shot.onKeyDown( e );
 
-                console.log( 'old angle = ' + ( 180 / Math.PI * scope.getAngleRotate()) );
             } );
 
 

@@ -3,6 +3,14 @@ THREE.ShotControls = function ( scene ) {
 
     this._scene = scene;
 
+    var intersectExceptUUID = [];
+    var elementsCollision = scene.children.filter( function ( value ) {
+
+        return value instanceof THREE.Mesh;
+    } );
+
+    console.log(elementsCollision);
+
     /**
      *
      * @type {{WATCH_FOR_MODEL: number, CHOOSE: number}}
@@ -355,6 +363,33 @@ THREE.ShotControls = function ( scene ) {
 
                 mesh.position.x += ox;
                 mesh.position.z += oz;
+
+
+
+
+                var originPoint = mesh.position.clone();
+
+                for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
+                    var localVertex = mesh.geometry.vertices[vertexIndex].clone();
+                    var globalVertex = localVertex.applyMatrix4( mesh.matrix );
+                    var directionVector = globalVertex.sub( mesh.position );
+
+                    var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+                    var collisionResults = ray.intersectObjects( elementsCollision );
+
+                    if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
+                        console.log(collisionResults[0][ 'object' ]);
+
+                        freeShots.splice( i, 1 );
+                        scope._scene.remove( mesh );
+                        scope._scene.remove( collisionResults[0][ 'object' ] );
+                    }
+                }
+
+
+
+
+
 
                 if ( mesh.position.distanceTo( mesh.positionTo ) <= 10 ) {
                     freeShots.splice( i, 1 );
