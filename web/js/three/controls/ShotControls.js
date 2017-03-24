@@ -25,134 +25,223 @@ THREE.ShotControls = function ( scene ) {
 
 
 
-    var geometry = new THREE.SphereGeometry( 1, 5, 5, 0, Math.PI * 2, 0, Math.PI * 2 );
-    var material = new THREE.MeshLambertMaterial( { color: '#FFFF00' } );
+    var geometry = new THREE.SphereGeometry( 0.3, 5, 5, 0, Math.PI * 2, 0, Math.PI * 2 );
+    var material = new THREE.MeshLambertMaterial( { color: '#EAEAEA' } );
     var charge1 = new THREE.Mesh( geometry, material );
 
+    /**
+     * Текущее количество энергии
+     *
+     * @type {number}
+     */
+    this.energy = 10000;
+
+    /**
+     *
+     * @type {number}
+     */
+    this.speedModel = 2000;
+
+    var GUN_1 = 1;
+    var GUN_2 = 2;
+    var GUN_3 = 3;
+    var GUN_4 = 4;
+    var GUN_5 = 5;
+    var GUN_6 = 6;
+    var GUN_7 = 7;
+    var GUN_8 = 8;
+    var GUN_9 = 9;
+
     var weapon = {
-        slot_1: {
+        1: {
+            active: true, // актывный слот
+            radius: 2500, // максимальное растояние выстрела
+            speed: 2000, // скорость залпа
+            intervalTime: 10, // интервал каждого залпа
+            charges: 10, // количество залпов
+            energy: 100, // объем энергии на один выстрел 10 залпов
+            reloadingTime: 300 // Время перезарадки после каждого выстрела
+        },
+        2: {
             active: true,
-            radius: 1500,
-            speed: 0.1,
-            startSpeed: 0,
-            interval: 10,
+            radius: 5000,
+            speed: 5000,
+            intervalTime: 5,
+            charges: 15,
+            energy: 200,
+            reloadingTime: 600
+        },
+        3: {
+            active: true,
+            radius: 5000,
+            speed: 10000,
+            intervalTime: 5,
+            charges: 10,
+            energy: 300,
+            reloadingTime: 800
+        },
+        4: {
+            active: true,
+            radius: 5000,
+            speed: 20000,
+            intervalTime: 10,
             charges: 5,
-            positionTo: new THREE.Vector3()
+            energy: 200,
+            reloadingTime: 300
         },
-        slot_2: {
-            active: false,
+        5: {
+            active: true,
             radius: 50,
             speed: 0.001,
-            startSpeed: 0,
-            interval: 10,
+            intervalTime: 10,
             charges: 10,
-            positionTo: new THREE.Vector3()
+            energy: 100,
+            reloadingTime: 100
         },
-        slot_3: {
-            active: false,
+        6: {
+            active: true,
             radius: 50,
             speed: 0.001,
-            startSpeed: 0,
-            interval: 10,
+            intervalTime: 10,
             charges: 10,
-            positionTo: new THREE.Vector3()
+            energy: 100,
+            reloadingTime: 100
         },
-        slot_4: {
-            active: false,
+        7: {
+            active: true,
             radius: 50,
             speed: 0.001,
-            startSpeed: 0,
-            interval: 10,
+            intervalTime: 10,
             charges: 10,
-            positionTo: new THREE.Vector3()
+            energy: 100,
+            reloadingTime: 100
         },
-        slot_5: {
-            active: false,
+        8: {
+            active: true,
             radius: 50,
             speed: 0.001,
-            startSpeed: 0,
-            interval: 10,
+            intervalTime: 10,
             charges: 10,
-            positionTo: new THREE.Vector3()
+            energy: 100,
+            reloadingTime: 100
         },
-        slot_6: {
-            active: false,
+        9: {
+            active: true,
             radius: 50,
             speed: 0.001,
-            startSpeed: 0,
-            interval: 10,
+            intervalTime: 10,
             charges: 10,
-            positionTo: new THREE.Vector3()
-        },
-        slot_7: {
-            active: false,
-            radius: 50,
-            speed: 0.001,
-            startSpeed: 0,
-            interval: 10,
-            charges: 10,
-            positionTo: new THREE.Vector3()
-        },
-        slot_8: {
-            active: false,
-            radius: 50,
-            speed: 0.001,
-            startSpeed: 0,
-            interval: 10,
-            charges: 10,
-            positionTo: new THREE.Vector3()
-        },
-        slot_9: {
-            active: false,
-            radius: 50,
-            speed: 0.001,
-            startSpeed: 0,
-            interval: 10,
-            charges: 10,
-            positionTo: new THREE.Vector3()
+            energy: 100,
+            reloadingTime: 100
         }
     };
 
     var freeShots = [];
 
     /**
-     * @param {string} type
+     * @param {string|number} type
      * @param {Vector3} position
      * @param {number} angle
+     * @returns {void}
      */
     function shot( type, position, angle ) {
 
-        if ( weapon.hasOwnProperty( type ) && weapon[ type ][ 'active' ]) {
+        if ( !weapon.hasOwnProperty( type ) ) {
 
-            var radius = weapon[ type ][ 'radius' ];
-            var charges = weapon[ type ][ 'charges' ];
-            var interval = weapon[ type ][ 'interval' ];
-
-            if ( charges > 0 ) {
-
-                var startCharge = 0;
-                var idInterval = setInterval(function() {
-
-                    weapon[ type ][ 'positionTo' ].setX( position.x + radius * Math.cos( angle ) );
-                    weapon[ type ][ 'positionTo' ].setZ( position.z + radius * Math.sin( angle ) );
-
-                    var mesh = charge1.clone();
-                    mesh.position.copy( position );
-                    mesh[ 'param' ] = weapon[ type ];
-
-                    freeShots.push( mesh );
-                    scope._scene.add( mesh );
-
-                    startCharge++;
-
-                    if ( startCharge == charges ) {
-
-                        clearInterval( idInterval );
-                    }
-
-                }, interval);
-            }
+            console.warn( 'Can not find slot "' + type + '"' );
+            return;
         }
+
+        var slot = weapon[ type ];
+
+        var energy = slot[ 'energy' ];
+
+        if ( ( scope.energy >= energy ) &&slot[ 'active' ] ) {
+
+           slot[ 'active' ] = false;
+
+            scope.energy -=  energy;
+
+            var radius =slot[ 'radius' ];
+            var charges =slot[ 'charges' ];
+
+            var startCharge = 0;
+            var idInterval = setInterval(function() {
+
+                var x = position.x + radius * Math.cos( angle );
+                var z = position.z + radius * Math.sin( angle );
+
+                var mesh = getChargedObject( type );
+                mesh.position.copy( position );
+                mesh.positionTo = new THREE.Vector3( x, 0, z );
+                mesh.speed =slot[ 'speed' ];
+
+                freeShots.push( mesh );
+                scope._scene.add( mesh );
+
+                startCharge++;
+
+                if ( startCharge == charges ) {
+
+                    clearInterval( idInterval );
+                }
+
+            },slot[ 'intervalTime' ]);
+
+            setTimeout(function () {
+
+               slot[ 'active' ] = true;
+
+            },slot[ 'reloadingTime' ]);
+        }
+    }
+
+    /**
+     * Получить модель снаряда
+     *
+     * @param {string|number} type
+     * @returns {Mesh|{}}
+     */
+    function getChargedObject( type ) {
+
+        var mesh = {};
+
+        switch (type) {
+            case GUN_1:
+                mesh = charge1.clone();
+                break;
+            case GUN_2:
+                mesh = charge1.clone();
+                break;
+            case GUN_3:
+                mesh = charge1.clone();
+                break;
+            case GUN_4:
+                mesh = charge1.clone();
+                break;
+            case GUN_5:
+                mesh = charge1.clone();
+                break;
+            case GUN_6:
+                mesh = charge1.clone();
+                break;
+            case GUN_7:
+                mesh = charge1.clone();
+                break;
+            case GUN_8:
+                mesh = charge1.clone();
+                break;
+            case GUN_9:
+                mesh = charge1.clone();
+                break;
+            default:
+                mesh = charge1.clone();
+                break
+        }
+
+        mesh[ 'positionTo' ] = new THREE.Vector3();
+
+        return mesh;
     }
 
     /**
@@ -213,36 +302,35 @@ THREE.ShotControls = function ( scene ) {
      */
     this.onKeyDown = function ( event ) {
 
+        var angle = getAngle( scope.previousPosition, scope.object.position );
+
         switch ( event.keyCode ) {
             case scope.keys.WEAPON_SLOT_1:
-                // turnOnWeapon( 1 );
-                var angle = getAngle( scope.previousPosition, scope.object.position );
-                shot( 'slot_1', scope.object.position, angle );
-
+                shot( GUN_1, scope.object.position, angle );
                 break;
             case scope.keys.WEAPON_SLOT_2:
-                turnOnWeapon( 2 );
+                shot( GUN_2, scope.object.position, angle );
                 break;
             case scope.keys.WEAPON_SLOT_3:
-                turnOnWeapon( 3 );
+                shot( GUN_3, scope.object.position, angle );
                 break;
             case scope.keys.WEAPON_SLOT_4:
-                turnOnWeapon( 4 );
+                shot( GUN_4, scope.object.position, angle );
                 break;
             case scope.keys.WEAPON_SLOT_5:
-                turnOnWeapon( 5 );
+                shot( GUN_5, scope.object.position, angle );
                 break;
             case scope.keys.WEAPON_SLOT_6:
-                turnOnWeapon( 6 );
+                shot( GUN_6, scope.object.position, angle );
                 break;
             case scope.keys.WEAPON_SLOT_7:
-                turnOnWeapon( 7 );
+                shot( GUN_7, scope.object.position, angle );
                 break;
             case scope.keys.WEAPON_SLOT_8:
-                turnOnWeapon( 8 );
+                shot( GUN_8, scope.object.position, angle );
                 break;
             case scope.keys.WEAPON_SLOT_9:
-                turnOnWeapon( 9 );
+                shot( GUN_9, scope.object.position, angle );
                 break;
         }
 
@@ -256,13 +344,19 @@ THREE.ShotControls = function ( scene ) {
             for ( var i = 0; i < freeShots.length; i++ ) {
 
                 var mesh = freeShots[ i ];
-                var param = mesh[ 'param' ];
 
-                param.startSpeed += param.speed;
-                mesh.position.lerp( param.positionTo, param.startSpeed );
+                var a = mesh.positionTo.x - mesh.position.x;
+                var b = mesh.positionTo.z - mesh.position.z;
+                var len =  Math.sqrt( a * a + b * b ) * 1000;
 
-                if ( param.startSpeed >= 1 ) {
-                    param.startSpeed = 0;
+                var speed = scope.speedModel + mesh.speed;
+                var ox = a / len * speed;
+                var oz = b / len * speed;
+
+                mesh.position.x += ox;
+                mesh.position.z += oz;
+
+                if ( mesh.position.distanceTo( mesh.positionTo ) <= 10 ) {
                     freeShots.splice( i, 1 );
                     scope._scene.remove( mesh );
                 }
