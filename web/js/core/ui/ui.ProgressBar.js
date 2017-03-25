@@ -14,6 +14,29 @@ var ui = {};
 
         /**
          *
+         * @type {null|function}
+         * @private
+         */
+        this._callback = null;
+
+        /**
+         * Callback for adding action when progress has completed
+         *
+         * @callback done
+         */
+
+        /**
+         *
+         * @param {done} callback - Callback for adding action when progress has completed
+         * @returns {ui.ProgressBar}
+         */
+        this.doneCallback = function ( callback ) {
+            this._callback = callback;
+            return this;
+        };
+
+        /**
+         *
          * @type {string}
          */
         this.unit = '%';
@@ -148,10 +171,15 @@ var ui = {};
          */
         this.close = function () {
 
-            if (progressBar) {
+            if ( progressBar ) {
                 setTimeout(function () {
                     progressBar.remove();
-                }, 500);
+
+                    if ( scope._callback ) {
+                        scope._callback.call( this );
+                    }
+
+                }, 200);
             }
             return this;
         };

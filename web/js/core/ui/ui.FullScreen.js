@@ -4,34 +4,35 @@
     'use strict';
 
     /**
-     *
+     * @param {Element} [element]
      * @memberOf ui
      * @namespace ui.FullScreen
      * @constructor
      */
-    ui.FullScreen = function() {
+    ui.FullScreen = function( element ) {
+
+        var container = element ? element : document.body;
 
         /**
          * Open element full screen
          *
-         * @param {Element} element
          * @returns {boolean}
          */
-        this.open = function ( element ) {
+        this.open = function () {
 
-            if ( element.requestFullScreen ) {
+            if ( container.requestFullScreen ) {
 
-                element.requestFullScreen();
+                container.requestFullScreen();
                 return true;
 
-            } else if ( element.mozRequestFullScreen ) {
+            } else if ( container.mozRequestFullScreen ) {
 
-                element.mozRequestFullScreen();
+                container.mozRequestFullScreen();
                 return true;
 
-            } else if ( element.webkitRequestFullScreen ) {
+            } else if ( container.webkitRequestFullScreen ) {
 
-                element.webkitRequestFullScreen();
+                container.webkitRequestFullScreen();
                 return true;
             }
 
@@ -50,24 +51,23 @@
         /**
          * Close element full screen
          *
-         * @param {Element} element
          * @returns {boolean}
          */
-        this.cancel = function ( element ) {
+        this.cancel = function () {
 
-            if ( element.cancelFullScreen ) {
+            if ( container.cancelFullScreen ) {
 
-                element.cancelFullScreen();
+                container.cancelFullScreen();
                 return true;
 
-            } else if ( element.mozCancelFullScreen ) {
+            } else if ( container.mozCancelFullScreen ) {
 
-                element.mozCancelFullScreen();
+                container.mozCancelFullScreen();
                 return true;
 
-            } else if ( element.webkitCancelFullScreen ) {
+            } else if ( container.webkitCancelFullScreen ) {
 
-                element.webkitCancelFullScreen();
+                container.webkitCancelFullScreen();
                 return true;
             }
 
@@ -76,27 +76,29 @@
 
         /**
          *
-         * @param {Element} element
          * @returns {*}
          */
-        this.toggle = function ( element ) {
+        this.toggle = function () {
 
-            if (!element.fullscreenElement &&
-                !element.mozFullScreenElement &&
-                !element.webkitFullscreenElement
+            if (
+                container.fullScreenElement ||
+                container.webkitFullScreenElement ||
+                container.mozFullScreenElement ||
+                container.msFullScreenElement
             ) {
 
                 return {
-                    action: 'open',
-                    status: this.open( element )
+                    action: 'close',
+                    status: this.cancel()
                 };
+
 
             } else {
-
                 return {
-                    action: 'close',
-                    status: this.cancel( element )
+                    action: 'open',
+                    status: this.open()
                 };
+
             }
         }
     }

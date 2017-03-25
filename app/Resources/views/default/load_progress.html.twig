@@ -12,8 +12,6 @@
 
     <div id="sw-container"></div>
 
-    <div class="sw-map" style="position: absolute; width: 200px; height: 200px;"></div>
-
 {% endblock %}
 
 {% block javascripts %}
@@ -24,18 +22,12 @@
     <script src="{{ asset('js/core/ui/ui.FullScreen.js') }}"></script>
 
 
+    <script src="{{ asset('js/three/panel/MiniMap.js') }}"></script>
+    <script src="{{ asset('js/three/panel/PanelControl.js') }}"></script>
     <script src="{{ asset('js/three/loaders/ModelsLoader.js') }}"></script>
     <script src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
 
     <script>
-
-        var full = new ui.FullScreen();
-        full.toggle( document.body );
-
-        var element = document.body;
-        element.addEventListener('click', function () {
-
-        });
 
         var scene = new THREE.Scene();
         var loader = new THREE.ModelsLoader( scene );
@@ -49,7 +41,20 @@
         };
 
         loader.load(function () {
-//            console.log( 34243 );
+
+            var miniMap = new THREE.MiniMap();
+            miniMap.appendTo();
+
+            var panel = new THREE.PanelControl();
+            panel.addAction( '1', 'icon', function ( e ) {
+
+//                console.log( e );
+
+                var full = new ui.FullScreen();
+                console.log( full.toggle() );
+            } );
+            panel.appendTo();
+
         });
 
 
