@@ -1,0 +1,3 @@
+default_load_progress:
+    path:     /load/progress
+    defaults: { _controller: "AppBundle:Default:loadProgress" }

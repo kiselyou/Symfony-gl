@@ -16,6 +16,9 @@
     <script src="{{ asset('js/three/three.js') }}"></script>
 
 
+    {#<script src="{{ asset('js/three/effects/ParticleEngine.js') }}"></script>#}
+
+
     <script src="{{ asset('models/ModelData.js') }}"></script>
     <script src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
     <script src="{{ asset('js/three/controls/PlanetControls.js') }}"></script>
@@ -139,12 +142,13 @@
                 renderer.setSize( w, h );
             }
 
+            var clock = new THREE.Clock();
+
             function render () {
 
-                var w = window.innerWidth, h = window.innerHeight;
-
-
                 requestAnimationFrame( render );
+
+
 
                 planetControls.update();
                 modelControls.update();

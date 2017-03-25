@@ -32,7 +32,6 @@ THREE.ShotControls = function ( scene ) {
     var scope = this;
 
 
-
     var geometry = new THREE.SphereGeometry( 0.3, 5, 5, 0, Math.PI * 2, 0, Math.PI * 2 );
     var material = new THREE.MeshLambertMaterial( { color: '#EAEAEA' } );
     var charge1 = new THREE.Mesh( geometry, material );
@@ -42,7 +41,7 @@ THREE.ShotControls = function ( scene ) {
      *
      * @type {number}
      */
-    this.energy = 10000;
+    this.energy = 1000000;
 
     /**
      *
@@ -62,11 +61,11 @@ THREE.ShotControls = function ( scene ) {
 
     var weapon = {
         1: {
-            active: true, // актывный слот
+            active: true, // актывный слот или заблокированный
             radius: 2500, // максимальное растояние выстрела
-            speed: 2000, // скорость залпа
+            speed: 20000, // скорость залпа
             intervalTime: 10, // интервал каждого залпа
-            charges: 10, // количество залпов
+            charges: 3, // количество залпов
             energy: 100, // объем энергии на один выстрел 10 залпов
             reloadingTime: 300 // Время перезарадки после каждого выстрела
         },
@@ -75,25 +74,25 @@ THREE.ShotControls = function ( scene ) {
             radius: 5000,
             speed: 5000,
             intervalTime: 5,
-            charges: 15,
+            charges: 5,
             energy: 200,
-            reloadingTime: 600
+            reloadingTime: 500
         },
         3: {
             active: true,
             radius: 5000,
             speed: 10000,
             intervalTime: 5,
-            charges: 10,
+            charges: 4,
             energy: 300,
-            reloadingTime: 800
+            reloadingTime: 400
         },
         4: {
             active: true,
             radius: 5000,
             speed: 20000,
             intervalTime: 10,
-            charges: 5,
+            charges: 1,
             energy: 200,
             reloadingTime: 300
         },
@@ -378,11 +377,12 @@ THREE.ShotControls = function ( scene ) {
                     var collisionResults = ray.intersectObjects( elementsCollision );
 
                     if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
-                        console.log(collisionResults[0][ 'object' ]);
-
+                        // console.log(collisionResults[0][ 'object' ]);
+                        //
                         freeShots.splice( i, 1 );
                         scope._scene.remove( mesh );
                         scope._scene.remove( collisionResults[0][ 'object' ] );
+                        break;
                     }
                 }
 
@@ -391,7 +391,7 @@ THREE.ShotControls = function ( scene ) {
 
 
 
-                if ( mesh.position.distanceTo( mesh.positionTo ) <= 10 ) {
+                if ( mesh && mesh.position.distanceTo( mesh.positionTo ) <= 10 ) {
                     freeShots.splice( i, 1 );
                     scope._scene.remove( mesh );
                 }

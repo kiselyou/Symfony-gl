@@ -817,6 +817,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             }
 
         } else {
+
             if ( this.modelData.getIncline() > 0 ) {
                 this.object.children[0].rotateY( - params.speedIncline );
                 this.modelData.increaseIncline( - params.speedIncline );
@@ -857,7 +858,7 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
             var startLen = Number( params.points.d.distanceTo( params.points.c ).toFixed( 4 ) );
             var currentLen = Number( params.points.d.distanceTo( params.points.b ).toFixed( 4 ) );
 
-            if ( !autoFly && ( currentLen >= startLen || len.toFixed( 2 ) <= 0 ) ) {
+            if ( ( currentLen >= startLen || len.toFixed( 2 ) <= 0 ) ) {
                 stopModel();
             }
         }
@@ -1125,10 +1126,16 @@ THREE.ModelControls = function ( camera, scene, domElement, container ) {
     function drawPointClick ( position ) {
         removeTextLabel();
         removePointClick();
+        var len = scope.object.position.distanceTo( position );
+
+        if ( len <= 1 ) {
+            return;
+        }
+
         pointClick = drawPoint( position, '#FF0000', true );
 
         var text = createTextLabel();
-        text.setHTML( scope.object.position.distanceTo( position ).toFixed( 3 ) );
+        text.setHTML( len.toFixed( 3 ) );
         text.setParent( pointClick );
         scope.textlabel = text;
         scope._container.appendChild( text.element );
