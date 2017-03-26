@@ -16,6 +16,18 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
 
     /**
      *
+     * @type {number}
+     */
+    this.speedAutoUpdate = 1000;
+
+    /**
+     *
+     * @type {number}
+     */
+    this.fixing = 0;
+
+    /**
+     *
      * @type {string}
      */
     var id = idPanel == undefined ? 'sw-panel-control' : idPanel;
@@ -37,6 +49,12 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
      * @type {null|Element}
      */
     var panel = null;
+
+    /**
+     *
+     * @type {THREE.PanelControl}
+     */
+    var scope = this;
 
     /**
      *
@@ -71,6 +89,10 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
         return this;
     };
 
+    /**
+     *
+     * @returns {Element}
+     */
     function templatePanelAction() {
 
         var a = document.createElement('div');
@@ -116,8 +138,16 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
         return a;
     }
 
+    /**
+     *
+     * @type {Array}
+     */
     var keyEvents = [];
 
+    /**
+     *
+     * @param {KeyboardEvent} e
+     */
     function addKeyEvents( e ) {
 
         for ( var i = 0; i < keyEvents.length; i++ ) {
@@ -129,6 +159,11 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
         }
     }
 
+    /**
+     *
+     * @param {Element} element
+     * @param callback
+     */
     function addEvent( element, callback ) {
 
         element.addEventListener( 'click', function ( e ) {
@@ -144,6 +179,168 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
 
     /**
      *
+     * @type {Array}
+     */
+    var progress = [];
+
+    /**
+     *
+     * @returns {Element}
+     */
+    function templateProgress() {
+
+        var a = document.createElement('div');
+        a.classList.add( 'sw-block-progress' );
+
+        for ( var i = 0; i < progress.length; i++ ) {
+
+            /**
+             *
+             * @type {{key: (string|number), label: string, number: number, max: =number, auto: =number, color: =string, unit: =string }}
+             */
+            var params = progress[ i ];
+
+            var b = document.createElement('div');
+            b.classList.add( 'sw-row' );
+
+            var c = document.createElement('div');
+            c.classList.add( 'sw-status-progress' );
+
+            var p = document.createElement('div');
+
+            if ( params.color != undefined ) {
+                p.style.background = params.color;
+            }
+
+            setProgress( p, params );
+            progress[ i ][ 'p' ] = p;
+
+            var l = document.createElement('div');
+            l.classList.add( 'sw-status-progress-label' );
+            labelProgress( l, params );
+            progress[ i ][ 'l' ] = l;
+
+            c.appendChild( p );
+            b.appendChild( c );
+            b.appendChild( l );
+            a.appendChild( b );
+
+            autoUpdate( progress[ i ] );
+        }
+
+        return a;
+    }
+
+    /**
+     *
+     * @param {{key: (string|number), label: string, number: number, max: =number, auto: =number, color: =string, unit: =string }} params
+     * @returns {void}
+     */
+    function autoUpdate( params ) {
+
+        if ( params.auto > 0 ) {
+
+            params[ 'idInterval' ] = setInterval( function () {
+
+                var max = params.max == undefined ? 100 : params.max;
+
+                if ( params.number >= max ) {
+                    params.number = max;
+                }
+
+                params.number += params.auto;
+                setProgress( params['p'], params );
+                labelProgress( params['l'], params );
+
+            }, scope.speedAutoUpdate );
+        }
+    }
+
+    /**
+     *
+     * @param {Element} element
+     * @param {{key: (string|number), label: string, number: number, max: =number, auto: =number, color: =string, unit: =string }} params
+     * @returns {void}
+     */
+    function setProgress( element, params ) {
+
+        var max = params.max == undefined ? 100 : params.max;
+        var percent = params.number * 100 / max;
+        element.style.width = ( percent ) + '%';
+    }
+
+    /**
+     *
+     * @param {Element} element
+     * @param {{key: (string|number), label: string, number: number, max: =number, auto: =number, color: =string, unit: =string }} params
+     * @returns {void}
+     */
+    function labelProgress( element, params ) {
+        var unit = params.unit == undefined ? '%' : params.unit;
+        element.innerHTML = params.label + ': ' + params.number.toFixed( scope.fixing ) + ' ' + unit;
+    }
+
+    /**
+     *
+     * @param {(string|number)} key
+     * @param {string} label
+     * @param {number} number
+     * @param {?number} [max]
+     * @param {?number} [auto]
+     * @param {?string} [color]
+     * @param {?string} [unit]
+     * @returns {THREE.PanelControl}
+     */
+    this.addProgress = function ( key, label, number, max, auto, color, unit ) {
+        progress.push(
+            {
+                key: key,
+                label: label,
+                number: number,
+                max: max,
+                auto: auto,
+                color: color,
+                unit: unit
+            }
+        );
+        return this;
+    };
+
+    /**
+     *
+     * @param {(string|number)} key
+     * @param {number} number
+     * @param {boolean} [increment]
+     * @returns {THREE.PanelControl}
+     */
+    this.updateProgress = function ( key, number, increment ) {
+
+        var pr = progress.find(function ( value ) {
+
+            return value.key === key;
+        });
+
+        if ( pr != undefined ) {
+
+            pr.number = increment ? pr.number + number : number;
+        }
+
+        return this;
+    };
+
+    /**
+     *
+     * @param {(string|number)} key
+     * @returns {*}
+     */
+    this.getProgress = function ( key ) {
+        return progress.find(function ( value ) {
+            return value.key === key;
+        });
+    };
+
+    /**
+     *
      * @returns {Element}
      */
     function templatePanelControl() {
@@ -155,11 +352,10 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
         panel.style.position = 'absolute';
         panel.style.width = size.width + 'px';
 
-        panel.width = size.width;
-
         panel.style.left = size.left + 'px';
         panel.style.bottom = size.bottom + 'px';
         panel.appendChild( templatePanelAction() );
+        panel.appendChild( templateProgress() );
 
         return panel;
     }
@@ -193,9 +389,8 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
 
         var size = getSize();
         panel.style.left = size.left + 'px';
-        // panel.style.top = size.top + 'px';
         panel.style.width = size.width + 'px';
-        // panel.style.height = size.height + 'px';
+        panel.style.bottom = size.bottom + 'px';
     }
 
     window.addEventListener( 'keydown', addKeyEvents, false);

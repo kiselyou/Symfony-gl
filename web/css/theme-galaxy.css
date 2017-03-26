@@ -144,13 +144,13 @@ body {
     font-weight: bold;
     border-radius: 5px 5px 0 0;
     border-top: 1px solid rgba(127,255,255,0.25);
-    padding-bottom: 5px;
+    padding: 5px;
 }
 
 .sw-block-actions {
     width: 100%;
-    height: 30px;
-    padding: 5px;
+    height: 38px;
+    overflow: hidden;
 }
 
 .sw-action {
@@ -191,12 +191,8 @@ body {
     font-size: 9px;
 }
 
-#sw-block-status {
-    margin: 0 6px 0 6px;
-}
-
-#sw-block-status div div {
-    float: left;
+.sw-block-progress {
+    width: 290px;
 }
 
 .sw-status-progress {
@@ -207,33 +203,33 @@ body {
     margin: 2px 0 3px 0;
     text-transform: uppercase;
     color: #000000;
+    float: left;
 }
 
 .sw-status-progress div {
-    height: 6px;
-    width: 0;
-    border-radius: 1px 0 0 1px;
+    width: 0%;
+    background: rgba(127,255,255,0.45);
+    height: 4px;
+    border-radius: 4px;
 }
 
-.sw-status-text {
-    font-size: 11px;
-    font-family: Arial;
-    padding-left: 5px;
-}
-
-.sw-status-name {
-    width: 20px;
-    text-align: center;
-}
-
-.sw-status-current {
-    width: 35px;
-    text-align: right;
+.sw-status-progress-label {
+    color: #FFFFFF;
+    width: calc(40% - 10px);
+    font-size: 8px;
+    float: left;
+    padding-left: 10px;
 }
 
 .sw-text-error {
     font-size: 10px;
     font-weight: bold;
+}
+
+.sw-row {
+    width: 100%;
+    clear: both;
+    overflow: hidden;
 }
 
 /*===============================================   FIELDS   =========================================================*/
@@ -319,7 +315,8 @@ body {
     overflow: hidden;
     height: 20px;
     background-color: #000000;
-    border: 1px solid rgba(127,255,255,0.25);
+    border: 1px solid rgba(127,255,255,0.25);;
+    /*border: 1px solid rgba(127,255,255,0.25);*/
     -webkit-box-shadow: inset 0 0 12px rgba(0,255,255,0.5);
     box-shadow: inset 0 0 12px rgba(0,255,255,0.5);
     border-radius: 4px;

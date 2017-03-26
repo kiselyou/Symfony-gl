@@ -14,12 +14,39 @@
 
     {#<div id="sw-map" class="sw-map" style="position: absolute; width: 320px; height: 240px; left: 1535px; top: 352px;"></div>#}
 
+
+
+
+
     {#<div id="sw-panel-control" class="sw-panel-control" style="position: absolute; width: 290px; height: 80px; left: 0px; top: 512px;">#}
+
         {#<div class="sw-block-actions">#}
             {#<div class="sw-action" data-active="sw-action-active">#}
                 {#<div class="sw-action-icon glyphicon glyphicon-fullscreen"></div>#}
             {#</div>#}
         {#</div>#}
+
+        {#<div class="sw-block-progress">#}
+
+            {#<div class="sw-row">#}
+                {#<div class="sw-status-progress">#}
+                    {#<div></div>#}
+                {#</div>#}
+                {#<div class="sw-status-progress-label">asdas</div>#}
+            {#</div>#}
+
+            {#<div class="sw-row">#}
+                {#<div class="sw-status-progress"></div>#}
+                {#<div class="sw-status-progress-label">asdas</div>#}
+            {#</div>#}
+
+            {#<div class="sw-row">#}
+                {#<div class="sw-status-progress"></div>#}
+                {#<div class="sw-status-progress-label">asdas</div>#}
+            {#</div>#}
+
+        {#</div>#}
+
     {#</div>#}
 
 {% endblock %}
@@ -56,12 +83,6 @@
             miniMap.appendTo();
 
             var panel = new THREE.PanelControl( miniMap );
-            panel.addAction( function () {
-
-                new ui.FullScreen().toggle();
-
-            }, null, 'fullscreen', null, true );
-
 
             panel.addAction( function () {
 
@@ -69,75 +90,28 @@
 
             }, null, 'fullscreen', null, true );
 
-            panel.addAction( function () {
-
-                new ui.FullScreen().toggle();
-
-            }, null, 'fullscreen', null, true );
-
-            panel.addAction( function () {
-
-                new ui.FullScreen().toggle();
-
-            }, null, 'fullscreen', null, true );
-
-            panel.addAction( function () {
-
-                new ui.FullScreen().toggle();
-
-            }, null, 'fullscreen', null, true );
-
-            panel.addAction( function () {
-
-                new ui.FullScreen().toggle();
-
-            }, null, 'fullscreen', null, true );
-
-            panel.addAction( function () {
-
-                new ui.FullScreen().toggle();
-
-            }, null, 'fullscreen', null, true );
-
-            panel.addAction( function () {
-
-                new ui.FullScreen().toggle();
-
-            }, null, 'fullscreen', null, true );
-
-            panel.addAction( function () {
-
-                new ui.FullScreen().toggle();
-
-            }, null, 'fullscreen', null, true );
-
-            panel.addAction( function () {
-
-                new ui.FullScreen().toggle();
-
-            }, null, 'fullscreen', null, true );
-
-            panel.addAction( function () {
-
-                new ui.FullScreen().toggle();
-
-            }, null, 'fullscreen', null, true );
-
+            panel.addProgress( 1, 'label-1', 10, 2000, 10, '#FF9900', 'sss' );
+            panel.addProgress( 2, 'label-2', 20, null, 1, '#008AFA' );
 
             panel.appendTo();
 
         });
         
-//        document.addEventListener('contextmenu', function ( e ) {
-//            e.preventDefault();
-//        }, false );
-//
-//        document.addEventListener( 'keydown', function ( e ) {
-//            if( e.which === 123 || e.which === 122 ){
-//                e.preventDefault();
-//                return false;
-//            }
-//        }, false );
+        document.addEventListener('contextmenu', function ( e ) {
+            e.preventDefault();
+        }, false );
+
+        document.addEventListener( 'keydown', function ( e ) {
+
+            switch ( e.which ) {
+                case 123:
+//                    e.preventDefault();
+                    break;
+                case 122:
+                    e.preventDefault();
+                    break;
+            }
+        }, false );
 
 
     </script>
