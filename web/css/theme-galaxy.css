@@ -141,7 +141,6 @@ body {
 }
 
 .sw-panel-control {
-    font-size: 8px;
     font-weight: bold;
     border-radius: 5px 5px 0 0;
     border-top: 1px solid rgba(127,255,255,0.25);
@@ -171,19 +170,33 @@ body {
     cursor: pointer;
 }
 
-.sw-action-active, .sw-action:active {
-    background-color: rgba(0,255,255,0.4);
+.sw-action:hover .sw-action-icon {
+    top: 7px;
+    font-size: 14px;
 }
 
-.sw-action img {
-    height: 26px;
-    max-width: 26px;
-    margin: 1px;
+.sw-action-active, .sw-action:active {
+
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    -webkit-background-size: 10px 10px;
+    background-size: 10px 10px;
+}
+
+.sw-action-icon {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    left: 0;
+    top: 8px;
+    font-size: 12px;
 }
 
 .sw-action-keyword {
     position: absolute;
     left: 2px;
+    font-size: 6px;
 }
 
 #sw-block-status {

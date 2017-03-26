@@ -12,6 +12,21 @@
 
     <div id="sw-container"></div>
 
+    {#<div class="sw-panel-control">#}
+        {#<div class="sw-block-actions">#}
+
+            {#<div class="sw-action">#}
+                {#<div class="glyphicon glyphicon-fullscreen sw-action-icon"></div>#}
+                {#<div class="sw-action-keyword">1</div>#}
+            {#</div>#}
+            {#<div class="sw-action">#}
+                {#<div class="sw-action-keyword">1</div>#}
+            {#</div>#}
+
+        {#</div>#}
+
+    {#</div>#}
+
 {% endblock %}
 
 {% block javascripts %}
@@ -46,13 +61,12 @@
             miniMap.appendTo();
 
             var panel = new THREE.PanelControl();
-            panel.addAction( '1', 'icon', function ( e ) {
-
-//                console.log( e );
+            panel.addAction( function ( e ) {
 
                 var full = new ui.FullScreen();
                 console.log( full.toggle() );
-            } );
+
+            }, null, 'fullscreen', true );
             panel.appendTo();
 
         });

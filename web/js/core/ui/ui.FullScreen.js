@@ -55,19 +55,19 @@
          */
         this.cancel = function () {
 
-            if ( container.cancelFullScreen ) {
+            if ( document.cancelFullScreen ) {
 
-                container.cancelFullScreen();
+                document.cancelFullScreen();
                 return true;
 
-            } else if ( container.mozCancelFullScreen ) {
+            } else if ( document.mozCancelFullScreen ) {
 
-                container.mozCancelFullScreen();
+                document.mozCancelFullScreen();
                 return true;
 
-            } else if ( container.webkitCancelFullScreen ) {
+            } else if ( document.webkitCancelFullScreen ) {
 
-                container.webkitCancelFullScreen();
+                document.webkitCancelFullScreen();
                 return true;
             }
 
@@ -80,27 +80,31 @@
          */
         this.toggle = function () {
 
-            if (
-                container.fullScreenElement ||
-                container.webkitFullScreenElement ||
-                container.mozFullScreenElement ||
-                container.msFullScreenElement
-            ) {
+            if ( this.isOpened() ) {
 
                 return {
                     action: 'close',
                     status: this.cancel()
                 };
 
-
             } else {
+
                 return {
                     action: 'open',
                     status: this.open()
                 };
 
             }
-        }
+        };
+
+        this.isOpened = function () {
+
+            return !(
+                !document.fullscreenElement &&
+                !document.mozFullScreenElement &&
+                !document.webkitFullscreenElement
+            );
+        };
     }
 
 } (window.ui || {}));

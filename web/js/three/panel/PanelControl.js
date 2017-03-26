@@ -21,12 +21,20 @@ THREE.PanelControl = function ( idPanel ) {
      */
     var panel = null;
 
-    this.addAction = function ( name, icon, callback ) {
+    /**
+     *
+     * @param {function} callback
+     * @param {(string|number)} [name]
+     * @param {(string|number)} [icon]
+     * @param {boolean} [active]
+     */
+    this.addAction = function ( callback, name, icon, active ) {
         actions.push(
             {
+                callback: callback,
+                active: active,
                 name: name,
-                icon: icon,
-                callback: callback
+                icon: icon
             }
         );
     };
@@ -55,10 +63,26 @@ THREE.PanelControl = function ( idPanel ) {
             var b = document.createElement('div');
             b.classList.add( 'sw-action' );
 
-            var c = document.createElement('div');
-            c.classList.add( 'sw-action-keyword' );
+            if ( action.active ) {
+                b.setAttribute( 'data-active', 'sw-action-active' );
+            }
 
-            b.appendChild( c );
+            if ( action.icon != undefined ) {
+                var c = document.createElement('div');
+                c.classList.add('sw-action-icon');
+                c.classList.add('glyphicon');
+                c.classList.add('glyphicon-' + action.icon);
+                b.appendChild( c );
+            }
+
+            if ( action.name != undefined ) {
+
+                var d = document.createElement('div');
+                d.classList.add('sw-action-keyword');
+                d.innerHTML = action.name;
+                b.appendChild(d);
+            }
+
             a.appendChild( b );
 
             addEvent( b, action.callback );
@@ -70,6 +94,12 @@ THREE.PanelControl = function ( idPanel ) {
     function addEvent( element, callback ) {
 
         element.addEventListener( 'click', function ( e ) {
+
+            if ( this.hasAttribute( 'data-active' ) ) {
+
+                this.classList.toggle( this.getAttribute( 'data-active' ) );
+            }
+
             callback.call( this, e );
         } );
     }
