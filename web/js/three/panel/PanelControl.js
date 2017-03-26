@@ -1,11 +1,18 @@
-
-THREE.PanelControl = function ( idPanel ) {
+/**
+ *
+ * @param {THREE.MiniMap} miniMap
+ * @param {string} [idPanel]
+ * @constructor
+ */
+THREE.PanelControl = function ( miniMap, idPanel ) {
 
     /** @const {number} */
-    var PANEL_WIDTH = 290;
+    var PANEL_MIN_WIDTH = 320;
+
+    var PANEL_MAX_WIDTH = 1000;
 
     /** @const {number} */
-    var PANEL_HEIGHT = 80;
+    var INDENT_RIGHT = 10;
 
     /**
      *
@@ -13,6 +20,16 @@ THREE.PanelControl = function ( idPanel ) {
      */
     var id = idPanel == undefined ? 'sw-panel-control' : idPanel;
 
+    /**
+     *
+     * @type {THREE.MiniMap}
+     */
+    var map = miniMap;
+
+    /**
+     *
+     * @type {Array}
+     */
     var actions = [];
 
     /**
@@ -24,17 +41,20 @@ THREE.PanelControl = function ( idPanel ) {
     /**
      *
      * @param {function} callback
-     * @param {(string|number)} [name]
-     * @param {(string|number)} [icon]
+     * @param {?(string|number)} [name]
+     * @param {?(string|number)} [icon]
+     * @param {?number} [keyCode]
      * @param {boolean} [active]
      */
-    this.addAction = function ( callback, name, icon, active ) {
+    this.addAction = function ( callback, name, icon, keyCode, active ) {
         actions.push(
             {
                 callback: callback,
                 active: active,
                 name: name,
-                icon: icon
+                icon: icon,
+                keyCode: keyCode,
+                element: null
             }
         );
     };
@@ -85,10 +105,28 @@ THREE.PanelControl = function ( idPanel ) {
 
             a.appendChild( b );
 
+            if ( action.keyCode != undefined ) {
+                actions[ i ].element = b;
+                keyEvents.push( action );
+            }
+
             addEvent( b, action.callback );
         }
 
         return a;
+    }
+
+    var keyEvents = [];
+
+    function addKeyEvents( e ) {
+
+        for ( var i = 0; i < keyEvents.length; i++ ) {
+
+            if ( e.keyCode == keyEvents[ i ][ 'keyCode' ] ) {
+
+                keyEvents[ i ][ 'callback' ].call( this, e, keyEvents[ i ][ 'element' ] );
+            }
+        }
     }
 
     function addEvent( element, callback ) {
@@ -116,10 +154,13 @@ THREE.PanelControl = function ( idPanel ) {
         panel.classList.add('sw-panel-control');
         panel.style.position = 'absolute';
         panel.style.width = size.width + 'px';
-        panel.style.height = size.height + 'px';
+
+        panel.width = size.width;
+
         panel.style.left = size.left + 'px';
-        panel.style.top = size.top + 'px';
+        panel.style.bottom = size.bottom + 'px';
         panel.appendChild( templatePanelAction() );
+
         return panel;
     }
 
@@ -129,11 +170,14 @@ THREE.PanelControl = function ( idPanel ) {
      */
     function getSize() {
 
+        var width = map ? map.getElement().offsetLeft : PANEL_MIN_WIDTH;
+        width = width < PANEL_MIN_WIDTH ? PANEL_MIN_WIDTH : width;
+        width = width > PANEL_MAX_WIDTH ? PANEL_MAX_WIDTH : width;
+
         return {
-            width: PANEL_WIDTH,
-            height: PANEL_HEIGHT,
+            width: width - INDENT_RIGHT,
             left: 0,
-            top: window.innerHeight - PANEL_HEIGHT
+            bottom: 0
         }
     }
 
@@ -149,9 +193,12 @@ THREE.PanelControl = function ( idPanel ) {
 
         var size = getSize();
         panel.style.left = size.left + 'px';
-        panel.style.top = size.top + 'px';
+        // panel.style.top = size.top + 'px';
+        panel.style.width = size.width + 'px';
+        // panel.style.height = size.height + 'px';
     }
 
+    window.addEventListener( 'keydown', addKeyEvents, false);
     window.addEventListener( 'resize', resize, false );
 
 };

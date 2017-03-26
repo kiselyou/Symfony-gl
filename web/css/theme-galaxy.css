@@ -118,7 +118,7 @@ body {
     }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 650px) {
     .sw-modal {
         width: 80%;
         margin: 10% 10%;
@@ -144,6 +144,7 @@ body {
     font-weight: bold;
     border-radius: 5px 5px 0 0;
     border-top: 1px solid rgba(127,255,255,0.25);
+    padding-bottom: 5px;
 }
 
 .sw-block-actions {
@@ -153,8 +154,8 @@ body {
 }
 
 .sw-action {
-    height: 28px;
-    width: 28px;
+    height: 32px;
+    width: 32px;
     margin: 2px 1px 0 0;
     float: left;
     text-align: center;
@@ -170,18 +171,8 @@ body {
     cursor: pointer;
 }
 
-.sw-action:hover .sw-action-icon {
-    top: 7px;
-    font-size: 14px;
-}
-
 .sw-action-active, .sw-action:active {
-
-    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    -webkit-background-size: 10px 10px;
-    background-size: 10px 10px;
+    background-color: rgba(0,255,255,0.4);
 }
 
 .sw-action-icon {
@@ -189,14 +180,15 @@ body {
     width: 100%;
     text-align: center;
     left: 0;
-    top: 8px;
-    font-size: 12px;
+    top: 10px;
+    font-size: 14px;
 }
 
 .sw-action-keyword {
     position: absolute;
     left: 2px;
-    font-size: 6px;
+    top: -2px;
+    font-size: 9px;
 }
 
 #sw-block-status {
@@ -318,8 +310,9 @@ body {
 
 .progress-block {
     position: absolute;
-    width: 100%;
+    width: calc( 100% - 40px );
     top: 50%;
+    margin: 20px;
 }
 
 .progress-galaxy {
@@ -329,6 +322,7 @@ body {
     border: 1px solid rgba(127,255,255,0.25);
     -webkit-box-shadow: inset 0 0 12px rgba(0,255,255,0.5);
     box-shadow: inset 0 0 12px rgba(0,255,255,0.5);
+    border-radius: 4px;
 }
 
 .progress-bar-label {
@@ -347,12 +341,4 @@ body {
     background-color: rgba(127,255,255,0.25);
     -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
     box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
-}
-
-.progress-striped .progress-bar-galaxy {
-    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    -webkit-background-size: 40px 40px;
-    background-size: 40px 40px;
 }

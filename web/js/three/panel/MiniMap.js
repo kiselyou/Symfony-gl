@@ -25,6 +25,14 @@ THREE.MiniMap = function ( idMap ) {
 
     /**
      *
+     * @returns {null|Element}
+     */
+    this.getElement = function () {
+        return map;
+    };
+
+    /**
+     *
      * @param {Element} [element]
      * @returns {THREE.MiniMap}
      */
@@ -48,8 +56,8 @@ THREE.MiniMap = function ( idMap ) {
         map.style.position = 'absolute';
         map.style.width = size.width + 'px';
         map.style.height = size.height + 'px';
-        map.style.left = size.left + 'px';
-        map.style.top = size.top + 'px';
+        map.style.right = size.right + 'px';
+        map.style.bottom = size.bottom + 'px';
         return map;
     }
 
@@ -65,8 +73,8 @@ THREE.MiniMap = function ( idMap ) {
         return {
             width: MAP_WIDTH,
             height: MAP_HEIGHT,
-            left: width - MAP_WIDTH,
-            top: height - MAP_HEIGHT
+            right: 0,
+            bottom: 0
         }
     }
 

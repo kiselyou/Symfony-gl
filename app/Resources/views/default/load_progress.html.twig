@@ -12,19 +12,14 @@
 
     <div id="sw-container"></div>
 
-    {#<div class="sw-panel-control">#}
+    {#<div id="sw-map" class="sw-map" style="position: absolute; width: 320px; height: 240px; left: 1535px; top: 352px;"></div>#}
+
+    {#<div id="sw-panel-control" class="sw-panel-control" style="position: absolute; width: 290px; height: 80px; left: 0px; top: 512px;">#}
         {#<div class="sw-block-actions">#}
-
-            {#<div class="sw-action">#}
-                {#<div class="glyphicon glyphicon-fullscreen sw-action-icon"></div>#}
-                {#<div class="sw-action-keyword">1</div>#}
+            {#<div class="sw-action" data-active="sw-action-active">#}
+                {#<div class="sw-action-icon glyphicon glyphicon-fullscreen"></div>#}
             {#</div>#}
-            {#<div class="sw-action">#}
-                {#<div class="sw-action-keyword">1</div>#}
-            {#</div>#}
-
         {#</div>#}
-
     {#</div>#}
 
 {% endblock %}
@@ -60,16 +55,89 @@
             var miniMap = new THREE.MiniMap();
             miniMap.appendTo();
 
-            var panel = new THREE.PanelControl();
-            panel.addAction( function ( e ) {
+            var panel = new THREE.PanelControl( miniMap );
+            panel.addAction( function () {
 
-                var full = new ui.FullScreen();
-                console.log( full.toggle() );
+                new ui.FullScreen().toggle();
 
-            }, null, 'fullscreen', true );
+            }, null, 'fullscreen', null, true );
+
+
+            panel.addAction( function () {
+
+                new ui.FullScreen().toggle();
+
+            }, null, 'fullscreen', null, true );
+
+            panel.addAction( function () {
+
+                new ui.FullScreen().toggle();
+
+            }, null, 'fullscreen', null, true );
+
+            panel.addAction( function () {
+
+                new ui.FullScreen().toggle();
+
+            }, null, 'fullscreen', null, true );
+
+            panel.addAction( function () {
+
+                new ui.FullScreen().toggle();
+
+            }, null, 'fullscreen', null, true );
+
+            panel.addAction( function () {
+
+                new ui.FullScreen().toggle();
+
+            }, null, 'fullscreen', null, true );
+
+            panel.addAction( function () {
+
+                new ui.FullScreen().toggle();
+
+            }, null, 'fullscreen', null, true );
+
+            panel.addAction( function () {
+
+                new ui.FullScreen().toggle();
+
+            }, null, 'fullscreen', null, true );
+
+            panel.addAction( function () {
+
+                new ui.FullScreen().toggle();
+
+            }, null, 'fullscreen', null, true );
+
+            panel.addAction( function () {
+
+                new ui.FullScreen().toggle();
+
+            }, null, 'fullscreen', null, true );
+
+            panel.addAction( function () {
+
+                new ui.FullScreen().toggle();
+
+            }, null, 'fullscreen', null, true );
+
+
             panel.appendTo();
 
         });
+        
+//        document.addEventListener('contextmenu', function ( e ) {
+//            e.preventDefault();
+//        }, false );
+//
+//        document.addEventListener( 'keydown', function ( e ) {
+//            if( e.which === 123 || e.which === 122 ){
+//                e.preventDefault();
+//                return false;
+//            }
+//        }, false );
 
 
     </script>
