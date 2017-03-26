@@ -244,11 +244,12 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
 
                 var max = params.max == undefined ? 100 : params.max;
 
+                params.number += params.auto;
+
                 if ( params.number >= max ) {
                     params.number = max;
                 }
 
-                params.number += params.auto;
                 setProgress( params['p'], params );
                 labelProgress( params['l'], params );
 
@@ -276,27 +277,27 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
      * @returns {void}
      */
     function labelProgress( element, params ) {
+        var max = params.max == undefined ? 100 : params.max;
         var unit = params.unit == undefined ? '%' : params.unit;
-        element.innerHTML = params.label + ': ' + params.number.toFixed( scope.fixing ) + ' ' + unit;
+        element.innerHTML = params.label + ': ' + max + ' / ' + params.number.toFixed( scope.fixing ) + ' ' + unit;
     }
 
     /**
      *
      * @param {(string|number)} key
      * @param {string} label
-     * @param {number} number
      * @param {?number} [max]
      * @param {?number} [auto]
      * @param {?string} [color]
      * @param {?string} [unit]
      * @returns {THREE.PanelControl}
      */
-    this.addProgress = function ( key, label, number, max, auto, color, unit ) {
+    this.addProgress = function ( key, label, max, auto, color, unit ) {
         progress.push(
             {
                 key: key,
                 label: label,
-                number: number,
+                number: 0,
                 max: max,
                 auto: auto,
                 color: color,
