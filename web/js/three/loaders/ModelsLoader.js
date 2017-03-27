@@ -105,11 +105,8 @@ THREE.ModelsLoader = function ( scene ) {
 
             if ( scope.doneLoad ) {
 
-                // scope.doneLoad.call(this);
                 progressBar.doneCallback( scope.doneLoad );
             }
-
-            // progressBar.close();
 
             return;
         }
@@ -124,7 +121,7 @@ THREE.ModelsLoader = function ( scene ) {
 
             if ( scope.objectLoaded ) {
 
-                scope.objectLoaded.call( this, object );
+                scope.objectLoaded.call( this, object, path );
             }
 
             scope.scene.add( object );

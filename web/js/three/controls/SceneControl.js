@@ -52,9 +52,13 @@ THREE.SceneControl  = function ( idElement, lock ) {
     loader.addPath( '/web/models/M1/Spaceship1.obj' );
     loader.addPath( '/web/models/M1/walera.obj' );
 
+    var tttttt = 0;
 
-    loader.objectLoaded = function ( object ) {
-//            console.log( object );
+    loader.objectLoaded = function ( object, path ) {
+        // object.visible = false;
+        object.position.x = tttttt;
+        tttttt += 30;
+        // console.log(  );
     };
 
     loader.load(function () {
@@ -120,6 +124,8 @@ THREE.SceneControl  = function ( idElement, lock ) {
         initCamera();
         initLight();
         render();
+
+        initOrbitControl();
     }
 
     /**
@@ -128,6 +134,12 @@ THREE.SceneControl  = function ( idElement, lock ) {
      */
     function render() {
         requestAnimationFrame( render );
+
+        if ( orbitControl ) {
+
+            orbitControl.update();
+        }
+
         scope.renderer.render( scope.scene, scope.camera );
     }
 
@@ -137,9 +149,9 @@ THREE.SceneControl  = function ( idElement, lock ) {
      */
     function initCamera() {
 
-        scope.camera.position.x = 100;
-        scope.camera.position.z = 100;
-        scope.camera.position.y = 100;
+        scope.camera.position.x = 0;
+        scope.camera.position.z = -30;
+        scope.camera.position.y = 15;
         scope.camera.fov = 45;
         scope.camera.near = 0.1;
         scope.camera.far = 1000000;
@@ -149,25 +161,28 @@ THREE.SceneControl  = function ( idElement, lock ) {
         scope.scene.add( scope.camera );
     }
 
+    var orbitControl = null;
+
+    function initOrbitControl() {
+
+        orbitControl = new THREE.OrbitControls( scope.camera, scope.renderer.domElement );
+        orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
+        orbitControl.enablePan = false;
+        orbitControl.enableKeys = false;
+        orbitControl.minDistance = 30;
+        orbitControl.maxPolarAngle = 75 * Math.PI / 180;
+        orbitControl.maxDistance = 300;
+        orbitControl.rotateSpeed = 3.0;
+    }
+
     function initLight() {
 
-        // LIGHT
-        var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
-        hemiLight.color.setHSL( 0.6, 1, 0.6 );
-        hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
-        hemiLight.position.set( 0, 500, 0 );
-        scope.scene.add( hemiLight );
+        var light = new THREE.HemisphereLight( 0xFFFFFF, 0x000000, 1 );
+        light.position.set( 0, 500, 0 );
+        scope.scene.add( light );
 
-        // LIGHT
-        var dirLight = new THREE.DirectionalLight( 0xffffff );
-        dirLight.color.setHSL( 0.1, 1, 0.95 );
-        dirLight.position.set( -1, 1.75, 1 );
-        dirLight.position.multiplyScalar( 5 );
-
-        scope.scene.add( dirLight );
-
-        var color = new THREE.Color( 0x00ffff );
-        var grid = new THREE.GridHelper( 1000, 100, color, 0x888888 );
+        var color = new THREE.Color( 0xCCCCCC );
+        var grid = new THREE.GridHelper( 500, 50, color, 0x666666 );
         scope.scene.add( grid );
     }
 
