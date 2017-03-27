@@ -12,43 +12,6 @@
 
     <div id="sw-container"></div>
 
-    {#<div id="sw-map" class="sw-map" style="position: absolute; width: 320px; height: 240px; left: 1535px; top: 352px;"></div>#}
-
-
-
-
-
-    {#<div id="sw-panel-control" class="sw-panel-control" style="position: absolute; width: 290px; height: 80px; left: 0px; top: 512px;">#}
-
-        {#<div class="sw-block-actions">#}
-            {#<div class="sw-action" data-active="sw-action-active">#}
-                {#<div class="sw-action-icon glyphicon glyphicon-fullscreen"></div>#}
-            {#</div>#}
-        {#</div>#}
-
-        {#<div class="sw-block-progress">#}
-
-            {#<div class="sw-row">#}
-                {#<div class="sw-status-progress">#}
-                    {#<div></div>#}
-                {#</div>#}
-                {#<div class="sw-status-progress-label">asdas</div>#}
-            {#</div>#}
-
-            {#<div class="sw-row">#}
-                {#<div class="sw-status-progress"></div>#}
-                {#<div class="sw-status-progress-label">asdas</div>#}
-            {#</div>#}
-
-            {#<div class="sw-row">#}
-                {#<div class="sw-status-progress"></div>#}
-                {#<div class="sw-status-progress-label">asdas</div>#}
-            {#</div>#}
-
-        {#</div>#}
-
-    {#</div>#}
-
 {% endblock %}
 
 {% block javascripts %}
@@ -64,56 +27,12 @@
     <script src="{{ asset('js/three/loaders/ModelsLoader.js') }}"></script>
     <script src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
 
+
+    <script src="{{ asset('js/three/controls/SceneControl.js') }}"></script>
+
     <script>
 
-        var scene = new THREE.Scene();
-        var loader = new THREE.ModelsLoader( scene );
-
-        loader.addPath( '/web/models/M1/ship.obj' );
-        loader.addPath( '/web/models/M1/Spaceship1.obj' );
-        loader.addPath( '/web/models/M1/walera.obj' );
-
-        loader.objectLoaded = function ( object ) {
-//            console.log( object );
-        };
-
-        loader.load(function () {
-
-            var miniMap = new THREE.MiniMap();
-            miniMap.appendTo();
-
-            var panel = new THREE.PanelControl( miniMap );
-
-            panel.addAction( function () {
-
-                new ui.FullScreen().toggle();
-
-            }, null, 'fullscreen', null, true );
-
-            panel.addProgress( 1, 'energy', 2000, 25, '#FF9900' );
-            panel.addProgress( 2, 'armor', 4000, 20, '#008AFA' );
-            panel.addProgress( 3, 'hull', 1000, 10, '#C10020' );
-
-            panel.appendTo();
-
-        });
-        
-        document.addEventListener('contextmenu', function ( e ) {
-            e.preventDefault();
-        }, false );
-
-        document.addEventListener( 'keydown', function ( e ) {
-
-            switch ( e.which ) {
-                case 123:
-//                    e.preventDefault();
-                    break;
-                case 122:
-                    e.preventDefault();
-                    break;
-            }
-        }, false );
-
+        new THREE.SceneControl( 'sw-container', false );
 
     </script>
 {% endblock %}
