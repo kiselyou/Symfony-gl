@@ -42,6 +42,8 @@ THREE.SceneControl  = function ( idElement, lock ) {
      */
     var scope = this;
 
+    var flyControls = null;
+
     /**
      *
      * @type {THREE.ModelsLoader}
@@ -52,14 +54,18 @@ THREE.SceneControl  = function ( idElement, lock ) {
     loader.addLoad( 'm1-spaceship', '/web/models/M1/Spaceship1.obj' );
     loader.addLoad( 'm1-walera', '/web/models/M1/walera.obj' );
 
-
     loader.objectLoaded = function ( uploaded ) {
 
     };
 
+    var model = null;
+
     loader.load(function () {
 
-        scope.scene.add( loader.getModel( 'm1-spaceship' ) );
+        model = loader.getModel('m1-spaceship');
+        flyControls = new THREE.FlyControls( model, scope.camera, scope.renderer.domElement );
+        flyControls.initOrbitControl();
+        scope.scene.add(model);
 
         var miniMap = new THREE.MiniMap();
         miniMap.appendTo();
@@ -122,9 +128,9 @@ THREE.SceneControl  = function ( idElement, lock ) {
         initCamera();
         initLight();
         render();
-
-        initOrbitControl();
     }
+
+    var clock = new THREE.Clock();
 
     /**
      *
@@ -133,9 +139,9 @@ THREE.SceneControl  = function ( idElement, lock ) {
     function render() {
         requestAnimationFrame( render );
 
-        if ( orbitControl ) {
-
-            orbitControl.update();
+        if ( flyControls ) {
+            var delta = clock.getDelta();
+            flyControls.update( delta );
         }
 
         scope.renderer.render( scope.scene, scope.camera );
@@ -157,20 +163,6 @@ THREE.SceneControl  = function ( idElement, lock ) {
         scope.camera.lookAt( scope.scene.position );
         scope.camera.updateProjectionMatrix();
         scope.scene.add( scope.camera );
-    }
-
-    var orbitControl = null;
-
-    function initOrbitControl() {
-
-        orbitControl = new THREE.OrbitControls( scope.camera, scope.renderer.domElement );
-        orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
-        orbitControl.enablePan = false;
-        orbitControl.enableKeys = false;
-        orbitControl.minDistance = 30;
-        orbitControl.maxPolarAngle = 75 * Math.PI / 180;
-        orbitControl.maxDistance = 300;
-        orbitControl.rotateSpeed = 3.0;
     }
 
     function initLight() {

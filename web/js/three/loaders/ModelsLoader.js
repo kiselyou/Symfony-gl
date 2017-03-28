@@ -69,7 +69,7 @@ THREE.ModelsLoader = function ( scene ) {
             return value.name == name;
         });
 
-        return model ? model.object : null;
+        return model ? model.object.clone() : null;
     };
 
     /**
