@@ -9,7 +9,7 @@ THREE.ModelsLoader = function ( scene ) {
      *
      * @type {Array}
      */
-    this.path = [];
+    this.upload = [];
 
     /**
      *
@@ -26,24 +26,25 @@ THREE.ModelsLoader = function ( scene ) {
     /**
      * Callback for adding action when model has loaded
      *
-     * @callback objectLoaded
+     * @param {{name: string, path: string, object: Mesh}} uploaded
+     * @callback objectLoadedCallback
      */
 
     /**
-     * @type {(objectLoaded|null)}
+     * @type {(objectLoadedCallback|null)}
      */
     this.objectLoaded = null;
 
     /**
      * Callback for adding action when all models has loaded
      *
-     * @callback doneLoad
+     * @callback doneLoadCallback
      */
 
     /**
-     * @type {(doneLoad|null)}
+     * @type {(doneLoadCallback|null)}
      */
-    this.doneLoad = null;
+    var doneLoad = null;
 
     /**
      *
@@ -53,12 +54,44 @@ THREE.ModelsLoader = function ( scene ) {
 
     /**
      *
-     * @param {string} url
+     * @type {Array}
+     */
+    var models = [];
+
+    /**
+     *
+     * @param {string} name
+     * @returns {null|Mesh}
+     */
+    this.getModel = function ( name ) {
+
+        var model = models.find(function( value ) {
+            return value.name == name;
+        });
+
+        return model ? model.object : null;
+    };
+
+    /**
+     *
+     * @returns {Array}
+     */
+    this.getModels = function () {
+        return models;
+    };
+
+    /**
+     * @param {string} name,
+     * @param {string} path
      * @returns {THREE.ModelsLoader}
      */
-    this.addPath = function ( url ) {
+    this.addLoad = function ( name, path ) {
 
-        this.path.push( url );
+        this.upload.push( {
+            name: name,
+            path: path,
+            object: null
+        } );
 
         return this;
     };
@@ -84,11 +117,11 @@ THREE.ModelsLoader = function ( scene ) {
     /**
      * Callback for adding action when all models has loaded
      *
-     * @param {doneLoad} doneLoad
+     * @param {doneLoadCallback} callback
      */
-    this.load = function ( doneLoad ) {
-        this.doneLoad = doneLoad;
-        lengthUpload = 100 / this.path.length;
+    this.load = function ( callback ) {
+        doneLoad = callback;
+        lengthUpload = 100 / this.upload.length;
         loadModel( new THREE.OBJLoader( new THREE.LoadingManager() ) );
     };
 
@@ -99,41 +132,42 @@ THREE.ModelsLoader = function ( scene ) {
      */
     function loadModel( loader ) {
 
-        var path = scope.path[ 0 ];
+        var upload = scope.upload[ 0 ];
 
-        if ( path == undefined ) {
+        if ( upload == undefined ) {
 
-            if ( scope.doneLoad ) {
+            if ( doneLoad ) {
 
-                progressBar.doneCallback( scope.doneLoad );
+                progressBar.doneCallback( doneLoad );
             }
 
             return;
         }
 
-        scope.path.splice(0, 1);
+        scope.upload.splice(0, 1);
 
         var previousProgress = 0;
 
         loader.load(
-            path,
+            upload.path,
             function ( object ) {
 
-            if ( scope.objectLoaded ) {
+                upload[ 'object' ] = object;
+                models.push( upload );
 
-                scope.objectLoaded.call( this, object, path );
-            }
+                if ( scope.objectLoaded ) {
 
-            scope.scene.add( object );
+                    scope.objectLoaded.call( this, upload );
+                }
 
-            loadModel( loader );
+                loadModel( loader );
 
             },
             function ( pr ) {
 
                 var loaded = pr.loaded / pr.total * lengthUpload;
                 loadingPercent += loaded - previousProgress;
-                progressBar.update( loadingPercent, path );
+                progressBar.update( loadingPercent, upload );
                 previousProgress = loaded;
 
             },

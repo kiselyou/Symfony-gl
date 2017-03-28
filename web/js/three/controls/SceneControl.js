@@ -48,20 +48,18 @@ THREE.SceneControl  = function ( idElement, lock ) {
      */
     var loader = new THREE.ModelsLoader( this.scene );
 
-    loader.addPath( '/web/models/M1/ship.obj' );
-    loader.addPath( '/web/models/M1/Spaceship1.obj' );
-    loader.addPath( '/web/models/M1/walera.obj' );
+    loader.addLoad( 'm1-ship', '/web/models/M1/ship.obj' );
+    loader.addLoad( 'm1-spaceship', '/web/models/M1/Spaceship1.obj' );
+    loader.addLoad( 'm1-walera', '/web/models/M1/walera.obj' );
 
-    var tttttt = 0;
 
-    loader.objectLoaded = function ( object, path ) {
-        // object.visible = false;
-        object.position.x = tttttt;
-        tttttt += 30;
-        // console.log(  );
+    loader.objectLoaded = function ( uploaded ) {
+
     };
 
     loader.load(function () {
+
+        scope.scene.add( loader.getModel( 'm1-spaceship' ) );
 
         var miniMap = new THREE.MiniMap();
         miniMap.appendTo();
