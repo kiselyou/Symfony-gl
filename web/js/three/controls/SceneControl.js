@@ -51,11 +51,28 @@ THREE.SceneControl  = function ( idElement, lock ) {
     var loader = new THREE.ModelsLoader( this.scene );
 
     loader.addLoad( 'm1-ship', '/web/models/M1/ship.obj' );
+    loader.addLoad( 'm1-combat', '/web/models/M1/Futuristic combat jet/Futuristic combat jet.obj' );
     loader.addLoad( 'm1-spaceship', '/web/models/M1/Spaceship1.obj' );
     loader.addLoad( 'm1-walera', '/web/models/M1/walera.obj' );
+    loader.addLoad( 'mi-starship', '/web/models/M1/cwwf1303rf28-W/Wraith Raider Starship/Wraith Raider Starship.obj' );
+    loader.addLoad( 'mi-FA-22_Raptor', '/web/models/M1/FA-22_Raptor/FA-22_Raptor.obj' );
+    loader.addLoad( 'mi-f14d', '/web/models/M1/Grumman F-14 Tomcat/f14d.obj' );
 
+    loader.addLoad( 'AGM-114HellFire', '/web/models/rockets/AGM/files/AGM-114HellFire.obj' );
+    loader.addLoad( 'AVMT300', '/web/models/rockets/AVMT300/AVMT300.obj' );
+    loader.addLoad( 'AIM', '/web/models/rockets/AIM/AIM-9 SIDEWINDER.obj' );
+    loader.addLoad( 'AIM120D', '/web/models/rockets/AIM120D Missile/Files/AIM120D.obj' );
+    loader.addLoad( 'm1-MBDA', '/web/models/rockets/MissileMBDA Meteor/Files/Missile MBDA Meteor.obj' );
+    loader.addLoad( 'City', '/web/models/Organodron City/Organodron City.obj' );
+
+
+
+    var a = 0;
     loader.objectLoaded = function ( uploaded ) {
+        a += 50;
+        uploaded.object.position.x = a;
 
+        scope.scene.add( uploaded.object );
     };
 
     var model = null;

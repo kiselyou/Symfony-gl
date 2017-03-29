@@ -165,9 +165,11 @@ THREE.ModelsLoader = function ( scene ) {
             },
             function ( pr ) {
 
+                console.log(pr.loaded);
+
                 var loaded = pr.loaded / pr.total * lengthUpload;
                 loadingPercent += loaded - previousProgress;
-                progressBar.update( loadingPercent, upload );
+                progressBar.update( loadingPercent, upload.name );
                 previousProgress = loaded;
 
             },

@@ -37,9 +37,9 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 			if ( this.object ) {
 
-				orbitControl
-					.stopMoveCamera()
-					.moveCameraTo( this.object );
+				// orbitControl
+				// 	.stopMoveCamera()
+				// 	.moveCameraTo( this.object );
 			}
 
 			orbitControl.update();
@@ -64,7 +64,7 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 		orbitControl.enableKeys = false;
 		orbitControl.minDistance = 30;
 		orbitControl.maxPolarAngle = 75 * Math.PI / 180;
-		orbitControl.maxDistance = 300;
+		orbitControl.maxDistance = 3000;
 		orbitControl.rotateSpeed = 3.0;
 
 		return this;
