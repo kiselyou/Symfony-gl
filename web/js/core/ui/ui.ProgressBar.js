@@ -131,7 +131,7 @@ var ui = {};
         /**
          *
          * @param {number} load
-         * @param {string} [label]
+         * @param {?string} [label]
          * @returns {ui.ProgressBar}
          */
         this.update = function ( load, label ) {
