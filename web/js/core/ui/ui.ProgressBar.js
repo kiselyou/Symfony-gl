@@ -244,6 +244,9 @@ var ui = {};
          * @param {*} error
          */
         this.onError = function ( error ) {
+
+            scope.close();
+            // ui.Alert
             console.log( error );
         }
     }
