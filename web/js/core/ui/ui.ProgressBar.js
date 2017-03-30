@@ -51,7 +51,7 @@ var ui = {};
          *
          * @type {number}
          */
-        this.speedProgres = 0.5;
+        this.speedProgres = 0.05;
 
         /**
          *
@@ -113,6 +113,7 @@ var ui = {};
         this.open = function () {
 
             document.body.appendChild( templateProgressBar() );
+            moveProgress();
             return this;
         };
 
@@ -124,46 +125,57 @@ var ui = {};
 
         /**
          *
-         * @type {null|number}
+         * @type {Array}
          */
-        var idInterval = null;
+        var queue = [];
 
         /**
          *
-         * @param {number} load
+         * @param {number} status
          * @param {?string} [label]
          * @returns {ui.ProgressBar}
          */
-        this.update = function ( load, label ) {
+        this.update = function ( status, label ) {
 
-            if ( !progressBar ) {
-                this.open();
-            }
-
-            if ( idInterval ) {
-                clearInterval( idInterval );
-            }
-
-            label = label == undefined ? '' : ': ' + label;
-
-            idInterval = setInterval(function() {
-
-                loaded += scope.speedProgres;
-                progressLine.style.width = loaded + '%';
-                progressLabel.innerHTML = loaded.toFixed( 0 ) + scope.unit + label;
-
-                if ( loaded >= 100 || loaded >= load ) {
-                    clearInterval( idInterval );
+            queue.push(
+                {
+                    label: label,
+                    progress: Math.ceil( status )
                 }
-
-                if ( loaded >= 100 ) {
-                    scope.close();
-                }
-
-            }, 10);
+            );
 
             return this;
         };
+
+        /**
+         * @returns {void}
+         */
+        function moveProgress() {
+
+            var idInterval = setInterval(function() {
+
+                var status = queue[ 0 ];
+
+                if ( status && loaded <= status.progress ) {
+
+                    loaded += scope.speedProgres;
+                    progressLine.style.width = loaded + '%';
+                    progressLabel.innerHTML = loaded.toFixed( 0 ) + scope.unit + status.label;
+
+                    if ( loaded >= status.progress  ) {
+                        queue.splice( 0, 1 );
+                    }
+
+                }
+
+                if ( loaded >= 100 ) {
+                    clearInterval( idInterval );
+                    scope.close();
+                    loaded = 0;
+                }
+
+            }, 5);
+        }
 
         /**
          *
@@ -183,6 +195,57 @@ var ui = {};
             }
             return this;
         };
+
+        /**
+         *
+         * @type {{label: ?string, count: number, previousProgress: number, progress: number}}
+         */
+        var control = {
+            label: null,
+            count: 0,
+            previousProgress: 0,
+            progress: 0
+        };
+
+        /**
+         *
+         * @param {number} count
+         * @returns {void}
+         */
+        this.setCount = function( count ) {
+            control.count = 100 / ( count );
+        };
+
+        /**
+         *
+         * @param {?string} label
+         * @returns {void}
+         */
+        this.setLabel = function ( label ) {
+            control.previousProgress = 0;
+            control.label = label;
+        };
+
+        /**
+         *
+         * @param {*} progress
+         */
+        this.onProgress = function ( progress ) {
+
+            var loaded = progress.loaded / progress.total * control.count;
+            control.progress += loaded - control.previousProgress;
+            scope.update( control.progress, control.label );
+            control.previousProgress = loaded;
+
+        };
+
+        /**
+         *
+         * @param {*} error
+         */
+        this.onError = function ( error ) {
+            console.log( error );
+        }
     }
 
 } (window.ui || {}));

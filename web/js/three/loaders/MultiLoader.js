@@ -102,18 +102,6 @@ THREE.MultiLoader = function ( scene ) {
 
     /**
      *
-     * @type {number}
-     */
-    var lengthUpload = 0;
-
-    /**
-     *
-     * @type {number}
-     */
-    var loadingPercent = 0;
-
-    /**
-     *
      * @type {ui.ProgressBar}
      */
     var progressBar = new ui.ProgressBar();
@@ -130,12 +118,13 @@ THREE.MultiLoader = function ( scene ) {
     this.load = function ( callback ) {
 
         doneLoad = callback;
-        lengthUpload = 100 / this.upload.length;
+        progressBar.open();
+        progressBar.setCount( this.upload.length * 2 );
         loadModels( callback );
     };
 
     /**
-     *
+     * @returns {void}
      */
     function loadModels() {
 
@@ -170,7 +159,7 @@ THREE.MultiLoader = function ( scene ) {
      */
     function loadObject( params ) {
 
-        loadInfo.setLabel( params.name );
+        progressBar.setLabel( params.name );
 
         objLoader.setPath( params.directory );
 
@@ -189,8 +178,8 @@ THREE.MultiLoader = function ( scene ) {
                 loadModels();
 
             },
-            loadInfo.onProgress,
-            loadInfo.onError
+            progressBar.onProgress,
+            progressBar.onError
         );
     }
 
@@ -200,8 +189,7 @@ THREE.MultiLoader = function ( scene ) {
      */
     function loadMaterial( params ) {
 
-        loadInfo.setLabel( params.name );
-
+        progressBar.setLabel( params.name );
         mtlLoader.setTexturePath( params.directory );
         mtlLoader.setPath( params.directory );
 
@@ -215,46 +203,8 @@ THREE.MultiLoader = function ( scene ) {
                 loadObject( params );
 
             },
-            loadInfo.onProgress,
-            loadInfo.onError
+            progressBar.onProgress,
+            progressBar.onError
         );
     }
-
-    /**
-     *
-     * @type {{label: ?string, value: number, setLabel: loadInfo.setLabel, onProgress: loadInfo.onProgress, onError: loadInfo.onError}}
-     */
-    var loadInfo = {
-        label: null,
-        value: 0,
-
-        /**
-         *
-         * @param {?string} label
-         */
-        setLabel: function ( label ) {
-            this.value = 0;
-            this.label = label;
-        },
-
-        /**
-         *
-         * @param {*} progress
-         */
-        onProgress: function ( progress ) {
-
-            var loaded = progress.loaded / progress.total * lengthUpload;
-            loadingPercent += loaded - loadInfo.value;
-            progressBar.update( loadingPercent, this.label );
-            this.value = loaded;
-        },
-
-        /**
-         *
-         * @param {*} error
-         */
-        onError: function ( error ) {
-            console.log( error );
-        }
-    };
 };
