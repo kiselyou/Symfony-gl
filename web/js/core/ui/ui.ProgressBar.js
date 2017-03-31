@@ -51,7 +51,7 @@ var ui = {};
          *
          * @type {number}
          */
-        this.speedProgres = 0.05;
+        this.speedProgres = 0.5;
 
         /**
          *
