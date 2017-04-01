@@ -63,7 +63,6 @@ THREE.SceneControl  = function ( idElement, lock ) {
         'Organodron City.obj',
         'Organodron_City.mtl'
     );
-
     // loader.addLoad( 'm1-ship', '/web/models/M1/ship.obj' );
     // loader.addLoad( 'm1-combat', '/web/models/M1/Futuristic combat jet/Futuristic combat jet.obj' );
     // loader.addLoad( 'm1-spaceship', '/web/models/M1/Spaceship1.obj' );
@@ -101,7 +100,24 @@ THREE.SceneControl  = function ( idElement, lock ) {
         scope.scene.add(model);
 
         var city = loader.getModel('city');
+        city.position.x = 500;
         scope.scene.add(city);
+
+        city = loader.getModel('city');
+        city.position.x = -500;
+        scope.scene.add(city);
+
+        city = loader.getModel('city');
+        city.position.x = 500;
+        city.position.z = 500;
+        scope.scene.add(city);
+
+        city = loader.getModel('city');
+        city.position.x = -500;
+        city.position.z = 500;
+        scope.scene.add(city);
+
+
 
         var miniMap = new THREE.MiniMap();
         miniMap.appendTo();
@@ -190,8 +206,8 @@ THREE.SceneControl  = function ( idElement, lock ) {
     function initCamera() {
 
         scope.camera.position.x = 0;
-        scope.camera.position.z = -30;
-        scope.camera.position.y = 15;
+        scope.camera.position.z = -600;
+        scope.camera.position.y = 350;
         scope.camera.fov = 45;
         scope.camera.near = 0.1;
         scope.camera.far = 1000000;
