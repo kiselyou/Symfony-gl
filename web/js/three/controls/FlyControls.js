@@ -251,10 +251,14 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 	var rotate = {
 		angle: 0,
-		speed: THREE.Math.degToRad( 0.02 ),
-		max: THREE.Math.degToRad( 90 ) // degree
+		speed: THREE.Math.degToRad( 0.3 ),
+		max: THREE.Math.degToRad( 45 ) // degree
 	};
 
+	function incline() {
+		
+	}
+	
 	/**
 	 *
      */
@@ -262,26 +266,42 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 	    if ( motion.direct && scope.speed.current > 0 ) {
 
-            if (motion.left) {
+            if ( motion.left ) {
                 _angle -= 0.02;
 
-				if ( rotate.angle < rotate.max && rotate.angle > - rotate.max ) {
+				if ( rotate.angle > - rotate.max ) {
 
-					rotate.angle -= rotate.speed;
-					scope.object.children[0].rotateZ(rotate.angle);
+					rotate.angle -= rotate.angle < 0 ? rotate.speed : rotate.speed * 2;
+                    scope.object.children[0].rotation.z = rotate.angle;
+
 				}
             }
 
-            if (motion.right) {
+            if ( motion.right ) {
                 _angle += 0.02;
 
-				if ( rotate.angle < rotate.max && rotate.angle > - rotate.max ) {
+				if ( rotate.angle < rotate.max ) {
 
-					rotate.angle += rotate.speed;
-					scope.object.children[0].rotateZ(rotate.angle);
+					rotate.angle += rotate.angle > 0 ? rotate.speed : rotate.speed * 2;
+                    scope.object.children[0].rotation.z = rotate.angle;
 				}
             }
         }
+
+		if ( !motion.left && !motion.right ) {
+
+			if ( rotate.angle < 0 ) {
+
+				rotate.angle += rotate.speed * 2;
+				scope.object.children[0].rotation.z = rotate.angle;
+			}
+
+			if ( rotate.angle > 0 ) {
+
+				rotate.angle -= rotate.speed * 2;
+				scope.object.children[0].rotation.z = rotate.angle;
+			}
+		}
 
         if ( motion.backward && scope.speed.current < 0 ) {
 
