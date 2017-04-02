@@ -167,7 +167,12 @@ THREE.MultiLoader = function ( scene ) {
             params.pathOBJ,
             function ( object ) {
 
-                params[ 'object' ] = object;
+                var geometry = new THREE.SphereGeometry( 5, 10, 10 );
+                var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0, transparent: true } );
+                var sphere = new THREE.Mesh( geometry, material );
+                sphere.add( object );
+
+                params[ 'object' ] = sphere;
                 models.push( params );
 
                 if ( scope.objectLoaded ) {

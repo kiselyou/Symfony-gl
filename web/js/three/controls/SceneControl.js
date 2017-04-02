@@ -95,6 +95,8 @@ THREE.SceneControl  = function ( idElement, lock ) {
     loader.load(function () {
 
         model = loader.getModel('mi-starship');
+        model.add( scope.camera );
+
         flyControls = new THREE.FlyControls( model, scope.camera, scope.renderer.domElement );
         flyControls.initOrbitControl();
         scope.scene.add(model);
@@ -206,15 +208,15 @@ THREE.SceneControl  = function ( idElement, lock ) {
     function initCamera() {
 
         scope.camera.position.x = 0;
-        scope.camera.position.z = -600;
-        scope.camera.position.y = 350;
+        scope.camera.position.z = -1200;
+        scope.camera.position.y = 650;
         scope.camera.fov = 45;
         scope.camera.near = 0.1;
         scope.camera.far = 1000000;
         scope.camera.aspect = scope.getAspect();
         scope.camera.lookAt( scope.scene.position );
         scope.camera.updateProjectionMatrix();
-        scope.scene.add( scope.camera );
+        // scope.scene.add( scope.camera );
     }
 
     function initLight() {
