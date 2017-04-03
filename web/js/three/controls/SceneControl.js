@@ -102,21 +102,31 @@ THREE.SceneControl  = function ( idElement, lock ) {
         scope.scene.add(model);
 
         var city = loader.getModel('city');
-        city.position.x = 500;
+        city.position.x = 15000;
+        city.position.z = -15000;
+        city.position.y = -1100;
+        city.scale.set(20, 20, 20);
         scope.scene.add(city);
 
         city = loader.getModel('city');
-        city.position.x = -500;
+        city.position.x = -15000;
+        city.position.z = 15000;
+        city.position.y = -1100;
+        city.scale.set(20, 20, 20);
         scope.scene.add(city);
 
         city = loader.getModel('city');
-        city.position.x = 500;
-        city.position.z = 500;
+        city.position.x = 15000;
+        city.position.z = 15000;
+        city.position.y = -1100;
+        city.scale.set(20, 20, 20);
         scope.scene.add(city);
 
         city = loader.getModel('city');
-        city.position.x = -500;
-        city.position.z = 500;
+        city.position.x = -15000;
+        city.position.z = -15000;
+        city.position.y = -1100;
+        city.scale.set(20, 20, 20);
         scope.scene.add(city);
 
 

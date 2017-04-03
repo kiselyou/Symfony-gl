@@ -14,18 +14,24 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 	 *
 	 * @type {number}
      */
-	this.far = 1000;
+	this.far = 5000;
 	this.speedRadiusForward = 0.01;
 	this.speedRadiusBackward = 0.005;
 
 	this.speed = {
 		current: 0, // m.s Can not be less than zero. Default 0
-		max:  2500, // m.s It is maximum speed the model
+		max:  6500, // m.s It is maximum speed the model
 		min: - 500	// m.s If less than zero. The model is moving back
 	};
 
 	this.acceleration = 10;  // m.s
 	this.deceleration = 25;  // m.s
+
+	this.rotate = {
+		angle: 0,
+		speed: 0.015, // Скорость наклона - процент от скорости объекта (radian)
+		max: THREE.Math.degToRad( 35 ) // Максимальный угол наклона ( radian )
+	};
 
 	var scope = this;
 
@@ -252,15 +258,9 @@ THREE.FlyControls = function ( object, camera, domElement ) {
      */
     var _angle = getAngle( _prev, scope.object.position );
 
-	var rotate = {
-		angle: 0,
-		speed: 0.025, // Скорость наклона - процент от скорости объекта (radian)
-		max: THREE.Math.degToRad( 35 ) // Максимальный угол наклона ( radian )
-	};
-
 	function incline() {
 
-		var speed = THREE.Math.degToRad( scope.speed.current * rotate.speed / 100 );
+		var speed = THREE.Math.degToRad( scope.speed.current * scope.rotate.speed / 100 );
 
 		var rotation = scope.object.children[0].rotation;
 
@@ -268,38 +268,54 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 			if ( motion.left ) {
 
-				if ( rotate.angle > - rotate.max ) {
+				if ( scope.rotate.angle > - scope.rotate.max ) {
 
-					rotate.angle -= rotate.angle < 0 ? speed : speed * 1.2;
-					rotation.z = rotate.angle;
+					scope.rotate.angle -= scope.rotate.angle < 0 ? speed : speed * 1.2;
+					rotation.z = scope.rotate.angle;
 
 				}
 			}
 
 			if ( motion.right ) {
 
-				if ( rotate.angle < rotate.max ) {
+				if ( scope.rotate.angle < scope.rotate.max ) {
 
-					rotate.angle += rotate.angle > 0 ? speed : speed * 1.2;
-					rotation.z = rotate.angle;
+					scope.rotate.angle += scope.rotate.angle > 0 ? speed : speed * 1.2;
+					rotation.z = scope.rotate.angle;
 				}
 			}
 		}
 
 		if ( ( !motion.left && !motion.right ) || motion.backward ) {
 
-			if ( rotate.angle < 0 ) {
+			if ( scope.rotate.angle < 0 ) {
 
-				rotate.angle += 0.01;
-				rotation.z = rotate.angle;
+				scope.rotate.angle += 0.01;
+				rotation.z = scope.rotate.angle;
 			}
 
-			if ( rotate.angle > 0 ) {
+			if ( scope.rotate.angle > 0 ) {
 
-				rotate.angle -= 0.01;
-				rotation.z = rotate.angle;
+				scope.rotate.angle -= 0.01;
+				rotation.z = scope.rotate.angle;
 			}
 		}
+	}
+	
+	function aim() {
+
+		var x = scope.object.position.x + scope.far * Math.cos( _angle );
+		var z = scope.object.position.z + scope.far * Math.sin( _angle );
+
+		var geometry = new THREE.SphereGeometry( 10, 15, 15, 0, Math.PI * 2, 0, Math.PI * 2 );
+		var material = new THREE.MeshLambertMaterial( { color: '#FFFFFF' } );
+		var sphere = new THREE.Mesh( geometry, material );
+
+		sphere.position.setX( x );
+		sphere.position.setZ( z );
+		scope.object.add( sphere );
+
+		console.log(scope.object, sphere, _positionTo);
 	}
 	
 	/**
@@ -337,6 +353,8 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 		return _positionTo;
 	}
+
+	aim();
 
 	window.addEventListener( 'keydown', keyDown, false );
 	window.addEventListener( 'keyup', keyUp, false );
