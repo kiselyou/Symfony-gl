@@ -15,16 +15,17 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 	 * @type {number}
      */
 	this.far = 1000;
-	this.radius = 50;
+	this.speedRadiusForward = 0.01;
+	this.speedRadiusBackward = 0.005;
 
 	this.speed = {
 		current: 0, // m.s Can not be less than zero. Default 0
-		max:  1500, // m.s It is maximum speed the model
+		max:  2500, // m.s It is maximum speed the model
 		min: - 500	// m.s If less than zero. The model is moving back
 	};
 
-	this.acceleration = 20; // m.s
-	this.deceleration = 10;  // m.s
+	this.acceleration = 10;  // m.s
+	this.deceleration = 25;  // m.s
 
 	var scope = this;
 
@@ -41,12 +42,12 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
             scope.object.lookAt( positionTo );
 
-	    	if ( motion.direct && scope.speed.current < scope.speed.max ) {
+	    	if ( motion.forward && scope.speed.current < scope.speed.max ) {
 
 				scope.speed.current += scope.acceleration;
 			}
 
-			if ( motion.direct && scope.speed.current > scope.speed.max ) {
+			if ( motion.forward && scope.speed.current > scope.speed.max ) {
 
 				scope.speed.current = scope.speed.max;
 			}
@@ -62,7 +63,7 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 			}
 
 			// Авто торможение
-			if ( !motion.direct && !motion.backward ) {
+			if ( !motion.forward && !motion.backward ) {
 
 				if ( scope.speed.current > scope.deceleration ) {
 
@@ -88,6 +89,8 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 			this.object.position.x += ox;
 			this.object.position.z += oz;
         }
+
+		incline();
 
 		orbitControl.stopMoveCamera();
 		orbitControl.update();
@@ -126,23 +129,23 @@ THREE.FlyControls = function ( object, camera, domElement ) {
      */
 	function motionControl() {
 
-		if ( motion.direct && motion.backward ) {
+		if ( motion.forward && motion.backward ) {
 
-			motion.direct = false;
+			motion.forward = false;
 			motion.backward = false;
 
 		}
 	}
 
 	var motion = {
-		direct: false,
+		forward: false,
 		left: false,
 		right: false,
 		backward: false
 	};
 
 	var keyboard = {
-		direct: {
+		forward: {
 			keyName: 'W',
 			keyCode: 87
 		},
@@ -163,8 +166,8 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 	function keyDown( e ) {
 
 		switch ( e.keyCode ) {
-			case keyboard.direct.keyCode:
-				motion.direct = true;
+			case keyboard.forward.keyCode:
+				motion.forward = true;
 				break;
 			case keyboard.left.keyCode:
 				motion.left = true;
@@ -184,8 +187,8 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 	function keyUp( e ) {
 
 		switch ( e.keyCode ) {
-			case keyboard.direct.keyCode:
-				motion.direct = false;
+			case keyboard.forward.keyCode:
+				motion.forward = false;
 				break;
 			case keyboard.left.keyCode:
 				motion.left = false;
@@ -251,12 +254,52 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 	var rotate = {
 		angle: 0,
-		speed: THREE.Math.degToRad( 0.3 ),
-		max: THREE.Math.degToRad( 45 ) // degree
+		speed: 0.025, // Скорость наклона - процент от скорости объекта (radian)
+		max: THREE.Math.degToRad( 35 ) // Максимальный угол наклона ( radian )
 	};
 
 	function incline() {
-		
+
+		var speed = THREE.Math.degToRad( scope.speed.current * rotate.speed / 100 );
+
+		var rotation = scope.object.children[0].rotation;
+
+		if ( motion.forward && scope.speed.current > 0 ) {
+
+			if ( motion.left ) {
+
+				if ( rotate.angle > - rotate.max ) {
+
+					rotate.angle -= rotate.angle < 0 ? speed : speed * 1.2;
+					rotation.z = rotate.angle;
+
+				}
+			}
+
+			if ( motion.right ) {
+
+				if ( rotate.angle < rotate.max ) {
+
+					rotate.angle += rotate.angle > 0 ? speed : speed * 1.2;
+					rotation.z = rotate.angle;
+				}
+			}
+		}
+
+		if ( ( !motion.left && !motion.right ) || motion.backward ) {
+
+			if ( rotate.angle < 0 ) {
+
+				rotate.angle += 0.01;
+				rotation.z = rotate.angle;
+			}
+
+			if ( rotate.angle > 0 ) {
+
+				rotate.angle -= 0.01;
+				rotation.z = rotate.angle;
+			}
+		}
 	}
 	
 	/**
@@ -264,53 +307,25 @@ THREE.FlyControls = function ( object, camera, domElement ) {
      */
 	function getPositionTo() {
 
-	    if ( motion.direct && scope.speed.current > 0 ) {
+	    if ( motion.forward && scope.speed.current > 0 ) {
 
             if ( motion.left ) {
-                _angle -= 0.02;
-
-				if ( rotate.angle > - rotate.max ) {
-
-					rotate.angle -= rotate.angle < 0 ? rotate.speed : rotate.speed * 2;
-                    scope.object.children[0].rotation.z = rotate.angle;
-
-				}
+                _angle -= scope.speedRadiusForward;
             }
 
             if ( motion.right ) {
-                _angle += 0.02;
-
-				if ( rotate.angle < rotate.max ) {
-
-					rotate.angle += rotate.angle > 0 ? rotate.speed : rotate.speed * 2;
-                    scope.object.children[0].rotation.z = rotate.angle;
-				}
+                _angle += scope.speedRadiusForward;
             }
         }
-
-		if ( !motion.left && !motion.right ) {
-
-			if ( rotate.angle < 0 ) {
-
-				rotate.angle += rotate.speed * 2;
-				scope.object.children[0].rotation.z = rotate.angle;
-			}
-
-			if ( rotate.angle > 0 ) {
-
-				rotate.angle -= rotate.speed * 2;
-				scope.object.children[0].rotation.z = rotate.angle;
-			}
-		}
 
         if ( motion.backward && scope.speed.current < 0 ) {
 
             if (motion.left) {
-                _angle += 0.005;
+                _angle += scope.speedRadiusBackward;
             }
 
             if (motion.right) {
-                _angle -= 0.005;
+                _angle -= scope.speedRadiusBackward;
             }
         }
 

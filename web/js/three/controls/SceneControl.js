@@ -226,7 +226,7 @@ THREE.SceneControl  = function ( idElement, lock ) {
         scope.scene.add( light );
 
         var color = new THREE.Color( 0xCCCCCC );
-        var grid = new THREE.GridHelper( 500, 50, color, 0x666666 );
+        var grid = new THREE.GridHelper( 6500, 50, color, 0x666666 );
         scope.scene.add( grid );
     }
 
