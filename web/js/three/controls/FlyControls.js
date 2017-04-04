@@ -40,11 +40,15 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 	var ox = 0;
 	var oz = 0;
 
+	var aim = new THREE.LabelControls( scope.camera );
+	aim.appendTo( '' );
+
 	this.update = function () {
 
-	    if ( fly || scope.speed.current != 0 ) {
+		var positionTo = getPositionTo();
+		aim.updatePosition( positionTo );
 
-			var positionTo = getPositionTo();
+	    if ( fly || scope.speed.current != 0 ) {
 
             scope.object.lookAt( positionTo );
 
@@ -302,22 +306,6 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 		}
 	}
 	
-	function aim() {
-
-		var x = scope.object.position.x + scope.far * Math.cos( _angle );
-		var z = scope.object.position.z + scope.far * Math.sin( _angle );
-
-		var geometry = new THREE.SphereGeometry( 10, 15, 15, 0, Math.PI * 2, 0, Math.PI * 2 );
-		var material = new THREE.MeshLambertMaterial( { color: '#FFFFFF' } );
-		var sphere = new THREE.Mesh( geometry, material );
-
-		sphere.position.setX( x );
-		sphere.position.setZ( z );
-		scope.object.add( sphere );
-
-		console.log(scope.object, sphere, _positionTo);
-	}
-	
 	/**
 	 *
      */
@@ -353,8 +341,6 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 		return _positionTo;
 	}
-
-	aim();
 
 	window.addEventListener( 'keydown', keyDown, false );
 	window.addEventListener( 'keyup', keyUp, false );

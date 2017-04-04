@@ -3,7 +3,7 @@
  * @param {boolean} [lock]
  * @constructor
  */
-THREE.SceneControl  = function ( idElement, lock ) {
+THREE.SceneControls = function ( idElement, lock ) {
 
     /**
      *
@@ -38,7 +38,7 @@ THREE.SceneControl  = function ( idElement, lock ) {
 
     /**
      *
-     * @type {THREE.SceneControl}
+     * @type {THREE.SceneControls}
      */
     var scope = this;
 

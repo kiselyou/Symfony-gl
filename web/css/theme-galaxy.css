@@ -7,6 +7,13 @@ html, body, canvas {
     overflow: hidden;
     position: relative;
 }
+
+.sw-aim {
+    background: url("/web/images/aim/aim-circle-red.png");
+    background-size: contain;
+
+}
+
 .text-label {
     color: #FFFFFF;
     font-family: "Fira Mono", Monaco, "Andale Mono", "Lucida Console", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;

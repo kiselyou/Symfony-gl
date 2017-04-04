@@ -29,13 +29,15 @@
     <script src="{{ asset('js/three/loaders/MTLLoader.js') }}"></script>
 
 
-    <script src="{{ asset('js/three/controls/SceneControl.js') }}"></script>
+    <script src="{{ asset('js/three/controls/LabelControls.js') }}"></script>
+    <script src="{{ asset('js/three/controls/SceneControls.js') }}"></script>
     <script src="{{ asset('js/three/controls/OrbitControls.js') }}"></script>
     <script src="{{ asset('js/three/controls/FlyControls.js') }}"></script>
 
+
     <script>
 
-        new THREE.SceneControl( 'sw-container', false );
+        new THREE.SceneControls( 'sw-container', false );
 
     </script>
 {% endblock %}
