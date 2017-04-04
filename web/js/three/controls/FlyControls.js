@@ -14,8 +14,8 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 	 *
 	 * @type {number}
      */
-	this.far = 5000;
-	this.speedRadiusForward = 0.01;
+	this.far = 10000;
+	this.speedRadiusForward = 0.006;
 	this.speedRadiusBackward = 0.005;
 
 	this.speed = {
@@ -156,20 +156,20 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 	var keyboard = {
 		forward: {
-			keyName: 'W',
-			keyCode: 87
+			keyName: 'up arrow',
+			keyCode: 38
 		},
 		left: {
-			keyName: 'A',
-			keyCode: 65
+			keyName: 'left arrow',
+			keyCode: 37
 		},
 		right: {
-			keyName: 'D',
-			keyCode: 68
+			keyName: 'right arrow',
+			keyCode: 39
 		},
 		backward: {
-			keyName: 'S',
-			keyCode: 83
+			keyName: 'down arrow',
+			keyCode: 40
 		}
 	};
 
