@@ -42,13 +42,17 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 	var aim = new THREE.LabelControls( scope.camera );
 	aim.append( 'aim', '' );
-	aim.append( 'speed', this.speed.current );
+	aim.append( 'distance', 0, this.object.position, 'left|top' );
+	aim.append( 'speed', this.speed.current, this.object.position, 'right|top' );
 
 	this.update = function () {
 
-		aim.updatePosition( 'aim', getPositionAim() );
-		aim.updateLabel( 'speed', this.speed.current );
-		aim.updatePosition( 'speed', this.object.position );
+		aim.updatePosition( 'aim', getPositionAim(), 'center' );
+		aim.updateLabel( 'speed', 'Speed: ' + this.speed.current );
+		aim.updatePosition( 'speed', this.object.position, 'right|top' );
+
+		aim.updateLabel( 'distance', 'Distance: ' + this.speed.current );
+		aim.updatePosition( 'distance', this.object.position, 'left|top' );
 
 	    if ( fly || scope.speed.current != 0 ) {
 

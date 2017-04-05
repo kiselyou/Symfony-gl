@@ -11,7 +11,22 @@ html, body, canvas {
 .sw-aim {
     background: url("/web/images/aim/aim-circle-red.png");
     background-size: contain;
+    width: 60px;
+    height: 60px;
+}
 
+.sw-label-speed {
+    width: 80px;
+    height: 40px;
+    color: #FFFFFF;
+    font-size: 9px;
+}
+
+.sw-label-distance {
+    width: 80px;
+    height: 40px;
+    color: #FFFFFF;
+    font-size: 9px;
 }
 
 .text-label {
