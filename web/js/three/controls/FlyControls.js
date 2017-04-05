@@ -41,15 +41,18 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 	var oz = 0;
 
 	var aim = new THREE.LabelControls( scope.camera );
-	aim.appendTo( '' );
+	aim.append( 'aim', '' );
+	aim.append( 'speed', this.speed.current );
 
 	this.update = function () {
 
-		var positionTo = getPositionTo();
-		aim.updatePosition( positionTo );
+		aim.updatePosition( 'aim', getPositionAim() );
+		aim.updateLabel( 'speed', this.speed.current );
+		aim.updatePosition( 'speed', this.object.position );
 
 	    if ( fly || scope.speed.current != 0 ) {
 
+			var positionTo = getPositionTo();
             scope.object.lookAt( positionTo );
 
 	    	if ( motion.forward && scope.speed.current < scope.speed.max ) {
@@ -64,7 +67,7 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 			if ( motion.backward && scope.speed.current > scope.speed.min ) {
 
-				scope.speed.current -= scope.speed.current < 0 ? scope.deceleration / 3 : scope.deceleration;
+				scope.speed.current -= scope.speed.current < 0 ? scope.deceleration / 10 : scope.deceleration;
 			}
 
 			if ( motion.backward && scope.speed.current < scope.speed.min ) {
@@ -122,10 +125,10 @@ THREE.FlyControls = function ( object, camera, domElement ) {
         orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
         orbitControl.enablePan = false;
         orbitControl.enableKeys = false;
-        orbitControl.minDistance = 500;
+        orbitControl.minDistance = 600;
         orbitControl.maxPolarAngle = 75 * Math.PI / 180;
 		orbitControl.minPolarAngle = 45 * Math.PI / 180;
-        orbitControl.maxDistance = 1500;
+        orbitControl.maxDistance = 2500;
         orbitControl.rotateSpeed = 3.0;
 
         // orbitControl.enabled = false;
@@ -250,6 +253,13 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 	var _positionTo = new THREE.Vector3();
 
 	/**
+	 * It is approximate position aim
+	 *
+	 * @type {Vector3}
+	 */
+	var _positionAim = new THREE.Vector3();
+
+	/**
 	 *
 	 * @type {Vector3}
 	 * @private
@@ -263,6 +273,11 @@ THREE.FlyControls = function ( object, camera, domElement ) {
      */
     var _angle = getAngle( _prev, scope.object.position );
 
+	/**
+	 * Incline ship
+	 *
+	 * @returns {void}
+     */
 	function incline() {
 
 		var speed = THREE.Math.degToRad( scope.speed.current * scope.rotate.speed / 100 );
@@ -306,9 +321,27 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 			}
 		}
 	}
-	
+
 	/**
+	 * Get position Aim
 	 *
+	 * @returns {Vector3}
+     */
+	function getPositionAim() {
+
+		var x = scope.object.position.x + scope.far * Math.cos( _angle );
+		var z = scope.object.position.z + scope.far * Math.sin( _angle );
+
+		_positionAim.setX( x );
+		_positionAim.setZ( z );
+
+		return _positionAim;
+	}
+
+	/**
+	 * Get position motion to
+	 *
+	 * @returns {Vector3}
      */
 	function getPositionTo() {
 
@@ -326,11 +359,11 @@ THREE.FlyControls = function ( object, camera, domElement ) {
         if ( scope.speed.current < 0 ) {
 
             if (motion.left) {
-                _angle += scope.speedRadiusBackward;
+                _angle += scope.speedRadiusBackward / 3;
             }
 
             if (motion.right) {
-                _angle -= scope.speedRadiusBackward;
+                _angle -= scope.speedRadiusBackward / 3;
             }
         }
 

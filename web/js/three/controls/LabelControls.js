@@ -7,6 +7,12 @@
 
         /**
          *
+         * @const {string}
+         */
+        var ATTR_DATA = 'data-template-name';
+
+        /**
+         *
          * @type {Camera}
          * @private
          */
@@ -19,9 +25,9 @@
 
         /**
          *
-         * @type {Element}
+         * @type {Array.<Element>}
          */
-        this.element = null;
+        this.element = [];
 
         /**
          *
@@ -44,9 +50,37 @@
          */
         var scope = this;
 
-        this.buildLabel = function ( label ) {
+        this.templateAim = function ( label ) {
             var div = document.createElement('div');
+            div.setAttribute(ATTR_DATA, 'aim');
             div.classList.add('sw-aim');
+            div.style.position = 'absolute';
+            div.style.width = width + 'px';
+            div.style.height = height + 'px';
+            div.style.top = -1000;
+            div.style.left = -1000;
+            div.innerHTML = label;
+            return div;
+        };
+
+        this.templateSpeed = function ( label ) {
+            var div = document.createElement('div');
+            div.setAttribute(ATTR_DATA, 'speed');
+            div.classList.add('sw-label-speed');
+            div.style.position = 'absolute';
+            div.style.width = width + 'px';
+            div.style.height = height + 'px';
+            div.style.top = -1000;
+            div.style.left = -1000;
+            div.innerHTML = label;
+            console.dir(div);
+            return div;
+        };
+
+        this.templateLabel = function ( label ) {
+            var div = document.createElement('div');
+            div.setAttribute(ATTR_DATA, 'label');
+            div.classList.add('sw-label-speed');
             div.style.position = 'absolute';
             div.style.width = width + 'px';
             div.style.height = height + 'px';
@@ -67,20 +101,23 @@
 
         /**
          *
-         * @param {string} label
+         * @param {string} name - possible values ('aim'|'speed'|'label')
+         * @param {string|number} label
          * @returns {THREE.LabelControls}
          */
-        this.updateLabel = function( label ) {
-            this.element.innerHTML = label;
+        this.updateLabel = function( name, label ) {
+            var element = getElement( name );
+            element.innerHTML = label;
             return this;
         };
 
         /**
          *
+         * @param {string} name
          * @param {Vector3} [position]
          * @returns {THREE.LabelControls}
          */
-        this.updatePosition = function( position ) {
+        this.updatePosition = function( name, position ) {
 
             if ( !this.element ) {
                 return this;
@@ -95,32 +132,59 @@
             }
 
             var coordinates = getCoordinates( this.position, scope._camera );
-            this.element.style.left = ( coordinates.x - ( width / 2 ) ) + 'px';
-            this.element.style.top = ( coordinates.y - ( height / 2 ) ) + 'px';
+            var element = getElement( name );
+            element.style.left = ( coordinates.x - ( width / 2 ) ) + 'px';
+            element.style.top = ( coordinates.y - ( height / 2 ) ) + 'px';
             return this;
         };
 
         /**
          *
-         * @param {string|number} label
-         * @param {Vector3} [position]
+         * @param {string} name - possible values ('aim'|'speed'|'label')
+         * @param {string|number} [text] - It is text of label
+         * @param {Vector3} [position] - default position
          * @returns {THREE.LabelControls}
          */
-        this.appendTo = function ( label, position ) {
+        this.append = function ( name, text, position ) {
 
-            this.element = this.buildLabel( label );
-
-            if ( position ) {
-                this.updatePosition( position );
+            switch ( name ) {
+                case 'aim':
+                    this.element.push(this.templateAim( text ));
+                    break;
+                case 'speed':
+                    this.element.push(this.templateSpeed( text ));
+                    break;
+                case 'label':
+                    this.element.push(this.templateLabel( text ));
+                    break;
+                default:
+                    console.warn( 'You set not correct name in method append(). Possible values - aim|speed|label' );
+                    break;
             }
 
-            this._container.appendChild( this.element );
+
+            if ( position ) {
+                this.updatePosition( name, position );
+            }
+
+            this._container.appendChild( getElement( name ) );
             return this;
         };
 
         this.addClass = function ( htmlClass ) {
 
         };
+
+        /**
+         *
+         * @param {string} name - possible values ('aim'|'speed'|'label')
+         * @returns {Element}
+         */
+        function getElement( name ) {
+            return scope.element.find( function ( element ) {
+                return element.getAttribute(ATTR_DATA) == name;
+            } );
+        }
 
         /**
          *

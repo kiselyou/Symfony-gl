@@ -218,11 +218,11 @@ THREE.SceneControls = function ( idElement, lock ) {
     function initCamera() {
 
         scope.camera.position.x = 0;
-        scope.camera.position.z = -1200;
-        scope.camera.position.y = 250;
+        scope.camera.position.z = -2500;
+        scope.camera.position.y = 1000;
         scope.camera.fov = 45;
         scope.camera.near = 0.1;
-        scope.camera.far = 1000000;
+        scope.camera.far = 100000;
         scope.camera.aspect = scope.getAspect();
         scope.camera.lookAt( scope.scene.position );
         scope.camera.updateProjectionMatrix();
