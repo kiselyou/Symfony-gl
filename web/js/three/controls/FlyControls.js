@@ -15,17 +15,17 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 	 * @type {number}
      */
 	this.far = 10000;
-	this.speedRadiusForward = 0.006;
+	this.speedRadiusForward = 0.01;
 	this.speedRadiusBackward = 0.005;
 
 	this.speed = {
 		current: 0, // m.s Can not be less than zero. Default 0
 		max:  6500, // m.s It is maximum speed the model
-		min: - 500	// m.s If less than zero. The model is moving back
+		min: -500	// m.s If less than zero. The model is moving back
 	};
 
-	this.acceleration = 10;  // m.s
-	this.deceleration = 25;  // m.s
+	this.acceleration = 20;  // m.s
+	this.deceleration = 50;  // m.s
 
 	this.rotate = {
 		angle: 0,
@@ -64,7 +64,7 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 			if ( motion.backward && scope.speed.current > scope.speed.min ) {
 
-				scope.speed.current -= scope.deceleration;
+				scope.speed.current -= scope.speed.current < 0 ? scope.deceleration / 3 : scope.deceleration;
 			}
 
 			if ( motion.backward && scope.speed.current < scope.speed.min ) {
@@ -73,7 +73,7 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 			}
 
 			// Авто торможение
-			if ( !motion.forward && !motion.backward ) {
+			if ( !motion.forward && !motion.backward && !motion.left && !motion.right ) {
 
 				if ( scope.speed.current > scope.deceleration ) {
 
@@ -122,9 +122,10 @@ THREE.FlyControls = function ( object, camera, domElement ) {
         orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
         orbitControl.enablePan = false;
         orbitControl.enableKeys = false;
-        orbitControl.minDistance = 30;
+        orbitControl.minDistance = 500;
         orbitControl.maxPolarAngle = 75 * Math.PI / 180;
-        orbitControl.maxDistance = 1000;
+		orbitControl.minPolarAngle = 45 * Math.PI / 180;
+        orbitControl.maxDistance = 1500;
         orbitControl.rotateSpeed = 3.0;
 
         // orbitControl.enabled = false;
@@ -268,7 +269,7 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 		var rotation = scope.object.children[0].rotation;
 
-		if ( motion.forward && scope.speed.current > 0 ) {
+		if ( motion.forward && scope.speed.current > 500 ) {
 
 			if ( motion.left ) {
 
@@ -311,7 +312,7 @@ THREE.FlyControls = function ( object, camera, domElement ) {
      */
 	function getPositionTo() {
 
-	    if ( motion.forward && scope.speed.current > 0 ) {
+	    if ( scope.speed.current > 0 ) {
 
             if ( motion.left ) {
                 _angle -= scope.speedRadiusForward;
@@ -322,7 +323,7 @@ THREE.FlyControls = function ( object, camera, domElement ) {
             }
         }
 
-        if ( motion.backward && scope.speed.current < 0 ) {
+        if ( scope.speed.current < 0 ) {
 
             if (motion.left) {
                 _angle += scope.speedRadiusBackward;

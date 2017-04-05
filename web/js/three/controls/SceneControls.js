@@ -219,7 +219,7 @@ THREE.SceneControls = function ( idElement, lock ) {
 
         scope.camera.position.x = 0;
         scope.camera.position.z = -1200;
-        scope.camera.position.y = 650;
+        scope.camera.position.y = 250;
         scope.camera.fov = 45;
         scope.camera.near = 0.1;
         scope.camera.far = 1000000;
