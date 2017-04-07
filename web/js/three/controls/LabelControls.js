@@ -72,6 +72,7 @@
         };
 
         this.templateDistance = function ( label ) {
+
             var div = document.createElement('div');
             div.setAttribute(ATTR_DATA, 'distance');
             div.classList.add('sw-label-distance');

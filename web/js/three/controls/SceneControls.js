@@ -96,6 +96,7 @@ THREE.SceneControls = function ( idElement, lock ) {
     var group = null;
     var group2 = null;
     var shockwaveGroup = null;
+    var fireball = null;
 
     loader.load(function () {
 
@@ -159,14 +160,7 @@ THREE.SceneControls = function ( idElement, lock ) {
 
 
 
-
-
-
-
-
-
-
-
+        var gui = new dat.GUI();
 
 
 
@@ -260,9 +254,9 @@ THREE.SceneControls = function ( idElement, lock ) {
                 opacity: { value: [0.4, 0] }
             });
 
-        var fireball = new SPE.Emitter( {
+        fireball = new SPE.Emitter( {
                 particleCount: 20,
-                type: SPE.distributions.SPHERE,
+                type: SPE.distributions.DISC,
                 position: {
                     radius: 1
                 },
@@ -272,7 +266,7 @@ THREE.SceneControls = function ( idElement, lock ) {
                 velocity: {
                     value: new THREE.Vector3( 10 )
                 },
-                size: { value: [20, 100] },
+                size: { value: [50, 200] },
                 color: {
                     value: [
                         new THREE.Color( 0.5, 0.1, 0.05 ),
@@ -338,6 +332,29 @@ THREE.SceneControls = function ( idElement, lock ) {
         model.children[0].add( group2 );
 
 
+
+        var m = gui.addFolder( 'Fire Ball' );
+
+        m.add( fireball, 'particleCount', 1.0, 80.0, 1.0 ).name( 'Particle Count' ).onChange( changeGui );
+        m.add( fireball, 'type', [ 'SPHERE', 'BOX', 'DISC' ]).name( 'Type' ).onChange( changeGui );
+
+        var r = gui.addFolder( 'Position' );
+        r.add( fireball.position, 'radius', 0, 1, 0.01).name( 'Radius' ).onChange( changeGui );
+
+        var a = gui.addFolder( 'Age' );
+        a.add( fireball.maxAge, 'value', 1, 10, 0.5).name( 'Value' ).onChange( changeGui );
+
+        var mp = gui.addFolder( 'Multiplier' );
+        mp.add( fireball, 'activeMultiplier', 1, 100, 1).name( 'Active Multiplier' ).onChange( changeGui );
+
+        var v = gui.addFolder( 'Velocity' );
+        v.add( fireball.velocity.value, 'x', 1, 100, 1).name( 'value_X' ).onChange( changeGui );
+        // v.add( fireball.velocity.value, 'y', 1, 100, 1).name( 'value-Y' ).onChange( changeGui );
+        // v.add( fireball.velocity.value, 'z', 1, 100, 1).name( 'value-Z' ).onChange( changeGui );
+
+        // var s = gui.addFolder( 'Size' );
+        // s.add( fireball.size.value, 0, 1, 100, 1).name( 'size - X' ).onChange( changeGui );
+        // s.add( fireball.size.value, 1, 1, 100, 1).name( 'size - Y' ).onChange( changeGui );
 
 
 
@@ -445,9 +462,23 @@ THREE.SceneControls = function ( idElement, lock ) {
 
     });
 
+    function changeGui(e) {
+        switch (e) {
+            case 'SPHERE':
+                fireball.type = SPE.distributions.SPHERE;
+                break;
+            case 'BOX':
+                fireball.type = SPE.distributions.BOX;
+                break;
+            case 'DISC':
+                fireball.type = SPE.distributions.DISC;
+                break;
+        }
+    }
+
 
     window.addEventListener( 'resize', windowResize, false );
-    document.addEventListener('contextmenu', contextMenu, false );
+    document.addEventListener( 'contextmenu', contextMenu, false );
     document.addEventListener( 'keydown', keyDown, false );
 
     /**
@@ -496,7 +527,6 @@ THREE.SceneControls = function ( idElement, lock ) {
      */
     function render() {
         requestAnimationFrame( render );
-
 
         if (group) {
             group.tick();
