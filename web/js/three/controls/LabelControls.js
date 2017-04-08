@@ -52,8 +52,6 @@
             div.setAttribute(ATTR_DATA, 'aim');
             div.classList.add('sw-aim');
             div.style.position = 'absolute';
-            // div.style.width = width + 'px';
-            // div.style.height = height + 'px';
             div.style.top = -1000;
             div.style.left = -1000;
             div.innerHTML = label;

@@ -45,7 +45,7 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 	aim.append( 'distance', 0, this.object.position, 'left|top' );
 	aim.append( 'speed', this.speed.current, this.object.position, 'right|top' );
 
-	this.update = function () {
+	this.update = function ( delta ) {
 
 		aim.updatePosition( 'aim', getPositionAim(), 'center' );
 		aim.updateLabel( 'speed', 'Speed: ' + this.speed.current );
@@ -100,8 +100,8 @@ THREE.FlyControls = function ( object, camera, domElement ) {
             var b = positionTo.z - this.object.position.z;
             var len = Math.sqrt( a * a + b * b ) * SCALE;
 
-            ox = a / len * this.speed.current;
-            oz = b / len * this.speed.current;
+            ox = a / len * ( this.speed.current + delta );
+            oz = b / len * ( this.speed.current + delta );
 
 			this.object.position.x += ox;
 			this.object.position.z += oz;
@@ -110,7 +110,9 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 		incline();
 
 		orbitControl.stopMoveCamera();
+		orbitControl.target.copy( scope.object.position );
 		orbitControl.update();
+
 	};
 
 	/**
@@ -288,7 +290,7 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 		var rotation = scope.object.children[0].rotation;
 
-		if ( motion.forward && scope.speed.current > 500 ) {
+		if ( scope.speed.current > 500 ) {
 
 			if ( motion.left ) {
 
