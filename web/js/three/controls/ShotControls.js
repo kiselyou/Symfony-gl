@@ -1,7 +1,8 @@
 
-THREE.ShotControls = function ( scene ) {
+THREE.ShotControls = function ( model, scene ) {
 
-    this._scene = scene;
+    this.object = model;
+    this.scene = scene;
 
     var intersectExceptUUID = [];
     var elementsCollision = scene.children.filter( function ( value ) {
@@ -9,7 +10,7 @@ THREE.ShotControls = function ( scene ) {
         return value instanceof THREE.Mesh;
     } );
 
-    console.log(elementsCollision);
+    // console.log(elementsCollision);
 
     /**
      *
@@ -32,8 +33,8 @@ THREE.ShotControls = function ( scene ) {
     var scope = this;
 
 
-    var geometry = new THREE.SphereGeometry( 0.3, 5, 5, 0, Math.PI * 2, 0, Math.PI * 2 );
-    var material = new THREE.MeshLambertMaterial( { color: '#EAEAEA' } );
+    var geometry = new THREE.SphereGeometry( 30, 15, 15, 0, Math.PI * 2, 0, Math.PI * 2 );
+    var material = new THREE.MeshLambertMaterial( { color: '#FF0000' } );
     var charge1 = new THREE.Mesh( geometry, material );
 
     /**
@@ -47,7 +48,17 @@ THREE.ShotControls = function ( scene ) {
      *
      * @type {number}
      */
-    this.speedModel = 2000;
+    this.speedModel = 0;
+
+    /**
+     *
+     * @param {number} speed
+     * @returns {THREE.ShotControls}
+     */
+    this.setSpeedModel = function ( speed ) {
+        this.speedModel = speed < 0 ? 0 : speed;
+        return this;
+    };
 
     var GUN_1 = 1;
     var GUN_2 = 2;
@@ -62,9 +73,9 @@ THREE.ShotControls = function ( scene ) {
     var weapon = {
         1: {
             active: true, // актывный слот или заблокированный
-            radius: 2500, // максимальное растояние выстрела
-            speed: 20000, // скорость залпа
-            intervalTime: 10, // интервал каждого залпа
+            radius: 25000, // максимальное растояние выстрела
+            speed: 250000, // скорость залпа
+            intervalTime: 50, // интервал каждого залпа
             charges: 3, // количество залпов
             energy: 100, // объем энергии на один выстрел 10 залпов
             reloadingTime: 300 // Время перезарадки после каждого выстрела
@@ -163,9 +174,9 @@ THREE.ShotControls = function ( scene ) {
 
         var energy = slot[ 'energy' ];
 
-        if ( ( scope.energy >= energy ) &&slot[ 'active' ] ) {
+        if ( ( scope.energy >= energy ) && slot[ 'active' ] ) {
 
-           slot[ 'active' ] = false;
+            slot[ 'active' ] = false;
 
             scope.energy -=  energy;
 
@@ -173,7 +184,7 @@ THREE.ShotControls = function ( scene ) {
             var charges =slot[ 'charges' ];
 
             var startCharge = 0;
-            var idInterval = setInterval(function() {
+            var idInterval = setInterval( function() {
 
                 var x = position.x + radius * Math.cos( angle );
                 var z = position.z + radius * Math.sin( angle );
@@ -181,10 +192,10 @@ THREE.ShotControls = function ( scene ) {
                 var mesh = getChargedObject( type );
                 mesh.position.copy( position );
                 mesh.positionTo = new THREE.Vector3( x, 0, z );
-                mesh.speed =slot[ 'speed' ];
+                mesh.speed = slot[ 'speed' ];
 
                 freeShots.push( mesh );
-                scope._scene.add( mesh );
+                scope.scene.add( mesh );
 
                 startCharge++;
 
@@ -193,13 +204,13 @@ THREE.ShotControls = function ( scene ) {
                     clearInterval( idInterval );
                 }
 
-            },slot[ 'intervalTime' ]);
+            }, slot[ 'intervalTime' ] );
 
-            setTimeout(function () {
+            setTimeout( function () {
 
                slot[ 'active' ] = true;
 
-            },slot[ 'reloadingTime' ]);
+            }, slot[ 'reloadingTime' ] );
         }
     }
 
@@ -291,25 +302,13 @@ THREE.ShotControls = function ( scene ) {
         }
     }
 
-    this.object = null;
-
-    this.setModel = function ( model ) {
-        this.object = model;
-    };
-
-    this.setPreviousPositionModel = function ( v ) {
-        this.previousPosition = v;
-        return this;
-    };
-
     /**
      *
      * @param {KeyboardEvent} event
+     * @param {number} angle
      * @returns {void}
      */
-    this.onKeyDown = function ( event ) {
-
-        var angle = getAngle( scope.previousPosition, scope.object.position );
+    this.onKeyDown = function( event, angle ) {
 
         switch ( event.keyCode ) {
             case scope.keys.WEAPON_SLOT_1:
@@ -340,11 +339,13 @@ THREE.ShotControls = function ( scene ) {
                 shot( GUN_9, scope.object.position, angle );
                 break;
         }
-
-        // console.log(weapon);
     };
 
-    this.update = function () {
+    /**
+     *
+     * @param {number} delta
+     */
+    this.update = function ( delta ) {
 
         if ( freeShots.length > 0 ) {
 
@@ -354,21 +355,19 @@ THREE.ShotControls = function ( scene ) {
 
                 var a = mesh.positionTo.x - mesh.position.x;
                 var b = mesh.positionTo.z - mesh.position.z;
-                var len =  Math.sqrt( a * a + b * b ) * 1000;
+                var len =  Math.sqrt( a * a + b * b ) * 100;
 
-                var speed = scope.speedModel + mesh.speed;
+                var speed = scope.speedModel + mesh.speed + delta;
                 var ox = a / len * speed;
                 var oz = b / len * speed;
 
                 mesh.position.x += ox;
                 mesh.position.z += oz;
 
-
-
-
                 var originPoint = mesh.position.clone();
 
                 for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
+
                     var localVertex = mesh.geometry.vertices[vertexIndex].clone();
                     var globalVertex = localVertex.applyMatrix4( mesh.matrix );
                     var directionVector = globalVertex.sub( mesh.position );
@@ -380,20 +379,16 @@ THREE.ShotControls = function ( scene ) {
                         // console.log(collisionResults[0][ 'object' ]);
                         //
                         freeShots.splice( i, 1 );
-                        scope._scene.remove( mesh );
-                        scope._scene.remove( collisionResults[0][ 'object' ] );
+                        scope.scene.remove( mesh );
+                        scope.scene.remove( collisionResults[0][ 'object' ] );
                         break;
                     }
                 }
 
+                if ( mesh && mesh.position.distanceTo( mesh.positionTo ) < Math.sqrt( ox * ox + oz * oz ) ) {
 
-
-
-
-
-                if ( mesh && mesh.position.distanceTo( mesh.positionTo ) <= 10 ) {
                     freeShots.splice( i, 1 );
-                    scope._scene.remove( mesh );
+                    scope.scene.remove( mesh );
                 }
             }
         }

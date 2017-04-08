@@ -1,5 +1,7 @@
 
-THREE.FlyControls = function ( object, camera, domElement ) {
+THREE.FlyControls = function ( scene, object, camera, domElement ) {
+
+	var shot = new THREE.ShotControls( object, scene );
 
 	var SCALE = 100;
 
@@ -108,6 +110,8 @@ THREE.FlyControls = function ( object, camera, domElement ) {
         }
 
 		incline();
+        shot.setSpeedModel( scope.speed.current );
+		shot.update( delta );
 
 		orbitControl.stopMoveCamera();
 		orbitControl.target.copy( scope.object.position );
@@ -202,6 +206,8 @@ THREE.FlyControls = function ( object, camera, domElement ) {
 
 		motionControl();
 		fly = true;
+
+		shot.onKeyDown( e, _angle );
 	}
 
 	function keyUp( e ) {

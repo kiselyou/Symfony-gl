@@ -64,7 +64,9 @@ THREE.SceneControls = function ( idElement, lock ) {
         model = loader.getModel('mi-starship');
         // model.add( scope.camera );
 
-        flyControls = new THREE.FlyControls( model, scope.camera, scope.renderer.domElement );
+
+
+        flyControls = new THREE.FlyControls( scope.scene, model, scope.camera, scope.renderer.domElement );
         flyControls.initOrbitControl();
         scope.scene.add(model);
 
