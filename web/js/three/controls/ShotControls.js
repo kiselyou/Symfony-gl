@@ -1,7 +1,8 @@
 
-THREE.ShotControls = function ( model, scene ) {
+THREE.ShotControls = function ( model, multiLoader, scene ) {
 
     this.object = model;
+    this.multiLoader = multiLoader;
     this.scene = scene;
 
     var intersectExceptUUID = [];
@@ -31,6 +32,7 @@ THREE.ShotControls = function ( model, scene ) {
     };
 
     var scope = this;
+
 
 
     var geometry = new THREE.SphereGeometry( 30, 15, 15, 0, Math.PI * 2, 0, Math.PI * 2 );
@@ -74,7 +76,7 @@ THREE.ShotControls = function ( model, scene ) {
         1: {
             active: true, // актывный слот или заблокированный
             radius: 25000, // максимальное растояние выстрела
-            speed: 250000, // скорость залпа
+            speed: 10000, // скорость залпа
             intervalTime: 50, // интервал каждого залпа
             charges: 3, // количество залпов
             energy: 100, // объем энергии на один выстрел 10 залпов
@@ -226,10 +228,14 @@ THREE.ShotControls = function ( model, scene ) {
 
         switch (type) {
             case GUN_1:
-                mesh = charge1.clone();
+                // mesh = charge1.clone();
+                mesh = scope.multiLoader.getModel('mi-rocket');
+                mesh.scale = 10;
+                console.log(mesh);
                 break;
             case GUN_2:
                 mesh = charge1.clone();
+                console.log(mesh);
                 break;
             case GUN_3:
                 mesh = charge1.clone();
@@ -363,27 +369,28 @@ THREE.ShotControls = function ( model, scene ) {
 
                 mesh.position.x += ox;
                 mesh.position.z += oz;
+                mesh.lookAt( mesh.positionTo );
 
-                var originPoint = mesh.position.clone();
-
-                for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
-
-                    var localVertex = mesh.geometry.vertices[vertexIndex].clone();
-                    var globalVertex = localVertex.applyMatrix4( mesh.matrix );
-                    var directionVector = globalVertex.sub( mesh.position );
-
-                    var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-                    var collisionResults = ray.intersectObjects( elementsCollision );
-
-                    if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
-                        // console.log(collisionResults[0][ 'object' ]);
-                        //
-                        freeShots.splice( i, 1 );
-                        scope.scene.remove( mesh );
-                        scope.scene.remove( collisionResults[0][ 'object' ] );
-                        break;
-                    }
-                }
+                // var originPoint = mesh.position.clone();
+                //
+                // for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
+                //
+                //     var localVertex = mesh.geometry.vertices[vertexIndex].clone();
+                //     var globalVertex = localVertex.applyMatrix4( mesh.matrix );
+                //     var directionVector = globalVertex.sub( mesh.position );
+                //
+                //     var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+                //     var collisionResults = ray.intersectObjects( elementsCollision );
+                //
+                //     if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
+                //         // console.log(collisionResults[0][ 'object' ]);
+                //         //
+                //         freeShots.splice( i, 1 );
+                //         scope.scene.remove( mesh );
+                //         scope.scene.remove( collisionResults[0][ 'object' ] );
+                //         break;
+                //     }
+                // }
 
                 if ( mesh && mesh.position.distanceTo( mesh.positionTo ) < Math.sqrt( ox * ox + oz * oz ) ) {
 

@@ -1,11 +1,16 @@
 
-THREE.FlyControls = function ( scene, object, camera, domElement ) {
+THREE.FlyControls = function ( scene, multiLoader, camera, domElement ) {
 
-	var shot = new THREE.ShotControls( object, scene );
+    this.scene = scene;
+	this.multiLoader = multiLoader;
+
+    this.object = this.multiLoader.getModel('mi-starship');
+
+    this.scene.add( this.object );
+
+	var shot = new THREE.ShotControls( this.object, this.multiLoader, scene );
 
 	var SCALE = 100;
-
-	this.object = object;
 
 	this.camera = camera;
 

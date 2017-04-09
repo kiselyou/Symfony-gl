@@ -57,18 +57,25 @@ THREE.SceneControls = function ( idElement, lock ) {
         'Wraith_Raider_Starship.mtl'
     );
 
-    var model = null;
+    loader.addLoad(
+        'mi-rocket',
+        '/web/models/rockets/MissileMBDA Meteor/Files/',
+        'Missile MBDA Meteor.obj',
+        'Missile MBDA Meteor.mtl'
+    );
+
+    // var model = null;
 
     loader.load(function () {
 
-        model = loader.getModel('mi-starship');
+        // model = loader.getModel('mi-starship');
         // model.add( scope.camera );
 
 
 
-        flyControls = new THREE.FlyControls( scope.scene, model, scope.camera, scope.renderer.domElement );
+        flyControls = new THREE.FlyControls( scope.scene, loader, scope.camera, scope.renderer.domElement );
         flyControls.initOrbitControl();
-        scope.scene.add(model);
+        // scope.scene.add(model);
 
         var miniMap = new THREE.MiniMap();
         miniMap.appendTo();
@@ -85,6 +92,10 @@ THREE.SceneControls = function ( idElement, lock ) {
         panel.addProgress( 2, 'armor', 4000, 20, '#008AFA' );
         panel.addProgress( 3, 'hull', 1000, 10, '#C10020' );
         panel.appendTo();
+
+
+        // var rocket = loader.getModel('mi-rocket');
+        // scope.scene.add(rocket);
 
         initScene();
 
