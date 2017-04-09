@@ -314,7 +314,7 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_1 ] = {
-        model: 'mi-rocket',
+        model: THREE.SceneControls.MODEL_R1_A,
         active: true, // актывный слот или заблокированный
         radius: 15000, // максимальное растояние выстрела
         speed: 25000, // скорость залпа

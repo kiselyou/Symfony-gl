@@ -50,23 +50,12 @@ THREE.SceneControls = function ( idElement, lock ) {
      */
     var loader = new THREE.MultiLoader( this.scene );
 
-    loader.addLoad(
-        'mi-starship',
-        '/web/models/M1/cwwf1303rf28-W/Wraith Raider Starship/',
-        'Wraith Raider Starship.obj',
-        'Wraith_Raider_Starship.mtl'
-    );
-
-    loader.addLoad(
-        'mi-rocket',
-        '/web/models/rockets/MissileMBDA Meteor/Files/',
-        'Missile MBDA Meteor.obj',
-        'Missile MBDA Meteor.mtl'
-    );
+    loader.addLoad( THREE.SceneControls.MODEL_S1_A, '/web/models/S1/A/', 'starship.obj', 'starship.mtl' );
+    loader.addLoad( THREE.SceneControls.MODEL_R1_A, '/web/models/R1/A/', 'rocket.obj', 'rocket.mtl' );
 
     loader.setLoadedCallback( function ( params ) {
         switch ( params.name ) {
-            case 'mi-rocket':
+            case THREE.SceneControls.MODEL_R1_A:
                 params.object.scale.copy( new THREE.Vector3( 5, 5, 5 ) );
                 break;
         }
@@ -210,5 +199,9 @@ THREE.SceneControls = function ( idElement, lock ) {
                 break;
         }
     }
-
 };
+
+// ORANGE STAR SHIP
+THREE.SceneControls.MODEL_S1_A = 'S1_A';
+
+THREE.SceneControls.MODEL_R1_A = 'R1_A';

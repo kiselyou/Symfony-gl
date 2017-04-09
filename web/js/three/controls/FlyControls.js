@@ -12,7 +12,7 @@
 		 *
 		 * @type {Mesh}
 		 */
-		this.object = multiLoader.getModel('mi-starship');
+		this.object = multiLoader.getModel(THREE.SceneControls.MODEL_S1_A);
 
 		/**
 		 *
