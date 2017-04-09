@@ -38,9 +38,29 @@
         /**
          * Текущее количество энергии
          *
-         * @type {number}
+         * @type {{current: number, max: number, min: number}}
          */
-        this.energyModel = 1000000;
+        this.energy = {
+            current: 1000,
+            max: 1000,
+            min: 10,
+            reduction: 5
+        };
+
+        /**
+         *
+         * @param {number} int
+         * @returns {THREE.ShotControls}
+         */
+        this.addEnergy = function ( int ) {
+            if ( scope.energy.current + int > scope.energy.max ) {
+                scope.energy.current = scope.energy.max;
+            } else {
+                scope.energy.current += int;
+            }
+
+            return scope;
+        };
 
         /**
          *
@@ -89,10 +109,10 @@
 
             var slot = THREE.ShotControls.WEAPON[ type ];
 
-            if ( ( scope.energyModel >= slot.energy ) && slot.active ) {
+            if ( ( scope.energy.current >= slot.energy ) && slot.active ) {
 
                 slot.active = false;
-                scope.energyModel -=  slot.energy;
+                scope.energy.current -=  slot.energy;
 
                 var startCharge = 0;
                 var idInterval = setInterval( function() {

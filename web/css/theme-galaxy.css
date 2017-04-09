@@ -210,6 +210,7 @@ body {
 
 .sw-block-progress {
     width: 290px;
+    float: left;
 }
 
 .sw-status-progress {

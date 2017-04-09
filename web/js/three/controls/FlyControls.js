@@ -178,6 +178,11 @@
 			orbitControl.target.copy( scope.object.position );
 			orbitControl.update();
 
+            if ( _panel ) {
+                _panel.updateProgress( 1, shot.energy.current );
+                _panel.updateProgress( 4, scope.speed.current );
+            }
+
 		};
 
 		/**
@@ -196,13 +201,39 @@
 			orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
 			orbitControl.enablePan = false;
 			orbitControl.enableKeys = false;
+            orbitControl.rotateSpeed = 3.0;
 			orbitControl.minDistance = 600;
-			orbitControl.maxPolarAngle = 75 * Math.PI / 180;
-			orbitControl.minPolarAngle = 45 * Math.PI / 180;
 			orbitControl.maxDistance = 2500;
-			orbitControl.rotateSpeed = 3.0;
+            orbitControl.maxPolarAngle = 75 * Math.PI / 180;
+            orbitControl.minPolarAngle = 45 * Math.PI / 180;
 			return this;
 		};
+
+        var _panel = null;
+
+        this.initPanel = function () {
+
+            var miniMap = new THREE.MiniMap();
+            miniMap.appendTo();
+
+            _panel = new THREE.PanelControl( miniMap );
+
+            _panel.addAction( function () {
+                new ui.FullScreen().toggle();
+            }, null, 'fullscreen', null, true );
+
+            _panel.addProgress( 1, 'energy', shot.energy.max, shot.energy.reduction, '#FF9900' );
+            _panel.addProgress( 2, 'armor', 4000, 20, '#008AFA' );
+            _panel.addProgress( 3, 'hull', 1000, 10, '#C10020' );
+            _panel.addProgress( 4, 'speed', scope.speed.max, 0, '#FFFFFF' );
+
+
+            _panel.addCallback( 1, function ( param ) {
+                shot.addEnergy( param.reduction );
+            });
+
+            _panel.appendTo();
+        };
 
 		/**
 		 *

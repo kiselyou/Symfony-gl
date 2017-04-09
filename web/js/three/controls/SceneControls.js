@@ -76,22 +76,7 @@ THREE.SceneControls = function ( idElement, lock ) {
 
         flyControls = new THREE.FlyControls( scope.scene, loader, scope.camera, scope.renderer.domElement );
         flyControls.initOrbitControl();
-
-        var miniMap = new THREE.MiniMap();
-        miniMap.appendTo();
-
-        var panel = new THREE.PanelControl( miniMap );
-
-        panel.addAction( function () {
-
-            new ui.FullScreen().toggle();
-
-        }, null, 'fullscreen', null, true );
-
-        panel.addProgress( 1, 'energy', 2000, 25, '#FF9900' );
-        panel.addProgress( 2, 'armor', 4000, 20, '#008AFA' );
-        panel.addProgress( 3, 'hull', 1000, 10, '#C10020' );
-        panel.appendTo();
+        flyControls.initPanel();
 
         initScene();
 

@@ -196,7 +196,7 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
 
             /**
              *
-             * @type {{key: (string|number), label: string, number: number, max: =number, auto: =number, color: =string, unit: =string }}
+             * @type {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }}
              */
             var params = progress[ i ];
 
@@ -233,18 +233,18 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
 
     /**
      *
-     * @param {{key: (string|number), label: string, number: number, max: =number, auto: =number, color: =string, unit: =string }} params
+     * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
      * @returns {void}
      */
     function autoUpdate( params ) {
 
-        if ( params.auto > 0 ) {
+        if ( params.reduction > 0 ) {
 
             params[ 'idInterval' ] = setInterval( function () {
 
                 var max = params.max == undefined ? 100 : params.max;
 
-                params.number += params.auto;
+                params.number += params.reduction;
 
                 if ( params.number >= max ) {
                     params.number = max;
@@ -253,6 +253,11 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
                 setProgress( params['p'], params );
                 labelProgress( params['l'], params );
 
+                if ( params.callback != undefined ) {
+                    params.callback.call( this, params );
+                }
+
+
             }, scope.speedAutoUpdate );
         }
     }
@@ -260,7 +265,7 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
     /**
      *
      * @param {Element} element
-     * @param {{key: (string|number), label: string, number: number, max: =number, auto: =number, color: =string, unit: =string }} params
+     * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
      * @returns {void}
      */
     function setProgress( element, params ) {
@@ -273,7 +278,7 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
     /**
      *
      * @param {Element} element
-     * @param {{key: (string|number), label: string, number: number, max: =number, auto: =number, color: =string, unit: =string }} params
+     * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
      * @returns {void}
      */
     function labelProgress( element, params ) {
@@ -284,26 +289,52 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
 
     /**
      *
+     */
+
+    /**
+     *
      * @param {(string|number)} key
      * @param {string} label
      * @param {?number} [max]
-     * @param {?number} [auto]
+     * @param {?number} [reduction]
      * @param {?string} [color]
+     * @param {?string} [callback]
      * @param {?string} [unit]
      * @returns {THREE.PanelControl}
      */
-    this.addProgress = function ( key, label, max, auto, color, unit ) {
+    this.addProgress = function ( key, label, max, reduction, color, callback, unit ) {
         progress.push(
             {
                 key: key,
                 label: label,
                 number: 0,
                 max: max,
-                auto: auto,
+                reduction: reduction,
                 color: color,
-                unit: unit
+                unit: unit,
+                callback: callback
             }
         );
+        return this;
+    };
+
+    /**
+     *
+     * @param {(string|number)} key
+     * @param callback
+     * @returns {THREE.PanelControl}
+     */
+    this.addCallback = function ( key, callback ) {
+
+        var pr = progress.find(function ( value ) {
+
+            return value.key === key;
+        });
+
+        if ( pr != undefined ) {
+            pr.callback = callback;
+        }
+
         return this;
     };
 
@@ -324,6 +355,8 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
         if ( pr != undefined ) {
 
             pr.number = increment ? pr.number + number : number;
+            setProgress( pr['p'], pr );
+            labelProgress( pr['l'], pr );
         }
 
         return this;
