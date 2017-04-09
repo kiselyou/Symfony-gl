@@ -64,18 +64,18 @@ THREE.SceneControls = function ( idElement, lock ) {
         'Missile MBDA Meteor.mtl'
     );
 
-    // var model = null;
+    loader.setLoadedCallback( function ( params ) {
+        switch ( params.name ) {
+            case 'mi-rocket':
+                params.object.scale.copy( new THREE.Vector3( 5, 5, 5 ) );
+                break;
+        }
+    } );
 
     loader.load(function () {
 
-        // model = loader.getModel('mi-starship');
-        // model.add( scope.camera );
-
-
-
         flyControls = new THREE.FlyControls( scope.scene, loader, scope.camera, scope.renderer.domElement );
         flyControls.initOrbitControl();
-        // scope.scene.add(model);
 
         var miniMap = new THREE.MiniMap();
         miniMap.appendTo();
@@ -92,10 +92,6 @@ THREE.SceneControls = function ( idElement, lock ) {
         panel.addProgress( 2, 'armor', 4000, 20, '#008AFA' );
         panel.addProgress( 3, 'hull', 1000, 10, '#C10020' );
         panel.appendTo();
-
-
-        // var rocket = loader.getModel('mi-rocket');
-        // scope.scene.add(rocket);
 
         initScene();
 

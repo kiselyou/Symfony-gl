@@ -33,7 +33,7 @@ THREE.MultiLoader = function ( scene ) {
     /**
      * @type {(objectLoadedCallback|null)}
      */
-    this.objectLoaded = null;
+    var _objectLoadedCallback = null;
 
     /**
      * Callback for adding action when all models has loaded
@@ -59,9 +59,21 @@ THREE.MultiLoader = function ( scene ) {
     var models = [];
 
     /**
+     * When object loaded to do something
+     *
+     * @param {objectLoadedCallback} callback
+     * @returns {THREE.MultiLoader}
+     */
+    this.setLoadedCallback = function ( callback  ) {
+        _objectLoadedCallback = callback;
+        return this;
+    };
+
+    /**
+     * Get loaded object - CLONE
      *
      * @param {string} name
-     * @returns {null|Mesh}
+     * @returns {?Mesh}
      */
     this.getModel = function ( name ) {
 
@@ -73,6 +85,7 @@ THREE.MultiLoader = function ( scene ) {
     };
 
     /**
+     * Get loaded models - ORIGINAL
      *
      * @returns {Array}
      */
@@ -81,6 +94,8 @@ THREE.MultiLoader = function ( scene ) {
     };
 
     /**
+     * Add data for model upload
+     *
      * @param {string} name
      * @param {string} directory
      * @param {string} pathOBJ
@@ -106,8 +121,22 @@ THREE.MultiLoader = function ( scene ) {
      */
     var progressBar = new ui.ProgressBar();
 
+    /**
+     *
+     * @type {THREE.LoadingManager}
+     */
     var manager = new THREE.LoadingManager();
+
+    /**
+     *
+     * @type {THREE.OBJLoader}
+     */
     var objLoader = new THREE.OBJLoader( manager );
+
+    /**
+     *
+     * @type {THREE.MTLLoader}
+     */
     var mtlLoader = new THREE.MTLLoader( manager );
 
     /**
@@ -124,6 +153,8 @@ THREE.MultiLoader = function ( scene ) {
     };
 
     /**
+     * Start upload models
+     *
      * @returns {void}
      */
     function loadModels() {
@@ -153,6 +184,7 @@ THREE.MultiLoader = function ( scene ) {
     }
 
     /**
+     * Start upload object ( model )
      *
      * @param {{ name: string, pathOBJ: string, object: ?Mesh, pathMTL: string, directory: string }} params
      * @returns {void}
@@ -175,9 +207,8 @@ THREE.MultiLoader = function ( scene ) {
                 params[ 'object' ] = sphere;
                 models.push( params );
 
-                if ( scope.objectLoaded ) {
-
-                    scope.objectLoaded.call( this, params );
+                if ( _objectLoadedCallback ) {
+                    _objectLoadedCallback.call( this, params );
                 }
 
                 loadModels();
@@ -189,6 +220,7 @@ THREE.MultiLoader = function ( scene ) {
     }
 
     /**
+     * Load textures for object
      *
      * @param {{ name: string, pathOBJ: string, object: ?Mesh, pathMTL: string, directory: string }} params
      */
