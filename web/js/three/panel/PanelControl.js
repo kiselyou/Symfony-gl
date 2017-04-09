@@ -65,6 +65,7 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
      * @param {boolean} [active]
      */
     this.addAction = function ( callback, name, icon, keyCode, active ) {
+
         actions.push(
             {
                 callback: callback,
@@ -151,9 +152,7 @@ THREE.PanelControl = function ( miniMap, idPanel ) {
     function addKeyEvents( e ) {
 
         for ( var i = 0; i < keyEvents.length; i++ ) {
-
             if ( e.keyCode == keyEvents[ i ][ 'keyCode' ] ) {
-
                 keyEvents[ i ][ 'callback' ].call( this, e, keyEvents[ i ][ 'element' ] );
             }
         }

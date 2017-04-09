@@ -209,8 +209,16 @@
 			return this;
 		};
 
+        /**
+         *
+         * @type {null|THREE.PanelControl}
+         * @private
+         */
         var _panel = null;
 
+        /**
+         * @returns {void}
+         */
         this.initPanel = function () {
 
             var miniMap = new THREE.MiniMap();
@@ -218,15 +226,16 @@
 
             _panel = new THREE.PanelControl( miniMap );
 
-            _panel.addAction( function () {
-                new ui.FullScreen().toggle();
-            }, null, 'fullscreen', null, true );
+            var actions = THREE.FlyControls.ACTIONS;
+
+            for (var i = 0; i < actions.length; i++) {
+                setActionShot( actions[ i ], actions[ i ][ 'action' ] );
+            }
 
             _panel.addProgress( 1, 'energy', shot.energy.max, shot.energy.reduction, '#FF9900' );
             _panel.addProgress( 2, 'armor', 4000, 20, '#008AFA' );
             _panel.addProgress( 3, 'hull', 1000, 10, '#C10020' );
             _panel.addProgress( 4, 'speed', scope.speed.max, 0, '#FFFFFF' );
-
 
             _panel.addCallback( 1, function ( param ) {
                 shot.addEnergy( param.reduction );
@@ -234,6 +243,34 @@
 
             _panel.appendTo();
         };
+
+        /**
+         * Set action
+         *
+         * @param {{}} param
+         * @param {number|string} type
+         */
+        function setActionShot( param, type ) {
+
+            switch ( type ) {
+                // Add actions - Shot
+                case THREE.FlyControls.ACTION_SHOT:
+                    _panel.addAction( function () {
+
+                        shot.shot( param.type, scope.object.position, _angle );
+
+                    }, param.name, param.icon, param.keyCode, param.active );
+                    break;
+                // Add action - Full Screen
+                case THREE.FlyControls.ACTION_FULL_SCREEN:
+                    _panel.addAction( function () {
+
+                        new ui.FullScreen().toggle();
+
+                    }, param.name, param.icon, param.keyCode, param.active );
+                    break;
+            }
+        }
 
 		/**
 		 *
@@ -306,8 +343,6 @@
 
 			motionControl();
 			fly = true;
-
-			shot.onKeyDown( e, scope.object.position,  _angle );
 		}
 
 		/**
@@ -506,3 +541,29 @@
 	 * @const {number}
 	 */
 	THREE.FlyControls.SCALE = 100;
+    THREE.FlyControls.ACTION_SHOT = 'shot';
+    THREE.FlyControls.ACTION_FULL_SCREEN = 'full_screen';
+
+    THREE.FlyControls.ACTIONS = [];
+
+    THREE.FlyControls.ACTIONS.push(
+        {
+            name: null,
+            icon: 'fullscreen',
+            keyCode: null,
+            active: true,
+            type: null,
+            action: THREE.FlyControls.ACTION_FULL_SCREEN
+        }
+    );
+
+    THREE.FlyControls.ACTIONS.push(
+        {
+            name: '1',
+            icon: 'move',
+            keyCode: 49,
+            active: false,
+            type: THREE.ShotControls.GUN_1,
+            action: THREE.FlyControls.ACTION_SHOT
+        }
+    );
