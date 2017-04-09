@@ -37,23 +37,16 @@ html, body, canvas {
     pointer-events:none;
 }
 
-
-
-
 body {
     margin: 0;
     padding: 0;
-    background: #000;
-    /*background: url("/app/theme/images/3.png") repeat #000;*/
+    background: #000000;
 }
 
 .sw-body {
     margin: 0;
     padding: 0;
     position: absolute;
-    /*width: 100%;*/
-    /*height: 100%;*/
-    /*background: url("/app/theme/images/3.png") repeat #000;*/
 }
 
 .hidden {
@@ -114,9 +107,10 @@ body {
 }
 
 .sw-panel-control, .sw-map, .sw-modal {
-    color: #FFFFFF;
+    color: rgba(0,255,255,0.5);
     box-shadow: inset 0 0 12px rgba(0,255,255,0.5);
     background: #000000;
+    font-size: 12px;
 }
 
 .sw-modal {
@@ -258,7 +252,7 @@ body {
 
 /*===============================================   FIELDS   =========================================================*/
 .sw-star, .sw-text-error {
-    color: #ff0000;
+    color: #C41E3A;
 }
 .sw-float {
     float: left;
@@ -269,48 +263,46 @@ body {
 }
 
 .sw-field {
-    margin: 15px 0;
+    /*margin: 15px 0;*/
 }
 
 .sw-btn {
-    display: block;
+    /*display: block;*/
 }
 
-.sw-field label {
-    color: #FFFFFF;
-    width: 100%;
-    font-size: 12px;
-    display: block;
+label {
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 
-.sw-field input {
+.sw-field input,
+.sw-field span {
     color: rgba(127,255,255,0.75);
     background: transparent;
-    outline: 1px solid rgba(127,255,255,0.75);
-    border: 0;
-    padding: 5px 10px;
-    display: block;
-    width: calc(100% - 20px);
+    border: 1px solid rgba(127,255,255,0.75);
 }
 
 .sw-btn {
     color: rgba(127,255,255,0.75);
     background: transparent;
-    outline: 1px solid rgba(127,255,255,0.75);
-    border: 0;
+    border: 1px solid rgba(127,255,255,0.75);
+    border-radius: 4px;
     padding: 5px 10px;
     cursor: pointer;
     text-decoration: none;
     display: inline;
 }
 
-.sw-btn:hover {
-    background-color: rgba(0,255,255,0.5);
+.sw-field input:focus,
+.sw-field input:active,
+.sw-btn:focus,
+.sw-btn:active {
+    outline: none;
+    border: 1px solid rgba(100,255,255,0.80);
 }
 
 .sw-btn:active {
-    color: #000000;
-    background-color: rgba(0,255,255,0.75);
+    background-color: rgba(0,255,255,0.5);
 }
 
 .sw-link {

@@ -1,0 +1,6 @@
+_login:
+    path: /_login
+    defaults:  { _controller: AuthenticationBundle:Authentication:login }
+
+_logout:
+    path: /_logout

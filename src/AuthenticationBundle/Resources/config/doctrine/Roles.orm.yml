@@ -1,0 +1,36 @@
+AuthenticationBundle\Entity\Roles:
+    repositoryClass: AuthenticationBundle\Repository\RolesRepository
+    type: entity
+    table: iw_roles
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    fields:
+        role:
+            type: string
+            length: 50
+            unique: true
+        name:
+            type: string
+            length: 50
+            unique: true
+        deleted:
+            type: boolean
+            options:
+                default: 0
+        created_at:
+            type: datetime
+            nullable: false
+        updated_at:
+            type: datetime
+            nullable: false
+    manyToOne:
+        parent:
+            targetEntity: Roles
+            joinColumn:
+                name: parent
+                referencedColumnName: id
+    lifecycleCallbacks:
+        prePersist: [prePersist, preUpdate]
+        preUpdate: [preUpdate]

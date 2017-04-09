@@ -1,7 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block stylesheets %}
+
+    {{ parent() }}
     <link href="{{ asset('css/theme-galaxy.css') }}" rel="stylesheet" />
+
 {% endblock %}
 
 {% block body %}
@@ -12,154 +15,28 @@
 
 {% block javascripts %}
 
-    <script src="{{ asset('js/core/api/Array.js') }}"></script>
-    <script src="{{ asset('js/three/three.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/three.js') }}"></script>
+
+    <script type="application/javascript" src="{{ asset('js/core/ui/ui.ProgressBar.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/core/ui/ui.FullScreen.js') }}"></script>
+
+    <script type="application/javascript" src="{{ asset('js/three/shader/SPE.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/libs/dat.gui.min.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/controls/ExplosionControls.js') }}"></script>
+
+    <script type="application/javascript" src="{{ asset('js/three/panel/MiniMap.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/panel/PanelControl.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/loaders/MultiLoader.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/loaders/MTLLoader.js') }}"></script>
 
 
-    {#<script src="{{ asset('js/three/effects/ParticleEngine.js') }}"></script>#}
+    <script type="application/javascript" src="{{ asset('js/three/controls/LabelControls.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/controls/SceneControls.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/controls/OrbitControls.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/controls/ShotControls.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/controls/FlyControls.js') }}"></script>
 
+    <script type="application/javascript">new THREE.SceneControls( 'sw-container', false );</script>
 
-    <script src="{{ asset('models/ModelData.js') }}"></script>
-    <script src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
-    <script src="{{ asset('js/three/controls/PlanetControls.js') }}"></script>
-    <script src="{{ asset('js/three/controls/OrbitControls.js') }}"></script>
-    <script src="{{ asset('js/three/controls/ShotControls.js') }}"></script>
-    <script src="{{ asset('js/three/controls/ModelControls.js') }}"></script>
-
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-
-            var container = document.getElementById( 'sw-container' );
-
-            var WIDTH = window.innerWidth;
-            var HEIGHT = window.innerHeight;
-
-            var MAP_WIDTH = 320;
-            var MAP_HEIGHT = 240;
-            var MAP_LEFT = WIDTH - MAP_WIDTH;
-            var MAP_TOP = HEIGHT - MAP_HEIGHT;
-
-            var mapCanvas = document.createElement('div');
-            mapCanvas.id = 'sw-map';
-            mapCanvas.classList.add('sw-map');
-            mapCanvas.style.position = 'absolute';
-            mapCanvas.style.width = MAP_WIDTH + 'px';
-            mapCanvas.style.height = MAP_HEIGHT + 'px';
-            mapCanvas.style.left = MAP_LEFT + 'px';
-            mapCanvas.style.top = MAP_TOP + 'px';
-            container.parentNode.insertBefore(mapCanvas, container.nextSibling);
-
-
-            var aspect =  WIDTH / HEIGHT;
-
-            var scene = new THREE.Scene();
-            var renderer = new THREE.WebGLRenderer();
-            renderer.setSize( WIDTH, HEIGHT );
-            container.appendChild( renderer.domElement );
-
-            // CAMERA
-            var camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000000 );
-            camera.aspect = aspect;
-            camera.position.x = 100;
-            camera.position.z = 100;
-            camera.position.y = 100;
-            camera.lookAt(scene.position);
-            scene.add(camera);
-
-            // LIGHT
-            var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
-            hemiLight.color.setHSL( 0.6, 1, 0.6 );
-            hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
-            hemiLight.position.set( 0, 500, 0 );
-            scene.add( hemiLight );
-
-            // LIGHT
-            var dirLight = new THREE.DirectionalLight( 0xffffff );
-            dirLight.color.setHSL( 0.1, 1, 0.95 );
-            dirLight.position.set( -1, 1.75, 1 );
-            dirLight.position.multiplyScalar( 5 );
-
-            scene.add( dirLight );
-
-            // CUBES
-            for ( var i = 0; i < 10; i++ ) {
-                var geometry = new THREE.SphereGeometry( 6, 15, 15 );
-                var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0.5, transparent: true } );
-                var mesh = new THREE.Mesh( geometry, material );
-
-                mesh.position.x = getRandomArbitrary(- 500 - ( i * 25 ), 500 + ( i * 25 ) );
-                mesh.position.z = getRandomArbitrary(- 500 - ( i * 25 ), 500 + ( i * 25 ) );
-                scene.add( mesh );
-            }
-
-            // PLANETS
-            var planetControls = new THREE.PlanetControls( scene, camera );
-            planetControls.load( true, function ( a, b ) {
-                console.log( a, b );
-            } );
-
-            // GRID
-//            var color = new THREE.Color( 0x00ffff );
-//            var grid = new THREE.GridHelper( 1000, 100, color, 0x888888 );
-//            scene.add( grid );
-
-            // MODEL CONTROL
-            var modelControls = new THREE.ModelControls( camera, scene, renderer.domElement, container );
-            modelControls.loadObject( 'models/M1/Spaceship1.obj', function ( object ) {
-                object.children[0].rotateX(Math.PI / 2);
-                object.children[0].rotateY(Math.PI);
-            } );
-
-
-
-
-            modelControls.addEventToModel( modelControls.EVENT_KEY_DOWN, function ( e, scope ) {
-
-
-
-                shot.setPreviousPositionModel( scope.getPreviousPosition() );
-                shot.setModel( scope.object );
-                shot.onKeyDown( e );
-
-            } );
-
-
-
-
-
-
-//            modelControls.addIntersectExceptUUID( grid.uuid );
-
-            window.addEventListener( 'resize', windowResize, false );
-            render();
-
-            function windowResize () {
-                var w = window.innerWidth;
-                var h = window.innerHeight;
-                camera.aspect = w / h;
-                camera.updateProjectionMatrix();
-                renderer.setSize( w, h );
-            }
-
-            var clock = new THREE.Clock();
-
-            function render () {
-
-                requestAnimationFrame( render );
-
-
-
-                planetControls.update();
-                modelControls.update();
-                shot.update();
-
-                renderer.render( scene, camera );
-            }
-        });
-
-        function getRandomArbitrary(min, max) {
-            return Math.random() * (max - min) + min;
-        }
-    </script>
 {% endblock %}

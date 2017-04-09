@@ -1,0 +1,56 @@
+security:
+    providers:
+        chain_provider:
+            chain:
+                providers: [user_db, in_memory]
+        in_memory:
+            memory:
+                users: #superadmin/root
+                    superadmin:
+                        password: 3lKE6EZYz8XrKhrsrFBpq7rdPWNkxkUugXnfV+v8Il1ZEDFe3wiZFH6DEYMDd9cyIYzC74DswFFqonNgbc4BPw==
+                        roles: ['ROLE_SUPER_ADMIN']
+        user_db:
+            entity:
+                class: AuthenticationBundle:Users
+                property: username
+
+    encoders:
+        AuthenticationBundle\Entity\Users: sha512
+        Symfony\Component\Security\Core\User\User: sha512
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            pattern:    ^/
+            anonymous: ~
+            http_basic:
+                provider: chain_provider
+            form_login:
+                login_path: _login
+                check_path: _login
+                default_target_path: app
+            logout:
+                path:   _logout
+                target: _login
+            remember_me:
+                secret:   '%secret%'
+                lifetime: 604800 # 1 week in seconds
+                path:     /
+
+    access_control:
+        - { path: ^/../security/_login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_USER }
+#        - { path: ^/app/user, roles: ROLE_USER }
+#        - { path: ^/app/author, roles: ROLE_AUTHOR }
+#        - { path: ^/app/moderator, roles: ROLE_MODERATOR }
+#        - { path: ^/app/admin, roles: ROLE_ADMIN }
+#        - { path: ^/app/superadmin, roles: ROLE_SUPER_ADMIN }
+
+    role_hierarchy:
+        ROLE_USER:        [IS_AUTHENTICATED_ANONYMOUSLY]
+        ROLE_AUTHOR:      [ROLE_USER]
+        ROLE_MODERATOR:   [ROLE_AUTHOR]
+        ROLE_ADMIN:       [ROLE_MODERATOR]
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN]

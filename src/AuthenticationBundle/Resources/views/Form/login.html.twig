@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+    <link href="{{ asset('css/theme-galaxy.css') }}" rel="stylesheet" />
+
+{% endblock %}
+
+{% block body %}
+
+    {% trans_default_domain 'admin' %}
+
+    <div class="sw-modal form-signin well-sm">
+
+        <div class="row">
+
+            <form class="bs-example bs-example-form" id="form" role="form" action="{{ path('_login') }}" method="POST">
+
+                <div class="form-group">
+                    <label for="_username"> {{ '_USERNAME'|trans }} </label>
+                    <span class="sw-star">*</span>
+                    <div class="sw-field input-group">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-user"></i>
+                        </span>
+                        <input type="text" class="form-control" name="_username" id="_username" placeholder="Username" autocomplete="off" value="{{ username }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="_password"> {{ '_PASSWORD'|trans }} </label>
+                    <span class="sw-star">*</span>
+                    <div class="input-group sw-field">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-lock"></i>
+                        </span>
+                        <input type="password" class="form-control" name="_password" id="_password" placeholder="Password" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="_remember_me">{{ '_REMEMBER'|trans }}</label>
+                    <input type="checkbox" name="_remember_me" id="_remember_me">
+
+                    <div class="pull-right btn-toolbar">
+                        <button type="button" class="sw-btn" id="_send_form">{{ '_LOGIN'|trans }}</button>
+                    </div>
+                </div>
+
+                <span class="sw-text-error" id="_error">{% if error %} {{ error.messageKey|trans(error.messageData, 'security') }} {% endif %}</span>
+
+            </form>
+
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {% trans_default_domain 'admin' %}
+    {{ parent() }}
+
+   <script>
+       document.getElementById('_send_form').addEventListener('click', function () {
+
+           var _error = document.getElementById('_error');
+           var _username = document.getElementById('_username');
+           var _password = document.getElementById('_password');
+
+           if ( _password.value === '' || _username.value === '' ) {
+               _error.innerHTML = '{{ '_MESSAGE_FILL_FIELDS'|trans }}';
+           } else {
+               document.getElementById('form').submit();
+           }
+       });
+   </script>
+
+{% endblock %}

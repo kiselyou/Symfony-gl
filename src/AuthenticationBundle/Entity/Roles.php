@@ -1,11 +1,11 @@
 <?php
 
-namespace TestBundle\Entity;
+namespace AuthenticationBundle\Entity;
 
 /**
- * TestIndex
+ * Roles
  */
-class TestIndex
+class Roles
 {
     /**
      * @var integer
@@ -15,27 +15,17 @@ class TestIndex
     /**
      * @var string
      */
-    private $title_1;
+    private $role;
 
     /**
      * @var string
      */
-    private $title_2 = 'Hi';
-
-    /**
-     * @var string
-     */
-    private $description = 'Hi';
+    private $name;
 
     /**
      * @var boolean
      */
-    private $isActive = true;
-
-    /**
-     * @var boolean
-     */
-    private $deleted = false;
+    private $deleted = 0;
 
     /**
      * @var \DateTime
@@ -46,6 +36,11 @@ class TestIndex
      * @var \DateTime
      */
     private $updated_at;
+
+    /**
+     * @var \AuthenticationBundle\Entity\Roles
+     */
+    private $parent;
 
 
     /**
@@ -59,99 +54,51 @@ class TestIndex
     }
 
     /**
-     * Set title1
+     * Set role
      *
-     * @param string $title1
+     * @param string $role
      *
-     * @return TestIndex
+     * @return Roles
      */
-    public function setTitle1($title1)
+    public function setRole($role)
     {
-        $this->title_1 = $title1;
+        $this->role = $role;
 
         return $this;
     }
 
     /**
-     * Get title1
+     * Get role
      *
      * @return string
      */
-    public function getTitle1()
+    public function getRole()
     {
-        return $this->title_1;
+        return $this->role;
     }
 
     /**
-     * Set title2
+     * Set name
      *
-     * @param string $title2
+     * @param string $name
      *
-     * @return TestIndex
+     * @return Roles
      */
-    public function setTitle2($title2)
+    public function setName($name)
     {
-        $this->title_2 = $title2;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get title2
+     * Get name
      *
      * @return string
      */
-    public function getTitle2()
+    public function getName()
     {
-        return $this->title_2;
-    }
-
-    /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return TestIndex
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Set isActive
-     *
-     * @param boolean $isActive
-     *
-     * @return TestIndex
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    /**
-     * Get isActive
-     *
-     * @return boolean
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
+        return $this->name;
     }
 
     /**
@@ -159,7 +106,7 @@ class TestIndex
      *
      * @param boolean $deleted
      *
-     * @return TestIndex
+     * @return Roles
      */
     public function setDeleted($deleted)
     {
@@ -183,7 +130,7 @@ class TestIndex
      *
      * @param \DateTime $createdAt
      *
-     * @return TestIndex
+     * @return Roles
      */
     public function setCreatedAt($createdAt)
     {
@@ -207,7 +154,7 @@ class TestIndex
      *
      * @param \DateTime $updatedAt
      *
-     * @return TestIndex
+     * @return Roles
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -225,4 +172,44 @@ class TestIndex
     {
         return $this->updated_at;
     }
+
+    /**
+     * Set parent
+     *
+     * @param \AuthenticationBundle\Entity\Roles $parent
+     *
+     * @return Roles
+     */
+    public function setParent(\AuthenticationBundle\Entity\Roles $parent = null)
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * Get parent
+     *
+     * @return \AuthenticationBundle\Entity\Roles
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        // Add your code here
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function preUpdate()
+    {
+        // Add your code here
+    }
 }
+
