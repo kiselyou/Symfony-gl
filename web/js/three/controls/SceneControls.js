@@ -50,6 +50,7 @@ THREE.SceneControls = function ( idElement, lock ) {
      */
     var loader = new THREE.MultiLoader( this.scene );
 
+    loader.addLoad( THREE.SceneControls.MODEL_G1_A, '/web/models/G1/A/', 'city.obj', 'city.mtl' );
     // SHIPS
     loader.addLoad( THREE.SceneControls.MODEL_S1_A, '/web/models/S1/A/', 'starship.obj', 'starship.mtl' );
     loader.addLoad( THREE.SceneControls.MODEL_S1_B, '/web/models/S1/B/', 'starship.obj', 'starship.mtl' );
@@ -62,6 +63,13 @@ THREE.SceneControls = function ( idElement, lock ) {
 
     loader.setLoadedCallback( function ( params ) {
         switch ( params.name ) {
+
+            case THREE.SceneControls.MODEL_G1_A:
+                params.object.scale.copy( new THREE.Vector3( 50, 50, 50 ) );
+                params.object.position.z = 50000;
+                params.object.position.y = -2900;
+                scope.scene.add( params.object );
+                break;
 
             case THREE.SceneControls.MODEL_S1_A:
                 params.object.children[0].position.y = -80;
@@ -247,6 +255,8 @@ THREE.SceneControls = function ( idElement, lock ) {
     }
 };
 
+// CITIES
+THREE.SceneControls.MODEL_G1_A = 'G1_A';
 // SHIPS
 THREE.SceneControls.MODEL_S1_A = 'S1_A';
 THREE.SceneControls.MODEL_S1_B = 'S1_B';
