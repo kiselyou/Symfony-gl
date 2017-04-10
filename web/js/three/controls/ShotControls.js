@@ -41,8 +41,8 @@
          * @type {{current: number, max: number, min: number}}
          */
         this.energy = {
-            current: 2000,
-            max: 2000,
+            current: 9000,
+            max: 9000,
             min: 10,
             reduction: 5
         };
@@ -317,11 +317,11 @@
         model: THREE.SceneControls.MODEL_R1_A,
         active: true, // актывный слот или заблокированный
         radius: 15000, // максимальное растояние выстрела
-        speed: 25000, // скорость залпа
+        speed: 45000, // скорость залпа
         intervalTime: 50, // интервал каждого залпа
         charges: 1, // количество залпов
         energy: 50, // объем энергии на один выстрел 10 залпов
-        reloadingTime: 300 // Время перезарадки после каждого выстрела
+        reloadingTime: 500 // Время перезарадки после каждого выстрела
     };
 
     /**
@@ -329,14 +329,14 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_2 ] = {
-        model: '',
+        model: THREE.SceneControls.MODEL_R1_B,
         active: true,
-        radius: 5000,
-        speed: 5000,
-        intervalTime: 5,
+        radius: 15000,
+        speed: 25000,
+        intervalTime: 100,
         charges: 5,
         energy: 200,
-        reloadingTime: 500
+        reloadingTime: 3500
     };
 
     /**
@@ -344,14 +344,14 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_3 ] = {
-        model: '',
+        model: THREE.SceneControls.MODEL_R1_C,
         active: true,
-        radius: 5000,
-        speed: 10000,
-        intervalTime: 5,
+        radius: 15000,
+        speed: 30000,
+        intervalTime: 150,
         charges: 4,
         energy: 300,
-        reloadingTime: 400
+        reloadingTime: 4000
     };
 
     /**
@@ -359,9 +359,9 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_4 ] = {
-        model: '',
+        model: THREE.SceneControls.MODEL_R1_A,
         active: true,
-        radius: 5000,
+        radius: 15000,
         speed: 20000,
         intervalTime: 10,
         charges: 1,
@@ -374,14 +374,14 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_5 ] = {
-        model: '',
+        model: THREE.SceneControls.MODEL_R1_A,
         active: true,
-        radius: 50,
-        speed: 0.001,
-        intervalTime: 10,
+        radius: 15000,
+        speed: 50000,
+        intervalTime: 200,
         charges: 10,
-        energy: 100,
-        reloadingTime: 100
+        energy: 1000,
+        reloadingTime: 10000
     };
 
     /**
@@ -389,14 +389,14 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_6 ] = {
-        model: '',
+        model: THREE.SceneControls.MODEL_R1_A,
         active: true,
-        radius: 50,
-        speed: 0.001,
+        radius: 55000,
+        speed: 100000,
         intervalTime: 10,
-        charges: 10,
-        energy: 100,
-        reloadingTime: 100
+        charges: 1,
+        energy: 1000,
+        reloadingTime: 1000
     };
 
     /**
@@ -404,14 +404,14 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_7 ] = {
-        model: '',
+        model: THREE.SceneControls.MODEL_R1_B,
         active: true,
-        radius: 50,
-        speed: 0.001,
-        intervalTime: 10,
-        charges: 10,
-        energy: 100,
-        reloadingTime: 100
+        radius: 35000,
+        speed: 90000,
+        intervalTime: 300,
+        charges: 3,
+        energy: 600,
+        reloadingTime: 900
     };
 
     /**
@@ -419,14 +419,14 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_8 ] = {
-        model: '',
+        model: THREE.SceneControls.MODEL_R1_C,
         active: true,
-        radius: 50,
-        speed: 0.001,
+        radius: 50000,
+        speed: 40000,
         intervalTime: 10,
-        charges: 10,
-        energy: 100,
-        reloadingTime: 100
+        charges: 2,
+        energy: 200,
+        reloadingTime: 600
     };
 
     /**
@@ -434,12 +434,12 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_9 ] = {
-        model: '',
+        model: THREE.SceneControls.MODEL_R1_C,
         active: true,
-        radius: 50,
-        speed: 0.001,
-        intervalTime: 10,
-        charges: 10,
-        energy: 100,
-        reloadingTime: 100
+        radius: 25000,
+        speed: 60000,
+        intervalTime: 100,
+        charges: 5,
+        energy: 500,
+        reloadingTime: 2000
     };

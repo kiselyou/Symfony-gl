@@ -1,0 +1,40 @@
+
+newmtl Material.003
+Ns 52.941176
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Maps/Aircraft C.jpg
+map_Bump Maps/Aircraft C.jpg
+map_Ks Maps/Aircraft C.jpg
+refl Maps/REF 1.jpg
+
+newmtl a1.002
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Maps/Aircraft C.jpg
+map_Bump Maps/Aircraft C.jpg
+map_Ks Maps/Aircraft C.jpg
+refl Maps/REF 1.jpg
+
+newmtl aircraft_Glas.002
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.003484 0.003484 0.003484
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.417702
+illum 1
+map_Kd Maps/Aircraft C.jpg
+refl Maps/REF 1.jpg

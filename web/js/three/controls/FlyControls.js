@@ -109,13 +109,13 @@
 		var aim = new THREE.LabelControls( scope.camera );
 		aim.append( 'aim', '' );
 		// aim.append( 'distance', 0, this.object.position, 'left|top' );
-		// aim.append( 'speed', this.speed.current, this.object.position, 'right|top' );
+		aim.append( 'speed', this.speed.current, this.object.position, 'right|top' );
 
 		this.update = function ( delta ) {
 
 			aim.updatePosition( 'aim', getPositionAim(), 'center' );
-			// aim.updateLabel( 'speed', 'Speed: ' + this.speed.current );
-			// aim.updatePosition( 'speed', this.object.position, 'right|top' );
+			aim.updateLabel( 'speed', 'Speed: ' + this.speed.current );
+			aim.updatePosition( 'speed', this.object.position, 'right|top' );
 			//
 			// aim.updateLabel( 'distance', 'Distance: ' + this.speed.current );
 			// aim.updatePosition( 'distance', this.object.position, 'left|top' );
@@ -247,7 +247,7 @@
         /**
          * Set action
          *
-         * @param {{}} param
+         * @param {{ name: [(?string|number)], icon: [(?string|number)], keyCode: [?number], active: [boolean], type: string|number }} param
          * @param {number|string} type
          */
         function setActionShot( param, type ) {
@@ -565,5 +565,69 @@
             active: false,
             type: THREE.ShotControls.GUN_1,
             action: THREE.FlyControls.ACTION_SHOT
-        }
+        },
+		{
+			name: '2',
+			icon: 'move',
+			keyCode: 50,
+			active: false,
+			type: THREE.ShotControls.GUN_2,
+			action: THREE.FlyControls.ACTION_SHOT
+		},
+		{
+			name: '3',
+			icon: 'move',
+			keyCode: 51,
+			active: false,
+			type: THREE.ShotControls.GUN_3,
+			action: THREE.FlyControls.ACTION_SHOT
+		},
+		{
+			name: '4',
+			icon: 'move',
+			keyCode: 52,
+			active: false,
+			type: THREE.ShotControls.GUN_4,
+			action: THREE.FlyControls.ACTION_SHOT
+		},
+		{
+			name: '5',
+			icon: 'move',
+			keyCode: 53,
+			active: false,
+			type: THREE.ShotControls.GUN_5,
+			action: THREE.FlyControls.ACTION_SHOT
+		},
+		{
+			name: '6',
+			icon: 'move',
+			keyCode: 54,
+			active: false,
+			type: THREE.ShotControls.GUN_6,
+			action: THREE.FlyControls.ACTION_SHOT
+		},
+		{
+			name: '7',
+			icon: 'move',
+			keyCode: 55,
+			active: false,
+			type: THREE.ShotControls.GUN_7,
+			action: THREE.FlyControls.ACTION_SHOT
+		},
+		{
+			name: '8',
+			icon: 'move',
+			keyCode: 56,
+			active: false,
+			type: THREE.ShotControls.GUN_8,
+			action: THREE.FlyControls.ACTION_SHOT
+		},
+		{
+			name: '9',
+			icon: 'move',
+			keyCode: 57,
+			active: false,
+			type: THREE.ShotControls.GUN_9,
+			action: THREE.FlyControls.ACTION_SHOT
+		}
     );

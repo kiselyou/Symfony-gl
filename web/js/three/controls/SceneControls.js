@@ -50,13 +50,59 @@ THREE.SceneControls = function ( idElement, lock ) {
      */
     var loader = new THREE.MultiLoader( this.scene );
 
+    // SHIPS
     loader.addLoad( THREE.SceneControls.MODEL_S1_A, '/web/models/S1/A/', 'starship.obj', 'starship.mtl' );
+    loader.addLoad( THREE.SceneControls.MODEL_S1_B, '/web/models/S1/B/', 'starship.obj', 'starship.mtl' );
+    loader.addLoad( THREE.SceneControls.MODEL_S1_C, '/web/models/S1/C/', 'starship.obj', 'starship.mtl' );
+    loader.addLoad( THREE.SceneControls.MODEL_S1_D, '/web/models/S1/D/', 'starship.obj', 'starship.mtl' );
+    // ROCKETS
     loader.addLoad( THREE.SceneControls.MODEL_R1_A, '/web/models/R1/A/', 'rocket.obj', 'rocket.mtl' );
+    loader.addLoad( THREE.SceneControls.MODEL_R1_B, '/web/models/R1/B/', 'rocket.obj', 'rocket.mtl' );
+    loader.addLoad( THREE.SceneControls.MODEL_R1_C, '/web/models/R1/C/', 'rocket.obj', 'rocket.mtl' );
 
     loader.setLoadedCallback( function ( params ) {
         switch ( params.name ) {
+
+            case THREE.SceneControls.MODEL_S1_A:
+                params.object.children[0].position.y = -80;
+                break;
+
+            case THREE.SceneControls.MODEL_S1_B:
+
+                params.object.position.x = -400;
+                params.object.children[0].rotation.x = 90 * Math.PI / 180;
+                params.object.children[0].rotation.y = Math.PI;
+                params.object.scale.copy( new THREE.Vector3( 25, 25, 25 ) );
+
+                scope.scene.add( params.object );
+                break;
+
+            case THREE.SceneControls.MODEL_S1_C:
+
+                params.object.position.x = 400;
+                params.object.scale.copy( new THREE.Vector3( 25, 25, 25 ) );
+                scope.scene.add( params.object );
+                break;
+
+            case THREE.SceneControls.MODEL_S1_D:
+
+                params.object.position.x = -800;
+                params.object.children[0].rotation.y = Math.PI;
+                params.object.children[0].rotation.x = 90 * Math.PI / 180;
+                params.object.scale.copy( new THREE.Vector3( 25, 25, 25 ) );
+                scope.scene.add( params.object );
+                break;
+
             case THREE.SceneControls.MODEL_R1_A:
                 params.object.scale.copy( new THREE.Vector3( 5, 5, 5 ) );
+                break;
+
+            case THREE.SceneControls.MODEL_R1_B:
+                params.object.children[0].rotation.y = Math.PI;
+                break;
+
+            case THREE.SceneControls.MODEL_R1_C:
+                params.object.children[0].rotation.y = 90 * Math.PI / 180;
                 break;
         }
     } );
@@ -201,7 +247,13 @@ THREE.SceneControls = function ( idElement, lock ) {
     }
 };
 
-// ORANGE STAR SHIP
+// SHIPS
 THREE.SceneControls.MODEL_S1_A = 'S1_A';
+THREE.SceneControls.MODEL_S1_B = 'S1_B';
+THREE.SceneControls.MODEL_S1_C = 'S1_C';
+THREE.SceneControls.MODEL_S1_D = 'S1_D';
 
+// ROCKETS
 THREE.SceneControls.MODEL_R1_A = 'R1_A';
+THREE.SceneControls.MODEL_R1_B = 'R1_B';
+THREE.SceneControls.MODEL_R1_C = 'R1_C';
