@@ -1,0 +1,7 @@
+iw_play:
+    resource: "@IWBundle/Resources/config/routing/play.yml"
+    prefix:   /
+
+iw_helper:
+    resource: "@IWBundle/Resources/config/routing/helper.yml"
+    prefix:   /helper

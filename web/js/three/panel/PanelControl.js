@@ -1,432 +1,433 @@
-/**
- *
- * @param {THREE.MiniMap} miniMap
- * @param {string} [idPanel]
- * @constructor
- */
-THREE.PanelControl = function ( miniMap, idPanel ) {
-
-    /** @const {number} */
-    var PANEL_MIN_WIDTH = 320;
-
-    var PANEL_MAX_WIDTH = 1000;
-
-    /** @const {number} */
-    var INDENT_RIGHT = 10;
-
+    var IW = IW || {};
     /**
      *
-     * @type {number}
+     * @param {IW.MiniMap} miniMap
+     * @param {string} [idPanel]
+     * @constructor
      */
-    this.speedAutoUpdate = 1000;
+    IW.PanelControl = function ( miniMap, idPanel ) {
 
-    /**
-     *
-     * @type {number}
-     */
-    this.fixing = 0;
+        /** @const {number} */
+        var PANEL_MIN_WIDTH = 320;
 
-    /**
-     *
-     * @type {string}
-     */
-    var id = idPanel == undefined ? 'sw-panel-control' : idPanel;
+        var PANEL_MAX_WIDTH = 1000;
 
-    /**
-     *
-     * @type {THREE.MiniMap}
-     */
-    var map = miniMap;
+        /** @const {number} */
+        var INDENT_RIGHT = 10;
 
-    /**
-     *
-     * @type {Array}
-     */
-    var actions = [];
+        /**
+         *
+         * @type {number}
+         */
+        this.speedAutoUpdate = 1000;
 
-    /**
-     *
-     * @type {null|Element}
-     */
-    var panel = null;
+        /**
+         *
+         * @type {number}
+         */
+        this.fixing = 0;
 
-    /**
-     *
-     * @type {THREE.PanelControl}
-     */
-    var scope = this;
+        /**
+         *
+         * @type {string}
+         */
+        var id = idPanel == undefined ? 'sw-panel-control' : idPanel;
 
-    /**
-     *
-     * @param {function} callback
-     * @param {?(string|number)} [name]
-     * @param {?(string|number)} [icon]
-     * @param {?number} [keyCode]
-     * @param {boolean} [active]
-     */
-    this.addAction = function ( callback, name, icon, keyCode, active ) {
+        /**
+         *
+         * @type {IW.MiniMap}
+         */
+        var map = miniMap;
 
-        actions.push(
-            {
-                callback: callback,
-                active: active,
-                name: name,
-                icon: icon,
-                keyCode: keyCode,
-                element: null
+        /**
+         *
+         * @type {Array}
+         */
+        var actions = [];
+
+        /**
+         *
+         * @type {null|Element}
+         */
+        var panel = null;
+
+        /**
+         *
+         * @type {IW.PanelControl}
+         */
+        var scope = this;
+
+        /**
+         *
+         * @param {function} callback
+         * @param {?(string|number)} [name]
+         * @param {?(string|number)} [icon]
+         * @param {?number} [keyCode]
+         * @param {boolean} [active]
+         */
+        this.addAction = function ( callback, name, icon, keyCode, active ) {
+
+            actions.push(
+                {
+                    callback: callback,
+                    active: active,
+                    name: name,
+                    icon: icon,
+                    keyCode: keyCode,
+                    element: null
+                }
+            );
+        };
+
+        /**
+         *
+         * @param {Element} [element]
+         * @returns {IW.PanelControl}
+         */
+        this.appendTo = function ( element ) {
+
+            var container = element ? element : document.body;
+            container.appendChild( templatePanelControl() );
+            return this;
+        };
+
+        /**
+         *
+         * @returns {Element}
+         */
+        function templatePanelAction() {
+
+            var a = document.createElement('div');
+            a.classList.add( 'sw-block-actions' );
+
+            for ( var i = 0; i < actions.length; i++ ) {
+
+                var action = actions[ i ];
+
+                var b = document.createElement('div');
+                b.classList.add( 'sw-action' );
+
+                if ( action.active ) {
+                    b.setAttribute( 'data-active', 'sw-action-active' );
+                }
+
+                if ( action.icon != undefined ) {
+                    var c = document.createElement('div');
+                    c.classList.add('sw-action-icon');
+                    c.classList.add('glyphicon');
+                    c.classList.add('glyphicon-' + action.icon);
+                    b.appendChild( c );
+                }
+
+                if ( action.name != undefined ) {
+
+                    var d = document.createElement('div');
+                    d.classList.add('sw-action-keyword');
+                    d.innerHTML = action.name;
+                    b.appendChild(d);
+                }
+
+                a.appendChild( b );
+
+                if ( action.keyCode != undefined ) {
+                    actions[ i ].element = b;
+                    keyEvents.push( action );
+                }
+
+                addEvent( b, action.callback );
             }
-        );
-    };
 
-    /**
-     *
-     * @param {Element} [element]
-     * @returns {THREE.PanelControl}
-     */
-    this.appendTo = function ( element ) {
+            return a;
+        }
 
-        var container = element ? element : document.body;
-        container.appendChild( templatePanelControl() );
-        return this;
-    };
+        /**
+         *
+         * @type {Array}
+         */
+        var keyEvents = [];
 
-    /**
-     *
-     * @returns {Element}
-     */
-    function templatePanelAction() {
+        /**
+         *
+         * @param {KeyboardEvent} e
+         */
+        function addKeyEvents( e ) {
 
-        var a = document.createElement('div');
-        a.classList.add( 'sw-block-actions' );
-
-        for ( var i = 0; i < actions.length; i++ ) {
-
-            var action = actions[ i ];
-
-            var b = document.createElement('div');
-            b.classList.add( 'sw-action' );
-
-            if ( action.active ) {
-                b.setAttribute( 'data-active', 'sw-action-active' );
+            for ( var i = 0; i < keyEvents.length; i++ ) {
+                if ( e.keyCode == keyEvents[ i ][ 'keyCode' ] ) {
+                    keyEvents[ i ][ 'callback' ].call( this, e, keyEvents[ i ][ 'element' ] );
+                }
             }
+        }
 
-            if ( action.icon != undefined ) {
+        /**
+         *
+         * @param {Element} element
+         * @param callback
+         */
+        function addEvent( element, callback ) {
+
+            element.addEventListener( 'click', function ( e ) {
+
+                if ( this.hasAttribute( 'data-active' ) ) {
+
+                    this.classList.toggle( this.getAttribute( 'data-active' ) );
+                }
+
+                callback.call( this, e );
+            } );
+        }
+
+        /**
+         *
+         * @type {Array}
+         */
+        var progress = [];
+
+        /**
+         *
+         * @returns {Element}
+         */
+        function templateProgress() {
+
+            var a = document.createElement('div');
+            a.classList.add( 'sw-block-progress' );
+
+            for ( var i = 0; i < progress.length; i++ ) {
+
+                /**
+                 *
+                 * @type {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }}
+                 */
+                var params = progress[ i ];
+
+                var b = document.createElement('div');
+                b.classList.add( 'sw-row' );
+
                 var c = document.createElement('div');
-                c.classList.add('sw-action-icon');
-                c.classList.add('glyphicon');
-                c.classList.add('glyphicon-' + action.icon);
+                c.classList.add( 'sw-status-progress' );
+
+                var p = document.createElement('div');
+
+                if ( params.color != undefined ) {
+                    p.style.background = params.color;
+                }
+
+                setProgress( p, params );
+                progress[ i ][ 'p' ] = p;
+
+                var l = document.createElement('div');
+                l.classList.add( 'sw-status-progress-label' );
+                labelProgress( l, params );
+                progress[ i ][ 'l' ] = l;
+
+                c.appendChild( p );
                 b.appendChild( c );
+                b.appendChild( l );
+                a.appendChild( b );
+
+                autoUpdate( progress[ i ] );
             }
 
-            if ( action.name != undefined ) {
-
-                var d = document.createElement('div');
-                d.classList.add('sw-action-keyword');
-                d.innerHTML = action.name;
-                b.appendChild(d);
-            }
-
-            a.appendChild( b );
-
-            if ( action.keyCode != undefined ) {
-                actions[ i ].element = b;
-                keyEvents.push( action );
-            }
-
-            addEvent( b, action.callback );
+            return a;
         }
 
-        return a;
-    }
+        /**
+         *
+         * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
+         * @returns {void}
+         */
+        function autoUpdate( params ) {
 
-    /**
-     *
-     * @type {Array}
-     */
-    var keyEvents = [];
+            if ( params.reduction > 0 ) {
 
-    /**
-     *
-     * @param {KeyboardEvent} e
-     */
-    function addKeyEvents( e ) {
+                params[ 'idInterval' ] = setInterval( function () {
 
-        for ( var i = 0; i < keyEvents.length; i++ ) {
-            if ( e.keyCode == keyEvents[ i ][ 'keyCode' ] ) {
-                keyEvents[ i ][ 'callback' ].call( this, e, keyEvents[ i ][ 'element' ] );
+                    var max = params.max == undefined ? 100 : params.max;
+
+                    params.number += params.reduction;
+
+                    if ( params.number >= max ) {
+                        params.number = max;
+                    }
+
+                    setProgress( params['p'], params );
+                    labelProgress( params['l'], params );
+
+                    if ( params.callback != undefined ) {
+                        params.callback.call( this, params );
+                    }
+
+
+                }, scope.speedAutoUpdate );
             }
         }
-    }
 
-    /**
-     *
-     * @param {Element} element
-     * @param callback
-     */
-    function addEvent( element, callback ) {
+        /**
+         *
+         * @param {Element} element
+         * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
+         * @returns {void}
+         */
+        function setProgress( element, params ) {
 
-        element.addEventListener( 'click', function ( e ) {
-
-            if ( this.hasAttribute( 'data-active' ) ) {
-
-                this.classList.toggle( this.getAttribute( 'data-active' ) );
-            }
-
-            callback.call( this, e );
-        } );
-    }
-
-    /**
-     *
-     * @type {Array}
-     */
-    var progress = [];
-
-    /**
-     *
-     * @returns {Element}
-     */
-    function templateProgress() {
-
-        var a = document.createElement('div');
-        a.classList.add( 'sw-block-progress' );
-
-        for ( var i = 0; i < progress.length; i++ ) {
-
-            /**
-             *
-             * @type {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }}
-             */
-            var params = progress[ i ];
-
-            var b = document.createElement('div');
-            b.classList.add( 'sw-row' );
-
-            var c = document.createElement('div');
-            c.classList.add( 'sw-status-progress' );
-
-            var p = document.createElement('div');
-
-            if ( params.color != undefined ) {
-                p.style.background = params.color;
-            }
-
-            setProgress( p, params );
-            progress[ i ][ 'p' ] = p;
-
-            var l = document.createElement('div');
-            l.classList.add( 'sw-status-progress-label' );
-            labelProgress( l, params );
-            progress[ i ][ 'l' ] = l;
-
-            c.appendChild( p );
-            b.appendChild( c );
-            b.appendChild( l );
-            a.appendChild( b );
-
-            autoUpdate( progress[ i ] );
+            var max = params.max == undefined ? 100 : params.max;
+            var percent = params.number * 100 / max;
+            element.style.width = ( percent ) + '%';
         }
 
-        return a;
-    }
+        /**
+         *
+         * @param {Element} element
+         * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
+         * @returns {void}
+         */
+        function labelProgress( element, params ) {
+            var max = params.max == undefined ? 100 : params.max;
+            var unit = params.unit == undefined ? '%' : params.unit;
+            element.innerHTML = params.label + ': ' + max + ' / ' + params.number.toFixed( scope.fixing ) + ' ' + unit;
+        }
 
-    /**
-     *
-     * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
-     * @returns {void}
-     */
-    function autoUpdate( params ) {
+        /**
+         *
+         */
 
-        if ( params.reduction > 0 ) {
-
-            params[ 'idInterval' ] = setInterval( function () {
-
-                var max = params.max == undefined ? 100 : params.max;
-
-                params.number += params.reduction;
-
-                if ( params.number >= max ) {
-                    params.number = max;
+        /**
+         *
+         * @param {(string|number)} key
+         * @param {string} label
+         * @param {?number} [max]
+         * @param {?number} [reduction]
+         * @param {?string} [color]
+         * @param {?string} [callback]
+         * @param {?string} [unit]
+         * @returns {IW.PanelControl}
+         */
+        this.addProgress = function ( key, label, max, reduction, color, callback, unit ) {
+            progress.push(
+                {
+                    key: key,
+                    label: label,
+                    number: 0,
+                    max: max,
+                    reduction: reduction,
+                    color: color,
+                    unit: unit,
+                    callback: callback
                 }
+            );
+            return this;
+        };
 
-                setProgress( params['p'], params );
-                labelProgress( params['l'], params );
+        /**
+         *
+         * @param {(string|number)} key
+         * @param callback
+         * @returns {IW.PanelControl}
+         */
+        this.addCallback = function ( key, callback ) {
 
-                if ( params.callback != undefined ) {
-                    params.callback.call( this, params );
-                }
+            var pr = progress.find(function ( value ) {
 
+                return value.key === key;
+            });
 
-            }, scope.speedAutoUpdate );
-        }
-    }
-
-    /**
-     *
-     * @param {Element} element
-     * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
-     * @returns {void}
-     */
-    function setProgress( element, params ) {
-
-        var max = params.max == undefined ? 100 : params.max;
-        var percent = params.number * 100 / max;
-        element.style.width = ( percent ) + '%';
-    }
-
-    /**
-     *
-     * @param {Element} element
-     * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
-     * @returns {void}
-     */
-    function labelProgress( element, params ) {
-        var max = params.max == undefined ? 100 : params.max;
-        var unit = params.unit == undefined ? '%' : params.unit;
-        element.innerHTML = params.label + ': ' + max + ' / ' + params.number.toFixed( scope.fixing ) + ' ' + unit;
-    }
-
-    /**
-     *
-     */
-
-    /**
-     *
-     * @param {(string|number)} key
-     * @param {string} label
-     * @param {?number} [max]
-     * @param {?number} [reduction]
-     * @param {?string} [color]
-     * @param {?string} [callback]
-     * @param {?string} [unit]
-     * @returns {THREE.PanelControl}
-     */
-    this.addProgress = function ( key, label, max, reduction, color, callback, unit ) {
-        progress.push(
-            {
-                key: key,
-                label: label,
-                number: 0,
-                max: max,
-                reduction: reduction,
-                color: color,
-                unit: unit,
-                callback: callback
+            if ( pr != undefined ) {
+                pr.callback = callback;
             }
-        );
-        return this;
-    };
 
-    /**
-     *
-     * @param {(string|number)} key
-     * @param callback
-     * @returns {THREE.PanelControl}
-     */
-    this.addCallback = function ( key, callback ) {
+            return this;
+        };
 
-        var pr = progress.find(function ( value ) {
+        /**
+         *
+         * @param {(string|number)} key
+         * @param {number} number
+         * @param {boolean} [increment]
+         * @returns {IW.PanelControl}
+         */
+        this.updateProgress = function ( key, number, increment ) {
 
-            return value.key === key;
-        });
+            var pr = progress.find(function ( value ) {
 
-        if ( pr != undefined ) {
-            pr.callback = callback;
+                return value.key === key;
+            });
+
+            if ( pr != undefined ) {
+
+                pr.number = increment ? pr.number + number : number;
+                setProgress( pr['p'], pr );
+                labelProgress( pr['l'], pr );
+            }
+
+            return this;
+        };
+
+        /**
+         *
+         * @param {(string|number)} key
+         * @returns {*}
+         */
+        this.getProgress = function ( key ) {
+            return progress.find(function ( value ) {
+                return value.key === key;
+            });
+        };
+
+        /**
+         *
+         * @returns {Element}
+         */
+        function templatePanelControl() {
+
+            var size = getSize();
+            panel = document.createElement('div');
+            panel.id = id;
+            panel.classList.add('sw-panel-control');
+            panel.style.position = 'absolute';
+            panel.style.width = size.width + 'px';
+
+            panel.style.left = size.left + 'px';
+            panel.style.bottom = size.bottom + 'px';
+            panel.appendChild( templatePanelAction() );
+            panel.appendChild( templateProgress() );
+
+            return panel;
         }
 
-        return this;
-    };
+        /**
+         *
+         * @returns {{width: Number, height: Number, left: number, top: number}}
+         */
+        function getSize() {
 
-    /**
-     *
-     * @param {(string|number)} key
-     * @param {number} number
-     * @param {boolean} [increment]
-     * @returns {THREE.PanelControl}
-     */
-    this.updateProgress = function ( key, number, increment ) {
+            var width = map ? map.getElement().offsetLeft : PANEL_MIN_WIDTH;
+            width = width < PANEL_MIN_WIDTH ? PANEL_MIN_WIDTH : width;
+            width = width > PANEL_MAX_WIDTH ? PANEL_MAX_WIDTH : width;
 
-        var pr = progress.find(function ( value ) {
-
-            return value.key === key;
-        });
-
-        if ( pr != undefined ) {
-
-            pr.number = increment ? pr.number + number : number;
-            setProgress( pr['p'], pr );
-            labelProgress( pr['l'], pr );
+            return {
+                width: width - INDENT_RIGHT,
+                left: 0,
+                bottom: 0
+            }
         }
 
-        return this;
-    };
+        /**
+         *
+         * @returns {void}
+         */
+        function resize() {
 
-    /**
-     *
-     * @param {(string|number)} key
-     * @returns {*}
-     */
-    this.getProgress = function ( key ) {
-        return progress.find(function ( value ) {
-            return value.key === key;
-        });
-    };
+            if ( !panel ) {
+                return;
+            }
 
-    /**
-     *
-     * @returns {Element}
-     */
-    function templatePanelControl() {
-
-        var size = getSize();
-        panel = document.createElement('div');
-        panel.id = id;
-        panel.classList.add('sw-panel-control');
-        panel.style.position = 'absolute';
-        panel.style.width = size.width + 'px';
-
-        panel.style.left = size.left + 'px';
-        panel.style.bottom = size.bottom + 'px';
-        panel.appendChild( templatePanelAction() );
-        panel.appendChild( templateProgress() );
-
-        return panel;
-    }
-
-    /**
-     *
-     * @returns {{width: Number, height: Number, left: number, top: number}}
-     */
-    function getSize() {
-
-        var width = map ? map.getElement().offsetLeft : PANEL_MIN_WIDTH;
-        width = width < PANEL_MIN_WIDTH ? PANEL_MIN_WIDTH : width;
-        width = width > PANEL_MAX_WIDTH ? PANEL_MAX_WIDTH : width;
-
-        return {
-            width: width - INDENT_RIGHT,
-            left: 0,
-            bottom: 0
-        }
-    }
-
-    /**
-     *
-     * @returns {void}
-     */
-    function resize() {
-
-        if ( !panel ) {
-            return;
+            var size = getSize();
+            panel.style.left = size.left + 'px';
+            panel.style.width = size.width + 'px';
+            panel.style.bottom = size.bottom + 'px';
         }
 
-        var size = getSize();
-        panel.style.left = size.left + 'px';
-        panel.style.width = size.width + 'px';
-        panel.style.bottom = size.bottom + 'px';
-    }
+        window.addEventListener( 'keydown', addKeyEvents, false);
+        window.addEventListener( 'resize', resize, false );
 
-    window.addEventListener( 'keydown', addKeyEvents, false);
-    window.addEventListener( 'resize', resize, false );
-
-};
+    };

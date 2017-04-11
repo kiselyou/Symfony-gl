@@ -99,12 +99,92 @@ var ui = {};
             progressLabel = document.createElement('div');
             progressLabel.classList.add( 'progress-bar-label' );
 
+            if ( param.hideLabel ) {
+                progressLabel.setAttribute('hidden', 'hidden');
+            }
+
             bar.appendChild( progressLine );
             progressBar.appendChild( bar );
             progressBar.appendChild( progressLabel );
 
+            if ( param.width ) {
+                progressBar.style.width = param.width;
+            }
+
+            if ( param.position ) {
+                progressBar.style.top = param.position;
+            }
+
+            if ( param.hide ) {
+                progressBar.setAttribute('hidden', 'hidden');
+            }
+
             return progressBar;
         }
+
+        var param = {
+            position: null,
+            width: null,
+            hide: false,
+            hideLabel: false
+        };
+
+        /**
+         *
+         * @param {string} position
+         * @param {number} int
+         * @returns {ui.ProgressBar}
+         */
+        this.setPosition = function ( position, int ) {
+            if ( position == undefined ) {
+                return this;
+            }
+
+            int = int != undefined ? int : 0;
+
+            switch ( position ) {
+                case ui.ProgressBar.POSITION_T:
+                    param.position = int + 'px';
+                    break;
+                case ui.ProgressBar.POSITION_B:
+                    param.position = ( window.innerHeight - 60 - int ) + 'px';
+                    break;
+                case ui.ProgressBar.POSITION_C:
+                    param.position = ( window.innerHeight / 2 + int ) + 'px';
+                    break;
+            }
+
+            return this;
+
+        };
+
+        /**
+         *
+         * @param {number} width
+         * @returns {ui.ProgressBar}
+         */
+        this.setWidth = function ( width ) {
+            param.width = width != undefined ? width : null;
+            return this;
+        };
+
+        /**
+         *
+         * @returns {ui.ProgressBar}
+         */
+        this.hide = function () {
+            param.hide = true;
+            return this;
+        };
+
+        /**
+         *
+         * @returns {ui.ProgressBar}
+         */
+        this.hideLabel = function () {
+            param.hideLabel = true;
+            return this;
+        };
 
         /**
          *
@@ -252,3 +332,7 @@ var ui = {};
     }
 
 } (window.ui || {}));
+
+ui.ProgressBar.POSITION_T = 'top';
+ui.ProgressBar.POSITION_C = 'center';
+ui.ProgressBar.POSITION_B = 'bottom';

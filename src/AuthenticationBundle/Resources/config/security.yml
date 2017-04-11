@@ -41,7 +41,7 @@ security:
 
     access_control:
         - { path: ^/../security/_login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/../iw/play, roles: ROLE_USER }
 #        - { path: ^/app/user, roles: ROLE_USER }
 #        - { path: ^/app/author, roles: ROLE_AUTHOR }
 #        - { path: ^/app/moderator, roles: ROLE_MODERATOR }

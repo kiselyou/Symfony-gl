@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+    <link href="{{ asset('css/theme-galaxy.css') }}" rel="stylesheet" />
+
+{% endblock %}
+
+{% block body %}
+
+    <div class="sw-modal iw-main-page sw-modal-size-12">
+        <div class="sw-modal-head">
+            <div class="header">
+                <ul class="nav nav-pills pull-right">
+
+                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+
+                        <li class="sw-active">
+                            <a href="{{ path( 'play_index' ) }}" class="sw-btn">
+                                <i class="glyphicon glyphicon-play"></i>
+                                IW
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path( '_logout' ) }}" class="sw-btn">
+                                <i class="glyphicon glyphicon-log-out"></i>
+                                LOG OUT
+                            </a>
+                        </li>
+
+                    {% else %}
+
+                        <li>
+                            <a href="#" class="sw-btn">
+                                <i class="glyphicon glyphicon-registration-mark"></i>
+                                REGISTRATION
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path( '_login' ) }}" class="sw-btn">
+                                <i class="glyphicon glyphicon-log-in"></i>
+                                SIGN IN
+                            </a>
+                        </li>
+
+                    {% endif %}
+
+                </ul>
+                <h2 class="">Iron War (ONLINE) <small>Browser Game</small></h2>
+            </div>
+        </div>
+        <div class="sw-modal-body">
+
+            {#{{ dump( is_granted('IS_AUTHENTICATED_REMEMBERED') ) }}#}
+
+        </div>
+    </div>
+    <div id="iw-container"></div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script type="application/javascript" src="{{ asset('js/three/three.js') }}"></script>
+
+    <script type="application/javascript" src="{{ asset('js/core/ui/ui.ProgressBar.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/core/ui/ui.FullScreen.js') }}"></script>
+
+    <script type="application/javascript" src="{{ asset('js/three/controls/SceneControls.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/loaders/MultiLoader.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/loaders/MTLLoader.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/controls/OrbitControls.js') }}"></script>
+
+    <script type="application/javascript">
+
+        var initScene = new IW.SceneControls( 'iw-container', false );
+
+        /**
+         *
+         * @type {IW.MultiLoader}
+         */
+        var loader = new IW.MultiLoader( initScene.scene );
+        loader.setPositionProgress( ui.ProgressBar.POSITION_B, 50 );
+        loader.hideLabelProgress();
+
+        // SHIPS
+        loader.addLoad( IW.SceneControls.MODEL_S1_A, '/web/models/S1/A/', 'starship.obj', 'starship.mtl' );
+
+        loader.setLoadedCallback( function ( params ) {
+            switch ( params.name ) {
+
+                case IW.SceneControls.MODEL_S1_A:
+                    params.object.scale.copy( new THREE.Vector3( 3, 3, 3 ) );
+                    params.object.rotation.y = Math.PI;
+                    initScene.scene.add( params.object );
+                    break;
+            }
+        } );
+
+        loader.load(function () {
+
+            initScene.initScene();
+
+            var orbitControl = new THREE.OrbitControls( initScene.camera, initScene.renderer.domElement );
+            orbitControl.autoRotateSpeed = 0.3;
+            orbitControl.autoRotate = true;
+            orbitControl.enableKeys = false;
+            orbitControl.enablePan = false;
+            orbitControl.enableZoom = false;
+            orbitControl.dispose();
+
+            initScene.setCallbackUpdate( function () {
+
+                orbitControl.update();
+            } );
+        });
+
+    </script>
+
+{% endblock %}

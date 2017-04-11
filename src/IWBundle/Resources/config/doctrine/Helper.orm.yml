@@ -1,5 +1,5 @@
-AppBundle\Entity\Helper:
-    repositoryClass: AppBundle\Repository\HelperRepository
+IWBundle\Entity\Helper:
+    repositoryClass: IWBundle\Repository\HelperRepository
     type: entity
     table: helper
     id:

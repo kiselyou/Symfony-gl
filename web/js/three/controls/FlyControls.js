@@ -1,18 +1,19 @@
+    var IW = IW || {};
 	/**
 	 *
 	 * @param {Scene} scene
-	 * @param {THREE.MultiLoader} multiLoader
+	 * @param {IW.MultiLoader} multiLoader
 	 * @param {PerspectiveCamera} camera
 	 * @param {Element} domElement
 	 * @constructor
 	 */
-	THREE.FlyControls = function ( scene, multiLoader, camera, domElement ) {
+	IW.FlyControls = function ( scene, multiLoader, camera, domElement ) {
 
 		/**
 		 *
 		 * @type {Mesh}
 		 */
-		this.object = multiLoader.getModel(THREE.SceneControls.MODEL_S1_A);
+		this.object = multiLoader.getModel(IW.SceneControls.MODEL_S1_A);
 
 		/**
 		 *
@@ -23,9 +24,9 @@
 
 		/**
 		 *
-		 * @type {THREE.ShotControls}
+		 * @type {IW.ShotControls}
 		 */
-		var shot = new THREE.ShotControls( multiLoader, this.scene );
+		var shot = new IW.ShotControls( multiLoader, this.scene );
 
 		/**
 		 *
@@ -92,7 +93,7 @@
 
 		/**
 		 *
-		 * @type {THREE.FlyControls}
+		 * @type {IW.FlyControls}
 		 */
 		var scope = this;
 
@@ -104,17 +105,17 @@
 
 		/**
 		 *
-		 * @type {THREE.LabelControls}
+		 * @type {IW.LabelControls}
 		 */
-		var lbl = new THREE.LabelControls( scope.camera );
-        lbl.append( THREE.LabelControls.TPL_AIM, '' );
-        lbl.append( THREE.LabelControls.TPL_SPEED, this.speed.current, this.object.position, THREE.LabelControls.POSITION_RT );
+		var lbl = new IW.LabelControls( scope.camera );
+        lbl.append( IW.LabelControls.TPL_AIM, '' );
+        lbl.append( IW.LabelControls.TPL_SPEED, this.speed.current, this.object.position, IW.LabelControls.POSITION_RT );
 
 		this.update = function ( delta ) {
 
-            lbl.updateLabel( THREE.LabelControls.TPL_SPEED, 'Speed: ' + this.speed.current );
-            lbl.updatePosition( THREE.LabelControls.TPL_SPEED, this.object.position, THREE.LabelControls.POSITION_RT );
-            lbl.updatePosition( THREE.LabelControls.TPL_AIM, getPositionAim(), THREE.LabelControls.POSITION_C );
+            lbl.updateLabel( IW.LabelControls.TPL_SPEED, 'Speed: ' + this.speed.current );
+            lbl.updatePosition( IW.LabelControls.TPL_SPEED, this.object.position, IW.LabelControls.POSITION_RT );
+            lbl.updatePosition( IW.LabelControls.TPL_AIM, getPositionAim(), IW.LabelControls.POSITION_C );
 
 			if ( fly || scope.speed.current != 0 ) {
 
@@ -160,7 +161,7 @@
 
 				var a = positionTo.x - this.object.position.x;
 				var b = positionTo.z - this.object.position.z;
-				var len = Math.sqrt( a * a + b * b ) * THREE.FlyControls.SCALE;
+				var len = Math.sqrt( a * a + b * b ) * IW.FlyControls.SCALE;
 
 				this.object.position.x += a / len * ( this.speed.current + delta );
 				this.object.position.z += b / len * ( this.speed.current + delta );
@@ -189,7 +190,7 @@
 
 		/**
 		 *
-		 * @returns {THREE.FlyControls}
+		 * @returns {IW.FlyControls}
 		 */
 		this.initOrbitControl = function () {
 
@@ -207,7 +208,7 @@
 
         /**
          *
-         * @type {null|THREE.PanelControl}
+         * @type {null|IW.PanelControl}
          * @private
          */
         var _panel = null;
@@ -217,12 +218,12 @@
          */
         this.initPanel = function () {
 
-            var miniMap = new THREE.MiniMap();
+            var miniMap = new IW.MiniMap();
             miniMap.appendTo();
 
-            _panel = new THREE.PanelControl( miniMap );
+            _panel = new IW.PanelControl( miniMap );
 
-            var actions = THREE.FlyControls.ACTIONS;
+            var actions = IW.FlyControls.ACTIONS;
 
             for (var i = 0; i < actions.length; i++) {
                 setActionShot( actions[ i ], actions[ i ][ 'action' ] );
@@ -250,7 +251,7 @@
 
             switch ( type ) {
                 // Add actions - Shot
-                case THREE.FlyControls.ACTION_SHOT:
+                case IW.FlyControls.ACTION_SHOT:
                     _panel.addAction( function () {
 
                         shot.shot( param.type, scope.object.position, _angle );
@@ -258,7 +259,7 @@
                     }, param.name, param.icon, param.keyCode, param.active );
                     break;
                 // Add action - Full Screen
-                case THREE.FlyControls.ACTION_FULL_SCREEN:
+                case IW.FlyControls.ACTION_FULL_SCREEN:
                     _panel.addAction( function () {
 
                         new ui.FullScreen().toggle();
@@ -536,94 +537,94 @@
 	 *
 	 * @const {number}
 	 */
-	THREE.FlyControls.SCALE = 100;
-    THREE.FlyControls.ACTION_SHOT = 'shot';
-    THREE.FlyControls.ACTION_FULL_SCREEN = 'full_screen';
+	IW.FlyControls.SCALE = 100;
+    IW.FlyControls.ACTION_SHOT = 'shot';
+    IW.FlyControls.ACTION_FULL_SCREEN = 'full_screen';
 
-    THREE.FlyControls.ACTIONS = [];
+    IW.FlyControls.ACTIONS = [];
 
-    THREE.FlyControls.ACTIONS.push(
+    IW.FlyControls.ACTIONS.push(
         {
             name: null,
             icon: 'fullscreen',
             keyCode: null,
             active: true,
             type: null,
-            action: THREE.FlyControls.ACTION_FULL_SCREEN
+            action: IW.FlyControls.ACTION_FULL_SCREEN
         }
     );
 
-    THREE.FlyControls.ACTIONS.push(
+    IW.FlyControls.ACTIONS.push(
         {
             name: '1',
             icon: 'move',
             keyCode: 49,
             active: false,
-            type: THREE.ShotControls.GUN_1,
-            action: THREE.FlyControls.ACTION_SHOT
+            type: IW.ShotControls.GUN_1,
+            action: IW.FlyControls.ACTION_SHOT
         },
 		{
 			name: '2',
 			icon: 'move',
 			keyCode: 50,
 			active: false,
-			type: THREE.ShotControls.GUN_2,
-			action: THREE.FlyControls.ACTION_SHOT
+			type: IW.ShotControls.GUN_2,
+			action: IW.FlyControls.ACTION_SHOT
 		},
 		{
 			name: '3',
 			icon: 'move',
 			keyCode: 51,
 			active: false,
-			type: THREE.ShotControls.GUN_3,
-			action: THREE.FlyControls.ACTION_SHOT
+			type: IW.ShotControls.GUN_3,
+			action: IW.FlyControls.ACTION_SHOT
 		},
 		{
 			name: '4',
 			icon: 'move',
 			keyCode: 52,
 			active: false,
-			type: THREE.ShotControls.GUN_4,
-			action: THREE.FlyControls.ACTION_SHOT
+			type: IW.ShotControls.GUN_4,
+			action: IW.FlyControls.ACTION_SHOT
 		},
 		{
 			name: '5',
 			icon: 'move',
 			keyCode: 53,
 			active: false,
-			type: THREE.ShotControls.GUN_5,
-			action: THREE.FlyControls.ACTION_SHOT
+			type: IW.ShotControls.GUN_5,
+			action: IW.FlyControls.ACTION_SHOT
 		},
 		{
 			name: '6',
 			icon: 'move',
 			keyCode: 54,
 			active: false,
-			type: THREE.ShotControls.GUN_6,
-			action: THREE.FlyControls.ACTION_SHOT
+			type: IW.ShotControls.GUN_6,
+			action: IW.FlyControls.ACTION_SHOT
 		},
 		{
 			name: '7',
 			icon: 'move',
 			keyCode: 55,
 			active: false,
-			type: THREE.ShotControls.GUN_7,
-			action: THREE.FlyControls.ACTION_SHOT
+			type: IW.ShotControls.GUN_7,
+			action: IW.FlyControls.ACTION_SHOT
 		},
 		{
 			name: '8',
 			icon: 'move',
 			keyCode: 56,
 			active: false,
-			type: THREE.ShotControls.GUN_8,
-			action: THREE.FlyControls.ACTION_SHOT
+			type: IW.ShotControls.GUN_8,
+			action: IW.FlyControls.ACTION_SHOT
 		},
 		{
 			name: '9',
 			icon: 'move',
 			keyCode: 57,
 			active: false,
-			type: THREE.ShotControls.GUN_9,
-			action: THREE.FlyControls.ACTION_SHOT
+			type: IW.ShotControls.GUN_9,
+			action: IW.FlyControls.ACTION_SHOT
 		}
     );

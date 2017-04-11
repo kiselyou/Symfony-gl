@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace IWBundle\Controller;
 
-use AppBundle\Entity\Helper;
+use IWBundle\Entity\Helper;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\SecurityBundle\Tests\Functional\WebTestCase;
@@ -24,7 +24,7 @@ class HelperController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $query = $em
-            ->createQuery("SELECT p FROM AppBundle:Helper p")
+            ->createQuery("SELECT p FROM IWBundle:Helper p")
             ->setFirstResult($max * ($page < 1 ? 0: $page - 1))
             ->setMaxResults($max);
 
@@ -48,7 +48,7 @@ class HelperController extends Controller
     public function newAction(Request $request)
     {
         $helper = new Helper();
-        $form = $this->createForm('AppBundle\Form\HelperType', $helper);
+        $form = $this->createForm('IWBundle\Form\HelperType', $helper);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -86,7 +86,7 @@ class HelperController extends Controller
     public function editAction(Request $request, Helper $helper)
     {
         $deleteForm = $this->createDeleteForm($helper);
-        $editForm = $this->createForm('AppBundle\Form\HelperType', $helper);
+        $editForm = $this->createForm('IWBundle\Form\HelperType', $helper);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {

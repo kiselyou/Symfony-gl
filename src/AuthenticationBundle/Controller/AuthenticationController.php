@@ -10,7 +10,7 @@ class AuthenticationController extends Controller
     public function loginAction(Request $request)
     {
         if ($this->getUser()) {
-            return $this->redirect($this->generateUrl('app'));
+            return $this->redirect($this->generateUrl('iw'));
         }
 
         $authenticationUtils = $this->get('security.authentication_utils');

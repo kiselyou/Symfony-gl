@@ -1,12 +1,12 @@
-app:
+iw:
     path: /{_locale}
-    defaults:  { _controller: AppBundle:Default:index, _locale: ru }
+    defaults:  { _controller: IWBundle:IW:index, _locale: ru }
     requirements:
         _locale: '%app.locales%'
 
-app_routes:
-    resource: '@AppBundle/Resources/config/routing.yml'
-    prefix:   /{_locale}/app
+iw_routes:
+    resource: '@IWBundle/Resources/config/routing.yml'
+    prefix:   /{_locale}/iw
     requirements:
         _locale: '%app.locales%'
 

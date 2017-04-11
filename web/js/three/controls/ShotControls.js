@@ -1,10 +1,11 @@
+    var IW = IW || {};
     /**
      *
-     * @param {THREE.MultiLoader} multiLoader
+     * @param {IW.MultiLoader} multiLoader
      * @param {Scene} scene
      * @constructor
      */
-    THREE.ShotControls = function ( multiLoader, scene ) {
+    IW.ShotControls = function ( multiLoader, scene ) {
 
         /**
          *
@@ -50,7 +51,7 @@
         /**
          *
          * @param {number} int
-         * @returns {THREE.ShotControls}
+         * @returns {IW.ShotControls}
          */
         this.addEnergy = function ( int ) {
             if ( scope.energy.current + int > scope.energy.max ) {
@@ -71,7 +72,7 @@
         /**
          *
          * @param {number} speed
-         * @returns {THREE.ShotControls}
+         * @returns {IW.ShotControls}
          */
         this.setSpeedModel = function ( speed ) {
             this.speedModel = speed < 0 ? 0 : speed;
@@ -80,7 +81,7 @@
 
         /**
          *
-         * @type {THREE.ShotControls}
+         * @type {IW.ShotControls}
          */
         var scope = this;
 
@@ -101,13 +102,13 @@
          */
         this.shot = function ( type, position, angle ) {
 
-            if ( !THREE.ShotControls.WEAPON.hasOwnProperty( type ) ) {
+            if ( !IW.ShotControls.WEAPON.hasOwnProperty( type ) ) {
 
                 console.warn( 'Can not find slot "' + type + '"' );
                 return;
             }
 
-            var slot = THREE.ShotControls.WEAPON[ type ];
+            var slot = IW.ShotControls.WEAPON[ type ];
 
             if ( ( scope.energy.current >= slot.energy ) && slot.active ) {
 
@@ -156,31 +157,31 @@
 
             switch ( event.keyCode ) {
                 case scope.keys.WEAPON_SLOT_1:
-                    scope.shot( THREE.ShotControls.GUN_1, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_1, startPosition, angle );
                     break;
                 case scope.keys.WEAPON_SLOT_2:
-                    scope.shot( THREE.ShotControls.GUN_2, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_2, startPosition, angle );
                     break;
                 case scope.keys.WEAPON_SLOT_3:
-                    scope.shot( THREE.ShotControls.GUN_3, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_3, startPosition, angle );
                     break;
                 case scope.keys.WEAPON_SLOT_4:
-                    scope.shot( THREE.ShotControls.GUN_4, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_4, startPosition, angle );
                     break;
                 case scope.keys.WEAPON_SLOT_5:
-                    scope.shot( THREE.ShotControls.GUN_5, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_5, startPosition, angle );
                     break;
                 case scope.keys.WEAPON_SLOT_6:
-                    scope.shot( THREE.ShotControls.GUN_6, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_6, startPosition, angle );
                     break;
                 case scope.keys.WEAPON_SLOT_7:
-                    scope.shot( THREE.ShotControls.GUN_7, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_7, startPosition, angle );
                     break;
                 case scope.keys.WEAPON_SLOT_8:
-                    scope.shot( THREE.ShotControls.GUN_8, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_8, startPosition, angle );
                     break;
                 case scope.keys.WEAPON_SLOT_9:
-                    scope.shot( THREE.ShotControls.GUN_9, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_9, startPosition, angle );
                     break;
             }
         };
@@ -245,76 +246,76 @@
      *
      * @const {number}
      */
-    THREE.ShotControls.GUN_1 = 1;
+    IW.ShotControls.GUN_1 = 1;
 
     /**
      * It is type shot
      *
      * @const {number}
      */
-    THREE.ShotControls.GUN_2 = 2;
+    IW.ShotControls.GUN_2 = 2;
 
     /**
      * It is type shot
      *
      * @const {number}
      */
-    THREE.ShotControls.GUN_3 = 3;
+    IW.ShotControls.GUN_3 = 3;
 
     /**
      * It is type shot
      *
      * @const {number}
      */
-    THREE.ShotControls.GUN_4 = 4;
+    IW.ShotControls.GUN_4 = 4;
 
     /**
      * It is type shot
      *
      * @const {number}
      */
-    THREE.ShotControls.GUN_5 = 5;
+    IW.ShotControls.GUN_5 = 5;
 
     /**
      * It is type shot
      *
      * @const {number}
      */
-    THREE.ShotControls.GUN_6 = 6;
+    IW.ShotControls.GUN_6 = 6;
 
     /**
      * It is type shot
      *
      * @const {number}
      */
-    THREE.ShotControls.GUN_7 = 7;
+    IW.ShotControls.GUN_7 = 7;
 
     /**
      * It is type shot
      *
      * @const {number}
      */
-    THREE.ShotControls.GUN_8 = 8;
+    IW.ShotControls.GUN_8 = 8;
 
     /**
      * It is type shot
      *
      * @const {number}
      */
-    THREE.ShotControls.GUN_9 = 9;
+    IW.ShotControls.GUN_9 = 9;
 
     /**
      *
      * @type {{}}
      */
-    THREE.ShotControls.WEAPON = {};
+    IW.ShotControls.WEAPON = {};
 
     /**
      *
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
-    THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_1 ] = {
-        model: THREE.SceneControls.MODEL_R1_A,
+    IW.ShotControls.WEAPON[ IW.ShotControls.GUN_1 ] = {
+        model: IW.SceneControls.MODEL_R1_A,
         active: true, // актывный слот или заблокированный
         radius: 15000, // максимальное растояние выстрела
         speed: 45000, // скорость залпа
@@ -328,8 +329,8 @@
      *
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
-    THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_2 ] = {
-        model: THREE.SceneControls.MODEL_R1_B,
+    IW.ShotControls.WEAPON[ IW.ShotControls.GUN_2 ] = {
+        model: IW.SceneControls.MODEL_R1_B,
         active: true,
         radius: 15000,
         speed: 25000,
@@ -343,8 +344,8 @@
      *
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
-    THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_3 ] = {
-        model: THREE.SceneControls.MODEL_R1_C,
+    IW.ShotControls.WEAPON[ IW.ShotControls.GUN_3 ] = {
+        model: IW.SceneControls.MODEL_R1_C,
         active: true,
         radius: 15000,
         speed: 30000,
@@ -358,8 +359,8 @@
      *
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
-    THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_4 ] = {
-        model: THREE.SceneControls.MODEL_R1_A,
+    IW.ShotControls.WEAPON[ IW.ShotControls.GUN_4 ] = {
+        model: IW.SceneControls.MODEL_R1_A,
         active: true,
         radius: 15000,
         speed: 20000,
@@ -373,8 +374,8 @@
      *
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
-    THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_5 ] = {
-        model: THREE.SceneControls.MODEL_R1_A,
+    IW.ShotControls.WEAPON[ IW.ShotControls.GUN_5 ] = {
+        model: IW.SceneControls.MODEL_R1_A,
         active: true,
         radius: 15000,
         speed: 50000,
@@ -388,8 +389,8 @@
      *
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
-    THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_6 ] = {
-        model: THREE.SceneControls.MODEL_R1_A,
+    IW.ShotControls.WEAPON[ IW.ShotControls.GUN_6 ] = {
+        model: IW.SceneControls.MODEL_R1_A,
         active: true,
         radius: 55000,
         speed: 100000,
@@ -403,8 +404,8 @@
      *
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
-    THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_7 ] = {
-        model: THREE.SceneControls.MODEL_R1_B,
+    IW.ShotControls.WEAPON[ IW.ShotControls.GUN_7 ] = {
+        model: IW.SceneControls.MODEL_R1_B,
         active: true,
         radius: 35000,
         speed: 90000,
@@ -418,8 +419,8 @@
      *
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
-    THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_8 ] = {
-        model: THREE.SceneControls.MODEL_R1_C,
+    IW.ShotControls.WEAPON[ IW.ShotControls.GUN_8 ] = {
+        model: IW.SceneControls.MODEL_R1_C,
         active: true,
         radius: 50000,
         speed: 40000,
@@ -433,8 +434,8 @@
      *
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
-    THREE.ShotControls.WEAPON[ THREE.ShotControls.GUN_9 ] = {
-        model: THREE.SceneControls.MODEL_R1_C,
+    IW.ShotControls.WEAPON[ IW.ShotControls.GUN_9 ] = {
+        model: IW.SceneControls.MODEL_R1_C,
         active: true,
         radius: 25000,
         speed: 60000,

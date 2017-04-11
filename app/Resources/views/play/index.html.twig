@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+    <link href="{{ asset('css/theme-galaxy.css') }}" rel="stylesheet" />
+
+{% endblock %}
+
+{% block body %}
+
+    <div id="iw-container"></div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script type="application/javascript" src="{{ asset('js/three/three.js') }}"></script>
+
+    <script type="application/javascript" src="{{ asset('js/core/ui/ui.ProgressBar.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/core/ui/ui.FullScreen.js') }}"></script>
+
+    <script type="application/javascript" src="{{ asset('js/three/shader/SPE.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/libs/dat.gui.min.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/controls/ExplosionControls.js') }}"></script>
+
+    <script type="application/javascript" src="{{ asset('js/three/panel/MiniMap.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/panel/PanelControl.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/loaders/MultiLoader.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/loaders/MTLLoader.js') }}"></script>
+
+
+    <script type="application/javascript" src="{{ asset('js/three/controls/LabelControls.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/controls/SceneControls.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/controls/OrbitControls.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/controls/ShotControls.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/controls/FlyControls.js') }}"></script>
+
+    <script type="application/javascript">
+
+        var initScene = new IW.SceneControls( 'iw-container', false );
+
+        /**
+         *
+         * @type {IW.MultiLoader}
+         */
+        var loader = new IW.MultiLoader( initScene.scene );
+
+        loader.addLoad( IW.SceneControls.MODEL_G1_A, '/web/models/G1/A/', 'city.obj', 'city.mtl' );
+        // SHIPS
+        loader.addLoad( IW.SceneControls.MODEL_S1_A, '/web/models/S1/A/', 'starship.obj', 'starship.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_S1_B, '/web/models/S1/B/', 'starship.obj', 'starship.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_S1_C, '/web/models/S1/C/', 'starship.obj', 'starship.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_S1_D, '/web/models/S1/D/', 'starship.obj', 'starship.mtl' );
+        // ROCKETS
+        loader.addLoad( IW.SceneControls.MODEL_R1_A, '/web/models/R1/A/', 'rocket.obj', 'rocket.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_R1_B, '/web/models/R1/B/', 'rocket.obj', 'rocket.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_R1_C, '/web/models/R1/C/', 'rocket.obj', 'rocket.mtl' );
+
+        loader.setLoadedCallback( function ( params ) {
+            switch ( params.name ) {
+
+                case IW.SceneControls.MODEL_G1_A:
+                    params.object.scale.copy( new THREE.Vector3( 50, 50, 50 ) );
+                    params.object.position.z = 50000;
+                    params.object.position.y = -2900;
+                    initScene.scene.add( params.object );
+                    break;
+
+                case IW.SceneControls.MODEL_S1_A:
+                    params.object.children[0].position.y = -80;
+                    break;
+
+                case IW.SceneControls.MODEL_S1_B:
+
+                    params.object.position.x = -400;
+                    params.object.children[0].rotation.x = 90 * Math.PI / 180;
+                    params.object.children[0].rotation.y = Math.PI;
+                    params.object.scale.copy( new THREE.Vector3( 25, 25, 25 ) );
+
+                    initScene.scene.add( params.object );
+                    break;
+
+                case IW.SceneControls.MODEL_S1_C:
+
+                    params.object.position.x = 400;
+                    params.object.scale.copy( new THREE.Vector3( 25, 25, 25 ) );
+                    initScene.scene.add( params.object );
+                    break;
+
+                case IW.SceneControls.MODEL_S1_D:
+
+                    params.object.position.x = -800;
+                    params.object.children[0].rotation.y = Math.PI;
+                    params.object.children[0].rotation.x = 90 * Math.PI / 180;
+                    params.object.scale.copy( new THREE.Vector3( 25, 25, 25 ) );
+                    initScene.scene.add( params.object );
+                    break;
+
+                case IW.SceneControls.MODEL_R1_A:
+                    params.object.scale.copy( new THREE.Vector3( 5, 5, 5 ) );
+                    break;
+
+                case IW.SceneControls.MODEL_R1_B:
+                    params.object.children[0].rotation.y = Math.PI;
+                    break;
+
+                case IW.SceneControls.MODEL_R1_C:
+                    params.object.children[0].rotation.y = 90 * Math.PI / 180;
+                    break;
+            }
+        } );
+
+        loader.load(function () {
+
+            initScene.initFlyControl( loader );
+            initScene.initScene();
+
+        });
+
+    </script>
+
+{% endblock %}

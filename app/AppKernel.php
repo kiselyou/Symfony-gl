@@ -19,7 +19,7 @@ class AppKernel extends Kernel
             new Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle(),
             new Stfalcon\Bundle\TinymceBundle\StfalconTinymceBundle(),
             new AuthenticationBundle\AuthenticationBundle(),
-            new AppBundle\AppBundle()
+            new IWBundle\IWBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

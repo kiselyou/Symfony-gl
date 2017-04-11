@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Form;
+namespace IWBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -43,7 +43,7 @@ class HelperType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Helper'
+            'data_class' => 'IWBundle\Entity\Helper'
         ));
     }
 
@@ -52,7 +52,7 @@ class HelperType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'appbundle_helper';
+        return 'iwbundle_helper';
     }
 
 

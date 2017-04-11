@@ -1,0 +1,3 @@
+play_index:
+    path: /play
+    defaults: { _controller: "IWBundle:Play:index" }
