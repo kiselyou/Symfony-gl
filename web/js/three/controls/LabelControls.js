@@ -49,7 +49,7 @@
 
         this.templateAim = function ( label ) {
             var div = document.createElement('div');
-            div.setAttribute(ATTR_DATA, 'aim');
+            div.setAttribute(ATTR_DATA, THREE.LabelControls.TPL_AIM);
             div.classList.add('sw-aim');
             div.style.position = 'absolute';
             div.style.top = -1000;
@@ -60,7 +60,7 @@
 
         this.templateSpeed = function ( label ) {
             var div = document.createElement('div');
-            div.setAttribute(ATTR_DATA, 'speed');
+            div.setAttribute(ATTR_DATA, THREE.LabelControls.TPL_SPEED);
             div.classList.add('sw-label-speed');
             div.style.position = 'absolute';
             div.style.top = -1000;
@@ -72,7 +72,7 @@
         this.templateDistance = function ( label ) {
 
             var div = document.createElement('div');
-            div.setAttribute(ATTR_DATA, 'distance');
+            div.setAttribute(ATTR_DATA, THREE.LabelControls.TPL_DISTANCE);
             div.classList.add('sw-label-distance');
             div.style.position = 'absolute';
             div.style.top = -1000;
@@ -83,7 +83,7 @@
 
         this.templateLabel = function ( label ) {
             var div = document.createElement('div');
-            div.setAttribute(ATTR_DATA, 'label');
+            div.setAttribute(ATTR_DATA, THREE.LabelControls.TPL_LABEL);
             div.classList.add('sw-label-speed');
             div.style.position = 'absolute';
             div.style.top = -1000;
@@ -103,7 +103,7 @@
 
         /**
          *
-         * @param {string} name - possible values ('aim'|'speed'|'label'|'distance')
+         * @param {string} name - possible values (THREE.LabelControls.TPL_AIM|THREE.LabelControls.TPL_SPEED|THREE.LabelControls.TPL_LABEL|THREE.LabelControls.TPL_DISTANCE)
          * @param {string|number} label
          * @returns {THREE.LabelControls}
          */
@@ -118,13 +118,13 @@
          * @param {string} name
          * @param {Vector3} [position]
          * @param {!{left: number, top: number}|string} [offset] - possible values:
-         *                      'left'
-         *                      'left|top'
-         *                      'left|bottom'
-         *                      'right'
-         *                      'right|top'
-         *                      'right|bottom''
-         *                      'center'
+         *                      THREE.LabelControls.POSITION_L |
+         *                      THREE.LabelControls.POSITION_LT |
+         *                      THREE.LabelControls.POSITION_LB |
+         *                      THREE.LabelControls.POSITION_R |
+         *                      THREE.LabelControls.POSITION_RT |
+         *                      THREE.LabelControls.POSITION_RB |
+         *                      THREE.LabelControls.POSITION_C
          *                      {eft: number, top: number}
          * @returns {THREE.LabelControls}
          */
@@ -153,31 +153,31 @@
             if ( typeof offset == 'string' ) {
 
                 switch ( offset ) {
-                    case 'left':
+                    case THREE.LabelControls.POSITION_L:
                         w -= ew + ew / 2;
                         h -= eh / 2;
                         break;
-                    case 'left|top':
+                    case THREE.LabelControls.POSITION_LT:
                         w -= ew + ew / 2;
                         h -= eh;
                         break;
-                    case 'left|bottom':
+                    case THREE.LabelControls.POSITION_LB:
                         w -= ew + ew / 2;
                         h += eh;
                         break;
-                    case 'right':
+                    case THREE.LabelControls.POSITION_R:
                         w += ew;
                         h -= eh / 2;
                         break;
-                    case 'right|top':
+                    case THREE.LabelControls.POSITION_RT:
                         w += ew;
                         h -= eh;
                         break;
-                    case 'right|bottom':
+                    case THREE.LabelControls.POSITION_RB:
                         w += ew;
                         h += eh;
                         break;
-                    case 'center':
+                    case THREE.LabelControls.POSITION_C:
                         w -= ew / 2;
                         h -= eh / 2;
                         break;
@@ -195,17 +195,17 @@
 
         /**
          *
-         * @param {string} name - possible values ('aim'|'speed'|'label'|'distance')
+         * @param {string} name - possible values (THREE.LabelControls.TPL_AIM|THREE.LabelControls.TPL_SPEED|THREE.LabelControls.TPL_LABEL|THREE.LabelControls.TPL_DISTANCE)
          * @param {string|number} [text] - It is text of label
          * @param {Vector3} [position] - default position
          * @param {!{left: number, top: number}|string} [offset] - possible values:
-         *                      'left'
-         *                      'left|top'
-         *                      'left|bottom'
-         *                      'right'
-         *                      'right|top'
-         *                      'right|bottom''
-         *                      'center'
+         *                      THREE.LabelControls.POSITION_L |
+         *                      THREE.LabelControls.POSITION_LT |
+         *                      THREE.LabelControls.POSITION_LB |
+         *                      THREE.LabelControls.POSITION_R |
+         *                      THREE.LabelControls.POSITION_RT |
+         *                      THREE.LabelControls.POSITION_RB |
+         *                      THREE.LabelControls.POSITION_C
          *                      {eft: number, top: number}
          * @returns {THREE.LabelControls}
          */
@@ -232,16 +232,16 @@
          */
         function setElement( name, text ) {
             switch ( name ) {
-                case 'aim':
+                case THREE.LabelControls.TPL_AIM:
                     scope.element.push(scope.templateAim( text ));
                     break;
-                case 'speed':
+                case THREE.LabelControls.TPL_SPEED:
                     scope.element.push(scope.templateSpeed( text ));
                     break;
-                case 'distance':
+                case THREE.LabelControls.TPL_DISTANCE:
                     scope.element.push(scope.templateDistance( text ));
                     break;
-                case 'label':
+                case THREE.LabelControls.TPL_LABEL:
                     scope.element.push(scope.templateLabel( text ));
                     break;
                 default:
@@ -252,7 +252,7 @@
 
         /**
          *
-         * @param {string} name - possible values ('aim'|'speed'|'label'|'distance')
+         * @param {string} name - possible values (THREE.LabelControls.TPL_AIM|THREE.LabelControls.TPL_SPEED|THREE.LabelControls.TPL_LABEL|THREE.LabelControls.TPL_DISTANCE)
          * @returns {Element}
          */
         function getElement( name ) {
@@ -274,3 +274,80 @@
             return vector;
         }
     };
+
+    /**
+     * Template
+     *
+     * @const {string}
+     */
+    THREE.LabelControls.TPL_AIM = 'aim';
+
+    /**
+     * Template
+     *
+     * @const {string}
+     */
+    THREE.LabelControls.TPL_SPEED = 'speed';
+
+    /**
+     * Template
+     *
+     * @const {string}
+     */
+    THREE.LabelControls.TPL_DISTANCE = 'distance';
+
+    /**
+     * Template
+     *
+     * @const {string}
+     */
+    THREE.LabelControls.TPL_LABEL = 'label';
+
+    /**
+     * Position
+     *
+     * @type {string}
+     */
+    THREE.LabelControls.POSITION_L = 'left';
+
+    /**
+     * Position
+     *
+     * @type {string}
+     */
+    THREE.LabelControls.POSITION_LT = 'left|top';
+
+    /**
+     * Position
+     *
+     * @type {string}
+     */
+    THREE.LabelControls.POSITION_LB = 'left|bottom';
+
+    /**
+     * Position
+     *
+     * @type {string}
+     */
+    THREE.LabelControls.POSITION_R = 'right';
+
+    /**
+     * Position
+     *
+     * @type {string}
+     */
+    THREE.LabelControls.POSITION_RT = 'right|top';
+
+    /**
+     * Position
+     *
+     * @type {string}
+     */
+    THREE.LabelControls.POSITION_RB = 'right|bottom';
+
+    /**
+     * Position
+     *
+     * @type {string}
+     */
+    THREE.LabelControls.POSITION_C = 'center';

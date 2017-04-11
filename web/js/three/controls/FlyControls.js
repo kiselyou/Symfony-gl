@@ -106,19 +106,15 @@
 		 *
 		 * @type {THREE.LabelControls}
 		 */
-		var aim = new THREE.LabelControls( scope.camera );
-		aim.append( 'aim', '' );
-		// aim.append( 'distance', 0, this.object.position, 'left|top' );
-		aim.append( 'speed', this.speed.current, this.object.position, 'right|top' );
+		var lbl = new THREE.LabelControls( scope.camera );
+        lbl.append( THREE.LabelControls.TPL_AIM, '' );
+        lbl.append( THREE.LabelControls.TPL_SPEED, this.speed.current, this.object.position, THREE.LabelControls.POSITION_RT );
 
 		this.update = function ( delta ) {
 
-			aim.updatePosition( 'aim', getPositionAim(), 'center' );
-			aim.updateLabel( 'speed', 'Speed: ' + this.speed.current );
-			aim.updatePosition( 'speed', this.object.position, 'right|top' );
-			//
-			// aim.updateLabel( 'distance', 'Distance: ' + this.speed.current );
-			// aim.updatePosition( 'distance', this.object.position, 'left|top' );
+            lbl.updateLabel( THREE.LabelControls.TPL_SPEED, 'Speed: ' + this.speed.current );
+            lbl.updatePosition( THREE.LabelControls.TPL_SPEED, this.object.position, THREE.LabelControls.POSITION_RT );
+            lbl.updatePosition( THREE.LabelControls.TPL_AIM, getPositionAim(), THREE.LabelControls.POSITION_C );
 
 			if ( fly || scope.speed.current != 0 ) {
 
