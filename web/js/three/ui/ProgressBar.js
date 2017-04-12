@@ -235,8 +235,7 @@ var IW = IW || {};
             var idInterval = setInterval(function() {
 
                 var status = queue[ 0 ];
-
-                if ( status && Math.floor( loaded ) <= status.progress ) {
+                if ( status && ( loaded <= status.progress + scope.speedProgres ) ) {
 
                     loaded += scope.speedProgres;
                     progressLine.style.width = loaded + '%';
@@ -244,10 +243,11 @@ var IW = IW || {};
 
                     if ( loaded >= status.progress  ) {
                         queue.splice( 0, 1 );
+                        loaded -= scope.speedProgres;
                     }
                 }
 
-                if ( loaded >= 100 ) {
+                if ( loaded + scope.speedProgres >= 100 ) {
                     clearInterval( idInterval );
                     scope.close();
                     loaded = 0;

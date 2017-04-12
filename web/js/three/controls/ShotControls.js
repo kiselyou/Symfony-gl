@@ -1,11 +1,18 @@
     var IW = IW || {};
     /**
      *
+     * @param {Mesh} model
      * @param {IW.MultiLoader} multiLoader
      * @param {Scene} scene
      * @constructor
      */
-    IW.ShotControls = function ( multiLoader, scene ) {
+    IW.ShotControls = function ( model, multiLoader, scene ) {
+
+        /**
+         *
+         * @type {Mesh}
+         */
+        this.model = model;
 
         /**
          *
@@ -96,11 +103,9 @@
          * This method is creating shot, setting parameters and adding in scene his.
          *
          * @param {string|number} type
-         * @param {Vector3} position
-         * @param {number} angle
          * @returns {void}
          */
-        this.shot = function ( type, position, angle ) {
+        this.shot = function ( type ) {
 
             if ( !IW.ShotControls.WEAPON.hasOwnProperty( type ) ) {
 
@@ -118,12 +123,14 @@
                 var startCharge = 0;
                 var idInterval = setInterval( function() {
 
-                    var x = position.x + slot.radius * Math.cos( angle );
-                    var z = position.z + slot.radius * Math.sin( angle );
+                    var p = scope.model.position;
+                    var angle = scope.model.params.angel;
+                    var x = p.x + slot.radius * Math.cos( angle );
+                    var z = p.z + slot.radius * Math.sin( angle );
 
                     var mesh = multiLoader.getModel( slot.model );
                     mesh.speed = slot.speed;
-                    mesh.position.copy( position );
+                    mesh.position.copy( p );
                     mesh.positionTo = new THREE.Vector3( x, 0, z );
 
                     freeShots.push( mesh );
@@ -149,39 +156,37 @@
         /**
          *
          * @param {KeyboardEvent} event
-         * @param {Vector3} startPosition
-         * @param {number} angle
          * @returns {void}
          */
-        this.onKeyDown = function( event, startPosition, angle ) {
+        this.onKeyDown = function( event ) {
 
             switch ( event.keyCode ) {
                 case scope.keys.WEAPON_SLOT_1:
-                    scope.shot( IW.ShotControls.GUN_1, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_1 );
                     break;
                 case scope.keys.WEAPON_SLOT_2:
-                    scope.shot( IW.ShotControls.GUN_2, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_2 );
                     break;
                 case scope.keys.WEAPON_SLOT_3:
-                    scope.shot( IW.ShotControls.GUN_3, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_3 );
                     break;
                 case scope.keys.WEAPON_SLOT_4:
-                    scope.shot( IW.ShotControls.GUN_4, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_4 );
                     break;
                 case scope.keys.WEAPON_SLOT_5:
-                    scope.shot( IW.ShotControls.GUN_5, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_5 );
                     break;
                 case scope.keys.WEAPON_SLOT_6:
-                    scope.shot( IW.ShotControls.GUN_6, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_6 );
                     break;
                 case scope.keys.WEAPON_SLOT_7:
-                    scope.shot( IW.ShotControls.GUN_7, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_7 );
                     break;
                 case scope.keys.WEAPON_SLOT_8:
-                    scope.shot( IW.ShotControls.GUN_8, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_8 );
                     break;
                 case scope.keys.WEAPON_SLOT_9:
-                    scope.shot( IW.ShotControls.GUN_9, startPosition, angle );
+                    scope.shot( IW.ShotControls.GUN_9 );
                     break;
             }
         };

@@ -26,7 +26,7 @@
 		 *
 		 * @type {IW.ShotControls}
 		 */
-		var shot = new IW.ShotControls( multiLoader, this.scene );
+		var shot = new IW.ShotControls( this.object, multiLoader, this.scene );
 
 		/**
 		 *
@@ -254,7 +254,7 @@
                 case IW.FlyControls.ACTION_SHOT:
                     _panel.addAction( function () {
 
-                        shot.shot( param.type, scope.object.position, _angle );
+                        shot.shot( param.type );
 
                     }, param.name, param.icon, param.keyCode, param.active );
                     break;
@@ -424,9 +424,11 @@
 		 * @type {number}
 		 * @private
 		 */
-		var _angle = getAngle( _prev, scope.object.position );
+		scope.object.params = {
+			angel: getAngle( _prev, scope.object.position )
+		};
 
-		/**
+			/**
 		 * Incline ship
 		 *
 		 * @returns {void}
@@ -482,8 +484,8 @@
 		 */
 		function getPositionAim() {
 
-			var x = scope.object.position.x + scope.far * Math.cos( _angle );
-			var z = scope.object.position.z + scope.far * Math.sin( _angle );
+			var x = scope.object.position.x + scope.far * Math.cos( scope.object.params.angel );
+			var z = scope.object.position.z + scope.far * Math.sin( scope.object.params.angel );
 
 			_positionAim.setX( x );
 			_positionAim.setZ( z );
@@ -501,27 +503,27 @@
 			if ( scope.speed.current > 0 ) {
 
 				if ( motion.left ) {
-					_angle -= scope.speedRadiusForward;
+					scope.object.params.angel -= scope.speedRadiusForward;
 				}
 
 				if ( motion.right ) {
-					_angle += scope.speedRadiusForward;
+					scope.object.params.angel += scope.speedRadiusForward;
 				}
 			}
 
 			if ( scope.speed.current < 0 ) {
 
 				if (motion.left) {
-					_angle += scope.speedRadiusBackward / 3;
+					scope.object.params.angel += scope.speedRadiusBackward / 3;
 				}
 
 				if (motion.right) {
-					_angle -= scope.speedRadiusBackward / 3;
+					scope.object.params.angel -= scope.speedRadiusBackward / 3;
 				}
 			}
 
-			var x = scope.object.position.x + scope.far * Math.cos( _angle );
-			var z = scope.object.position.z + scope.far * Math.sin( _angle );
+			var x = scope.object.position.x + scope.far * Math.cos( scope.object.params.angel );
+			var z = scope.object.position.z + scope.far * Math.sin( scope.object.params.angel );
 
 			_positionTo.setX( x );
 			_positionTo.setZ( z );
