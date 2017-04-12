@@ -17,8 +17,8 @@
 
     <script type="application/javascript" src="{{ asset('js/three/three.js') }}"></script>
 
-    <script type="application/javascript" src="{{ asset('js/core/ui/ui.ProgressBar.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('js/core/ui/ui.FullScreen.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/ui/ProgressBar.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/ui/FullScreen.js') }}"></script>
 
     <script type="application/javascript" src="{{ asset('js/three/shader/SPE.js') }}"></script>
     <script type="application/javascript" src="{{ asset('js/three/libs/dat.gui.min.js') }}"></script>
@@ -47,16 +47,16 @@
          */
         var loader = new IW.MultiLoader( initScene.scene );
 
-        loader.addLoad( IW.SceneControls.MODEL_G1_A, '/web/models/G1/A/', 'city.obj', 'city.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_G1_A, '{{asset('/models/G1/A/')}}', 'city.obj', 'city.mtl' );
         // SHIPS
-        loader.addLoad( IW.SceneControls.MODEL_S1_A, '/web/models/S1/A/', 'starship.obj', 'starship.mtl' );
-        loader.addLoad( IW.SceneControls.MODEL_S1_B, '/web/models/S1/B/', 'starship.obj', 'starship.mtl' );
-        loader.addLoad( IW.SceneControls.MODEL_S1_C, '/web/models/S1/C/', 'starship.obj', 'starship.mtl' );
-        loader.addLoad( IW.SceneControls.MODEL_S1_D, '/web/models/S1/D/', 'starship.obj', 'starship.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_S1_A, '{{asset('/models/S1/A/')}}', 'starship.obj', 'starship.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_S1_B, '{{asset('/models/S1/B/')}}', 'starship.obj', 'starship.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_S1_C, '{{asset('/models/S1/C/')}}', 'starship.obj', 'starship.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_S1_D, '{{asset('/models/S1/D/')}}', 'starship.obj', 'starship.mtl' );
         // ROCKETS
-        loader.addLoad( IW.SceneControls.MODEL_R1_A, '/web/models/R1/A/', 'rocket.obj', 'rocket.mtl' );
-        loader.addLoad( IW.SceneControls.MODEL_R1_B, '/web/models/R1/B/', 'rocket.obj', 'rocket.mtl' );
-        loader.addLoad( IW.SceneControls.MODEL_R1_C, '/web/models/R1/C/', 'rocket.obj', 'rocket.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_R1_A, '{{asset('/models/R1/A/')}}', 'rocket.obj', 'rocket.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_R1_B, '{{asset('/models/R1/B/')}}', 'rocket.obj', 'rocket.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_R1_C, '{{asset('/models/R1/C/')}}', 'rocket.obj', 'rocket.mtl' );
 
         loader.setLoadedCallback( function ( params ) {
             switch ( params.name ) {

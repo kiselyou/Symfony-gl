@@ -137,6 +137,10 @@ body {
     margin: 10% 35%;
 }
 
+.sw-modal a {
+    color: rgba(0,255,255,0.5);
+}
+
 @media screen and (max-width: 1200px) {
     .sw-modal {
         width: 40%;

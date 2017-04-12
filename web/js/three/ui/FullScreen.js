@@ -1,15 +1,15 @@
-
-(function(ui) {
+var IW = IW || {};
+(function(IW) {
 
     'use strict';
 
     /**
      * @param {Element} [element]
-     * @memberOf ui
-     * @namespace ui.FullScreen
+     * @memberOf IW
+     * @namespace IW.FullScreen
      * @constructor
      */
-    ui.FullScreen = function( element ) {
+    IW.FullScreen = function( element ) {
 
         var container = element ? element : document.body;
 
@@ -107,4 +107,4 @@
         };
     }
 
-} (window.ui || {}));
+} (window.IW || {}));

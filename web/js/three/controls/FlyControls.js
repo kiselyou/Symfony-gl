@@ -262,7 +262,7 @@
                 case IW.FlyControls.ACTION_FULL_SCREEN:
                     _panel.addAction( function () {
 
-                        new ui.FullScreen().toggle();
+                        new IW.FullScreen().toggle();
 
                     }, param.name, param.icon, param.keyCode, param.active );
                     break;

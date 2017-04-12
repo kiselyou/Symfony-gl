@@ -1,16 +1,16 @@
-var ui = {};
+var IW = IW || {};
 
-(function(ui) {
+(function(IW) {
 
     'use strict';
 
     /**
      *
-     * @memberOf ui
-     * @namespace ui.ProgressBar
+     * @memberOf IW
+     * @namespace IW.ProgressBar
      * @constructor
      */
-    ui.ProgressBar = function() {
+    IW.ProgressBar = function() {
 
         /**
          *
@@ -28,7 +28,7 @@ var ui = {};
         /**
          *
          * @param {done} callback - Callback for adding action when progress has completed
-         * @returns {ui.ProgressBar}
+         * @returns {IW.ProgressBar}
          */
         this.doneCallback = function ( callback ) {
             this._callback = callback;
@@ -73,7 +73,7 @@ var ui = {};
 
         /**
          *
-         * @type {ui.ProgressBar}
+         * @type {IW.ProgressBar}
          */
         var scope = this;
 
@@ -133,7 +133,7 @@ var ui = {};
          *
          * @param {string} position
          * @param {number} int
-         * @returns {ui.ProgressBar}
+         * @returns {IW.ProgressBar}
          */
         this.setPosition = function ( position, int ) {
             if ( position == undefined ) {
@@ -143,13 +143,13 @@ var ui = {};
             int = int != undefined ? int : 0;
 
             switch ( position ) {
-                case ui.ProgressBar.POSITION_T:
+                case IW.ProgressBar.POSITION_T:
                     param.position = int + 'px';
                     break;
-                case ui.ProgressBar.POSITION_B:
+                case IW.ProgressBar.POSITION_B:
                     param.position = ( window.innerHeight - 60 - int ) + 'px';
                     break;
-                case ui.ProgressBar.POSITION_C:
+                case IW.ProgressBar.POSITION_C:
                     param.position = ( window.innerHeight / 2 + int ) + 'px';
                     break;
             }
@@ -161,7 +161,7 @@ var ui = {};
         /**
          *
          * @param {number} width
-         * @returns {ui.ProgressBar}
+         * @returns {IW.ProgressBar}
          */
         this.setWidth = function ( width ) {
             param.width = width != undefined ? width : null;
@@ -170,7 +170,7 @@ var ui = {};
 
         /**
          *
-         * @returns {ui.ProgressBar}
+         * @returns {IW.ProgressBar}
          */
         this.hide = function () {
             param.hide = true;
@@ -179,7 +179,7 @@ var ui = {};
 
         /**
          *
-         * @returns {ui.ProgressBar}
+         * @returns {IW.ProgressBar}
          */
         this.hideLabel = function () {
             param.hideLabel = true;
@@ -188,7 +188,7 @@ var ui = {};
 
         /**
          *
-         * @returns {ui.ProgressBar}
+         * @returns {IW.ProgressBar}
          */
         this.open = function () {
 
@@ -213,7 +213,7 @@ var ui = {};
          *
          * @param {number} status
          * @param {?string} [label]
-         * @returns {ui.ProgressBar}
+         * @returns {IW.ProgressBar}
          */
         this.update = function ( status, label ) {
 
@@ -236,7 +236,7 @@ var ui = {};
 
                 var status = queue[ 0 ];
 
-                if ( status && loaded <= status.progress ) {
+                if ( status && Math.floor( loaded ) <= status.progress ) {
 
                     loaded += scope.speedProgres;
                     progressLine.style.width = loaded + '%';
@@ -245,7 +245,6 @@ var ui = {};
                     if ( loaded >= status.progress  ) {
                         queue.splice( 0, 1 );
                     }
-
                 }
 
                 if ( loaded >= 100 ) {
@@ -259,7 +258,7 @@ var ui = {};
 
         /**
          *
-         * @returns {ui.ProgressBar}
+         * @returns {IW.ProgressBar}
          */
         this.close = function () {
 
@@ -326,13 +325,13 @@ var ui = {};
         this.onError = function ( error ) {
 
             scope.close();
-            // ui.Alert
+            // IW.Alert
             console.log( error );
         }
     }
 
-} (window.ui || {}));
+} (window.IW || {}));
 
-ui.ProgressBar.POSITION_T = 'top';
-ui.ProgressBar.POSITION_C = 'center';
-ui.ProgressBar.POSITION_B = 'bottom';
+IW.ProgressBar.POSITION_T = 'top';
+IW.ProgressBar.POSITION_C = 'center';
+IW.ProgressBar.POSITION_B = 'bottom';

@@ -119,9 +119,9 @@
 
         /**
          *
-         * @type {ui.ProgressBar}
+         * @type {IW.ProgressBar}
          */
-        var progressBar = new ui.ProgressBar();
+        var progressBar = new IW.ProgressBar();
 
         /**
          *

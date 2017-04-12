@@ -64,8 +64,8 @@
 
     <script type="application/javascript" src="{{ asset('js/three/three.js') }}"></script>
 
-    <script type="application/javascript" src="{{ asset('js/core/ui/ui.ProgressBar.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('js/core/ui/ui.FullScreen.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/ui/ProgressBar.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/three/ui/FullScreen.js') }}"></script>
 
     <script type="application/javascript" src="{{ asset('js/three/controls/SceneControls.js') }}"></script>
     <script type="application/javascript" src="{{ asset('js/three/loaders/MultiLoader.js') }}"></script>
@@ -82,11 +82,11 @@
          * @type {IW.MultiLoader}
          */
         var loader = new IW.MultiLoader( initScene.scene );
-        loader.setPositionProgress( ui.ProgressBar.POSITION_B, 50 );
+        loader.setPositionProgress( IW.ProgressBar.POSITION_B, 50 );
         loader.hideLabelProgress();
 
         // SHIPS
-        loader.addLoad( IW.SceneControls.MODEL_S1_A, '/web/models/S1/A/', 'starship.obj', 'starship.mtl' );
+        loader.addLoad( IW.SceneControls.MODEL_S1_A, '{{asset('/models/S1/A/')}}', 'starship.obj', 'starship.mtl' );
 
         loader.setLoadedCallback( function ( params ) {
             switch ( params.name ) {
