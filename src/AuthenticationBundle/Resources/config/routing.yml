@@ -1,6 +1,10 @@
 _login:
-    path: /_login
-    defaults:  { _controller: AuthenticationBundle:Authentication:login }
+    path: /login
+    defaults:  { _controller: AuthenticationBundle:Authentication:index }
 
 _logout:
-    path: /_logout
+    path: /logout
+
+_registration:
+    path: /registration
+    defaults:  { _controller: AuthenticationBundle:Registration:index }

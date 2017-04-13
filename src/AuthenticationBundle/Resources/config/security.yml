@@ -30,7 +30,7 @@ security:
             form_login:
                 login_path: _login
                 check_path: _login
-                default_target_path: app
+                default_target_path: iw
             logout:
                 path:   _logout
                 target: _login

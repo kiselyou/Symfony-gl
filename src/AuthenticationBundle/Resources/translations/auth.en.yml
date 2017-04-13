@@ -22,8 +22,11 @@ _MENU_SECTIONS: 'Sections menu'
 _MENU_SECTION: 'Section menu'
 _NAME_SECTION: 'Section name'
 _PARAMETERS: 'Parameters'
+_REMEMBER: 'Remember'
+_REGISTRATION: 'Registration'
 # Buttons
-_LOGIN: 'Log-in'
+_LOGIN: 'Sign in'
+_LOGOUT: 'Log out'
 
 # TITLE
 _AUTHORIZATION: 'Authorization'

@@ -1,13 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'iw.html.twig' %}
 
-{% block stylesheets %}
+{% block container %}
 
-    {{ parent() }}
-    <link href="{{ asset('css/theme-galaxy.css') }}" rel="stylesheet" />
-
-{% endblock %}
-
-{% block body %}
+    {% trans_default_domain 'auth' %}
 
     <div class="sw-modal iw-main-page sw-modal-size-12">
         <div class="sw-modal-head">
@@ -25,22 +20,22 @@
                         <li>
                             <a href="{{ path( '_logout' ) }}" class="sw-btn">
                                 <i class="glyphicon glyphicon-log-out"></i>
-                                LOG OUT
+                                {{ '_LOGOUT'|trans }}
                             </a>
                         </li>
 
                     {% else %}
 
                         <li>
-                            <a href="#" class="sw-btn">
+                            <a href="{{ path('_registration') }}" class="sw-btn">
                                 <i class="glyphicon glyphicon-registration-mark"></i>
-                                REGISTRATION
+                                {{ '_REGISTRATION'|trans }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ path( '_login' ) }}" class="sw-btn">
                                 <i class="glyphicon glyphicon-log-in"></i>
-                                SIGN IN
+                                {{ '_LOGIN'|trans }}
                             </a>
                         </li>
 
@@ -62,16 +57,7 @@
 
 {% block javascripts %}
 
-    <script type="application/javascript" src="{{ asset('js/three/three.js') }}"></script>
-
-    <script type="application/javascript" src="{{ asset('js/three/ui/ProgressBar.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('js/three/ui/FullScreen.js') }}"></script>
-
-    <script type="application/javascript" src="{{ asset('js/three/controls/SceneControls.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('js/three/loaders/MultiLoader.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('js/three/loaders/MTLLoader.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('js/three/controls/OrbitControls.js') }}"></script>
+    {{ parent() }}
 
     <script type="application/javascript">
 

@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+    <link href="{{ asset('css/theme-galaxy.css') }}" rel="stylesheet" />
+
+{% endblock %}
+
+{% block body %}
+
+    {% trans_default_domain 'auth' %}
+
+    <div class="sw-modal sw-modal-size-6 well-sm">
+
+        <div class="sw-modal-head">
+
+            <div class="pull-left">
+                <a href="{{ path('iw') }}">IW (ONLINE)</a>
+            </div>
+
+            <div class="pull-right">
+                <a href="{{ path('_login') }}" class="sw-link">{{ '_LOGIN'|trans }}</a>
+            </div>
+
+        </div>
+
+        <div class="sw-modal-body">
+
+            {{ form_start(form) }}
+
+            {% set _token = form._token.vars %}
+            {% set email = form.email.vars %}
+            {% set username = form.username.vars %}
+            {% set password = form.password.vars %}
+            {% set confirmPassword = form.confirmPassword.vars %}
+
+                <div class="row">
+                    <div class="col-lg-6">
+
+                        <div class="form-group">
+                            <label for="{{ username.id }}"> {{ username.label|trans }} </label>
+                            <span class="sw-star">*</span>
+                            <div class="sw-field input-group">
+                                <span class="input-group-addon">
+                                    <i class="glyphicon glyphicon-user"></i>
+                                </span>
+                                <input type="text" class="form-control" name="{{ username.full_name }}" id="{{ username.id }}" placeholder="Username" autocomplete="off" value="{{ username.value }}">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-6">
+
+                        <div class="form-group">
+                            <label for="{{ email.id }}"> {{ email.label|trans }} </label>
+                            <span class="sw-star">*</span>
+                            <div class="sw-field input-group">
+                                <span class="input-group-addon">
+                                    <i class="glyphicon glyphicon-envelope"></i>
+                                </span>
+                                <input type="text" class="form-control" name="{{ email.full_name }}" id="{{ email.id }}" placeholder="Email" autocomplete="off" value="{{ email.value }}">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+
+                        <div class="form-group">
+                            <label for="{{ password.id }}"> {{ password.label|trans }} </label>
+                            <span class="sw-star">*</span>
+                            <div class="sw-field input-group">
+                                <span class="input-group-addon">
+                                    <i class="glyphicon glyphicon-lock"></i>
+                                </span>
+                                <input type="password" class="form-control" name="{{ password.full_name }}" id="{{ password.id }}" placeholder="********" autocomplete="off">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-6">
+
+                        <div class="form-group">
+                            <label for="{{ confirmPassword.id }}"> {{ confirmPassword.label|trans }} </label>
+                            <span class="sw-star">*</span>
+                            <div class="sw-field input-group">
+                                <span class="input-group-addon">
+                                    <i class="glyphicon glyphicon-lock"></i>
+                                </span>
+                                <input type="password" class="form-control" name="{{ confirmPassword.full_name }}" id="{{ confirmPassword.id }}" placeholder="********" autocomplete="off">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+
+                    <div class="pull-right">
+                        <button type="submit" class="sw-btn btn-xs" id="_send_form">{{ '_REGISTRATION'|trans }}</button>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                {% if errors|length > 0 %}
+
+                    <div class="row">
+                        <div class="col-lg-12">
+
+                            <ul class="sw-block-errors sw-text-error">
+                            {% for error in errors %}
+                                <li><i class="glyphicon glyphicon-exclamation-sign"></i> {{ error.propertyPath|capitalize }}: {{ error.message }}</li>
+                            {% endfor %}
+                            </ul>
+
+                        </div>
+                    </div>
+
+                {% endif %}
+
+                <div hidden="hidden" class="hidden">
+                    <input type="text" name="{{ _token.full_name }}" id="{{ _token.id }}" value="{{ _token.value }}">
+                </div>
+
+            {{ form_end(form, {'render_rest': false}) }}
+
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {% trans_default_domain 'auth' %}
+    {{ parent() }}
+
+    <script>
+
+    </script>
+
+{% endblock %}

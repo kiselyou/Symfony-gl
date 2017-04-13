@@ -1,11 +1,13 @@
 <?php
 
 namespace AuthenticationBundle\Entity;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Users
  */
-class Users
+class Users implements AdvancedUserInterface, \Serializable
 {
     /**
      * @var integer
@@ -25,17 +27,22 @@ class Users
     /**
      * @var string
      */
+    private $confirmPassword;
+
+    /**
+     * @var string
+     */
     private $email;
 
     /**
-     * @var boolean
+     * @var bool
      */
-    private $isActive;
+    private $isActive = true;
 
     /**
-     * @var boolean
+     * @var bool
      */
-    private $deleted = 0;
+    private $deleted = false;
 
     /**
      * @var \DateTime
@@ -57,7 +64,15 @@ class Users
      */
     public function __construct()
     {
-        $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->roles = new ArrayCollection();
+    }
+
+    /**
+     * @return null
+     */
+    public function getSalt()
+    {
+        return null;
     }
 
     /**
@@ -116,6 +131,28 @@ class Users
     public function getPassword()
     {
         return $this->password;
+    }
+
+    /**
+     * Set confirm password
+     *
+     * @param string $password
+     * @return Users
+     */
+    public function setConfirmPassword($password)
+    {
+        $this->confirmPassword = $password;
+        return $this;
+    }
+
+    /**
+     * Set confirm password
+     *
+     * @return string
+     */
+    public function getConfirmPassword()
+    {
+        return $this->confirmPassword;
     }
 
     /**
@@ -263,6 +300,38 @@ class Users
     }
 
     /**
+     * lifecycleCallbacks
+     */
+    public function prePersist()
+    {
+        $this->created_at = new \DateTime();
+    }
+
+    /**
+     * lifecycleCallbacks
+     */
+    public function preUpdate()
+    {
+        $this->updated_at = new \DateTime();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPasswordLegal()
+    {
+        return $this->username != $this->password;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPasswordConfirm()
+    {
+        return $this->password == $this->confirmPassword;
+    }
+
+    /**
      * Get roles
      *
      * @return \Doctrine\Common\Collections\Collection
@@ -271,20 +340,69 @@ class Users
     {
         return $this->roles;
     }
+
     /**
-     * @ORM\PrePersist
+     * @return string
      */
-    public function prePersist()
+    public function serialize()
     {
-        // Add your code here
+        return serialize(
+            [
+                $this->id,
+                $this->username,
+                $this->password,
+                $this->isActive
+            ]
+        );
     }
 
     /**
-     * @ORM\PrePersist
+     * @param string $serialized
      */
-    public function preUpdate()
+    public function unserialize($serialized)
     {
-        // Add your code here
+        list (
+            $this->id,
+            $this->username,
+            $this->password,
+            $this->isActive
+            ) = unserialize($serialized);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+    /**
+     * @return bool
+     */
+    public function isAccountNonLocked()
+    {
+        return true;
+    }
+    /**
+     * @return bool
+     */
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     *
+     */
+    public function eraseCredentials()
+    {
     }
 }
 

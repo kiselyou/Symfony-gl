@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AuthenticationController extends Controller
 {
-    public function loginAction(Request $request)
+    public function indexAction(Request $request)
     {
         if ($this->getUser()) {
             return $this->redirect($this->generateUrl('iw'));

@@ -165,6 +165,12 @@ body {
     }
 }
 
+.sw-modal-size-6 {
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
+}
+
 .sw-modal-size-12 {
     width: 98%;
     margin: 1% 1%;
@@ -258,6 +264,14 @@ body {
     float: left;
     padding-left: 10px;
     text-transform: uppercase;
+}
+
+.sw-block-errors {
+    padding: 0px;
+}
+
+.sw-block-errors li {
+    list-style-type: none;
 }
 
 .sw-text-error {

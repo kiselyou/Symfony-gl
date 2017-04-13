@@ -23,8 +23,10 @@ _MENU_SECTION: 'Раздел меню'
 _NAME_SECTION: 'Название раздела'
 _PARAMETERS: 'Параметры'
 _REMEMBER: 'Запомнить'
+_REGISTRATION: 'Регистрация'
 # Buttons
 _LOGIN: 'Вход'
+_LOGOUT: 'Выйти'
 
 # TITLE
 _AUTHORIZATION: 'Авторизация'
