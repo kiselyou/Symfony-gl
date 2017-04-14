@@ -317,6 +317,18 @@ label {
     border: 1px solid rgba(127,255,255,0.75);
 }
 
+.sw-field .sw-status-error:focus,
+.sw-field .sw-status-error:active,
+.sw-field .sw-status-error {
+    border-bottom: solid 1px rgba(169,30,58,1);
+}
+
+.sw-field .sw-status-success:focus,
+.sw-field .sw-status-success:active,
+.sw-field .sw-status-success {
+    border-bottom: solid 1px rgba(28,172,120,1);
+}
+
 .sw-btn {
     color: rgba(127,255,255,0.75);
     background: transparent;

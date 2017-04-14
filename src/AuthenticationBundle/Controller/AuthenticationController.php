@@ -7,10 +7,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AuthenticationController extends Controller
 {
+    const TARGET_PATH = 'iw';
+
     public function indexAction(Request $request)
     {
         if ($this->getUser()) {
-            return $this->redirect($this->generateUrl('iw'));
+            return $this->redirect($this->generateUrl(self::TARGET_PATH));
         }
 
         $authenticationUtils = $this->get('security.authentication_utils');

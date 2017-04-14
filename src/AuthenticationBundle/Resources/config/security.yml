@@ -30,14 +30,19 @@ security:
             form_login:
                 login_path: _login
                 check_path: _login
+                username_parameter: username
+                password_parameter: password
                 default_target_path: iw
+                remember_me: true
             logout:
                 path:   _logout
                 target: _login
             remember_me:
-                secret:   '%secret%'
+                secret: '%secret%'
                 lifetime: 604800 # 1 week in seconds
-                path:     /
+                path: /
+                domain: iron-war.com
+                remember_me_parameter: _remember_me
 
     access_control:
         - { path: ^/[a-z][a-z]/security/_login, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -6,12 +6,12 @@ AuthenticationBundle\Entity\Users:
         passwordLegal:
             - 'IsTrue': { message: 'The password cannot match your Username.' }
         passwordConfirm:
-            - 'IsTrue': { message: 'Passwords are not the same.' }
+            - 'IsTrue': { message: 'Confirm of passwords are not the same.' }
     properties:
         username:
             - NotBlank: ~
             - Length:
-                min: 3
+                min: 6
         password:
             - NotBlank: ~
             - Length:
@@ -19,4 +19,4 @@ AuthenticationBundle\Entity\Users:
         email:
             - NotBlank: ~
             - Length:
-                min: 3
+                min: 6

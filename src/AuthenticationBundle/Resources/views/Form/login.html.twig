@@ -20,7 +20,10 @@
             </div>
 
             <div class="pull-right">
-                <a href="{{ path('_registration') }}" class="sw-link">{{ '_REGISTRATION'|trans }}</a>
+                <a href="{{ path('_registration') }}" class="sw-link">
+                    <i class="glyphicon glyphicon-forward"></i>
+                    {{ '_REGISTRATION'|trans }}
+                </a>
             </div>
 
         </div>
@@ -36,7 +39,7 @@
                         <span class="input-group-addon">
                             <i class="glyphicon glyphicon-user"></i>
                         </span>
-                        <input type="text" class="form-control" name="_username" id="_username" placeholder="Username" autocomplete="off" value="{{ username }}">
+                        <input type="text" class="form-control" name="username" id="_username" placeholder="Username" autocomplete="off" value="{{ username }}">
                     </div>
                 </div>
 
@@ -47,7 +50,7 @@
                         <span class="input-group-addon">
                             <i class="glyphicon glyphicon-lock"></i>
                         </span>
-                        <input type="password" class="form-control" name="_password" id="_password" placeholder="Password" autocomplete="off">
+                        <input type="password" class="form-control" name="password" id="_password" placeholder="Password" autocomplete="off">
                     </div>
                 </div>
 
@@ -57,7 +60,10 @@
                     <input type="checkbox" name="_remember_me" id="_remember_me">
 
                     <div class="pull-right">
-                        <button type="button" class="sw-btn btn-xs" id="_send_form">{{ '_LOGIN'|trans }}</button>
+                        <button type="button" class="sw-btn btn-xs" id="_send_form">
+                            <i class="glyphicon glyphicon-log-in"></i>
+                            {{ '_LOGIN'|trans }}
+                        </button>
                     </div>
 
                 </div>

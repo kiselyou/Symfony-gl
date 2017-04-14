@@ -338,7 +338,7 @@ class Users implements AdvancedUserInterface, \Serializable
      */
     public function getRoles()
     {
-        return $this->roles;
+        return $this->roles->toArray();
     }
 
     /**

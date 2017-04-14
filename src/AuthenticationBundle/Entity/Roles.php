@@ -1,11 +1,12 @@
 <?php
 
 namespace AuthenticationBundle\Entity;
+use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
  * Roles
  */
-class Roles
+class Roles implements RoleInterface
 {
     /**
      * @var integer
@@ -41,7 +42,6 @@ class Roles
      * @var \AuthenticationBundle\Entity\Roles
      */
     private $parent;
-
 
     /**
      * Get id
@@ -196,20 +196,21 @@ class Roles
     {
         return $this->parent;
     }
+
     /**
-     * @ORM\PrePersist
+     * lifecycleCallbacks
      */
     public function prePersist()
     {
-        // Add your code here
+        $this->created_at = new \DateTime();
     }
 
     /**
-     * @ORM\PrePersist
+     * lifecycleCallbacks
      */
     public function preUpdate()
     {
-        // Add your code here
+        $this->updated_at = new \DateTime();
     }
 }
 
