@@ -6,6 +6,8 @@ html, body, canvas {
     height: 100%;
     overflow: hidden;
     position: relative;
+    background: url('/web/images/textures/galaxy/stars.png') repeat #000000;
+    background-size: 400px;
 }
 
 .iw-main-page {
@@ -21,9 +23,6 @@ html, body, canvas {
     background-color: rgba(0,255,255,0.2);
     color: rgba(0,255,255,0.5);
 }
-
-
-
 
 .sw-aim {
     background: url("/web/images/aim/aim-circle-red.png");
@@ -52,12 +51,6 @@ html, body, canvas {
     font-size: 12px;
     margin: -5px 0 0 15px;
     pointer-events:none;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    background: #000000;
 }
 
 .sw-body {
@@ -175,6 +168,10 @@ body {
     width: 98%;
     margin: 1% 1%;
     height: 96%;
+}
+
+.sw-modal-skin-star {
+    background: rgba(0,0,0,0.2);
 }
 
 .sw-map {

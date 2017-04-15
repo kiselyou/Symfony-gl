@@ -17,7 +17,7 @@
 
     {% trans_default_domain 'auth' %}
 
-    <div class="sw-modal sw-modal-size-6 well-sm">
+    <div class="sw-modal sw-modal-size-6 sw-modal-skin-star well-sm">
 
         <div class="sw-modal-head">
 
@@ -145,6 +145,7 @@
     {{ parent() }}
 
     <script>
+
         var username = '{{ username.full_name }}';
         var email = '{{ email.full_name }}';
         var password = '{{ password.full_name }}';
@@ -159,31 +160,29 @@
 
         validation.addRile(username, {
             required: true,
-            max: 20,
+            max: 25,
             min: 6,
-            isSame: password,
             label: '{{ username.label|trans }}'
         });
 
         validation.addRile(email, {
             required: true,
-            max: 20,
-            min: 6,
+            max: 60,
+            min: 5,
             label: '{{ email.label|trans }}'
         });
 
         validation.addRile(password, {
             required: true,
-            max: 20,
+            max: 25,
             min: 6,
-            isSame: username,
-            isNotSame: confirmPassword,
+            isMatch: username,
             label: '{{ password.label|trans }}'
         });
 
         validation.addRile(confirmPassword, {
             required: true,
-            isSame: username,
+            isMatch: username,
             isNotSame: password,
             label: '{{ confirmPassword.label|trans }}'
         });

@@ -179,7 +179,25 @@
                 _panel.updateProgress( 1, shot.energy.current );
                 _panel.updateProgress( 4, scope.speed.current );
             }
+		};
 
+		/**
+		 * Add object to model
+		 *
+		 * @param {Mesh} object
+		 * @returns {IW.FlyControls}
+         */
+		this.addToModel = function (object) {
+			this.object.add(object);
+			return this;
+		};
+
+		/**
+		 *
+		 * @returns {Vector3}
+         */
+		this.getModelPosition = function () {
+			return this.object.position;
 		};
 
 		/**

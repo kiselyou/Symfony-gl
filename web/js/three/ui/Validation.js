@@ -555,7 +555,8 @@ var IW = IW || {};
 
             var findRelation = [
                 IW.Validation.VALIDATE_TYPE_ISNOTSAME,
-                IW.Validation.VALIDATE_TYPE_ISSAME
+                IW.Validation.VALIDATE_TYPE_ISSAME,
+                IW.Validation.VALIDATE_TYPE_ISMATCH
             ];
 
             if (findRelation.indexOf(type) >= 0) {
@@ -568,7 +569,8 @@ var IW = IW || {};
             var except = [
                 IW.Validation.VALIDATE_TYPE_REQUIRED,
                 IW.Validation.VALIDATE_TYPE_ISNOTSAME,
-                IW.Validation.VALIDATE_TYPE_ISSAME
+                IW.Validation.VALIDATE_TYPE_ISSAME,
+                IW.Validation.VALIDATE_TYPE_ISMATCH
             ];
 
             var typeValue = '';
@@ -671,6 +673,13 @@ var IW = IW || {};
                                 return;
                             }
                             break;
+                        case IW.Validation.VALIDATE_TYPE_ISMATCH:
+                            var isMatch = _inspectElement.querySelector( "[name^='" + rule[key] + "']" );
+                            if (field.value.indexOf(isMatch.value) >= 0 && isMatch.value !== '') {
+                                addError(field, key, rule);
+                                return;
+                            }
+                            break;
                     }
                 }
             }
@@ -708,6 +717,7 @@ IW.Validation.VALIDATE_TYPE_MIN = 'min';
 IW.Validation.VALIDATE_TYPE_TYPE = 'type';
 IW.Validation.VALIDATE_TYPE_ISNOTSAME = 'isNotSame';
 IW.Validation.VALIDATE_TYPE_ISSAME = 'isSame';
+IW.Validation.VALIDATE_TYPE_ISMATCH = 'isMatch';
 IW.Validation.VALIDATE_TYPE_LABEL = 'label';
 
 IW.Validation.LOCALE_RU = 'ru';
@@ -722,12 +732,14 @@ IW.Validation.MESSAGE[IW.Validation.LOCALE_RU][IW.Validation.VALIDATE_TYPE_MAX] 
 IW.Validation.MESSAGE[IW.Validation.LOCALE_RU][IW.Validation.VALIDATE_TYPE_MIN] = 'минимальная длина';
 IW.Validation.MESSAGE[IW.Validation.LOCALE_RU][IW.Validation.VALIDATE_TYPE_ISNOTSAME] = 'значения не совпадают';
 IW.Validation.MESSAGE[IW.Validation.LOCALE_RU][IW.Validation.VALIDATE_TYPE_ISSAME] = 'значения не должны совпадать';
+IW.Validation.MESSAGE[IW.Validation.LOCALE_RU][IW.Validation.VALIDATE_TYPE_ISMATCH] = 'значения не должны иметь последовательность одинаковых символов';
 
 IW.Validation.MESSAGE[IW.Validation.LOCALE_EN][IW.Validation.VALIDATE_TYPE_REQUIRED] = 'required field';
 IW.Validation.MESSAGE[IW.Validation.LOCALE_EN][IW.Validation.VALIDATE_TYPE_MAX] = 'maximum length';
 IW.Validation.MESSAGE[IW.Validation.LOCALE_EN][IW.Validation.VALIDATE_TYPE_MIN] = 'minimum length';
 IW.Validation.MESSAGE[IW.Validation.LOCALE_EN][IW.Validation.VALIDATE_TYPE_ISNOTSAME] = 'values do not match';
 IW.Validation.MESSAGE[IW.Validation.LOCALE_EN][IW.Validation.VALIDATE_TYPE_ISSAME] = 'values must not match';
+IW.Validation.MESSAGE[IW.Validation.LOCALE_EN][IW.Validation.VALIDATE_TYPE_ISMATCH] = 'values must not have a sequence of identical characters';
 
 IW.Validation.VALIDATE_CLASS_ERROR = 'sw-status-error';
 IW.Validation.VALIDATE_CLASS_SUCCESS = 'sw-status-success';

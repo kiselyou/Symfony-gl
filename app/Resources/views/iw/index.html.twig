@@ -62,7 +62,8 @@
     <script type="application/javascript">
 
         var initScene = new IW.SceneControls( 'iw-container', false );
-
+        initScene.map('{{asset('/images/textures/galaxy/stars.png')}}');
+        initScene.container.style.opacity = 0;
         /**
          *
          * @type {IW.MultiLoader}
@@ -101,6 +102,17 @@
 
                 orbitControl.update();
             } );
+
+            var start = 0;
+            var idInterval = setInterval(function () {
+                start += 0.001;
+                initScene.container.style.opacity = start;
+                if (start >= 1) {
+                    initScene.container.style.opacity = 1;
+                    clearInterval(idInterval);
+                }
+            }, 5);
+
         });
 
     </script>

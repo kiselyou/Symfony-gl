@@ -80,6 +80,32 @@
             return  this.getWidth() / this.getHeight();
         };
 
+        var _map = null;
+
+        this.map = function (img) {
+
+            var materials = [];
+            var roomGeometry = new THREE.BoxGeometry(150000, 150000, 150000, 1, 1, 1);
+            var roomMaterial = new THREE.MeshBasicMaterial();
+            var texture = new THREE.TextureLoader().load(img);
+
+            texture.min_filter = THREE.LinearFilter;
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.x = 5;
+            texture.repeat.y = 4;
+
+            for (var i = 0; i < 6; i++) {
+                roomMaterial.map = texture;
+                roomMaterial.side = THREE.BackSide;
+                materials.push(roomMaterial);
+            }
+
+            var material = new THREE.MultiMaterial(materials);
+            _map = new THREE.Mesh(roomGeometry, material);
+            scope.scene.add(_map);
+        };
+
         /**
          *
          * @returns {void}
@@ -108,6 +134,14 @@
             callbackUpdate = callback;
         };
 
+        this.showGridHelper = function (flag) {
+            if (flag !== false) {
+                var color = new THREE.Color( 0xCCCCCC );
+                var grid = new THREE.GridHelper( 6500, 50, color, 0x666666 );
+                scope.scene.add( grid );
+            }
+        };
+
         var clock = new THREE.Clock();
 
         /**
@@ -121,6 +155,10 @@
 
             if ( flyControls ) {
                 flyControls.update( delta );
+            }
+
+            if (flyControls && _map) {
+                _map.position.copy(flyControls.getModelPosition());
             }
 
             if ( callbackUpdate ) {
@@ -149,14 +187,9 @@
         }
 
         function initLight() {
-
-            var light = new THREE.HemisphereLight( 0xFFFFFF, 0x000000, 1 );
+            var light = new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 1 );
             light.position.set( 0, 500, 0 );
             scope.scene.add( light );
-
-            var color = new THREE.Color( 0xCCCCCC );
-            var grid = new THREE.GridHelper( 6500, 50, color, 0x666666 );
-            scope.scene.add( grid );
         }
 
         /**
