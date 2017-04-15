@@ -45,11 +45,11 @@
                             <label for="{{ username.id }}"> {{ username.label|trans }} </label>
                             <span class="sw-star">*</span>
                             <div class="sw-field input-group sw-input-status">
-                                <span class="input-group-addon sw-status-error">
+                                <span class="input-group-addon">
                                     <i class="glyphicon glyphicon-user"></i>
                                 </span>
 
-                                <input type="text" class="form-control sw-status-error" required name="{{ username.full_name }}" id="{{ username.id }}" placeholder="Username" autocomplete="off" value="{{ username.value }}">
+                                <input type="text" class="form-control" required name="{{ username.full_name }}" id="{{ username.id }}" placeholder="Username" autocomplete="off" value="{{ username.value }}">
                             </div>
                         </div>
 
@@ -60,10 +60,10 @@
                             <label for="{{ email.id }}"> {{ email.label|trans }} </label>
                             <span class="sw-star">*</span>
                             <div class="sw-field input-group">
-                                <span class="input-group-addon sw-status-success">
+                                <span class="input-group-addon">
                                     <i class="glyphicon glyphicon-envelope"></i>
                                 </span>
-                                <input type="text" class="form-control sw-status-success" required name="{{ email.full_name }}" id="{{ email.id }}" placeholder="Email" autocomplete="off" value="{{ email.value }}">
+                                <input type="text" class="form-control" required name="{{ email.full_name }}" id="{{ email.id }}" placeholder="Email" autocomplete="off" value="{{ email.value }}">
                             </div>
                         </div>
 
@@ -94,7 +94,7 @@
                                 <span class="input-group-addon">
                                     <i class="glyphicon glyphicon-lock"></i>
                                 </span>
-                                <input type="password" class="form-control" required name="{{ confirmPassword.full_name }}" id="{{ confirmPassword.id }}" placeholder="********" autocomplete="off">
+                                <input type="password" class="form-control" required name="{{ confirmPassword.full_name }}[0]" id="{{ confirmPassword.id }}" placeholder="********" autocomplete="off">
                             </div>
                         </div>
 
@@ -145,48 +145,55 @@
     {{ parent() }}
 
     <script>
-        document.getElementById('_send_form').addEventListener('click', function () {
+        var username = '{{ username.full_name }}';
+        var email = '{{ email.full_name }}';
+        var password = '{{ password.full_name }}';
+        var confirmPassword = '{{ confirmPassword.full_name }}';
 
-            var _error = document.getElementById('_error');
-            var _email = document.getElementById('{{ email.id }}').value;
-            var _username = document.getElementById('{{ username.id }}').value;
-            var _password = document.getElementById('{{ password.id }}').value;
-            var _confirmPassword = document.getElementById('{{ confirmPassword.id }}').value;
+        var validation = new IW.Validation();
+        validation.addEventCheckAll('click', '#_send_form');
+        validation.addEventCheckCurrent('keyup', 'input');
 
-            var messages = [];
-            if (_username.length < 6) {
-                messages.push('{{ username.label|trans }} - at least 6 symbol');
-            }
+        validation.addGroupMarker('span');
 
-            if (_email.length < 6) {
-                messages.push('{{ email.label|trans }} - at least 6 symbol');
-            }
-
-            if (_password.length < 6) {
-                messages.push('{{ password.label|trans }} - at least 6 symbol');
-            }
-
-            if (_confirmPassword != _password) {
-                messages.push('{{ 'Confirm of passwords are not the same.' }}');
-            }
-
-            if (messages.length == 0) {
-                document.getElementById('form').submit();
-            } else {
-                _error.innerHTML = '';
-                for (var i = 0; i < messages.length; i++) {
-                    var li = document.createElement('li');
-                    var gl = document.createElement('i');
-                    var span = document.createElement('span');
-                    span.innerHTML = ' ' + messages[i];
-                    gl.classList.add('glyphicon');
-                    gl.classList.add('glyphicon-exclamation-sign');
-                    li.appendChild(gl);
-                    li.appendChild(span);
-                    _error.appendChild(li);
-                }
-            }
+        validation.addRile(username, {
+            required: true,
+            max: 20,
+            min: 6,
+            isSame: password,
+            msg: '{{ username.label|trans }}'
         });
+
+        validation.addRile(email, {
+            required: true,
+            max: 20,
+            min: 6,
+            msg: '{{ email.label|trans }}'
+        });
+
+        validation.addRile(password, {
+            required: true,
+            max: 20,
+            min: 6,
+            isSame: username,
+            isNotSame: confirmPassword,
+            msg: '{{ password.label|trans }}'
+        });
+
+        validation.addRile(confirmPassword, {
+            required: true,
+            isNotSame: password,
+            msg: '{{ confirmPassword.label|trans }}'
+        });
+
+        validation.setCallbackSuccess(function ( element ) {
+
+        });
+
+        validation.messagesAppendTo('#_error');
+
+        validation.listen();
+
     </script>
 
 {% endblock %}
