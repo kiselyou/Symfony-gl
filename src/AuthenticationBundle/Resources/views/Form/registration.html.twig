@@ -94,7 +94,7 @@
                                 <span class="input-group-addon">
                                     <i class="glyphicon glyphicon-lock"></i>
                                 </span>
-                                <input type="password" class="form-control" required name="{{ confirmPassword.full_name }}[0]" id="{{ confirmPassword.id }}" placeholder="********" autocomplete="off">
+                                <input type="password" class="form-control" required name="{{ confirmPassword.full_name }}" id="{{ confirmPassword.id }}" placeholder="********" autocomplete="off">
                             </div>
                         </div>
 
@@ -149,10 +149,11 @@
         var email = '{{ email.full_name }}';
         var password = '{{ password.full_name }}';
         var confirmPassword = '{{ confirmPassword.full_name }}';
+        var btn = document.getElementById('_send_form');
 
         var validation = new IW.Validation();
-        validation.addEventCheckAll('click', '#_send_form');
-        validation.addEventCheckCurrent('keyup', 'input');
+        validation.addEventCheckAll('click', btn);
+        validation.addEventCheckAll('keyup', 'input');
 
         validation.addGroupMarker('span');
 
@@ -161,14 +162,14 @@
             max: 20,
             min: 6,
             isSame: password,
-            msg: '{{ username.label|trans }}'
+            label: '{{ username.label|trans }}'
         });
 
         validation.addRile(email, {
             required: true,
             max: 20,
             min: 6,
-            msg: '{{ email.label|trans }}'
+            label: '{{ email.label|trans }}'
         });
 
         validation.addRile(password, {
@@ -177,17 +178,20 @@
             min: 6,
             isSame: username,
             isNotSame: confirmPassword,
-            msg: '{{ password.label|trans }}'
+            label: '{{ password.label|trans }}'
         });
 
         validation.addRile(confirmPassword, {
             required: true,
+            isSame: username,
             isNotSame: password,
-            msg: '{{ confirmPassword.label|trans }}'
+            label: '{{ confirmPassword.label|trans }}'
         });
 
-        validation.setCallbackSuccess(function ( element ) {
-
+        validation.setCallbackSuccess(function (element) {
+            if (element == btn) {
+                document.getElementById('form').submit();
+            }
         });
 
         validation.messagesAppendTo('#_error');
