@@ -175,8 +175,8 @@
         function initCamera() {
 
             scope.camera.position.x = 0;
-            scope.camera.position.z = -2500;
-            scope.camera.position.y = 1000;
+            scope.camera.position.z = -4500;
+            scope.camera.position.y = 2500;
             scope.camera.fov = 45;
             scope.camera.near = 0.1;
             scope.camera.far = 100000;
