@@ -65,30 +65,31 @@
 		 */
 		this.speed = {
 			current: 0, // m.s Can not be less than zero. Default 0
-			max:  6500, // m.s It is maximum speed the model
-			min: -500	// m.s If less than zero. The model is moving back
+			max:  1650, // m.s It is maximum speed the model
+			min: -150	// m.s If less than zero. The model is moving back
 		};
 
 		/**
 		 *
 		 * @type {number}
 		 */
-		this.acceleration = 20;  // m.s
+		this.acceleration = 5;  // m.s
 
 		/**
 		 *
 		 * @type {number}
 		 */
-		this.deceleration = 50;  // m.s
+		this.deceleration = 10;  // m.s
 
 		/**
 		 *
-		 * @type {{angle: number, speed: number, max: *}}
+		 * @type {{angle: number, speed: number, max: number, inclineMinSpeed: number}}
 		 */
 		this.rotate = {
 			angle: 0,
-			speed: 0.015, // Скорость наклона - процент от скорости объекта (radian)
-			max: THREE.Math.degToRad( 35 ) // Максимальный угол наклона ( radian )
+			speed: 0.09, // Скорость наклона - процент от скорости объекта (radian)
+			max: THREE.Math.degToRad( 35 ), // Максимальный угол наклона ( radian )
+			inclineMinSpeed: 150 // Наклоны при скорости от "inclineMinSpeed"
 		};
 
 		/**
@@ -216,9 +217,9 @@
 			orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
 			orbitControl.enablePan = false;
 			orbitControl.enableKeys = false;
-            orbitControl.rotateSpeed = 3.0;
-			orbitControl.minDistance = 600;
-			orbitControl.maxDistance = 2500;
+            orbitControl.rotateSpeed = 2.0;
+			orbitControl.minDistance = 20;
+			orbitControl.maxDistance = 450;
             orbitControl.maxPolarAngle = 75 * Math.PI / 180;
             orbitControl.minPolarAngle = 45 * Math.PI / 180;
 			return this;
@@ -457,7 +458,7 @@
 
 			var rotation = scope.object.children[0].rotation;
 
-			if ( scope.speed.current > 500 ) {
+			if ( scope.speed.current > scope.rotate.inclineMinSpeed ) {
 
 				if ( motion.left ) {
 

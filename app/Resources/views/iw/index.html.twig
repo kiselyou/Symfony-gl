@@ -66,7 +66,7 @@
             var map = {
                 path: '{{ asset('/images/textures/galaxy/A/') }}',
                 names: ['dark-s-px', 'dark-s-nx', 'dark-s-py', 'dark-s-ny', 'dark-s-pz', 'dark-s-nz'],
-                extension: '.jpg'
+                extension: '.png'
             };
 
             var initScene = new IW.SceneControls( 'iw-container', false );
@@ -74,7 +74,7 @@
 
             var multiLoader = new IW.MultiLoader();
             multiLoader.setPositionProgress( IW.ProgressBar.POSITION_B, 50 );
-            multiLoader.hideLabelProgress(false);
+            multiLoader.hideLabelProgress();
 
             // UPLOAD TEXTURES MAP
             for ( var i = 0; i < map.names.length; i++ ) {
@@ -89,8 +89,8 @@
                 switch ( params.name ) {
 
                     case IW.SceneControls.MODEL_S1_A:
-                        params.object.scale.copy( new THREE.Vector3( 3, 3, 3 ) );
                         params.object.rotation.y = Math.PI;
+                        params.object.scale.copy( new THREE.Vector3( 0.1, 0.1, 0.1 ) );
                         initScene.scene.add( params.object );
                         break;
                 }
@@ -103,6 +103,8 @@
 
                 var orbitControl = new THREE.OrbitControls( initScene.camera, initScene.renderer.domElement );
                 orbitControl.autoRotateSpeed = 0.3;
+                orbitControl.minDistance = 50;
+                orbitControl.maxDistance = 150;
                 orbitControl.autoRotate = true;
                 orbitControl.enableKeys = false;
                 orbitControl.enablePan = false;

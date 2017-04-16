@@ -6,6 +6,12 @@
      */
     IW.SceneControls = function ( idElement, lock ) {
 
+        this.mapSize = {
+            width: 100000,
+            height: 100000,
+            depth: 100000
+        };
+
         /**
          *
          * @type {boolean}
@@ -105,14 +111,18 @@
 
             for ( var i = 0; i < map.names.length; i++ ) {
 
+                var texture = multiLoader.getTexture( map.names[ i ] );
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(5, 5);
+
                 var material = new THREE.MeshBasicMaterial();
-                material.map = multiLoader.getTexture( map.names[ i ] );
+                material.map = texture;
                 material.side = THREE.BackSide;
-                materials.overdraw = 0.5;
                 materials.push( material );
             }
 
-            _map = new THREE.Mesh( new THREE.BoxGeometry( 150000, 150000, 150000, 7, 7, 7 ), new THREE.MultiMaterial( materials ) );
+            _map = new THREE.Mesh( new THREE.BoxGeometry( scope.mapSize.width, scope.mapSize.height, scope.mapSize.depth, 0.1, 0.1, 0.1 ), new THREE.MultiMaterial( materials ) );
             scope.scene.add( _map );
 
             return this;
@@ -187,20 +197,19 @@
         function initCamera() {
 
             scope.camera.position.x = 0;
-            scope.camera.position.z = -4500;
-            scope.camera.position.y = 2500;
+            scope.camera.position.z = - 350;
+            scope.camera.position.y = 150;
             scope.camera.fov = 45;
             scope.camera.near = 0.1;
-            scope.camera.far = 200000;
+            scope.camera.far = Math.sqrt( scope.mapSize.width * scope.mapSize.width + scope.mapSize.height * scope.mapSize.height );
             scope.camera.aspect = scope.getAspect();
             scope.camera.lookAt( scope.scene.position );
             scope.camera.updateProjectionMatrix();
-            // scope.scene.add( scope.camera );
         }
 
         function initLight() {
             var light = new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 1 );
-            light.position.set( 0, 500, 0 );
+            light.position.set( 0, 1000, 0 );
             scope.scene.add( light );
         }
 

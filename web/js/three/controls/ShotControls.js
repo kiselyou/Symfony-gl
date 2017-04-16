@@ -118,32 +118,9 @@
             if ( ( scope.energy.current >= slot.energy ) && slot.active ) {
 
                 slot.active = false;
-                scope.energy.current -=  slot.energy;
+                scope.energy.current -= slot.energy;
 
-                var startCharge = 0;
-                var idInterval = setInterval( function() {
-
-                    var p = scope.model.position;
-                    var angle = scope.model.params.angel;
-                    var x = p.x + slot.radius * Math.cos( angle );
-                    var z = p.z + slot.radius * Math.sin( angle );
-
-                    var mesh = multiLoader.getObject( slot.model );
-                    mesh.speed = slot.speed;
-                    mesh.position.copy( p );
-                    mesh.positionTo = new THREE.Vector3( x, 0, z );
-
-                    freeShots.push( mesh );
-                    scope.scene.add( mesh );
-
-                    startCharge++;
-
-                    if ( startCharge == slot.charges ) {
-
-                        clearInterval( idInterval );
-                    }
-
-                }, slot.intervalTime );
+                setShotTimeout( slot, 0 );
 
                 setTimeout( function () {
 
@@ -152,6 +129,40 @@
                 }, slot.reloadingTime );
             }
         };
+
+        /**
+         *
+         * @param {{ radius: number, model: (string|number), speed: number, intervalTime: number, charges: number }} slot
+         * @param {number} [timeout] - default 0
+         * @param {number} [start] - default 0
+         */
+        function setShotTimeout( slot, timeout, start ) {
+
+            start = start == undefined ? 0 : start;
+
+            setTimeout( function () {
+
+                var p = scope.model.position;
+                var angle = scope.model.params.angel;
+                var x = p.x + slot.radius * Math.cos( angle );
+                var z = p.z + slot.radius * Math.sin( angle );
+
+                var mesh = multiLoader.getObject( slot.model );
+                mesh.speed = slot.speed;
+                mesh.position.copy( p );
+                mesh.positionTo = new THREE.Vector3( x, 0, z );
+
+                freeShots.push( mesh );
+                scope.scene.add( mesh );
+
+                start++;
+
+                if ( start <= slot.charges ) {
+                    setShotTimeout( slot, slot.intervalTime, start );
+                }
+
+            }, timeout );
+        }
 
         /**
          *
@@ -323,7 +334,7 @@
         model: IW.SceneControls.MODEL_R1_A,
         active: true, // актывный слот или заблокированный
         radius: 15000, // максимальное растояние выстрела
-        speed: 45000, // скорость залпа
+        speed: 5000, // скорость залпа
         intervalTime: 50, // интервал каждого залпа
         charges: 1, // количество залпов
         energy: 50, // объем энергии на один выстрел 10 залпов
@@ -338,11 +349,11 @@
         model: IW.SceneControls.MODEL_R1_B,
         active: true,
         radius: 15000,
-        speed: 25000,
-        intervalTime: 100,
-        charges: 5,
+        speed: 2500,
+        intervalTime: 300,
+        charges: 2,
         energy: 200,
-        reloadingTime: 3500
+        reloadingTime: 1000
     };
 
     /**
@@ -353,11 +364,11 @@
         model: IW.SceneControls.MODEL_R1_C,
         active: true,
         radius: 15000,
-        speed: 30000,
-        intervalTime: 150,
-        charges: 4,
+        speed: 3000,
+        intervalTime: 350,
+        charges: 3,
         energy: 300,
-        reloadingTime: 4000
+        reloadingTime: 1500
     };
 
     /**
@@ -413,7 +424,7 @@
         model: IW.SceneControls.MODEL_R1_B,
         active: true,
         radius: 35000,
-        speed: 90000,
+        speed: 2000,
         intervalTime: 300,
         charges: 3,
         energy: 600,
@@ -428,7 +439,7 @@
         model: IW.SceneControls.MODEL_R1_C,
         active: true,
         radius: 50000,
-        speed: 40000,
+        speed: 4000,
         intervalTime: 10,
         charges: 2,
         energy: 200,
@@ -443,7 +454,7 @@
         model: IW.SceneControls.MODEL_R1_C,
         active: true,
         radius: 25000,
-        speed: 60000,
+        speed: 6000,
         intervalTime: 100,
         charges: 5,
         energy: 500,
