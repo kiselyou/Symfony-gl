@@ -54,6 +54,7 @@
             map = document.createElement('div');
             map.id = id;
             map.classList.add('sw-map');
+            map.classList.add('sw-modal-skin-panel');
             map.style.position = 'absolute';
             map.style.width = size.width + 'px';
             map.style.height = size.height + 'px';

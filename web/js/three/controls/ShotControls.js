@@ -128,7 +128,7 @@
                     var x = p.x + slot.radius * Math.cos( angle );
                     var z = p.z + slot.radius * Math.sin( angle );
 
-                    var mesh = multiLoader.getModel( slot.model );
+                    var mesh = multiLoader.getObject( slot.model );
                     mesh.speed = slot.speed;
                     mesh.position.copy( p );
                     mesh.positionTo = new THREE.Vector3( x, 0, z );

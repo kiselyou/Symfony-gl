@@ -1,289 +1,417 @@
-    var IW = IW || {};
+var IW = IW || {};
+
+/**
+ *
+ * @constructor
+ */
+IW.MultiLoader = function () {
 
     /**
      *
-     * @param {Scene} scene
-     * @constructor
+     * @type {Array}
      */
-    IW.MultiLoader = function ( scene ) {
+    this.upload = [];
 
-        /**
-         *
-         * @type {Array}
-         */
-        this.upload = [];
+    /**
+     * Callback for adding action when model has loaded
+     *
+     * @param {{ name: string, pathOBJ: string, object: ?Mesh, pathMTL: string, directory: string }} uploaded
+     * @callback objectLoadedCallback
+     */
 
-        /**
-         *
-         * @type {string}
-         */
-        this.basedir = '';
+    /**
+     * @type {(objectLoadedCallback|null)}
+     */
+    var _objectLoadedCallback = null;
 
-        /**
-         *
-         * @type {Scene}
-         */
-        this.scene = scene;
+    /**
+     * Callback for adding action when load is completed
+     *
+     * @callback doneLoadCallback
+     */
 
-        /**
-         * Callback for adding action when model has loaded
-         *
-         * @param {{ name: string, pathOBJ: string, object: ?Mesh, pathMTL: string, directory: string }} uploaded
-         * @callback objectLoadedCallback
-         */
+    /**
+     * @type {(doneLoadCallback|null)}
+     */
+    var doneLoad = null;
 
-        /**
-         * @type {(objectLoadedCallback|null)}
-         */
-        var _objectLoadedCallback = null;
+    /**
+     *
+     * @type {IW.MultiLoader}
+     */
+    var scope = this;
 
-        /**
-         * Callback for adding action when all models has loaded
-         *
-         * @callback doneLoadCallback
-         */
+    /**
+     *
+     * @type {Array}
+     */
+    var _objects = [];
 
-        /**
-         * @type {(doneLoadCallback|null)}
-         */
-        var doneLoad = null;
+    /**
+     *
+     * @type {Array}
+     */
+    var _textures = [];
 
-        /**
-         *
-         * @type {IW.MultiLoader}
-         */
-        var scope = this;
+    /**
+     * When object loaded to do something
+     *
+     * @param {objectLoadedCallback} callback
+     * @returns {IW.MultiLoader}
+     */
+    this.setLoadedCallback = function ( callback  ) {
 
-        /**
-         *
-         * @type {Array}
-         */
-        var models = [];
+        _objectLoadedCallback = callback;
+        return this;
+    };
 
-        /**
-         * When object loaded to do something
-         *
-         * @param {objectLoadedCallback} callback
-         * @returns {IW.MultiLoader}
-         */
-        this.setLoadedCallback = function ( callback  ) {
-            _objectLoadedCallback = callback;
-            return this;
-        };
+    /**
+     * Get loaded object - CLONE
+     *
+     * @param {string} name
+     * @returns {?Mesh}
+     */
+    this.getObject = function ( name ) {
 
-        /**
-         * Get loaded object - CLONE
-         *
-         * @param {string} name
-         * @returns {?Mesh}
-         */
-        this.getModel = function ( name ) {
+        var object = _objects.find(function( value ) {
+            return value.name == name;
+        });
 
-            var model = models.find(function( value ) {
-                return value.name == name;
-            });
+        return object ? object.object.clone() : null;
+    };
 
-            return model ? model.object.clone() : null;
-        };
+    /**
+     * Get loaded object - ORIGINAL
+     *
+     * @returns {Array}
+     */
+    this.getObjects = function () {
 
-        /**
-         * Get loaded models - ORIGINAL
-         *
-         * @returns {Array}
-         */
-        this.getModels = function () {
-            return models;
-        };
+        return _objects;
+    };
 
-        /**
-         * Add data for model upload
-         *
-         * @param {string} name
-         * @param {string} directory
-         * @param {string} pathOBJ
-         * @param {string} [pathMTL]
-         * @returns {IW.MultiLoader}
-         */
-        this.addLoad = function ( name, directory, pathOBJ, pathMTL ) {
+    /**
+     * Get loaded texture - ORIGINAL
+     *
+     * @param {string} name
+     * @returns {?Mesh}
+     */
+    this.getTexture = function ( name ) {
 
-            this.upload.push( {
-                object: null,
-                name: name,
-                pathOBJ: pathOBJ,
-                pathMTL: pathMTL,
-                directory: directory
-            } );
+        var texture = _textures.find(function( value ) {
+            return value.name == name;
+        });
 
-            return this;
-        };
+        return texture ? texture.texture : null;
+    };
 
-        /**
-         *
-         * @type {IW.ProgressBar}
-         */
-        var progressBar = new IW.ProgressBar();
+    /**
+     * Get loaded textures - ORIGINAL
+     *
+     * @returns {Array}
+     */
+    this.getTextures = function () {
 
-        /**
-         *
-         * @type {THREE.LoadingManager}
-         */
-        var manager = new THREE.LoadingManager();
+        return _textures;
+    };
 
-        /**
-         *
-         * @type {THREE.OBJLoader}
-         */
-        var objLoader = new THREE.OBJLoader( manager );
+    /**
+     * Add data for model upload
+     *
+     * @param {!(string|number)} name
+     * @param {?string} label
+     * @param {string} directory
+     * @param {string} pathOBJ
+     * @param {string} [pathMTL]
+     * @returns {IW.MultiLoader}
+     */
+    this.addLoadOBJ = function ( name, label, directory, pathOBJ, pathMTL ) {
 
-        /**
-         *
-         * @type {THREE.MTLLoader}
-         */
-        var mtlLoader = new THREE.MTLLoader( manager );
+        this.upload.push( {
+            type: IW.MultiLoader.LOAD_TYPE_OBJ,
+            object: null,
+            name: name,
+            label: label,
+            pathOBJ: pathOBJ,
+            pathMTL: pathMTL,
+            directory: directory
+        } );
 
-        /**
-         *
-         * @param {string} [position] possible values
-         * @param {number} [int]
-         * @returns {IW.MultiLoader}
-         */
-        this.setPositionProgress = function ( position, int ) {
+        return this;
+    };
 
-            progressBar.setPosition( position, int );
-            return this;
-        };
+    /**
+     *
+     * Add data for textures upload
+     *
+     * @param {!(string|number)} name
+     * @param {?string} label
+     * @param {!string} path
+     * @returns {IW.MultiLoader}
+     */
+    this.addLoadTexture = function (name, label, path) {
 
-        /**
-         *
-         * @param {string} [width]
-         * @returns {IW.MultiLoader}
-         */
-        this.setWithProgress = function ( width ) {
-            progressBar.setWidth( width );
-            return this;
-        };
+        this.upload.push( {
+            type: IW.MultiLoader.LOAD_TYPE_TEXTURE,
+            texture: null,
+            name: name,
+            label: label,
+            pathTexture: path
+        } );
 
-        /**
-         *
-         * @returns {IW.MultiLoader}
-         */
-        this.hideProgress = function () {
-            progressBar.hide();
-            return this;
-        };
+        return this;
+    };
 
-        /**
-         *
-         * @returns {IW.MultiLoader}
-         */
-        this.hideLabelProgress = function () {
+    /**
+     *
+     * @type {IW.ProgressBar}
+     */
+    var progressBar = new IW.ProgressBar();
+
+    /**
+     *
+     * @type {THREE.LoadingManager}
+     */
+    var manager = new THREE.LoadingManager();
+
+    /**
+     *
+     * @type {THREE.OBJLoader}
+     * @private
+     */
+    var _objLoader = new THREE.OBJLoader( manager );
+
+    /**
+     *
+     * @type {THREE.MTLLoader}
+     * @private
+     */
+    var _mtlLoader = new THREE.MTLLoader( manager );
+
+    /**
+     *
+     * @type {THREE.TextureLoader}
+     * @private
+     */
+    var _textureLoader = new THREE.TextureLoader( manager );
+
+    /**
+     *
+     * @param {string} [position] possible values
+     * @param {number} [int]
+     * @returns {IW.MultiLoader}
+     */
+    this.setPositionProgress = function ( position, int ) {
+
+        progressBar.setPosition( position, int );
+
+        return this;
+    };
+
+    /**
+     *
+     * @param {string} [width]
+     * @returns {IW.MultiLoader}
+     */
+    this.setWithProgress = function ( width ) {
+
+        progressBar.setWidth( width );
+
+        return this;
+    };
+
+    /**
+     *
+     * @returns {IW.MultiLoader}
+     */
+    this.hideProgress = function () {
+
+        progressBar.hide();
+
+        return this;
+    };
+
+    /**
+     *
+     * @returns {IW.MultiLoader}
+     */
+    this.hideLabelProgress = function (flag) {
+
+        if (flag !== false) {
             progressBar.hideLabel();
-            return this;
-        };
+        }
 
-        /**
-         * Callback for adding action when all models has loaded
-         *
-         * @param {doneLoadCallback} callback
-         */
-        this.load = function ( callback ) {
+        return this;
+    };
 
-            doneLoad = callback;
-            progressBar.open();
-            progressBar.setCount( this.upload.length * 2 );
-            loadModels();
-        };
+    /**
+     * Callback for adding action when all objects has loaded
+     *
+     * @param {doneLoadCallback} callback
+     */
+    this.load = function ( callback ) {
 
-        /**
-         * Start upload models
-         *
-         * @returns {void}
-         */
-        function loadModels() {
+        doneLoad = callback;
+        progressBar.open();
+        progressBar.setCountUpload( countUpload( this.upload ) );
+        startLoad();
+    };
 
-            var params = scope.upload[ 0 ];
+    /**
+     *
+     * @param {Array} uploads
+     * @returns {number}
+     */
+    function countUpload(uploads) {
 
-            if ( params == undefined ) {
+        var count = 0;
 
-                if ( doneLoad ) {
+        for (var i = 0; i < uploads.length; i++) {
 
-                    progressBar.doneCallback( doneLoad );
+            switch (uploads[i]['type']) {
+
+                case IW.MultiLoader.LOAD_TYPE_TEXTURE:
+
+                    count++;
+                    break;
+
+                case IW.MultiLoader.LOAD_TYPE_OBJ:
+
+                    count += 2;
+                    break;
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * Start upload
+     *
+     * @returns {void}
+     */
+    function startLoad() {
+
+        var params = scope.upload[ 0 ];
+
+        if ( params == undefined ) {
+
+            if ( doneLoad ) {
+
+                progressBar.doneCallback( doneLoad );
+            }
+
+            return;
+        }
+
+        scope.upload.splice(0, 1);
+
+        switch (params.type) {
+
+            case IW.MultiLoader.LOAD_TYPE_TEXTURE:
+
+                loadTexture( params );
+                break;
+
+            case IW.MultiLoader.LOAD_TYPE_OBJ:
+
+                if ( params.pathMTL != undefined ) {
+
+                    loadMaterial( params );
+
+                } else {
+
+                    loadOBJ( params );
                 }
 
-                return;
-            }
-
-            scope.upload.splice(0, 1);
-
-            if ( params.pathMTL != undefined ) {
-
-                loadMaterial( params );
-
-            } else {
-
-                loadObject( params );
-            }
+                break
         }
+    }
 
-        /**
-         * Start upload object ( model )
-         *
-         * @param {{ name: string, pathOBJ: string, object: ?Mesh, pathMTL: string, directory: string }} params
-         * @returns {void}
-         */
-        function loadObject( params ) {
+    /**
+     * Start upload object ( model )
+     *
+     * @param {{ name: string, pathOBJ: string, object: ?Mesh, pathMTL: string, directory: string }} params
+     * @returns {void}
+     */
+    function loadOBJ( params ) {
 
-            progressBar.setLabel( params.name );
+        progressBar.setLabel( params.label );
 
-            objLoader.setPath( params.directory );
+        _objLoader.setPath( params.directory );
 
-            objLoader.load(
-                params.pathOBJ,
-                function ( object ) {
+        _objLoader.load(
+            params.pathOBJ,
+            function ( object ) {
 
-                    var geometry = new THREE.SphereGeometry( 5, 10, 10 );
-                    var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0, transparent: true } );
-                    var sphere = new THREE.Mesh( geometry, material );
-                    sphere.add( object );
+                var geometry = new THREE.SphereGeometry( 5, 10, 10 );
+                var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0, transparent: true } );
+                var sphere = new THREE.Mesh( geometry, material );
+                sphere.add( object );
 
-                    params[ 'object' ] = sphere;
-                    models.push( params );
+                params[ 'object' ] = sphere;
+                _objects.push( params );
 
-                    if ( _objectLoadedCallback ) {
-                        _objectLoadedCallback.call( this, params );
-                    }
+                if ( _objectLoadedCallback ) {
+                    _objectLoadedCallback.call( this, params );
+                }
 
-                    loadModels();
+                startLoad();
 
-                },
-                progressBar.onProgress,
-                progressBar.onError
-            );
-        }
+            },
+            progressBar.onProgress,
+            progressBar.onError
+        );
+    }
 
-        /**
-         * Load textures for object
-         *
-         * @param {{ name: string, pathOBJ: string, object: ?Mesh, pathMTL: string, directory: string }} params
-         */
-        function loadMaterial( params ) {
+    /**
+     * Load textures for object
+     *
+     * @param {{ name: string, pathOBJ: string, object: ?Mesh, pathMTL: string, directory: string }} params
+     */
+    function loadMaterial( params ) {
 
-            progressBar.setLabel( params.name );
-            mtlLoader.setTexturePath( params.directory );
-            mtlLoader.setPath( params.directory );
+        progressBar.setLabel( params.label );
 
-            mtlLoader.load(
-                params.pathMTL,
-                function( materials ) {
+        _mtlLoader.setTexturePath( params.directory );
+        _mtlLoader.setPath( params.directory );
+        _mtlLoader.load(
+            params.pathMTL,
+            function( materials ) {
 
-                    materials.preload();
-                    objLoader.setMaterials( materials );
+                materials.preload();
+                _objLoader.setMaterials( materials );
 
-                    loadObject( params );
+                loadOBJ( params );
 
-                },
-                progressBar.onProgress,
-                progressBar.onError
-            );
-        }
-    };
+            },
+            progressBar.onProgress,
+            progressBar.onError
+        );
+    }
+
+    function loadTexture( params ) {
+
+        progressBar.setLabel( params.label );
+
+        _textureLoader.load(
+            params.pathTexture,
+            function ( texture ) {
+
+                params[ 'texture' ] = texture;
+                _textures.push( params );
+
+                if ( _objectLoadedCallback ) {
+                    _objectLoadedCallback.call( this, params );
+                }
+
+                startLoad();
+            },
+            progressBar.onProgress,
+            progressBar.onError
+        );
+    }
+};
+
+IW.MultiLoader.LOAD_TYPE_TEXTURE = 1;
+IW.MultiLoader.LOAD_TYPE_OBJ = 2;

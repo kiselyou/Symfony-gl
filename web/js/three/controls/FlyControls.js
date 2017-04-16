@@ -13,7 +13,7 @@
 		 *
 		 * @type {Mesh}
 		 */
-		this.object = multiLoader.getModel(IW.SceneControls.MODEL_S1_A);
+		this.object = multiLoader.getObject(IW.SceneControls.MODEL_S1_A);
 
 		/**
 		 *

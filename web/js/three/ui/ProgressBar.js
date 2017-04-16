@@ -239,7 +239,7 @@ var IW = IW || {};
 
                     loaded += scope.speedProgres;
                     progressLine.style.width = loaded + '%';
-                    progressLabel.innerHTML = loaded.toFixed( 0 ) + scope.unit + status.label;
+                    progressLabel.innerHTML = loaded.toFixed( 0 ) + scope.unit + ' ' + status.label;
 
                     if ( loaded >= status.progress  ) {
                         queue.splice( 0, 1 );
@@ -291,7 +291,7 @@ var IW = IW || {};
          * @param {number} count
          * @returns {void}
          */
-        this.setCount = function( count ) {
+        this.setCountUpload = function( count ) {
             control.count = 100 / ( count );
         };
 

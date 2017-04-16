@@ -12,87 +12,107 @@
 
     <script type="application/javascript">
 
-        var initScene = new IW.SceneControls( 'iw-container', false );
+        document.addEventListener('DOMContentLoaded', function () {
 
-        /**
-         *
-         * @type {IW.MultiLoader}
-         */
-        var loader = new IW.MultiLoader( initScene.scene );
+            var map = {
+                path: '{{ asset('/images/textures/galaxy/A/') }}',
+                names: ['dark-s-px', 'dark-s-nx', 'dark-s-py', 'dark-s-ny', 'dark-s-pz', 'dark-s-nz'],
+                extension: '.jpg'
+            };
 
-        loader.addLoad( IW.SceneControls.MODEL_G1_A, '{{asset('/models/G1/A/')}}', 'city.obj', 'city.mtl' );
-        // SHIPS
-        loader.addLoad( IW.SceneControls.MODEL_S1_A, '{{asset('/models/S1/A/')}}', 'starship.obj', 'starship.mtl' );
-        loader.addLoad( IW.SceneControls.MODEL_S1_B, '{{asset('/models/S1/B/')}}', 'starship.obj', 'starship.mtl' );
-        loader.addLoad( IW.SceneControls.MODEL_S1_C, '{{asset('/models/S1/C/')}}', 'starship.obj', 'starship.mtl' );
-        loader.addLoad( IW.SceneControls.MODEL_S1_D, '{{asset('/models/S1/D/')}}', 'starship.obj', 'starship.mtl' );
-        // ROCKETS
-        loader.addLoad( IW.SceneControls.MODEL_R1_A, '{{asset('/models/R1/A/')}}', 'rocket.obj', 'rocket.mtl' );
-        loader.addLoad( IW.SceneControls.MODEL_R1_B, '{{asset('/models/R1/B/')}}', 'rocket.obj', 'rocket.mtl' );
-        loader.addLoad( IW.SceneControls.MODEL_R1_C, '{{asset('/models/R1/C/')}}', 'rocket.obj', 'rocket.mtl' );
+            var initScene = new IW.SceneControls( 'iw-container', false );
 
-        loader.setLoadedCallback( function ( params ) {
-            switch ( params.name ) {
+            /**
+             *
+             * @type {IW.MultiLoader}
+             */
+            var multiLoader = new IW.MultiLoader();
 
-                case IW.SceneControls.MODEL_G1_A:
-                    params.object.scale.copy( new THREE.Vector3( 50, 50, 50 ) );
-                    params.object.position.z = 50000;
-                    params.object.position.y = -2900;
-                    initScene.scene.add( params.object );
-                    break;
-
-                case IW.SceneControls.MODEL_S1_A:
-                    params.object.children[0].position.y = -80;
-                    break;
-
-                case IW.SceneControls.MODEL_S1_B:
-
-                    params.object.position.x = -400;
-                    params.object.children[0].rotation.x = 90 * Math.PI / 180;
-                    params.object.children[0].rotation.y = Math.PI;
-                    params.object.scale.copy( new THREE.Vector3( 25, 25, 25 ) );
-
-                    initScene.scene.add( params.object );
-                    break;
-
-                case IW.SceneControls.MODEL_S1_C:
-
-                    params.object.position.x = 400;
-                    params.object.scale.copy( new THREE.Vector3( 25, 25, 25 ) );
-                    initScene.scene.add( params.object );
-                    break;
-
-                case IW.SceneControls.MODEL_S1_D:
-
-                    params.object.position.x = -800;
-                    params.object.children[0].rotation.y = Math.PI;
-                    params.object.children[0].rotation.x = 90 * Math.PI / 180;
-                    params.object.scale.copy( new THREE.Vector3( 25, 25, 25 ) );
-                    initScene.scene.add( params.object );
-                    break;
-
-                case IW.SceneControls.MODEL_R1_A:
-                    params.object.scale.copy( new THREE.Vector3( 5, 5, 5 ) );
-                    break;
-
-                case IW.SceneControls.MODEL_R1_B:
-                    params.object.children[0].rotation.y = Math.PI;
-                    break;
-
-                case IW.SceneControls.MODEL_R1_C:
-                    params.object.children[0].rotation.y = 90 * Math.PI / 180;
-                    break;
+            // UPLOAD TEXTURES MAP
+            for ( var i = 0; i < map.names.length; i++ ) {
+                var lbl = 'label - texture ' + map.names[ i ];
+                multiLoader.addLoadTexture( map.names[ i ], lbl, map.path + map.names[ i ] + map.extension );
             }
-        } );
 
-        loader.load(function () {
+            // UPLOAD CITY
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_G1_A, 'CITY - A', '{{asset('/models/G1/A/')}}', 'city.obj', 'city.mtl' );
+            // UPLOAD SHIPS
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS - A', '{{asset('/models/S1/A/')}}', 'starship.obj', 'starship.mtl' );
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_B, 'SHIPS - B', '{{asset('/models/S1/B/')}}', 'starship.obj', 'starship.mtl' );
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_C, 'SHIPS - C', '{{asset('/models/S1/C/')}}', 'starship.obj', 'starship.mtl' );
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_D, 'SHIPS - D', '{{asset('/models/S1/D/')}}', 'starship.obj', 'starship.mtl' );
+            // UPLOAD ROCKETS
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_R1_A, 'ROCKETS - A', '{{asset('/models/R1/A/')}}', 'rocket.obj', 'rocket.mtl' );
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_R1_B, 'ROCKETS - B', '{{asset('/models/R1/B/')}}', 'rocket.obj', 'rocket.mtl' );
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_R1_C, 'ROCKETS - C', '{{asset('/models/R1/C/')}}', 'rocket.obj', 'rocket.mtl' );
 
-            initScene.initFlyControl( loader );
-            initScene.initScene();
-            initScene.map('{{asset('/images/textures/galaxy/stars.png')}}');
+            multiLoader.setLoadedCallback( function ( params ) {
+                switch ( params.name ) {
 
+                    case IW.SceneControls.MODEL_G1_A:
+
+                        params.object.scale.copy( new THREE.Vector3( 10, 10, 10 ) );
+                        params.object.position.z = 50000;
+                        params.object.position.y = - 600;
+                        initScene.scene.add( params.object );
+                        break;
+
+                    case IW.SceneControls.MODEL_S1_A:
+
+                        params.object.children[0].position.y = -80;
+                        break;
+
+                    case IW.SceneControls.MODEL_S1_B:
+
+                        params.object.position.x = -400;
+                        params.object.children[0].rotation.x = 90 * Math.PI / 180;
+                        params.object.children[0].rotation.y = Math.PI;
+                        params.object.scale.copy( new THREE.Vector3( 25, 25, 25 ) );
+
+                        initScene.scene.add( params.object );
+                        break;
+
+                    case IW.SceneControls.MODEL_S1_C:
+
+                        params.object.position.x = 400;
+                        params.object.scale.copy( new THREE.Vector3( 25, 25, 25 ) );
+                        initScene.scene.add( params.object );
+                        break;
+
+                    case IW.SceneControls.MODEL_S1_D:
+
+                        params.object.position.x = -800;
+                        params.object.children[0].rotation.y = Math.PI;
+                        params.object.children[0].rotation.x = 90 * Math.PI / 180;
+                        params.object.scale.copy( new THREE.Vector3( 25, 25, 25 ) );
+                        initScene.scene.add( params.object );
+                        break;
+
+                    case IW.SceneControls.MODEL_R1_A:
+
+                        params.object.scale.copy( new THREE.Vector3( 5, 5, 5 ) );
+                        break;
+
+                    case IW.SceneControls.MODEL_R1_B:
+
+                        params.object.children[0].rotation.y = Math.PI;
+                        break;
+
+                    case IW.SceneControls.MODEL_R1_C:
+
+                        params.object.children[0].rotation.y = 90 * Math.PI / 180;
+                        break;
+                }
+            } );
+
+            multiLoader.load(function () {
+
+                initScene.map( multiLoader, map );
+                initScene.initFlyControl( multiLoader );
+                initScene.initScene();
+
+            });
         });
-
     </script>
 
 {% endblock %}

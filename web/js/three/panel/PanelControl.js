@@ -383,6 +383,7 @@
             panel = document.createElement('div');
             panel.id = id;
             panel.classList.add('sw-panel-control');
+            panel.classList.add('sw-modal-skin-panel');
             panel.style.position = 'absolute';
             panel.style.width = size.width + 'px';
 

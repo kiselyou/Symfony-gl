@@ -49,11 +49,17 @@
         document.addEventListener( 'contextmenu', contextMenu, false );
         document.addEventListener( 'keydown', keyDown, false );
 
+        /**
+         *
+         * @param {IW.MultiLoader} multiLoader
+         * @returns {IW.SceneControls}
+         */
         this.initFlyControl = function ( multiLoader ) {
 
             flyControls = new IW.FlyControls( scope.scene, multiLoader, scope.camera, scope.renderer.domElement );
             flyControls.initOrbitControl();
             flyControls.initPanel();
+            return this;
         };
 
         /**
@@ -80,30 +86,36 @@
             return  this.getWidth() / this.getHeight();
         };
 
+        /**
+         *
+         * @type {null}
+         * @private
+         */
         var _map = null;
 
-        this.map = function (img) {
+        /**
+         *
+         * @param {IW.MultiLoader} multiLoader
+         * @param {{path: string, names: Array, extension}} map
+         * @returns {IW.SceneControls}
+         */
+        this.map = function (multiLoader, map) {
 
             var materials = [];
-            var roomGeometry = new THREE.BoxGeometry(150000, 150000, 150000, 1, 1, 1);
-            var roomMaterial = new THREE.MeshBasicMaterial();
-            var texture = new THREE.TextureLoader().load(img);
 
-            texture.min_filter = THREE.LinearFilter;
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.x = 5;
-            texture.repeat.y = 4;
+            for ( var i = 0; i < map.names.length; i++ ) {
 
-            for (var i = 0; i < 6; i++) {
-                roomMaterial.map = texture;
-                roomMaterial.side = THREE.BackSide;
-                materials.push(roomMaterial);
+                var material = new THREE.MeshBasicMaterial();
+                material.map = multiLoader.getTexture( map.names[ i ] );
+                material.side = THREE.BackSide;
+                materials.overdraw = 0.5;
+                materials.push( material );
             }
 
-            var material = new THREE.MultiMaterial(materials);
-            _map = new THREE.Mesh(roomGeometry, material);
-            scope.scene.add(_map);
+            _map = new THREE.Mesh( new THREE.BoxGeometry( 150000, 150000, 150000, 7, 7, 7 ), new THREE.MultiMaterial( materials ) );
+            scope.scene.add( _map );
+
+            return this;
         };
 
         /**
@@ -179,7 +191,7 @@
             scope.camera.position.y = 2500;
             scope.camera.fov = 45;
             scope.camera.near = 0.1;
-            scope.camera.far = 100000;
+            scope.camera.far = 200000;
             scope.camera.aspect = scope.getAspect();
             scope.camera.lookAt( scope.scene.position );
             scope.camera.updateProjectionMatrix();
@@ -230,6 +242,16 @@
                     }
                     break;
             }
+        }
+
+        /**
+         *
+         * @param {number} value (0 - 1)
+         * @returns {IW.SceneControls}
+         */
+        this.setOpacity = function ( value ) {
+            this.container.style.opacity = value;
+            return this;
         }
     };
 

@@ -61,58 +61,69 @@
 
     <script type="application/javascript">
 
-        var initScene = new IW.SceneControls( 'iw-container', false );
-        initScene.map('{{asset('/images/textures/galaxy/stars.png')}}');
-        initScene.container.style.opacity = 0;
-        /**
-         *
-         * @type {IW.MultiLoader}
-         */
-        var loader = new IW.MultiLoader( initScene.scene );
-        loader.setPositionProgress( IW.ProgressBar.POSITION_B, 50 );
-        loader.hideLabelProgress();
+        document.addEventListener('DOMContentLoaded', function () {
 
-        // SHIPS
-        loader.addLoad( IW.SceneControls.MODEL_S1_A, '{{asset('/models/S1/A/')}}', 'starship.obj', 'starship.mtl' );
+            var map = {
+                path: '{{ asset('/images/textures/galaxy/A/') }}',
+                names: ['dark-s-px', 'dark-s-nx', 'dark-s-py', 'dark-s-ny', 'dark-s-pz', 'dark-s-nz'],
+                extension: '.jpg'
+            };
 
-        loader.setLoadedCallback( function ( params ) {
-            switch ( params.name ) {
+            var initScene = new IW.SceneControls( 'iw-container', false );
+            initScene.setOpacity(0);
 
-                case IW.SceneControls.MODEL_S1_A:
-                    params.object.scale.copy( new THREE.Vector3( 3, 3, 3 ) );
-                    params.object.rotation.y = Math.PI;
-                    initScene.scene.add( params.object );
-                    break;
+            var multiLoader = new IW.MultiLoader();
+            multiLoader.setPositionProgress( IW.ProgressBar.POSITION_B, 50 );
+            multiLoader.hideLabelProgress(false);
+
+            // UPLOAD TEXTURES MAP
+            for ( var i = 0; i < map.names.length; i++ ) {
+                var lbl = 'label - texture ' + map.names[ i ];
+                multiLoader.addLoadTexture( map.names[ i ], lbl, map.path + map.names[ i ] + map.extension );
             }
-        } );
 
-        loader.load(function () {
+            // UPLOAD OBJECTS SHIPS
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'label - object', '{{asset('/models/S1/A/')}}', 'starship.obj', 'starship.mtl' );
 
-            initScene.initScene();
+            multiLoader.setLoadedCallback( function ( params ) {
+                switch ( params.name ) {
 
-            var orbitControl = new THREE.OrbitControls( initScene.camera, initScene.renderer.domElement );
-            orbitControl.autoRotateSpeed = 0.3;
-            orbitControl.autoRotate = true;
-            orbitControl.enableKeys = false;
-            orbitControl.enablePan = false;
-            orbitControl.enableZoom = false;
-            orbitControl.dispose();
-
-            initScene.setCallbackUpdate( function () {
-
-                orbitControl.update();
+                    case IW.SceneControls.MODEL_S1_A:
+                        params.object.scale.copy( new THREE.Vector3( 3, 3, 3 ) );
+                        params.object.rotation.y = Math.PI;
+                        initScene.scene.add( params.object );
+                        break;
+                }
             } );
 
-            var start = 0;
-            var idInterval = setInterval(function () {
-                start += 0.001;
-                initScene.container.style.opacity = start;
-                if (start >= 1) {
-                    initScene.container.style.opacity = 1;
-                    clearInterval(idInterval);
-                }
-            }, 5);
+            multiLoader.load(function () {
 
+                initScene.initScene();
+                initScene.map( multiLoader, map );
+
+                var orbitControl = new THREE.OrbitControls( initScene.camera, initScene.renderer.domElement );
+                orbitControl.autoRotateSpeed = 0.3;
+                orbitControl.autoRotate = true;
+                orbitControl.enableKeys = false;
+                orbitControl.enablePan = false;
+                orbitControl.enableZoom = false;
+                orbitControl.dispose();
+
+                initScene.setCallbackUpdate( function () {
+
+                    orbitControl.update();
+                } );
+
+                var start = 0;
+                var idInterval = setInterval( function () {
+                    start += 0.001;
+                    initScene.setOpacity( start );
+                    if ( start >= 1 ) {
+                        initScene.setOpacity( 1 );
+                        clearInterval( idInterval );
+                    }
+                }, 5 );
+            });
         });
 
     </script>
