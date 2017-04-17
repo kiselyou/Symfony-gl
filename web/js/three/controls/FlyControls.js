@@ -113,10 +113,10 @@
         lbl.append( IW.LabelControls.TPL_SPEED, this.speed.current, this.object.position, IW.LabelControls.POSITION_RT );
 
 		this.update = function ( delta ) {
-
+			updatePositionAim();
             lbl.updateLabel( IW.LabelControls.TPL_SPEED, 'Speed: ' + this.speed.current );
             lbl.updatePosition( IW.LabelControls.TPL_SPEED, this.object.position, IW.LabelControls.POSITION_RT );
-            lbl.updatePosition( IW.LabelControls.TPL_AIM, getPositionAim(), IW.LabelControls.POSITION_C );
+            lbl.updatePosition( IW.LabelControls.TPL_AIM, _positionAim, IW.LabelControls.POSITION_C );
 
 			if ( fly || scope.speed.current != 0 ) {
 
@@ -361,6 +361,34 @@
 			fly = true;
 		}
 
+		var pl = plane();
+		function plane() {
+			var planeGeometry = new THREE.PlaneGeometry(10000, 10000);
+			var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+			var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
+			plane.rotation.x = -0.5 * Math.PI;
+			plane.receiveShadow = true;
+			scope.scene.add(plane);
+			return plane;
+		}
+
+		var raycaster = new THREE.Raycaster();
+
+		function mouseMove(e) {
+
+			var mouse = new THREE.Vector2();
+			mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+			mouse.y = -( e.clientY / window.innerHeight ) * 2 + 1;
+
+
+			raycaster.setFromCamera(mouse, scope.camera);
+			var intersects = raycaster.intersectObject(pl);
+			if (intersects.length > 0) {
+				console.log(intersects[0]['point']);
+			}
+		}
+
 		/**
 		 *
 		 * @param {KeyboardEvent} e
@@ -501,7 +529,7 @@
 		 *
 		 * @returns {Vector3}
 		 */
-		function getPositionAim() {
+		function updatePositionAim() {
 
 			var x = scope.object.position.x + scope.far * Math.cos( scope.object.params.angel );
 			var z = scope.object.position.z + scope.far * Math.sin( scope.object.params.angel );
@@ -552,6 +580,7 @@
 
 		window.addEventListener( 'keydown', keyDown, false );
 		window.addEventListener( 'keyup', keyUp, false );
+		this.domElement.addEventListener( 'mousemove', mouseMove, false );
 	};
 
 	/**
