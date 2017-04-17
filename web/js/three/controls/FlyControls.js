@@ -45,7 +45,7 @@
 		 *
 		 * @type {number}
 		 */
-		this.far = 10000;
+		this.far = 1000;
 
 		/**
 		 *
@@ -385,7 +385,17 @@
 			raycaster.setFromCamera(mouse, scope.camera);
 			var intersects = raycaster.intersectObject(pl);
 			if (intersects.length > 0) {
-				console.log(intersects[0]['point']);
+
+				var _angle = getAngle( scope.object.position, intersects[0]['point'] ) / Math.PI * 180;
+				var _mAngle = scope.object.params.angel / Math.PI * 180;
+
+				motion.left = (_mAngle > _angle);
+				motion.right = (_mAngle < _angle);
+
+			} else {
+
+				motion.left = false;
+				motion.right = false;
 			}
 		}
 
