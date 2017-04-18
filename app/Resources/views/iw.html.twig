@@ -20,7 +20,7 @@
 
                     {% block swnawbar %}
 
-                        <ul class="nav nav-pills pull-right">
+                        <ul class="nav nav-pills pull-right sw-naw">
 
                             {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 
@@ -58,7 +58,11 @@
 
                     {% endblock %}
 
-                    <h2 class=""><a href="{{ path('iw') }}">IronWar<small> online </small></a></h2>
+
+                    <div class="sw-logo">
+                        <h2 class=""><a href="{{ path('iw') }}">IronWar</a></h2>
+                        <small> ONLINE </small>
+                    </div>
 
                 </div>
             </div>
