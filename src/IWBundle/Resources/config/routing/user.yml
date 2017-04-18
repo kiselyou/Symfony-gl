@@ -1,0 +1,3 @@
+user_index:
+    path: /
+    defaults: { _controller: "IWBundle:User:index" }

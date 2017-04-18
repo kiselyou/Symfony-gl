@@ -1,6 +1,10 @@
+iw_user:
+    resource: "@IWBundle/Resources/config/routing/user.yml"
+    prefix:   /user
+
 iw_play:
     resource: "@IWBundle/Resources/config/routing/play.yml"
-    prefix:   /
+    prefix:   /play
 
 iw_helper:
     resource: "@IWBundle/Resources/config/routing/helper.yml"

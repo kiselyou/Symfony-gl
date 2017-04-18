@@ -10,6 +10,67 @@
 
 {% block body %}
 
+    {% block sw_container %}
+
+        {% trans_default_domain 'auth' %}
+
+        <div class="sw-modal iw-main-page sw-modal-size-12">
+            <div class="sw-modal-head">
+                <div class="header">
+
+                    {% block swnawbar %}
+
+                        <ul class="nav nav-pills pull-right">
+
+                            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+
+                                <li class="sw-active">
+                                    <a href="{{ path( 'play_index' ) }}" class="sw-btn">
+                                        <i class="glyphicon glyphicon-play"></i>
+                                        IW
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path( '_logout' ) }}" class="sw-btn">
+                                        <i class="glyphicon glyphicon-log-out"></i>
+                                        {{ '_LOGOUT'|trans }}
+                                    </a>
+                                </li>
+
+                            {% else %}
+
+                                <li>
+                                    <a href="{{ path('_registration') }}" class="sw-btn">
+                                        <i class="glyphicon glyphicon-registration-mark"></i>
+                                        {{ '_REGISTRATION'|trans }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path( '_login' ) }}" class="sw-btn">
+                                        <i class="glyphicon glyphicon-log-in"></i>
+                                        {{ '_LOGIN'|trans }}
+                                    </a>
+                                </li>
+
+                            {% endif %}
+
+                        </ul>
+
+                    {% endblock %}
+
+                    <h2 class=""><a href="{{ path('iw') }}">IronWar<small> online </small></a></h2>
+
+                </div>
+            </div>
+            <div class="sw-modal-body">
+
+                {% block swbody %}{% endblock %}
+
+            </div>
+        </div>
+
+    {% endblock %}
+
     {% block container %}{% endblock %}
 
 {% endblock %}

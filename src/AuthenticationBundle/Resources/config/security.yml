@@ -32,8 +32,9 @@ security:
                 check_path: _login
                 username_parameter: username
                 password_parameter: password
-                default_target_path: iw
+                default_target_path: user_index
                 remember_me: true
+                csrf_token_generator: security.csrf.token_manager
             logout:
                 path:   _logout
                 target: _login
@@ -46,7 +47,7 @@ security:
 
     access_control:
         - { path: ^/[a-z][a-z]/security/_login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/[a-z][a-z]/iw/play, roles: ROLE_USER }
+        - { path: ^/[a-z][a-z]/iw, roles: ROLE_USER }
 #        - { path: ^/app/user, roles: ROLE_USER }
 #        - { path: ^/app/author, roles: ROLE_AUTHOR }
 #        - { path: ^/app/moderator, roles: ROLE_MODERATOR }

@@ -13,7 +13,7 @@
 		 *
 		 * @type {Mesh}
 		 */
-		this.object = multiLoader.getObject(IW.SceneControls.MODEL_S1_A);
+		this.object = multiLoader.getObject( IW.SceneControls.MODEL_S1_A );
 
 		/**
 		 *
@@ -89,7 +89,7 @@
 			angle: 0,
 			speed: 0.09, // Скорость наклона - процент от скорости объекта (radian)
 			max: THREE.Math.degToRad( 35 ), // Максимальный угол наклона ( radian )
-			inclineMinSpeed: 150 // Наклоны при скорости от "inclineMinSpeed"
+			inclineMinSpeed: 10 // Наклоны при скорости от "inclineMinSpeed"
 		};
 
 		/**
@@ -218,8 +218,8 @@
 			orbitControl.enablePan = false;
 			orbitControl.enableKeys = false;
             orbitControl.rotateSpeed = 2.0;
-			orbitControl.minDistance = 20;
-			orbitControl.maxDistance = 450;
+			orbitControl.minDistance = 50;
+			orbitControl.maxDistance = 250;
             orbitControl.maxPolarAngle = 75 * Math.PI / 180;
             orbitControl.minPolarAngle = 45 * Math.PI / 180;
 			return this;
@@ -359,44 +359,6 @@
 
 			motionControl();
 			fly = true;
-		}
-
-		var pl = plane();
-		function plane() {
-			var planeGeometry = new THREE.PlaneGeometry(10000, 10000);
-			var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
-			var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-
-			plane.rotation.x = -0.5 * Math.PI;
-			plane.receiveShadow = true;
-			scope.scene.add(plane);
-			return plane;
-		}
-
-		var raycaster = new THREE.Raycaster();
-
-		function mouseMove(e) {
-
-			var mouse = new THREE.Vector2();
-			mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
-			mouse.y = -( e.clientY / window.innerHeight ) * 2 + 1;
-
-
-			raycaster.setFromCamera(mouse, scope.camera);
-			var intersects = raycaster.intersectObject(pl);
-			if (intersects.length > 0) {
-
-				var _angle = getAngle( scope.object.position, intersects[0]['point'] ) / Math.PI * 180;
-				var _mAngle = scope.object.params.angel / Math.PI * 180;
-
-				motion.left = (_mAngle > _angle);
-				motion.right = (_mAngle < _angle);
-
-			} else {
-
-				motion.left = false;
-				motion.right = false;
-			}
 		}
 
 		/**
@@ -590,7 +552,6 @@
 
 		window.addEventListener( 'keydown', keyDown, false );
 		window.addEventListener( 'keyup', keyUp, false );
-		this.domElement.addEventListener( 'mousemove', mouseMove, false );
 	};
 
 	/**

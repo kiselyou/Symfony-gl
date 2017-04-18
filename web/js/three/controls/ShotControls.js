@@ -346,7 +346,7 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     IW.ShotControls.WEAPON[ IW.ShotControls.GUN_2 ] = {
-        model: IW.SceneControls.MODEL_R1_B,
+        model: IW.SceneControls.MODEL_R1_A,
         active: true,
         radius: 15000,
         speed: 2500,
@@ -361,7 +361,7 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     IW.ShotControls.WEAPON[ IW.ShotControls.GUN_3 ] = {
-        model: IW.SceneControls.MODEL_R1_C,
+        model: IW.SceneControls.MODEL_R1_A,
         active: true,
         radius: 15000,
         speed: 3000,
@@ -421,7 +421,7 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     IW.ShotControls.WEAPON[ IW.ShotControls.GUN_7 ] = {
-        model: IW.SceneControls.MODEL_R1_B,
+        model: IW.SceneControls.MODEL_R1_A,
         active: true,
         radius: 35000,
         speed: 2000,
@@ -436,7 +436,7 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     IW.ShotControls.WEAPON[ IW.ShotControls.GUN_8 ] = {
-        model: IW.SceneControls.MODEL_R1_C,
+        model: IW.SceneControls.MODEL_R1_A,
         active: true,
         radius: 50000,
         speed: 4000,
@@ -451,7 +451,7 @@
      * @type {{model: string, active: boolean, radius: number, speed: number, intervalTime: number, charges: number, energy: number, reloadingTime: number}}
      */
     IW.ShotControls.WEAPON[ IW.ShotControls.GUN_9 ] = {
-        model: IW.SceneControls.MODEL_R1_C,
+        model: IW.SceneControls.MODEL_R1_A,
         active: true,
         radius: 25000,
         speed: 6000,

@@ -1,6 +1,6 @@
 {% extends 'iw.html.twig' %}
 
-{% block container %}
+{% block sw_container %}
 
     <div id="iw-container"></div>
 
@@ -34,17 +34,10 @@
                 multiLoader.addLoadTexture( map.names[ i ], lbl, map.path + map.names[ i ] + map.extension );
             }
 
-            // UPLOAD CITY
-            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_G1_A, 'CITY - A', '{{asset('/models/G1/A/')}}', 'city.obj', 'city.mtl' );
             // UPLOAD SHIPS
             multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS - A', '{{asset('/models/S1/A/')}}', 'starship.obj', 'starship.mtl' );
-            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_B, 'SHIPS - B', '{{asset('/models/S1/B/')}}', 'starship.obj', 'starship.mtl' );
-            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_C, 'SHIPS - C', '{{asset('/models/S1/C/')}}', 'starship.obj', 'starship.mtl' );
-            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_D, 'SHIPS - D', '{{asset('/models/S1/D/')}}', 'starship.obj', 'starship.mtl' );
             // UPLOAD ROCKETS
             multiLoader.addLoadOBJ( IW.SceneControls.MODEL_R1_A, 'ROCKETS - A', '{{asset('/models/R1/A/')}}', 'rocket.obj', 'rocket.mtl' );
-            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_R1_B, 'ROCKETS - B', '{{asset('/models/R1/B/')}}', 'rocket.obj', 'rocket.mtl' );
-            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_R1_C, 'ROCKETS - C', '{{asset('/models/R1/C/')}}', 'rocket.obj', 'rocket.mtl' );
 
             multiLoader.setLoadedCallback( function ( params ) {
                 switch ( params.name ) {
