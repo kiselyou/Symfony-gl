@@ -36,6 +36,7 @@
 
             // UPLOAD SHIPS
             multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS - A', '{{asset('/models/S1/A/')}}', 'starship.obj', 'starship.mtl' );
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_B, 'SHIPS - B', '{{asset('/models/S1/B/')}}', 'ship.obj', 'ship.mtl' );
             // UPLOAD ROCKETS
             multiLoader.addLoadOBJ( IW.SceneControls.MODEL_R1_A, 'ROCKETS - A', '{{asset('/models/R1/A/')}}', 'rocket.obj', 'rocket.mtl' );
 
@@ -58,11 +59,9 @@
 
                     case IW.SceneControls.MODEL_S1_B:
 
-                        params.object.position.x = - 40;
-                        params.object.children[0].rotation.x = 90 * Math.PI / 180;
-                        params.object.children[0].rotation.y = Math.PI;
-                        params.object.scale.copy( new THREE.Vector3( 3, 3, 3 ) );
-
+                        params.object.rotation.x = - Math.PI / 2;
+                        params.object.scale.copy( new THREE.Vector3( 4, 4, 4 ) );
+                        params.object.position.z = 500;
                         initScene.scene.add( params.object );
                         break;
 

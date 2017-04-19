@@ -94,7 +94,7 @@ IW.MultiLoader = function () {
      * Get loaded texture - ORIGINAL
      *
      * @param {string} name
-     * @returns {?Mesh}
+     * @returns {?THREE.Texture}
      */
     this.getTexture = function ( name ) {
 

@@ -200,7 +200,7 @@
             scope.camera.position.z = - 350;
             scope.camera.position.y = 150;
             scope.camera.fov = 45;
-            scope.camera.near = 0.1;
+            scope.camera.near = 0.01;
             scope.camera.far = Math.sqrt( scope.mapSize.width * scope.mapSize.width + scope.mapSize.height * scope.mapSize.height );
             scope.camera.aspect = scope.getAspect();
             scope.camera.lookAt( scope.scene.position );
