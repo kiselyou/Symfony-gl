@@ -45,31 +45,30 @@
             <script type="text/javascript">
                 document.addEventListener('DOMContentLoaded', function () {
                     var WS_URI = "ws://{{ gos_web_socket_server_host }}:{{ gos_web_socket_server_port }}";
-                    var session = WS.connect(WS_URI);
-                    console.log(session, WS_URI);
+                    var socket = WS.connect(WS_URI);
 
-//                    session.on("sample/addFunc", {"term1": 2, "term2": 5}).then(
-//                            function(result)
-//                            {
-//                                console.log("RPC Valid!", result);
-//                            },
-//                            function(error, desc)
-//                            {
-//                                console.log("RPC Error", error, desc);
-//                            }
-//                    );
+                    socket.on("socket/connect", function(session){
+                        //session is an Autobahn JS WAMP session.
 
-//                    session.on("socket/connect", function(session){
-//                        //session is an Autobahn JS WAMP session.
-//
-//                        console.log("Successfully Connected!");
-//                    });
-//
-//                    session.on("socket/disconnect", function(error){
-//                        //error provides us with some insight into the disconnection: error.reason and error.code
-//
-//                        console.log("Disconnected for " + error.reason + " with code " + error.code);
-//                    })
+                        console.log("Successfully Connected!");
+
+                        session.call("sample/addFunc", {"term1": 2, "term2": 5}).then(
+                                function(result)
+                                {
+                                    console.log("RPC Valid!", result);
+                                },
+                                function(error, desc)
+                                {
+                                    console.log("RPC Error", error, desc);
+                                }
+                        );
+                    });
+
+                    socket.on("socket/disconnect", function(error){
+                        //error provides us with some insight into the disconnection: error.reason and error.code
+
+                        console.log("Disconnected for " + error.reason + " with code " + error.code);
+                    });
                 });
             </script>
 
