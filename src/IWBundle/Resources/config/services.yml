@@ -1,5 +1,0 @@
-services:
-    iw_sockets.rpc_service:
-        class: IWBundle\Service\RPCSocket
-        tags:
-            - { name: gos_web_socket.rpc }

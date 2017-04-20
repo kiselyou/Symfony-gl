@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle(),
             new Stfalcon\Bundle\TinymceBundle\StfalconTinymceBundle(),
             new AuthenticationBundle\AuthenticationBundle(),
+            new SocketBundle\SocketBundle(),
             new IWBundle\IWBundle()
         ];
 

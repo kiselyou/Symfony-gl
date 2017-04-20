@@ -1,0 +1,9 @@
+services:
+    iw_socket.iw_rpc_service:
+        class: SocketBundle\Service\IwRpcSocket
+        tags:
+            - { name: gos_web_socket.rpc }
+    iw_play.iw_play_service:
+        class: SocketBundle\Service\IWPlaySocket
+        tags:
+            - { name: gos_web_socket.topic }

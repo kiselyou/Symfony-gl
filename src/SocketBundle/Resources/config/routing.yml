@@ -1,0 +1,11 @@
+iw_socket_rpc:
+    channel: iw/rpc/{method}
+    handler:
+        callback: 'iw.rpc' #related to the getName() or your RPC service
+    requirements:
+        method:
+            pattern: "[a-z_]+" #accept all valid regex, don't put delimiters !
+iw_socket_play:
+    channel: iw/socket/play
+    handler:
+        callback: 'iw.socket.play' #related to the getName() of your topic

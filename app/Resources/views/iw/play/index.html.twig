@@ -20,13 +20,13 @@
                 extension: '.png'
             };
 
-            var initScene = new IW.SceneControls( 'iw-container', false );
-
             /**
              *
              * @type {IW.MultiLoader}
              */
             var multiLoader = new IW.MultiLoader();
+
+            var initScene = new IW.SceneControls( multiLoader, 'iw-container', false );
 
             // UPLOAD TEXTURES MAP
             for ( var i = 0; i < map.names.length; i++ ) {
@@ -102,8 +102,7 @@
 
             multiLoader.load(function () {
 
-                initScene.map( multiLoader, map );
-                initScene.initFlyControl( multiLoader );
+                initScene.map( map );
                 initScene.initScene();
 
             });

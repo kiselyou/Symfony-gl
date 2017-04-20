@@ -41,34 +41,46 @@
 
             <script type="application/javascript" src="{{ asset('bundles/goswebsocket/js/vendor/autobahn.min.js') }}"></script>
             <script type="application/javascript" src="{{ asset('bundles/goswebsocket/js/gos_web_socket_client.js') }}"></script>
+            <script type="application/javascript" src="{{ asset('js/sockets/SocketControls.js') }}"></script>
 
             <script type="text/javascript">
+                var _WS_URI = "ws://{{ gos_web_socket_server_host }}:{{ gos_web_socket_server_port }}";
                 document.addEventListener('DOMContentLoaded', function () {
-                    var WS_URI = "ws://{{ gos_web_socket_server_host }}:{{ gos_web_socket_server_port }}";
-                    var socket = WS.connect(WS_URI);
 
-                    socket.on("socket/connect", function(session){
-                        //session is an Autobahn JS WAMP session.
-
-                        console.log("Successfully Connected!");
-
-                        session.call("sample/addFunc", {"term1": 2, "term2": 5}).then(
-                                function(result)
-                                {
-                                    console.log("RPC Valid!", result);
-                                },
-                                function(error, desc)
-                                {
-                                    console.log("RPC Error", error, desc);
-                                }
-                        );
-                    });
-
-                    socket.on("socket/disconnect", function(error){
-                        //error provides us with some insight into the disconnection: error.reason and error.code
-
-                        console.log("Disconnected for " + error.reason + " with code " + error.code);
-                    });
+//                    var socket = WS.connect(WS_URI);
+//
+//                    socket.on("socket/connect", function(session){
+//                        //session is an Autobahn JS WAMP session.
+//
+//                        console.log("Successfully Connected!");
+//
+//                        session.call("iw/rpc/add_func", {"term1": 2, "term2": 5}).then(
+//                            function(result)
+//                            {
+//                                console.log("RPC Valid!", result);
+//                            },
+//                            function(error, desc)
+//                            {
+//                                console.log("RPC Error", error, desc);
+//                            }
+//                        );
+//
+//                        session.subscribe("iw/socket/play", function(uri, payload){
+//                            console.log("Received message", payload.msg);
+//                        });
+//
+////                        session.publish("iw/socket/play", 'This is a message!');
+//
+////                        session.unsubscribe("iw/socket/play");
+////
+////                        session.publish("iw/socket/play", {msg: "I won't see this"});
+//                    });
+//
+//                    socket.on("socket/disconnect", function(error){
+//                        //error provides us with some insight into the disconnection: error.reason and error.code
+//
+//                        console.log("Disconnected for " + error.reason + " with code " + error.code);
+//                    });
                 });
             </script>
 

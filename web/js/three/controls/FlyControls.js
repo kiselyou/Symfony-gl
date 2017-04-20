@@ -1,32 +1,19 @@
     var IW = IW || {};
 	/**
 	 *
-	 * @param {Scene} scene
-	 * @param {IW.MultiLoader} multiLoader
+	 * @param {Mesh} model
+	 * @param {IW.ShotControls} shot
 	 * @param {PerspectiveCamera} camera
 	 * @param {Element} domElement
 	 * @constructor
 	 */
-	IW.FlyControls = function ( scene, multiLoader, camera, domElement ) {
+	IW.FlyControls = function ( model, shot, camera, domElement ) {
 
 		/**
 		 *
 		 * @type {Mesh}
 		 */
-		this.object = multiLoader.getObject( IW.SceneControls.MODEL_S1_A );
-
-		/**
-		 *
-		 * @type {Scene}
-		 */
-		this.scene = scene;
-		this.scene.add( this.object );
-
-		/**
-		 *
-		 * @type {IW.ShotControls}
-		 */
-		var shot = new IW.ShotControls( this.object, multiLoader, this.scene );
+		this.object = model;
 
 		/**
 		 *
@@ -172,9 +159,9 @@
 			shot.setSpeedModel( scope.speed.current );
 			shot.update( delta );
 
-			orbitControl.stopMoveCamera();
-			orbitControl.target.copy( scope.object.position );
-			orbitControl.update();
+			// orbitControl.stopMoveCamera();
+			// orbitControl.target.copy( scope.object.position );
+			// orbitControl.update();
 
             if ( _panel ) {
                 _panel.updateProgress( 1, shot.energy.current );
@@ -182,48 +169,48 @@
             }
 		};
 
-		/**
-		 * Add object to model
-		 *
-		 * @param {Mesh} object
-		 * @returns {IW.FlyControls}
-         */
-		this.addToModel = function (object) {
-			this.object.add(object);
-			return this;
-		};
+		// /**
+		//  * Add object to model
+		//  *
+		//  * @param {Mesh} object
+		//  * @returns {IW.FlyControls}
+         // */
+		// this.addToModel = function (object) {
+		// 	this.object.add(object);
+		// 	return this;
+		// };
+        //
+		// /**
+		//  *
+		//  * @returns {Vector3}
+         // */
+		// this.getModelPosition = function () {
+		// 	return this.object.position;
+		// };
 
-		/**
-		 *
-		 * @returns {Vector3}
-         */
-		this.getModelPosition = function () {
-			return this.object.position;
-		};
-
-		/**
-		 *
-		 * @type {THREE.OrbitControls|null}
-		 */
-		var orbitControl = null;
-
-		/**
-		 *
-		 * @returns {IW.FlyControls}
-		 */
-		this.initOrbitControl = function () {
-
-			orbitControl = new THREE.OrbitControls( scope.camera, scope.domElement );
-			orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
-			orbitControl.enablePan = false;
-			orbitControl.enableKeys = false;
-            orbitControl.rotateSpeed = 2.0;
-			orbitControl.minDistance = 50;
-			orbitControl.maxDistance = 250;
-            orbitControl.maxPolarAngle = 75 * Math.PI / 180;
-            orbitControl.minPolarAngle = 45 * Math.PI / 180;
-			return this;
-		};
+		// /**
+		//  *
+		//  * @type {THREE.OrbitControls|null}
+		//  */
+		// var orbitControl = null;
+        //
+		// /**
+		//  *
+		//  * @returns {IW.FlyControls}
+		//  */
+		// this.initOrbitControl = function () {
+        //
+		// 	orbitControl = new THREE.OrbitControls( scope.camera, scope.domElement );
+		// 	orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
+		// 	orbitControl.enablePan = false;
+		// 	orbitControl.enableKeys = false;
+         //    orbitControl.rotateSpeed = 2.0;
+		// 	orbitControl.minDistance = 50;
+		// 	orbitControl.maxDistance = 250;
+         //    orbitControl.maxPolarAngle = 75 * Math.PI / 180;
+         //    orbitControl.minPolarAngle = 45 * Math.PI / 180;
+		// 	return this;
+		// };
 
         /**
          *

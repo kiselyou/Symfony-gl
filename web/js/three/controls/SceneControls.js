@@ -1,11 +1,17 @@
     var IW = IW || {};
     /**
+     *
+     * @param {IW.MultiLoader} multiLoader
      * @param {string} idElement
      * @param {boolean} [lock]
      * @constructor
      */
-    IW.SceneControls = function ( idElement, lock ) {
-
+    IW.SceneControls = function ( multiLoader, idElement, lock ) {
+        /**
+         *
+         * @type {IW.MultiLoader}
+         */
+        this.multiLoader = multiLoader;
         this.mapSize = {
             width: 100000,
             height: 100000,
@@ -62,9 +68,9 @@
          */
         this.initFlyControl = function ( multiLoader ) {
 
-            flyControls = new IW.FlyControls( scope.scene, multiLoader, scope.camera, scope.renderer.domElement );
-            flyControls.initOrbitControl();
-            flyControls.initPanel();
+            // flyControls = new IW.FlyControls( scope.scene, multiLoader, scope.camera, scope.renderer.domElement );
+            // flyControls.initOrbitControl();
+            // flyControls.initPanel();
             return this;
         };
 
@@ -94,24 +100,23 @@
 
         /**
          *
-         * @type {null}
+         * @type {?Mesh}
          * @private
          */
         var _map = null;
 
         /**
          *
-         * @param {IW.MultiLoader} multiLoader
          * @param {{path: string, names: Array, extension}} map
          * @returns {IW.SceneControls}
          */
-        this.map = function (multiLoader, map) {
+        this.map = function ( map ) {
 
             var materials = [];
 
             for ( var i = 0; i < map.names.length; i++ ) {
 
-                var texture = multiLoader.getTexture( map.names[ i ] );
+                var texture = scope.multiLoader.getTexture( map.names[ i ] );
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
                 texture.repeat.set(5, 5);
@@ -128,32 +133,88 @@
             return this;
         };
 
+        this.model = null;
+
+        var socket = null;
+
         /**
          *
          * @returns {void}
          */
         this.initScene = function () {
 
-            scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
-            scope.container.appendChild( scope.renderer.domElement );
+            socket = new IW.SocketControls( _WS_URI );
 
-            initCamera();
-            initLight();
-            render();
+            socket.connect( function ( url, session ) {
+
+                console.log(session);
+
+                socket.findData( function ( data ) {
+console.log(data);
+                    if ( data.hasOwnProperty( 'model' ) ) {
+
+                        scope.model = scope.multiLoader.getObject( data.model.name );
+                        scope.scene.add( scope.model );
+
+                        var shot = new IW.ShotControls( scope.model, scope.multiLoader, scope.scene );
+                        flyControls = new IW.FlyControls( scope.model, shot, scope.camera, scope.renderer.domElement );
+                        flyControls.initPanel();
+                        scope.initOrbitControl();
+
+                        scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
+                        scope.container.appendChild( scope.renderer.domElement );
+
+                        initCamera();
+                        initLight();
+                        render();
+                    }
+                    return null;
+                }, 'init');
+            } );
+
+
+            // scope.model = scope.multiLoader.getObject( 'S1_A' );
+            // scope.scene.add( scope.model );
+            //
+            // var shot = new IW.ShotControls( scope.model, scope.multiLoader, scope.scene );
+            // flyControls = new IW.FlyControls( scope.model, shot, scope.camera, scope.renderer.domElement );
+            // flyControls.initPanel();
+            // scope.initOrbitControl();
+            //
+            // scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
+            // scope.container.appendChild( scope.renderer.domElement );
+            //
+            // initCamera();
+            // initLight();
+            // render();
+
+            socket.disconnected( function ( error ) {
+                console.log( error );
+            } );
         };
 
         /**
          *
-         * @type {null}
+         * @type {?(THREE.OrbitControls)}
          */
-        var callbackUpdate = null;
+        var orbitControl = null;
 
         /**
          *
-         * @param callback
+         * @returns {IW.SceneControls}
          */
-        this.setCallbackUpdate = function ( callback ) {
-            callbackUpdate = callback;
+        this.initOrbitControl = function () {
+
+            orbitControl = new THREE.OrbitControls( scope.camera, scope.renderer.domElement );
+            orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
+            orbitControl.enablePan = false;
+            orbitControl.enableKeys = false;
+            orbitControl.rotateSpeed = 2.0;
+            orbitControl.minDistance = 50;
+            orbitControl.maxDistance = 250;
+            orbitControl.maxPolarAngle = 75 * Math.PI / 180;
+            orbitControl.minPolarAngle = 45 * Math.PI / 180;
+            return this;
         };
 
         this.showGridHelper = function (flag) {
@@ -179,12 +240,14 @@
                 flyControls.update( delta );
             }
 
-            if (flyControls && _map) {
-                _map.position.copy(flyControls.getModelPosition());
+            if ( _map ) {
+                _map.position.copy( scope.model.position );
             }
 
-            if ( callbackUpdate ) {
-                callbackUpdate.call( this, delta );
+            if (orbitControl) {
+                orbitControl.stopMoveCamera();
+                orbitControl.target.copy( scope.model.position );
+                orbitControl.update();
             }
 
             scope.renderer.render( scope.scene, scope.camera );
