@@ -21,11 +21,12 @@
             };
 
             var multiLoader = new IW.MultiLoader();
-            var initScene = new IW.SceneControls( multiLoader, 'iw-container', false );
-            initScene.setOpacity( 0 );
-
             multiLoader.setPositionProgress( IW.ProgressBar.POSITION_B, 50 );
             multiLoader.hideLabelProgress();
+
+            var initScene = new IW.SceneControls( multiLoader, 'iw-container', false );
+            //initScene.setOpacity( 0 );
+
 
             // UPLOAD TEXTURES MAP
             for ( var i = 0; i < map.names.length; i++ ) {
@@ -49,6 +50,11 @@
 
             multiLoader.load(function () {
 
+
+            var sss = new IW.Model();
+            sss.load( multiLoader );
+console.log( sss, sss.objectToJSON(), sss.model );
+/*
                 initScene.initScene();
                 initScene.map( map );
 
@@ -61,6 +67,7 @@
                         clearInterval( idInterval );
                     }
                 }, 5 );
+                */
             });
         });
 

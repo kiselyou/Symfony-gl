@@ -144,7 +144,7 @@
         this.initScene = function () {
 
             socket = new IW.SocketControls( _WS_URI );
-
+console.log(socket);
             socket.connect( function ( url, session ) {
 
                 console.log(session);

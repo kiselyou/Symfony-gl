@@ -5,9 +5,9 @@ var IW = IW || {};
  * @constructor
  */
 IW.Model = function () {
-
+    
     // Parrent constructor
-    // IW.ModelParameters.apply(this, arguments);
+    IW.ModelParameters.call(this);
 
     /**
      *
@@ -35,45 +35,46 @@ IW.Model = function () {
     };
 
     this.model = null;
-}
 
-IW.Model.prototype = Object.create(IW.ModelParameters.prototype);
-IW.Model.prototype.constructor = Model;
+    /**
+     * Load model
+     *
+     * @param {IW.MultiLoader} multiloader
+     * @param {string} [str] - It is JSON data model
+     * @returns {IW.Model}
+     */
+    this.load = function ( multiloader, str ) {
+        if ( str ) {
+            this.jsonToObject( str );
+        }
 
-/**
- * Get model
- *
- * @returns {Mesh}
- */
-IW.Model.prototype.getModel = function () {
-    return this.model;
-}
+        this.model = multiloader.getObject( this.name );
+        return this;
+    };
 
-/**
- * Load model
- *
- * @param {IW.MultiLoader} multiloader
- * @param {string} [str] - It is JSON data model
- * @returns {IW.Model}
- */
-IW.Model.prototype.load = function ( multiloader, str ) {
-    if ( str ) {
-        this.jsonToObject( str );
-    }
+    /**
+     * Change model
+     *
+     * @param {string} name - It is JSON data model
+     * @returns {IW.Model}
+     */
+    this.changeModel = function ( name ) {
+        this.name = name;
+        this.model = multiloader.getObject( name );
+        return this;
+    };
 
-    this.model = multiloader.getObject( this.name );
-    return this;
-}
+    /**
+     * Parent method
+     */
+    var _parentObjectToJSON = this.objectToJSON;
 
-/**
- * Change model
- *
- * @param {string} name - It is JSON data model
- * @returns {IW.Model}
- */
-IW.Model.prototype.changeModel = function ( name ) {
-
-    this.name = name;
-    this.model = multiloader.getObject( name );
-    return this;
-}
+    /**
+     * Get json string of current object
+     *
+     * @return {string}
+     */
+    this.objectToJSON = function () {
+        return _parentObjectToJSON.call( this, [ 'model' ] );
+    };
+};

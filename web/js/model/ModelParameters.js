@@ -35,7 +35,7 @@ IW.ModelParameters = function () {
     this.incline = {
         angle: 0,                       // It is angle of plane
         speed: 0.09,                    // Скорость наклона - процент от скорости объекта (radian)
-        max: THREE.Math.degToRad( 35 ), // Максимальный угол наклона ( radian )
+        max: 35 / 180 * Math.PI,        // Максимальный угол наклона ( radian )
         inclineMinSpeed: 10             // Наклоны при скорости от "inclineMinSpeed"
     };
 
@@ -77,25 +77,19 @@ IW.ModelParameters = function () {
 
     /**
      *
-     * @type {[Object.<action>]}
+     * @type {{}}
      */
     this.actions = [
         {
-            id: 1,                              // It is unique id of action
-            name: '1',                          // It is name action for client. Can see in user panel
-            icon: 'move',                       // It is icon action for client. Can see in user panel
-            keyCode: 49,                        // Keyboard key
-            active: false,                      // Active action or not. Can see in user panel
-            type: IW.ShotControls.GUN_1,        // It is type action
-            action: IW.FlyControls.ACTION_SHOT  // It is name action for system
+            id: 1,                                  // It is unique id of action
+            name: '1',                              // It is name action for client. Can see in user panel
+            icon: 'move',                           // It is icon action for client. Can see in user panel
+            keyCode: 49,                            // Keyboard key
+            active: false,                          // Active action or not. Can see in user panel
+            type: IW.ModelParameters.GUN_1,         // It is type of gun - for system
+            action: IW.ModelParameters.ACTION_SHOT  // It is name action - for system (Тип действия)
         }
     ];
-
-    /**
-     *
-     * @type {IW.ModelParameters}
-     */
-    var scope = this;
 
     /**
      * Set data from json string
@@ -110,7 +104,7 @@ IW.ModelParameters = function () {
             for ( var property in _object ) {
 
                 if ( _object.hasOwnProperty( property ) ) {
-                    scope[ property ] = _object[ property ];
+                    this[ property ] = _object[ property ];
                 }
             }
 
@@ -126,8 +120,15 @@ IW.ModelParameters = function () {
      *
      * @return {string}
      */
-    this.objectToJSON = function () {
-        return JSON.stringify( this );
+    this.objectToJSON = function ( except ) {
+        var object = {};
+        for ( var property in this ) {
+            if ( except === undefined || except.indexOf( property ) === -1 ) {
+                object[ property ] = this[ property ];
+            }
+        }
+
+        return JSON.stringify( object );
     };
 
     /**
@@ -156,6 +157,8 @@ IW.ModelParameters = function () {
         }
         return this;
     };
-};
+}
 
+IW.ModelParameters.GUN_1 = 1;
+IW.ModelParameters.ACTION_SHOT = 1;
 IW.ModelParameters.MODEL_DEFAULT = 'S1_A';
