@@ -20,10 +20,10 @@
                 extension: '.png'
             };
 
-            var initScene = new IW.SceneControls( 'iw-container', false );
-            initScene.setOpacity(0);
-
             var multiLoader = new IW.MultiLoader();
+            var initScene = new IW.SceneControls( multiLoader, 'iw-container', false );
+            initScene.setOpacity( 0 );
+
             multiLoader.setPositionProgress( IW.ProgressBar.POSITION_B, 50 );
             multiLoader.hideLabelProgress();
 
@@ -50,22 +50,7 @@
             multiLoader.load(function () {
 
                 initScene.initScene();
-                initScene.map( multiLoader, map );
-
-                var orbitControl = new THREE.OrbitControls( initScene.camera, initScene.renderer.domElement );
-                orbitControl.autoRotateSpeed = 0.3;
-                orbitControl.minDistance = 50;
-                orbitControl.maxDistance = 150;
-                orbitControl.autoRotate = true;
-                orbitControl.enableKeys = false;
-                orbitControl.enablePan = false;
-                orbitControl.enableZoom = false;
-                orbitControl.dispose();
-
-                initScene.setCallbackUpdate( function () {
-
-                    orbitControl.update();
-                } );
+                initScene.map( map );
 
                 var start = 0;
                 var idInterval = setInterval( function () {
