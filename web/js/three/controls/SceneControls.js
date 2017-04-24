@@ -144,49 +144,39 @@
         this.initScene = function () {
 
             socket = new IW.SocketControls( _WS_URI );
-console.log(socket);
-            socket.connect( function ( url, session ) {
+			socket.connect( function ( data ) {
+				console.log( data );
+			} );
+			
+			
+			return;
+            socket.connect( function ( data ) {
+				
+				scope.model = scope.multiLoader.getObject( data.model.name );
+				scope.scene.add( scope.model );
+				
+				console.log( data );
 
-                console.log(session);
+				socket.subscribe( function () {
+					console.log( arguments );
+				} );
+				
+				
+				/**
+				var shot = new IW.ShotControls( scope.model, scope.multiLoader, scope.scene );
+				flyControls = new IW.FlyControls( scope.model, shot, scope.camera, scope.renderer.domElement );
+				flyControls.initPanel();
+				scope.initOrbitControl();
+				*/
+            
+				scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
+				scope.container.appendChild( scope.renderer.domElement );
+            
+				initCamera();
+				initLight();
+				render();
 
-                socket.findData( function ( data ) {
-console.log(data);
-                    if ( data.hasOwnProperty( 'model' ) ) {
-
-                        scope.model = scope.multiLoader.getObject( data.model.name );
-                        scope.scene.add( scope.model );
-
-                        var shot = new IW.ShotControls( scope.model, scope.multiLoader, scope.scene );
-                        flyControls = new IW.FlyControls( scope.model, shot, scope.camera, scope.renderer.domElement );
-                        flyControls.initPanel();
-                        scope.initOrbitControl();
-
-                        scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
-                        scope.container.appendChild( scope.renderer.domElement );
-
-                        initCamera();
-                        initLight();
-                        render();
-                    }
-                    return null;
-                }, 'init');
             } );
-
-
-            // scope.model = scope.multiLoader.getObject( 'S1_A' );
-            // scope.scene.add( scope.model );
-            //
-            // var shot = new IW.ShotControls( scope.model, scope.multiLoader, scope.scene );
-            // flyControls = new IW.FlyControls( scope.model, shot, scope.camera, scope.renderer.domElement );
-            // flyControls.initPanel();
-            // scope.initOrbitControl();
-            //
-            // scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
-            // scope.container.appendChild( scope.renderer.domElement );
-            //
-            // initCamera();
-            // initLight();
-            // render();
 
             socket.disconnected( function ( error ) {
                 console.log( error );

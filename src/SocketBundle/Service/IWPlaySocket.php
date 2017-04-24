@@ -20,9 +20,21 @@ class IWPlaySocket implements TopicInterface
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
         //this will broadcast the message to ALL subscribers of this topic.
-        $topic->broadcast([
-            'msg' => $connection->resourceId . " has joined " . $topic->getId()
-        ]);
+        /*
+		$topic->broadcast([
+            'msg' => $connection->resourceId . " has joined " . $topic->getId(),
+			'request' => $request
+        ]);*/
+		
+		// send only to same client
+		$connection->event(
+			$topic->getId(), 
+			[
+				'msg' => 'only current client ' . $topic->getId(),
+				'connect' => true,
+				'connectId' => $connection->resourceId
+			]
+		);
     }
 
     /**
@@ -62,7 +74,11 @@ class IWPlaySocket implements TopicInterface
 
         $topic->broadcast([
             'msg' => $event,
+			'connect' => false,
+			'connectId' => $connection->resourceId
         ]);
+		
+		
     }
 
     /**

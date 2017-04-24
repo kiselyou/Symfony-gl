@@ -5,7 +5,7 @@ use Ratchet\ConnectionInterface;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 
-class IwRpcSocket implements RpcInterface
+class IWDataSocket implements RpcInterface
 {
     /**
      *
@@ -14,13 +14,15 @@ class IwRpcSocket implements RpcInterface
      * @param array $params
      * @return array
      */
-    public function findData(ConnectionInterface $connection, WampRequest $request, $params)
+    public function user(ConnectionInterface $connection, WampRequest $request, $params)
     {
 //        return array("result" => $params, 'request' => $request, 'connection' => $connection);
         return [
             'model' => [
                 'name' => 'S1_A'
             ],
+			'connection' => $connection,
+			'request' => $request,
             'user' => 'asdasda',
             'p' => $params
         ];
@@ -33,6 +35,6 @@ class IwRpcSocket implements RpcInterface
      */
     public function getName()
     {
-        return 'iw.rpc';
+        return 'iw.socket.data';
     }
 }

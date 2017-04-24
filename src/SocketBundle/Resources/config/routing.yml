@@ -1,7 +1,7 @@
 iw_socket_rpc:
-    channel: iw/rpc/{method}
+    channel: iw/socket/data/{method}
     handler:
-        callback: 'iw.rpc' #related to the getName() or your RPC service
+        callback: 'iw.socket.data' #related to the getName() or your RPC service
     requirements:
         method:
             pattern: "[a-z_]+" #accept all valid regex, don't put delimiters !
