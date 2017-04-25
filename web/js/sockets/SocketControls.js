@@ -60,23 +60,26 @@ IW.SocketControls = function ( url ) {
 			// }, error );
 			
 			session.subscribe( PATH_SUBSCRIBE, function ( url, payload ) {
-				
-				if ( payload.connect ) {
-					_connectId = payload[ 'connectId' ];
-					console.log('connected', payload);
-				} else {
-					// Получать все сообщения кроме своего
-					if ( payload[ 'connectId' ] !== _connectId ) {
-						console.log('Все кроме своего', payload[ 'connectId' ]);
-					} else { // Получить свое сообщение
-						console.log('Свое сообщение', payload[ 'connectId' ]);
-					}
-				}
+
+				console.log( payload );
+
+				// if ( payload.connect ) {
+				// 	_connectId = payload[ 'connectId' ];
+				// 	console.log('connected', payload);
+				// } else {
+				// 	// Получать все сообщения кроме своего
+				// 	if ( payload[ 'connectId' ] !== _connectId ) {
+				// 		console.log('Все кроме своего', payload[ 'connectId' ]);
+				// 	} else { // Получить свое сообщение
+				// 		console.log('Свое сообщение', payload[ 'connectId' ]);
+				// 	}
+				// }
 				
 			} );
 			
 			session.publish( PATH_SUBSCRIBE, {
-				test_connect: true
+				test_connect: true,
+				'asda': 'asdas'
 			} );
 			
 		} );

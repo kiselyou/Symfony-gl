@@ -19,20 +19,14 @@ class IWPlaySocket implements TopicInterface
      */
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
-        //this will broadcast the message to ALL subscribers of this topic.
-        /*
-		$topic->broadcast([
-            'msg' => $connection->resourceId . " has joined " . $topic->getId(),
-			'request' => $request
-        ]);*/
-		
 		// send only to same client
 		$connection->event(
 			$topic->getId(), 
 			[
-				'msg' => 'only current client ' . $topic->getId(),
+				'msg' => 'The client was subscribe',
 				'connect' => true,
-				'connectId' => $connection->resourceId
+				'connectId' => $connection->resourceId,
+                'sessionId' => $connection->WAMP->sessionId
 			]
 		);
     }
@@ -65,6 +59,38 @@ class IWPlaySocket implements TopicInterface
      */
     public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
     {
+
+        $msg = [];
+
+        if (isset($event['target'])) {
+
+            switch ($event['target']) {
+                case 1: // send only to current client
+
+                    $connection->event($topic->getId(), $msg);
+
+                    return;
+                    break;
+                case 2: // sent to all except current client
+
+                    foreach ($topic as $client) {
+                        if ($client->resourceId === $connection->resourceId) {
+                            $exclude[] = $client->WAMP->sessionId;
+                        }
+                    }
+
+                    break;
+                case 3: // sent only specific client
+
+                    $exclude[] = $event['client'];
+
+                    break;
+
+            }
+        }
+
+        $topic->broadcast($msg, $exclude);
+
         /*
         	$topic->getId() will contain the FULL requested uri, so you can proceed based on that
 
@@ -72,11 +98,26 @@ class IWPlaySocket implements TopicInterface
      	       //shout something to all subs.
         */
 
-        $topic->broadcast([
-            'msg' => $event,
-			'connect' => false,
-			'connectId' => $connection->resourceId
-        ]);
+
+
+//        var_dump($connection->WAMP->sessionId);
+//
+//        $a = [];
+//        foreach ($topic as $client) {
+//
+//            var_dump($client->resourceId);
+//
+//            $a[] = $client->WAMP->sessionId;
+//        }
+
+
+//        $topic->broadcast([
+//            'msg' => $event,
+//            'connect' => false,
+//            'connectId' => $connection->resourceId,
+//            'aasddas' => $request
+//        ]);
+
 		
 		
     }
