@@ -9,6 +9,42 @@ use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 
 class IWPlaySocket implements TopicInterface
 {
+
+    /**
+     * Send when client is subscribe
+     *
+     * @const int
+     */
+    const ACTION_SUBSCRIBE = 0;
+
+    /**
+     * Send only current client
+     *
+     * @const int
+     */
+    const ACTION_CURRENT = 1;
+
+    /**
+     * Send to all except current client
+     *
+     * @const int
+     */
+    const ACTION_CURRENT_EXCEPT = 2;
+
+    /**
+     * Send only specific client
+     *
+     * @const int
+     */
+    const ACTION_SPECIFIC = 3;
+
+    /**
+     * Send to all clients
+     *
+     * @const int
+     */
+    const ACTION_ALL = 4;
+
     /**
      * This will receive any Subscription requests for this topic.
      *
@@ -19,16 +55,14 @@ class IWPlaySocket implements TopicInterface
      */
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
-		// send only to same client
+		# send only to same client
 		$connection->event(
-			$topic->getId(), 
-			[
-				'msg' => 'The client was subscribe',
-				'connect' => true,
-				'connectId' => $connection->resourceId,
-                'sessionId' => $connection->WAMP->sessionId
-			]
-		);
+		    $topic->getId(),
+            [
+                'action' => self::ACTION_SUBSCRIBE,
+                'resourceId' => $connection->resourceId
+            ]
+        );
     }
 
     /**
@@ -59,71 +93,54 @@ class IWPlaySocket implements TopicInterface
      */
     public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
     {
-
-        $msg = [];
+        $current = false;
 
         if (isset($event['target'])) {
 
             switch ($event['target']) {
-                case 1: // send only to current client
+                # send only to current client
+                case self::ACTION_CURRENT:
 
-                    $connection->event($topic->getId(), $msg);
-
-                    return;
+                    $current = true;
                     break;
-                case 2: // sent to all except current client
+                # sent to all except current client
+                case self::ACTION_CURRENT_EXCEPT:
 
+                    $current = false;
                     foreach ($topic as $client) {
                         if ($client->resourceId === $connection->resourceId) {
                             $exclude[] = $client->WAMP->sessionId;
+                            break;
                         }
                     }
-
                     break;
-                case 3: // sent only specific client
+                # sent only specific client
+                case self::ACTION_SPECIFIC:
 
-                    $exclude[] = $event['client'];
-
+                    $current = false;
+                    foreach ($topic as $client) {
+                        if ($client->resourceId !== $event['resourceId']) {
+                            $exclude[] = $client->WAMP->sessionId;
+                        }
+                    }
                     break;
+                default:
 
+                    $current = false;
+                    break;
             }
         }
 
-        $topic->broadcast($msg, $exclude);
-
-        /*
-        	$topic->getId() will contain the FULL requested uri, so you can proceed based on that
-
-            if ($topic->getId() === 'acme/channel/shout')
-     	       //shout something to all subs.
-        */
-
-
-
-//        var_dump($connection->WAMP->sessionId);
-//
-//        $a = [];
-//        foreach ($topic as $client) {
-//
-//            var_dump($client->resourceId);
-//
-//            $a[] = $client->WAMP->sessionId;
-//        }
-
-
-//        $topic->broadcast([
-//            'msg' => $event,
-//            'connect' => false,
-//            'connectId' => $connection->resourceId,
-//            'aasddas' => $request
-//        ]);
-
-		
-		
+        if ($current) {
+            $connection->event($topic->getId(), $event);
+        } else {
+            $topic->broadcast($event, $exclude);
+        }
     }
 
     /**
      * Like RPC is will use to prefix the channel
+     *
      * @return string
      */
     public function getName()

@@ -17,19 +17,68 @@ IW.SocketControls = function ( url ) {
 
     var _session = null;
 
+	var resourceId = null;
+
+	this.getResourceId = function () {
+		return resourceId;
+	};
+
     /**
      *
-     * @param data
+	 * @param {(string|number)} key
+     * @param {object} data
      */
-    this.publish = function( data ) {
+    this.sendToCurrent = function( key, data ) {
         if ( _session ) {
-            _session.publish( PATH_SUBSCRIBE, data );
+            _session.publish(
+            	PATH_SUBSCRIBE,
+				{
+					key: key,
+					data: data,
+					target: IW.SocketControls.ACTION_CURRENT
+				}
+			);
         }
     };
-	
-	this.subscribe = function ( callback ) {
+
+	/**
+	 * Send to specific client
+	 *
+	 * @param {(string|number)} key
+	 * @param {object} data
+	 * @param {number} client - id is resourceId of client
+	 */
+	this.sendToSpecific = function( key, data, client ) {
 		if ( _session ) {
-			_session.subscribe( PATH_SUBSCRIBE, callback );
+			_session.publish(
+				PATH_SUBSCRIBE,
+				{
+					key: key,
+					data: data,
+					resourceId: client,
+					target: IW.SocketControls.ACTION_SPECIFIC
+				}
+			);
+		}
+	};
+
+	/**
+	 * Send message to all client. If second parameter is true current client will be except
+	 *
+	 * @param {(string|number)} key
+	 * @param {object} data
+	 * @param {boolean} [currentExcept]
+	 */
+	this.sendToAll = function( key, data, currentExcept ) {
+		if ( _session ) {
+			_session.publish(
+				PATH_SUBSCRIBE,
+				{
+					key: key,
+					data: data,
+					target: currentExcept ? IW.SocketControls.ACTION_CURRENT_EXCEPT : IW.SocketControls.ACTION_ALL
+				}
+			);
 		}
 	};
 
@@ -37,73 +86,45 @@ IW.SocketControls = function ( url ) {
      *
      * @returns {IW.SocketControls}
      */
-    this.connect = function ( callback ) {
-		var i = 0;
-		var a = 0;
-		var _connectId = null;
+    this.connect = function ( connectCallback, messageCallback ) {
+
 		_socket.on( SOCKET_CONNECT, function( session ) {
-			i++;
-			
-			// console.log( i, 'Connected', session );
-			
-			// var paramUserConnect = {
-				// 'user': {
-					// 'connect': true 
-				// }
-			// };
-			
-			// session.call( 
-				// PATH_GET_USER, 
-				// paramUserConnect 
-			// ).then( function () {
-				// console.log( 'Get data user', arguments );
-			// }, error );
-			
+			_session = session;
 			session.subscribe( PATH_SUBSCRIBE, function ( url, payload ) {
 
-				console.log( payload );
+				if (payload.action == IW.SocketControls.ACTION_SUBSCRIBE) {
 
-				// if ( payload.connect ) {
-				// 	_connectId = payload[ 'connectId' ];
-				// 	console.log('connected', payload);
-				// } else {
-				// 	// Получать все сообщения кроме своего
-				// 	if ( payload[ 'connectId' ] !== _connectId ) {
-				// 		console.log('Все кроме своего', payload[ 'connectId' ]);
-				// 	} else { // Получить свое сообщение
-				// 		console.log('Свое сообщение', payload[ 'connectId' ]);
-				// 	}
-				// }
-				
+					resourceId = payload.resourceId;
+					connectCallback.call(this, payload, resourceId);
+
+				} else {
+
+					messageCallback.call(this, payload, resourceId);
+				}
+
 			} );
-			
-			session.publish( PATH_SUBSCRIBE, {
-				test_connect: true,
-				'asda': 'asdas'
-			} );
-			
 		} );
-		
-		
+
+
 		return;
-		
+
 		/*
 		var userConnect = {
 				'user': {
-					'connect': true 
+					'connect': true
 				}
 			};
-		
+
         _socket.on( SOCKET_CONNECT, function( session ) {
             _session = session;
-			_session.call( 
-				PATH_GET_USER, 
-				userConnect 
+			_session.call(
+				PATH_GET_USER,
+				userConnect
 			).then( callback, error );
-			
+
             //session.subscribe( PATH_SUBSCRIBE, callback);
         });
-		
+
         return this;
 		*/
     };
@@ -124,3 +145,9 @@ IW.SocketControls = function ( url ) {
         console.log( arguments );
     }
 };
+
+IW.SocketControls.ACTION_SUBSCRIBE = 0;
+IW.SocketControls.ACTION_CURRENT = 1;
+IW.SocketControls.ACTION_CURRENT_EXCEPT = 2;
+IW.SocketControls.ACTION_SPECIFIC = 3;
+IW.SocketControls.ACTION_ALL = 4;

@@ -133,7 +133,9 @@
             return this;
         };
 
-        this.model = null;
+        this.model = new IW.Model();
+
+        var users = [];
 
         var socket = null;
 
@@ -144,43 +146,83 @@
         this.initScene = function () {
 
             socket = new IW.SocketControls( _WS_URI );
-			socket.connect( function ( data ) {
-				console.log( data );
-			} );
-			
-			
-			return;
-            socket.connect( function ( data ) {
-				
-				scope.model = scope.multiLoader.getObject( data.model.name );
-				scope.scene.add( scope.model );
-				
-				console.log( data );
+			socket.connect(
+			    function ( response, resourceId ) {
 
-				socket.subscribe( function () {
-					console.log( arguments );
-				} );
-				
-				
-				/**
-				var shot = new IW.ShotControls( scope.model, scope.multiLoader, scope.scene );
-				flyControls = new IW.FlyControls( scope.model, shot, scope.camera, scope.renderer.domElement );
-				flyControls.initPanel();
-				scope.initOrbitControl();
-				*/
-            
-				scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
-				scope.container.appendChild( scope.renderer.domElement );
-            
-				initCamera();
-				initLight();
-				render();
+                    scope.model.id = resourceId;
+                    scope.model.load( scope.multiLoader );
+                    scope.scene.add( scope.model.getModel() );
 
-            } );
+                    var shot = new IW.ShotControls( scope.model.getModel(), scope.multiLoader, scope.scene );
+                    flyControls = new IW.FlyControls( scope.model.getModel(), shot, scope.camera, scope.renderer.domElement );
+                    flyControls.initPanel();
+                    scope.initOrbitControl();
+
+                    socket.sendToAll( 'trade-to', {
+                        model: scope.model.objectToJSON(),
+                        resourceId: resourceId
+                    }, true );
+
+			    },
+
+                function ( response, resourceId ) {
+
+			        switch ( response.key ) {
+                        case 'trade-to':
+
+                            // Set model of client to own browser
+                            var userModel = new IW.Model();
+                            userModel.jsonToObject( response.data.model );
+                            userModel.load( scope.multiLoader );
+                            scope.scene.add( userModel.getModel() );
+                            users.push( userModel );
+
+                            // Send own model to browser of new client
+                            socket.sendToSpecific( 'trade-from', {
+                                model: scope.model.objectToJSON()
+                            }, response.data.resourceId );
+
+                            break;
+
+                        case 'trade-from':
+
+                            // Set model of client to own browser
+                            var userModel = new IW.Model();
+                            userModel.jsonToObject( response.data.model );
+                            userModel.load( scope.multiLoader );
+                            scope.scene.add( userModel.getModel() );
+                            users.push( userModel );
+
+                            break;
+
+                        case 'update-model':
+
+                            var id = response.data.resourceId;
+                            var findUserModel = users.find(function ( value ) {
+                                return value.id == id;
+                            });
+
+                            if ( findUserModel ) {
+                                findUserModel.jsonToObject( response.data.model );
+                                findUserModel.setPosition( findUserModel.position.x, findUserModel.position.y, findUserModel.position.z );
+                            }
+
+                            break;
+                    }
+
+                }
+            );
 
             socket.disconnected( function ( error ) {
                 console.log( error );
             } );
+
+            scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
+            scope.container.appendChild( scope.renderer.domElement );
+
+            initCamera();
+            initLight();
+            render();
         };
 
         /**
@@ -230,14 +272,23 @@
                 flyControls.update( delta );
             }
 
-            if ( _map ) {
-                _map.position.copy( scope.model.position );
-            }
+            if (scope.model.getPosition()) {
+                if ( _map ) {
+                    _map.position.copy( scope.model.getPosition() );
+                }
 
-            if (orbitControl) {
-                orbitControl.stopMoveCamera();
-                orbitControl.target.copy( scope.model.position );
-                orbitControl.update();
+                if (orbitControl) {
+                    orbitControl.stopMoveCamera();
+                    orbitControl.target.copy( scope.model.getPosition() );
+                    orbitControl.update();
+                }
+
+                if ( socket ) {
+                    socket.sendToAll( 'update-model', {
+                        model: scope.model.objectToJSON(),
+                        resourceId: socket.getResourceId()
+                    }, true );
+                }
             }
 
             scope.renderer.render( scope.scene, scope.camera );

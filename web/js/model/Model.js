@@ -6,8 +6,10 @@ var IW = IW || {};
  */
 IW.Model = function () {
     
-    // Parrent constructor
+    // Parent constructor
     IW.ModelParameters.call(this);
+
+    this.id = null;
 
     /**
      *
@@ -34,33 +36,51 @@ IW.Model = function () {
         }
     };
 
-    this.model = null;
+    var _model = null;
+
+    this.getModel = function () {
+        return _model;
+    };
+
+    this.getPosition = function () {
+        return _model ? _model.position : null;
+    };
+
+    this.setPosition = function ( x, y, z ) {
+        if ( _model ) {
+            _model.position.x = x;
+            _model.position.y = y;
+            _model.position.y = z;
+        }
+        return this;
+    };
 
     /**
      * Load model
      *
-     * @param {IW.MultiLoader} multiloader
+     * @param {IW.MultiLoader} multiLoader
      * @param {string} [str] - It is JSON data model
      * @returns {IW.Model}
      */
-    this.load = function ( multiloader, str ) {
+    this.load = function ( multiLoader, str ) {
         if ( str ) {
             this.jsonToObject( str );
         }
 
-        this.model = multiloader.getObject( this.name );
+        _model = multiLoader.getObject( this.name );
         return this;
     };
 
     /**
      * Change model
      *
+     * @param {IW.MultiLoader} multiLoader
      * @param {string} name - It is JSON data model
      * @returns {IW.Model}
      */
-    this.changeModel = function ( name ) {
+    this.changeModel = function ( multiLoader, name ) {
         this.name = name;
-        this.model = multiloader.getObject( name );
+        _model = multiLoader.getObject( name );
         return this;
     };
 
@@ -75,6 +95,9 @@ IW.Model = function () {
      * @return {string}
      */
     this.objectToJSON = function () {
+        this.position.x = _model.position.x;
+        this.position.y = _model.position.y;
+        this.position.z = _model.position.z;
         return _parentObjectToJSON.call( this, [ 'model' ] );
     };
 };

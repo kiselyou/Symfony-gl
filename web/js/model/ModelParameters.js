@@ -13,6 +13,17 @@ IW.ModelParameters = function () {
     this.name = IW.ModelParameters.MODEL_DEFAULT;
 
     /**
+     * It is position model
+     *
+     * @type {{x: number, y: number}}
+     */
+    this.position = {
+        x: 0,
+        y: 0,
+        z: 0
+    };
+
+    /**
      * It is direct speed of object
      *
      * @type {{current: number, max: number, min: number}}
@@ -157,8 +168,14 @@ IW.ModelParameters = function () {
         }
         return this;
     };
-}
+};
 
 IW.ModelParameters.GUN_1 = 1;
 IW.ModelParameters.ACTION_SHOT = 1;
-IW.ModelParameters.MODEL_DEFAULT = 'S1_A';
+
+IW.ModelParameters.MODEL_S1_A = 'S1_A';
+IW.ModelParameters.MODEL_S1_B = 'S1_B';
+IW.ModelParameters.MODEL_S1_C = 'S1_C';
+IW.ModelParameters.MODEL_S1_D = 'S1_D';
+
+IW.ModelParameters.MODEL_DEFAULT = IW.ModelParameters.MODEL_S1_A;
