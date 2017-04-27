@@ -13,15 +13,10 @@ IW.ModelParameters = function () {
     this.name = IW.ModelParameters.MODEL_DEFAULT;
 
     /**
-     * It is position model
      *
-     * @type {{x: number, y: number}}
+     * @type {number}
      */
-    this.position = {
-        x: 0,
-        y: 0,
-        z: 0
-    };
+    this.angle = 0;
 
     /**
      * It is direct speed of object
@@ -46,8 +41,8 @@ IW.ModelParameters = function () {
     this.incline = {
         angle: 0,                       // It is angle of plane
         speed: 0.09,                    // Скорость наклона - процент от скорости объекта (radian)
-        max: 35 / 180 * Math.PI,        // Максимальный угол наклона ( radian )
-        inclineMinSpeed: 10             // Наклоны при скорости от "inclineMinSpeed"
+        maxAngle: 35 / 180 * Math.PI,        // Максимальный угол наклона ( radian )
+        minSpeed: 10                         // Мин. Скорость при которой карабль начинает наклоны
     };
 
     /**
@@ -166,6 +161,179 @@ IW.ModelParameters = function () {
                 break;
             }
         }
+        return this;
+    };
+
+    /**
+     *
+     * @returns {number}
+     */
+    this.getMaxSpeed = function () {
+        return this.speed.max;
+    };
+
+    /**
+     *
+     * @returns {number}
+     */
+    this.getCurrentSpeed = function () {
+        return this.speed.current;
+    };
+
+    /**
+     *
+     * @returns {IW.ModelParameters}
+     */
+    this.autoReduceCurrentSpeed = function () {
+        if ( this.getCurrentSpeed() > this.speed.deceleration ) {
+
+            this.speed.current -= this.speed.deceleration;
+
+        } else if ( this.getCurrentSpeed() < - this.speed.deceleration ) {
+
+            this.speed.current += this.speed.deceleration;
+
+        } else {
+
+            this.speed.current = 0;
+        }
+
+        return this;
+    };
+
+    /**
+     *
+     * @returns {IW.ModelParameters}
+     */
+    this.increaseCurrentSpeed = function () {
+
+        if ( this.getCurrentSpeed() < this.speed.max ) {
+
+            this.speed.current += this.speed.acceleration;
+
+        } else if ( this.getCurrentSpeed() < this.speed.max ) {
+
+            this.speed.current = this.speed.max;
+        }
+        return this;
+    };
+
+    /**
+     *
+     * @returns {IW.ModelParameters}
+     */
+    this.reduceCurrentSpeed = function () {
+
+        if (this.getCurrentSpeed() > this.speed.min) {
+
+            this.speed.current -= this.getCurrentSpeed() < 0 ? this.speed.deceleration / 10 : this.speed.deceleration;
+
+        } else if ( this.getCurrentSpeed() < this.speed.min ) {
+
+            this.speed.current = this.speed.min;
+        }
+
+        return this;
+    };
+
+    /**
+     *
+     * @returns {number}
+     */
+    this.getSpeedRadiusForward = function () {
+        return this.speed.speedRadiusForward;
+    };
+
+    /**
+     *
+     * @returns {number}
+     */
+    this.getSpeedRadiusBackward = function () {
+        return this.speed.speedRadiusBackward / 3;
+    };
+
+    /**
+     *
+     * @returns {number}
+     */
+    this.getCurrentEnergy = function () {
+        return this.energy.current;
+    };
+
+    /**
+     *
+     * @returns {number}
+     */
+    this.getMaxEnergy = function () {
+        return this.energy.max;
+    };
+
+    /**
+     *
+     * @returns {number}
+     */
+    this.getReductionEnergy = function () {
+        return this.energy.reduction;
+    };
+
+    /**
+     *
+     * @returns {number}
+     */
+    this.getInclineSpeed = function () {
+        return THREE.Math.degToRad( this.getCurrentSpeed() * this.incline.speed / 100 );
+    };
+
+    /**
+     *
+     * @returns {number}
+     */
+    this.getInclineMinSpeed = function () {
+        return this.incline.minSpeed;
+    };
+
+    /**
+     *
+     * @returns {number}
+     */
+    this.getInclineAngle = function () {
+        return this.incline.angle;
+    };
+
+    /**
+     *
+     * @returns {number|*}
+     */
+    this.getInclineMaxAngle = function () {
+        return this.incline.maxAngle;
+    };
+
+    /**
+     *
+     * @returns {IW.ModelParameters}
+     */
+    this.reduceInclineAngle = function () {
+        var speed = this.getInclineSpeed();
+        this.incline.angle -= this.getInclineAngle() < 0 ? speed : speed * 1.2;
+        return this;
+    };
+
+    /**
+     *
+     * @returns {IW.ModelParameters}
+     */
+    this.increaseInclineAngle = function () {
+        var speed = this.getInclineSpeed();
+        this.incline.angle += this.getInclineAngle() > 0 ? speed : speed * 1.2;
+        return this;
+    };
+
+    /**
+     *
+     * @returns {IW.ModelParameters}
+     */
+    this.addInclineAngle = function ( step ) {
+        this.incline.angle += step;
         return this;
     };
 };

@@ -154,8 +154,10 @@
                     scope.scene.add( scope.model.getModel() );
 
                     var shot = new IW.ShotControls( scope.model.getModel(), scope.multiLoader, scope.scene );
-                    flyControls = new IW.FlyControls( scope.model.getModel(), shot, scope.camera, scope.renderer.domElement );
+
+                    flyControls = new IW.FlyControls( scope.model, shot, scope.camera );
                     flyControls.initPanel();
+
                     scope.initOrbitControl();
 
                     socket.sendToAll( 'trade-to', {
@@ -205,6 +207,9 @@
                             if ( findUserModel ) {
                                 findUserModel.jsonToObject( response.data.model );
                                 findUserModel.setPosition( findUserModel.position.x, findUserModel.position.y, findUserModel.position.z );
+                                findUserModel.setRotation( findUserModel.rotation.x, findUserModel.rotation.y, findUserModel.rotation.z );
+                                findUserModel.lookAt( findUserModel.positionTo.x, findUserModel.positionTo.y, findUserModel.positionTo.z );
+
                             }
 
                             break;
@@ -212,6 +217,23 @@
 
                 }
             );
+
+
+            var fps = 10;
+
+            setTimeout(function tick() {
+
+                if (scope.model.getModel()) {
+                    socket.sendToAll('update-model', {
+                        model: scope.model.objectToJSON(),
+                        resourceId: socket.getResourceId()
+                    }, true);
+                }
+
+                setTimeout(tick, 1000 / fps);
+
+            }, 1000 / fps);
+
 
             socket.disconnected( function ( error ) {
                 console.log( error );
@@ -283,12 +305,12 @@
                     orbitControl.update();
                 }
 
-                if ( socket ) {
-                    socket.sendToAll( 'update-model', {
-                        model: scope.model.objectToJSON(),
-                        resourceId: socket.getResourceId()
-                    }, true );
-                }
+                // if ( socket ) {
+                //     socket.sendToAll( 'update-model', {
+                //         model: scope.model.objectToJSON(),
+                //         resourceId: socket.getResourceId()
+                //     }, true );
+                // }
             }
 
             scope.renderer.render( scope.scene, scope.camera );

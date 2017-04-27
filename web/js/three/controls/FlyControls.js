@@ -1,19 +1,18 @@
     var IW = IW || {};
 	/**
 	 *
-	 * @param {Mesh} model
+	 * @param {IW.Model} model
 	 * @param {IW.ShotControls} shot
 	 * @param {PerspectiveCamera} camera
-	 * @param {Element} domElement
 	 * @constructor
 	 */
-	IW.FlyControls = function ( model, shot, camera, domElement ) {
+	IW.FlyControls = function ( model, shot, camera ) {
 
 		/**
 		 *
-		 * @type {Mesh}
+		 * @type {IW.Model}
 		 */
-		this.object = model;
+		this._model = model;
 
 		/**
 		 *
@@ -22,62 +21,11 @@
 		this.camera = camera;
 
 		/**
-		 *
-		 * @type {Element}
-		 */
-		this.domElement = domElement;
-
-		/**
 		 * It is approximate position to motion
 		 *
 		 * @type {number}
 		 */
 		this.far = 1000;
-
-		/**
-		 *
-		 * @type {number}
-		 */
-		this.speedRadiusForward = 0.01;
-
-		/**
-		 *
-		 * @type {number}
-		 */
-		this.speedRadiusBackward = 0.005;
-
-		/**
-		 *
-		 * @type {{current: number, max: number, min: number}}
-		 */
-		this.speed = {
-			current: 0, // m.s Can not be less than zero. Default 0
-			max:  1650, // m.s It is maximum speed the model
-			min: -150	// m.s If less than zero. The model is moving back
-		};
-
-		/**
-		 *
-		 * @type {number}
-		 */
-		this.acceleration = 5;  // m.s
-
-		/**
-		 *
-		 * @type {number}
-		 */
-		this.deceleration = 10;  // m.s
-
-		/**
-		 *
-		 * @type {{angle: number, speed: number, max: number, inclineMinSpeed: number}}
-		 */
-		this.rotate = {
-			angle: 0,
-			speed: 0.09, // Скорость наклона - процент от скорости объекта (radian)
-			max: THREE.Math.degToRad( 35 ), // Максимальный угол наклона ( radian )
-			inclineMinSpeed: 10 // Наклоны при скорости от "inclineMinSpeed"
-		};
 
 		/**
 		 *
@@ -97,120 +45,62 @@
 		 */
 		var lbl = new IW.LabelControls( scope.camera );
         lbl.append( IW.LabelControls.TPL_AIM, '' );
-        lbl.append( IW.LabelControls.TPL_SPEED, this.speed.current, this.object.position, IW.LabelControls.POSITION_RT );
+        lbl.append( IW.LabelControls.TPL_SPEED, this._model.getCurrentSpeed(), this._model.getPosition(), IW.LabelControls.POSITION_RT );
 
+		/**
+		 *
+		 * @param {number} delta
+         */
 		this.update = function ( delta ) {
+
+			var _positionModel = this._model.getPosition();
+			var _speedModel = this._model.getCurrentSpeed();
+
 			updatePositionAim();
-            lbl.updateLabel( IW.LabelControls.TPL_SPEED, 'Speed: ' + this.speed.current );
-            lbl.updatePosition( IW.LabelControls.TPL_SPEED, this.object.position, IW.LabelControls.POSITION_RT );
+
+            lbl.updateLabel( IW.LabelControls.TPL_SPEED, 'Speed: ' + _speedModel );
+            lbl.updatePosition( IW.LabelControls.TPL_SPEED, _positionModel, IW.LabelControls.POSITION_RT );
             lbl.updatePosition( IW.LabelControls.TPL_AIM, _positionAim, IW.LabelControls.POSITION_C );
 
-			if ( fly || scope.speed.current != 0 ) {
+			if ( fly || _speedModel != 0 ) {
 
 				var positionTo = getPositionTo();
-				scope.object.lookAt( positionTo );
+				this._model.setPositionTo( positionTo );
 
-				if ( motion.forward && scope.speed.current < scope.speed.max ) {
+				if ( motion.forward ) {
 
-					scope.speed.current += scope.acceleration;
-				}
+					this._model.increaseCurrentSpeed();
 
-				if ( motion.forward && scope.speed.current > scope.speed.max ) {
+				} else if ( motion.backward ) {
 
-					scope.speed.current = scope.speed.max;
-				}
-
-				if ( motion.backward && scope.speed.current > scope.speed.min ) {
-
-					scope.speed.current -= scope.speed.current < 0 ? scope.deceleration / 10 : scope.deceleration;
-				}
-
-				if ( motion.backward && scope.speed.current < scope.speed.min ) {
-
-					scope.speed.current = scope.speed.min;
+					this._model.reduceCurrentSpeed();
 				}
 
 				// Авто торможение
 				if ( !motion.forward && !motion.backward && !motion.left && !motion.right ) {
 
-					if ( scope.speed.current > scope.deceleration ) {
-
-						scope.speed.current -= scope.deceleration;
-
-					} else if ( scope.speed.current < - scope.deceleration ) {
-
-						scope.speed.current += scope.deceleration;
-
-					} else {
-
-						scope.speed.current = 0;
-					}
+					this._model.autoReduceCurrentSpeed();
 				}
 
-				var a = positionTo.x - this.object.position.x;
-				var b = positionTo.z - this.object.position.z;
+				var a = positionTo.x - _positionModel.x;
+				var b = positionTo.z - _positionModel.z;
 				var len = Math.sqrt( a * a + b * b ) * IW.FlyControls.SCALE;
 
-				this.object.position.x += a / len * ( this.speed.current + delta );
-				this.object.position.z += b / len * ( this.speed.current + delta );
+				var x = a / len * ( _speedModel + delta );
+				var z = b / len * ( _speedModel + delta );
+
+				this._model.addPosition( x, 0, z );
 			}
 
 			incline();
-			shot.setSpeedModel( scope.speed.current );
+			shot.setSpeedModel( _speedModel );
 			shot.update( delta );
 
-			// orbitControl.stopMoveCamera();
-			// orbitControl.target.copy( scope.object.position );
-			// orbitControl.update();
-
             if ( _panel ) {
-                _panel.updateProgress( 1, shot.energy.current );
-                _panel.updateProgress( 4, scope.speed.current );
+                _panel.updateProgress( 1, this._model.getCurrentEnergy() );
+                _panel.updateProgress( 4, _speedModel );
             }
 		};
-
-		// /**
-		//  * Add object to model
-		//  *
-		//  * @param {Mesh} object
-		//  * @returns {IW.FlyControls}
-         // */
-		// this.addToModel = function (object) {
-		// 	this.object.add(object);
-		// 	return this;
-		// };
-        //
-		// /**
-		//  *
-		//  * @returns {Vector3}
-         // */
-		// this.getModelPosition = function () {
-		// 	return this.object.position;
-		// };
-
-		// /**
-		//  *
-		//  * @type {THREE.OrbitControls|null}
-		//  */
-		// var orbitControl = null;
-        //
-		// /**
-		//  *
-		//  * @returns {IW.FlyControls}
-		//  */
-		// this.initOrbitControl = function () {
-        //
-		// 	orbitControl = new THREE.OrbitControls( scope.camera, scope.domElement );
-		// 	orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
-		// 	orbitControl.enablePan = false;
-		// 	orbitControl.enableKeys = false;
-         //    orbitControl.rotateSpeed = 2.0;
-		// 	orbitControl.minDistance = 50;
-		// 	orbitControl.maxDistance = 250;
-         //    orbitControl.maxPolarAngle = 75 * Math.PI / 180;
-         //    orbitControl.minPolarAngle = 45 * Math.PI / 180;
-		// 	return this;
-		// };
 
         /**
          *
@@ -235,10 +125,10 @@
                 setActionShot( actions[ i ], actions[ i ][ 'action' ] );
             }
 
-            _panel.addProgress( 1, 'energy', shot.energy.max, shot.energy.reduction, '#FF9900' );
+            _panel.addProgress( 1, 'energy', this._model.getMaxEnergy(), this._model.getReductionEnergy(), '#FF9900' );
             _panel.addProgress( 2, 'armor', 4000, 20, '#008AFA' );
             _panel.addProgress( 3, 'hull', 1000, 10, '#C10020' );
-            _panel.addProgress( 4, 'speed', scope.speed.max, 0, '#FFFFFF' );
+            _panel.addProgress( 4, 'speed', this._model.getMaxSpeed(), 0, '#FFFFFF' );
 
             _panel.addCallback( 1, function ( param ) {
                 shot.addEnergy( param.reduction );
@@ -281,9 +171,7 @@
 		 * @returns {void}
 		 */
 		function motionControl() {
-
 			if ( motion.forward && motion.backward ) {
-
 				motion.forward = false;
 				motion.backward = false;
 			}
@@ -293,35 +181,7 @@
 		 *
 		 * @type {{forward: boolean, left: boolean, right: boolean, backward: boolean}}
 		 */
-		var motion = {
-			forward: false,
-			left: false,
-			right: false,
-			backward: false
-		};
-
-		/**
-		 *
-		 * @type {{forward: {keyName: string, keyCode: number}, left: {keyName: string, keyCode: number}, right: {keyName: string, keyCode: number}, backward: {keyName: string, keyCode: number}}}
-		 */
-		var keyboard = {
-			forward: {
-				keyName: 'up arrow',
-				keyCode: 38
-			},
-			left: {
-				keyName: 'left arrow',
-				keyCode: 37
-			},
-			right: {
-				keyName: 'right arrow',
-				keyCode: 39
-			},
-			backward: {
-				keyName: 'down arrow',
-				keyCode: 40
-			}
-		};
+		var motion = { forward: false, left: false, right: false, backward: false };
 
 		/**
 		 *
@@ -329,17 +189,19 @@
 		 */
 		function keyDown( e ) {
 
+			var _fly = scope._model.keyboard.fly;
+
 			switch ( e.keyCode ) {
-				case keyboard.forward.keyCode:
+				case _fly.forward.keyCode:
 					motion.forward = true;
 					break;
-				case keyboard.left.keyCode:
+				case _fly.left.keyCode:
 					motion.left = true;
 					break;
-				case keyboard.right.keyCode:
+				case _fly.right.keyCode:
 					motion.right = true;
 					break;
-				case keyboard.backward.keyCode:
+				case _fly.backward.keyCode:
 					motion.backward = true;
 					break;
 			}
@@ -354,17 +216,19 @@
 		 */
 		function keyUp( e ) {
 
+			var _fly = scope._model.keyboard.fly;
+
 			switch ( e.keyCode ) {
-				case keyboard.forward.keyCode:
+				case _fly.forward.keyCode:
 					motion.forward = false;
 					break;
-				case keyboard.left.keyCode:
+				case _fly.left.keyCode:
 					motion.left = false;
 					break;
-				case keyboard.right.keyCode:
+				case _fly.right.keyCode:
 					motion.right = false;
 					break;
-				case keyboard.backward.keyCode:
+				case _fly.backward.keyCode:
 					motion.backward = false;
 					break;
 			}
@@ -392,19 +256,6 @@
 		}
 
 		/**
-		 *
-		 * @param {Vector3} a
-		 * @param {Vector3} b
-		 * @returns {number}
-		 */
-		function getAngle( a, b ) {
-
-			var v = new THREE.Vector3();
-			v.subVectors( b, a );
-			return Math.atan2( v.z, v.x );
-		}
-
-		/**
 		 * It is approximate position to motion
 		 *
 		 * @type {Vector3}
@@ -419,66 +270,37 @@
 		var _positionAim = new THREE.Vector3();
 
 		/**
-		 *
-		 * @type {Vector3}
-		 * @private
-		 */
-		var _prev = new THREE.Vector3( 0, 0, -1000 );
-
-		/**
-		 *
-		 * @type {number}
-		 * @private
-		 */
-		scope.object.params = {
-			angel: getAngle( _prev, scope.object.position )
-		};
-
-			/**
 		 * Incline ship
 		 *
 		 * @returns {void}
 		 */
 		function incline() {
 
-			var speed = THREE.Math.degToRad( scope.speed.current * scope.rotate.speed / 100 );
-
-			var rotation = scope.object.children[0].rotation;
-
-			if ( scope.speed.current > scope.rotate.inclineMinSpeed ) {
-
+			if ( scope._model.getCurrentSpeed() > scope._model.getInclineMinSpeed() ) {
 				if ( motion.left ) {
-
-					if ( scope.rotate.angle > - scope.rotate.max ) {
-
-						scope.rotate.angle -= scope.rotate.angle < 0 ? speed : speed * 1.2;
-						rotation.z = scope.rotate.angle;
-
+					if ( scope._model.getInclineAngle() > - scope._model.getInclineMaxAngle() ) {
+						scope._model.reduceInclineAngle();
+						scope._model.modelInclineZ( scope._model.getInclineAngle() );
 					}
 				}
 
 				if ( motion.right ) {
-
-					if ( scope.rotate.angle < scope.rotate.max ) {
-
-						scope.rotate.angle += scope.rotate.angle > 0 ? speed : speed * 1.2;
-						rotation.z = scope.rotate.angle;
+					if ( scope._model.getInclineAngle() < scope._model.getInclineMaxAngle() ) {
+						scope._model.increaseInclineAngle();
+						scope._model.modelInclineZ( scope._model.getInclineAngle() );
 					}
 				}
 			}
 
 			if ( ( !motion.left && !motion.right ) || motion.backward ) {
-
-				if ( scope.rotate.angle < 0 ) {
-
-					scope.rotate.angle += 0.01;
-					rotation.z = scope.rotate.angle;
+				if ( scope._model.getInclineAngle() < 0 ) {
+					scope._model.addInclineAngle( + 0.01 );
+					scope._model.modelInclineZ( scope._model.getInclineAngle() );
 				}
 
-				if ( scope.rotate.angle > 0 ) {
-
-					scope.rotate.angle -= 0.01;
-					rotation.z = scope.rotate.angle;
+				if ( scope._model.getInclineAngle() > 0 ) {
+					scope._model.addInclineAngle( - 0.01 );
+					scope._model.modelInclineZ( scope._model.getInclineAngle() );
 				}
 			}
 		}
@@ -490,8 +312,9 @@
 		 */
 		function updatePositionAim() {
 
-			var x = scope.object.position.x + scope.far * Math.cos( scope.object.params.angel );
-			var z = scope.object.position.z + scope.far * Math.sin( scope.object.params.angel );
+			var m = scope._model.getPosition();
+			var x = m.x + scope.far * Math.cos( scope._model.angle );
+			var z = m.z + scope.far * Math.sin( scope._model.angle );
 
 			_positionAim.setX( x );
 			_positionAim.setZ( z );
@@ -506,30 +329,31 @@
 		 */
 		function getPositionTo() {
 
-			if ( scope.speed.current > 0 ) {
+			if ( scope._model.getCurrentSpeed() > 0 ) {
 
 				if ( motion.left ) {
-					scope.object.params.angel -= scope.speedRadiusForward;
+					scope._model.angle -= scope._model.getSpeedRadiusForward();
 				}
 
 				if ( motion.right ) {
-					scope.object.params.angel += scope.speedRadiusForward;
+					scope._model.angle += scope._model.getSpeedRadiusForward();
 				}
 			}
 
-			if ( scope.speed.current < 0 ) {
+			if ( scope._model.getCurrentSpeed() < 0 ) {
 
 				if (motion.left) {
-					scope.object.params.angel += scope.speedRadiusBackward / 3;
+					scope._model.angle += scope._model.getSpeedRadiusBackward();
 				}
 
 				if (motion.right) {
-					scope.object.params.angel -= scope.speedRadiusBackward / 3;
+					scope._model.angle -= scope._model.getSpeedRadiusBackward();
 				}
 			}
 
-			var x = scope.object.position.x + scope.far * Math.cos( scope.object.params.angel );
-			var z = scope.object.position.z + scope.far * Math.sin( scope.object.params.angel );
+			var m = scope._model.getPosition();
+			var x = m.x + scope.far * Math.cos( scope._model.angle );
+			var z = m.z + scope.far * Math.sin( scope._model.angle );
 
 			_positionTo.setX( x );
 			_positionTo.setZ( z );
