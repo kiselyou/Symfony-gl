@@ -81,31 +81,40 @@
 
 {% block javascripts %}
 
+    <script type="application/javascript" src="{{ asset('js/socket/SocketControls.js') }}"></script>
+
+    <script type="application/javascript" src="{{ asset('js/core/FullScreen.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/ui/ProgressBar.js') }}"></script>
+
     <script type="application/javascript" src="{{ asset('js/model/ModelParameters.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/model/ModelShot.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/model/ModelFly.js') }}"></script>
     <script type="application/javascript" src="{{ asset('js/model/Model.js') }}"></script>
 
 
+    <script type="application/javascript" src="{{ asset('js/panel/PanelMap.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/panel/PanelAction.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/panel/PanelControls.js') }}"></script>
+
+    <script type="application/javascript" src="{{ asset('js/label/Labels.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/label/LabelControls.js') }}"></script>
+
+
+
+
     <script type="application/javascript" src="{{ asset('js/three/three.js') }}"></script>
-
-    <script type="application/javascript" src="{{ asset('js/three/ui/ProgressBar.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('js/three/ui/FullScreen.js') }}"></script>
-
     <script type="application/javascript" src="{{ asset('js/three/shader/SPE.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('js/three/libs/dat.gui.min.js') }}"></script>
     <script type="application/javascript" src="{{ asset('js/three/controls/ExplosionControls.js') }}"></script>
 
-    <script type="application/javascript" src="{{ asset('js/three/panel/MiniMap.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('js/three/panel/PanelControl.js') }}"></script>
+
     <script type="application/javascript" src="{{ asset('js/three/loaders/MultiLoader.js') }}"></script>
     <script type="application/javascript" src="{{ asset('js/three/loaders/OBJLoader.js') }}"></script>
     <script type="application/javascript" src="{{ asset('js/three/loaders/MTLLoader.js') }}"></script>
 
 
-    <script type="application/javascript" src="{{ asset('js/three/controls/LabelControls.js') }}"></script>
     <script type="application/javascript" src="{{ asset('js/three/controls/SceneControls.js') }}"></script>
     <script type="application/javascript" src="{{ asset('js/three/controls/OrbitControls.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('js/three/controls/ShotControls.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('js/three/controls/FlyControls.js') }}"></script>
+
 
 
 {% endblock %}

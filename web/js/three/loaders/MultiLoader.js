@@ -54,6 +54,12 @@ IW.MultiLoader = function () {
     var _textures = [];
 
     /**
+     *
+     * @type {Array}
+     */
+    var _files = [];
+
+    /**
      * When object loaded to do something
      *
      * @param {objectLoadedCallback} callback
@@ -116,6 +122,42 @@ IW.MultiLoader = function () {
     };
 
     /**
+     * Get loaded file
+     *
+     * @param {string} name
+     * @param {boolean} [parse] - if true return object
+     * @returns {?(string|object)}
+     */
+    this.getFile = function ( name, parse ) {
+
+        var file = _files.find(function( value ) {
+            return value.name == name;
+        });
+
+        if ( file ) {
+            if ( parse === true && typeof file.json === 'string') {
+                return JSON.parse( file.json );
+            } else if ( parse === false && typeof file.json == 'object' ) {
+                return JSON.stringify( file.json );
+            }
+
+            return file.json;
+        } else {
+            return null;
+        }
+    };
+
+    /**
+     * Get loaded files
+     *
+     * @returns {Array}
+     */
+    this.getFiles = function () {
+
+        return _files;
+    };
+
+    /**
      * Add data for model upload
      *
      * @param {!(string|number)} name
@@ -164,6 +206,29 @@ IW.MultiLoader = function () {
 
     /**
      *
+     * Add data for upload json
+     *
+     * @param {!(string|number)} name
+     * @param {?string} label
+     * @param {!string} path
+     * @param {boolean} [parse] - if true the string will be pars to object
+     * @returns {IW.MultiLoader}
+     */
+    this.addLoadJSON = function (name, label, path, parse) {
+        this.upload.push( {
+            type: IW.MultiLoader.LOAD_TYPE_JSON,
+            json: null,
+            name: name,
+            label: label,
+            path: path,
+            parse: parse
+        } );
+
+        return this;
+    };
+
+    /**
+     *
      * @type {IW.ProgressBar}
      */
     var progressBar = new IW.ProgressBar();
@@ -194,6 +259,12 @@ IW.MultiLoader = function () {
      * @private
      */
     var _textureLoader = new THREE.TextureLoader( manager );
+
+    /**
+     *
+     * @type {THREE.FileLoader}
+     */
+    var _fileLoader = new THREE.FileLoader( manager );
 
     /**
      *
@@ -269,14 +340,15 @@ IW.MultiLoader = function () {
         for (var i = 0; i < uploads.length; i++) {
 
             switch (uploads[i]['type']) {
+                case IW.MultiLoader.LOAD_TYPE_JSON:
+                    count++;
+                    break;
 
                 case IW.MultiLoader.LOAD_TYPE_TEXTURE:
-
                     count++;
                     break;
 
                 case IW.MultiLoader.LOAD_TYPE_OBJ:
-
                     count += 2;
                     break;
             }
@@ -307,6 +379,11 @@ IW.MultiLoader = function () {
         scope.upload.splice(0, 1);
 
         switch (params.type) {
+
+            case IW.MultiLoader.LOAD_TYPE_JSON:
+
+                loadJSON( params );
+                break;
 
             case IW.MultiLoader.LOAD_TYPE_TEXTURE:
 
@@ -411,7 +488,31 @@ IW.MultiLoader = function () {
             progressBar.onError
         );
     }
+    
+    function loadJSON( params ) {
+
+        progressBar.setLabel( params.label );
+
+        _fileLoader.load(
+            params.path,
+            function ( text ) {
+
+                params['json'] = params.parse ? JSON.parse( text ) : text;
+
+                _files.push( params );
+
+                if ( _objectLoadedCallback ) {
+                    _objectLoadedCallback.call( this, params );
+                }
+
+                startLoad();
+            },
+            progressBar.onProgress,
+            progressBar.onError
+        );
+    }
 };
 
 IW.MultiLoader.LOAD_TYPE_TEXTURE = 1;
 IW.MultiLoader.LOAD_TYPE_OBJ = 2;
+IW.MultiLoader.LOAD_TYPE_JSON = 3;

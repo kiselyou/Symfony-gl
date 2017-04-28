@@ -1,0 +1,75 @@
+{
+    "fullscreen": [
+        {
+            "name": null,
+            "icon": "fullscreen",
+            "keyCode": null,
+            "active": true
+        }
+    ],
+    "shot": [
+        {
+            "name": 1,
+            "icon": "move",
+            "keyCode": 49,
+            "active": false,
+            "weapon": "weapon_1"
+        },
+        {
+            "name": 2,
+            "icon": "move",
+            "keyCode": 50,
+            "active": false,
+            "weapon": "weapon_2"
+        },
+        {
+            "name": 3,
+            "icon": "move",
+            "keyCode": 51,
+            "active": false,
+            "weapon": "weapon_3"
+        },
+        {
+            "name": 4,
+            "icon": "move",
+            "keyCode": 52,
+            "active": false,
+            "weapon": "weapon_4"
+        },
+        {
+            "name": 5,
+            "icon": "move",
+            "keyCode": 53,
+            "active": false,
+            "weapon": "weapon_5"
+        },
+        {
+            "name": 6,
+            "icon": "move",
+            "keyCode": 54,
+            "active": false,
+            "weapon": "weapon_6"
+        },
+        {
+            "name": 7,
+            "icon": "move",
+            "keyCode": 55,
+            "active": false,
+            "weapon": "weapon_7"
+        },
+        {
+            "name": 8,
+            "icon": "move",
+            "keyCode": 56,
+            "active": false,
+            "weapon": "weapon_8"
+        },
+        {
+            "name": 9,
+            "icon": "move",
+            "keyCode": 57,
+            "active": false,
+            "weapon": "weapon_9"
+        }
+    ]
+}

@@ -270,6 +270,21 @@ IW.ModelParameters = function () {
 
     /**
      *
+     * @param {number} int
+     * @returns {IW.ModelParameters}
+     */
+    this.addEnergy = function ( int ) {
+        if ( this.getCurrentEnergy() + int > this.getMaxEnergy() ) {
+            this.energy.current = this.getMaxEnergy();
+        } else {
+            this.energy.current += int;
+        }
+
+        return this;
+    };
+
+    /**
+     *
      * @returns {number}
      */
     this.getReductionEnergy = function () {

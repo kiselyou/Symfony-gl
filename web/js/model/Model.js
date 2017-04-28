@@ -12,37 +12,18 @@ IW.Model = function () {
     this.id = null;
 
     /**
-     * It is position model
+     * It is distance how far calculate position direct
      *
-     * @type {{x: number, y: number, z: number}}
+     * @type {number}
      */
-    this.position = {
-        x: 0,
-        y: 0,
-        z: 0
-    };
+    this.far = 1000;
 
     /**
      * It is position model
      *
-     * @type {{x: number, y: number, z: number}}
+     * @type {Vector3}
      */
-    this.positionTo = {
-        x: 0,
-        y: 0,
-        z: 0
-    };
-
-    /**
-     * Rotation model around axis XYZ
-     *
-     * @type {{x: number, y: number, z: number}}
-     */
-    this.rotation = {
-        x: 0,
-        y: 0,
-        z: 0
-    };
+    this.positionTo = new THREE.Vector3( 0, 0, this.far );
 
     /**
      *
@@ -74,7 +55,7 @@ IW.Model = function () {
      * @type {Vector3}
      * @private
      */
-    var _prev = new THREE.Vector3( 0, 0, -1000 );
+    var _prev = new THREE.Vector3( 0, 0, - this.far );
 
     /**
      *
@@ -132,10 +113,16 @@ IW.Model = function () {
      */
     this.setPositionTo = function ( v ) {
         _model.lookAt( v );
-        this.positionTo.x += v.x;
-        this.positionTo.y += v.y;
-        this.positionTo.z += v.z;
+        this.positionTo.copy( v );
         return this;
+    };
+
+    /**
+     *
+     * @returns {Vector3}
+     */
+    this.getPositionTo = function () {
+        return this.positionTo;
     };
 
     /**
@@ -235,14 +222,6 @@ IW.Model = function () {
      * @return {string}
      */
     this.objectToJSON = function () {
-        this.position.x = _model.position.x;
-        this.position.y = _model.position.y;
-        this.position.z = _model.position.z;
-
-        this.rotation.x = _model.children[0].rotation.x;
-        this.rotation.y = _model.children[0].rotation.y;
-        this.rotation.z = _model.children[0].rotation.z;
-
         return _parentObjectToJSON.call( this, [ 'model' ] );
     };
 };

@@ -4,7 +4,7 @@
      * @param {string} [idMap]
      * @constructor
      */
-    IW.MiniMap = function ( idMap ) {
+    IW.PanelMap = function ( idMap ) {
 
         /** @const {number} */
         var MAP_WIDTH = 320;
@@ -28,16 +28,24 @@
          *
          * @returns {null|Element}
          */
-        this.getElement = function () {
+        this.getMap = function () {
             return map;
         };
 
         /**
          *
-         * @param {Element} [element]
-         * @returns {IW.MiniMap}
+         * @returns {?number}
          */
-        this.appendTo = function ( element ) {
+        this.getMapOffsetLeft = function () {
+            return map.offsetLeft;
+        };
+
+        /**
+         *
+         * @param {Element} [element]
+         * @returns {IW.PanelMap}
+         */
+        this.appendMapTo = function ( element ) {
 
             var container = element ? element : document.body;
             container.appendChild( templateMap() );

@@ -55,24 +55,9 @@
          */
         var scope = this;
 
-        var flyControls = null;
-
         window.addEventListener( 'resize', windowResize, false );
         document.addEventListener( 'contextmenu', contextMenu, false );
         document.addEventListener( 'keydown', keyDown, false );
-
-        /**
-         *
-         * @param {IW.MultiLoader} multiLoader
-         * @returns {IW.SceneControls}
-         */
-        this.initFlyControl = function ( multiLoader ) {
-
-            // flyControls = new IW.FlyControls( scope.scene, multiLoader, scope.camera, scope.renderer.domElement );
-            // flyControls.initOrbitControl();
-            // flyControls.initPanel();
-            return this;
-        };
 
         /**
          *
@@ -133,7 +118,35 @@
             return this;
         };
 
+        /**
+         *
+         * @type {IW.Model}
+         */
         this.model = new IW.Model();
+
+        /**
+         *
+         * @type {?IW.ModelShot}
+         */
+        this.modelShot = null;
+
+        /**
+         *
+         * @type {?IW.ModelFly}
+         */
+        this.modelFly = null;
+
+        /**
+         *
+         * @type {?IW.PanelControls}
+         */
+        this.panelControl = null;
+
+        /**
+         *
+         * @type {?IW.LabelControls}
+         */
+        this.labelControl = null;
 
         var users = [];
 
@@ -145,7 +158,8 @@
          */
         this.initScene = function () {
 
-            socket = new IW.SocketControls( _WS_URI );
+            socket = new IW.Socket();
+
 			socket.connect(
 			    function ( response, resourceId ) {
 
@@ -153,10 +167,16 @@
                     scope.model.load( scope.multiLoader );
                     scope.scene.add( scope.model.getModel() );
 
-                    var shot = new IW.ShotControls( scope.model.getModel(), scope.multiLoader, scope.scene );
+                    scope.modelShot = new IW.ModelShot( scope.multiLoader, scope.model, scope.scene );
 
-                    flyControls = new IW.FlyControls( scope.model, shot, scope.camera );
-                    flyControls.initPanel();
+                    scope.modelFly = new IW.ModelFly( scope.model );
+
+                    scope.panelControl = new IW.PanelControls( scope.multiLoader, scope.model, scope.modelShot );
+                    scope.panelControl.initPanelAction();
+                    scope.panelControl.initPanelMap();
+
+                    scope.labelControl = new IW.LabelControls( scope.model, scope.camera );
+                    scope.labelControl.init();
 
                     scope.initOrbitControl();
 
@@ -199,18 +219,18 @@
 
                         case 'update-model':
 
-                            var id = response.data.resourceId;
-                            var findUserModel = users.find(function ( value ) {
-                                return value.id == id;
-                            });
-
-                            if ( findUserModel ) {
-                                findUserModel.jsonToObject( response.data.model );
-                                findUserModel.setPosition( findUserModel.position.x, findUserModel.position.y, findUserModel.position.z );
-                                findUserModel.setRotation( findUserModel.rotation.x, findUserModel.rotation.y, findUserModel.rotation.z );
-                                findUserModel.lookAt( findUserModel.positionTo.x, findUserModel.positionTo.y, findUserModel.positionTo.z );
-
-                            }
+                            // var id = response.data.resourceId;
+                            // var findUserModel = users.find(function ( value ) {
+                            //     return value.id == id;
+                            // });
+                            //
+                            // if ( findUserModel ) {
+                            //     findUserModel.jsonToObject( response.data.model );
+                            //     findUserModel.setPosition( findUserModel.position.x, findUserModel.position.y, findUserModel.position.z );
+                            //     findUserModel.setRotation( findUserModel.rotation.x, findUserModel.rotation.y, findUserModel.rotation.z );
+                            //     findUserModel.lookAt( findUserModel.positionTo.x, findUserModel.positionTo.y, findUserModel.positionTo.z );
+                            //
+                            // }
 
                             break;
                     }
@@ -221,18 +241,18 @@
 
             var fps = 10;
 
-            setTimeout(function tick() {
-
-                if (scope.model.getModel()) {
-                    socket.sendToAll('update-model', {
-                        model: scope.model.objectToJSON(),
-                        resourceId: socket.getResourceId()
-                    }, true);
-                }
-
-                setTimeout(tick, 1000 / fps);
-
-            }, 1000 / fps);
+            // setTimeout(function tick() {
+            //
+            //     if (scope.model.getModel()) {
+            //         socket.sendToAll('update-model', {
+            //             model: scope.model.objectToJSON(),
+            //             resourceId: socket.getResourceId()
+            //         }, true);
+            //     }
+            //
+            //     setTimeout(tick, 1000 / fps);
+            //
+            // }, 1000 / fps);
 
 
             socket.disconnected( function ( error ) {
@@ -290,27 +310,32 @@
 
             var delta = clock.getDelta();
 
-            if ( flyControls ) {
-                flyControls.update( delta );
+            if ( scope.modelFly ) {
+                scope.modelFly.update( delta );
             }
 
-            if (scope.model.getPosition()) {
+            if ( scope.model.getPosition() ) {
                 if ( _map ) {
                     _map.position.copy( scope.model.getPosition() );
                 }
 
-                if (orbitControl) {
+                if ( orbitControl ) {
                     orbitControl.stopMoveCamera();
                     orbitControl.target.copy( scope.model.getPosition() );
                     orbitControl.update();
                 }
+            }
 
-                // if ( socket ) {
-                //     socket.sendToAll( 'update-model', {
-                //         model: scope.model.objectToJSON(),
-                //         resourceId: socket.getResourceId()
-                //     }, true );
-                // }
+            if ( scope.modelShot ) {
+                scope.modelShot.update( delta );
+            }
+
+            if ( scope.panelControl ) {
+                scope.panelControl.update();
+            }
+
+            if ( scope.labelControl ) {
+                scope.labelControl.update();
             }
 
             scope.renderer.render( scope.scene, scope.camera );
@@ -398,7 +423,4 @@
     IW.SceneControls.MODEL_S1_C = 'S1_C';
     IW.SceneControls.MODEL_S1_D = 'S1_D';
 
-    // ROCKETS
-    IW.SceneControls.MODEL_R1_A = 'R1_A';
-    IW.SceneControls.MODEL_R1_B = 'R1_B';
-    IW.SceneControls.MODEL_R1_C = 'R1_C';
+

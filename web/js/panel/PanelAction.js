@@ -1,11 +1,11 @@
     var IW = IW || {};
+
     /**
      *
-     * @param {IW.MiniMap} miniMap
-     * @param {string} [idPanel]
+     * @param {string} [htmlId]
      * @constructor
      */
-    IW.PanelControl = function ( miniMap, idPanel ) {
+    IW.PanelAction = function ( htmlId ) {
 
         /** @const {number} */
         var PANEL_MIN_WIDTH = 320;
@@ -31,13 +31,7 @@
          *
          * @type {string}
          */
-        var id = idPanel == undefined ? 'sw-panel-control' : idPanel;
-
-        /**
-         *
-         * @type {IW.MiniMap}
-         */
-        var map = miniMap;
+        var id = htmlId ? 'sw-panel-control' : htmlId;
 
         /**
          *
@@ -53,7 +47,7 @@
 
         /**
          *
-         * @type {IW.PanelControl}
+         * @type {IW.PanelAction}
          */
         var scope = this;
 
@@ -82,12 +76,12 @@
         /**
          *
          * @param {Element} [element]
-         * @returns {IW.PanelControl}
+         * @returns {IW.PanelAction}
          */
-        this.appendTo = function ( element ) {
+        this.appendActionsTo = function ( element ) {
 
             var container = element ? element : document.body;
-            container.appendChild( templatePanelControl() );
+            container.appendChild( templatePanel() );
             return this;
         };
 
@@ -300,7 +294,7 @@
          * @param {?string} [color]
          * @param {?string} [callback]
          * @param {?string} [unit]
-         * @returns {IW.PanelControl}
+         * @returns {IW.PanelAction}
          */
         this.addProgress = function ( key, label, max, reduction, color, callback, unit ) {
             progress.push(
@@ -322,7 +316,7 @@
          *
          * @param {(string|number)} key
          * @param callback
-         * @returns {IW.PanelControl}
+         * @returns {IW.PanelAction}
          */
         this.addCallback = function ( key, callback ) {
 
@@ -343,7 +337,7 @@
          * @param {(string|number)} key
          * @param {number} number
          * @param {boolean} [increment]
-         * @returns {IW.PanelControl}
+         * @returns {IW.PanelAction}
          */
         this.updateProgress = function ( key, number, increment ) {
 
@@ -377,7 +371,7 @@
          *
          * @returns {Element}
          */
-        function templatePanelControl() {
+        function templatePanel() {
 
             var size = getSize();
             panel = document.createElement('div');
@@ -401,12 +395,8 @@
          */
         function getSize() {
 
-            var width = map ? map.getElement().offsetLeft : PANEL_MIN_WIDTH;
-            width = width < PANEL_MIN_WIDTH ? PANEL_MIN_WIDTH : width;
-            width = width > PANEL_MAX_WIDTH ? PANEL_MAX_WIDTH : width;
-
             return {
-                width: width - INDENT_RIGHT,
+                width: PANEL_MIN_WIDTH,
                 left: 0,
                 bottom: 0
             }

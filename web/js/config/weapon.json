@@ -1,0 +1,97 @@
+{
+    "models": [
+        "R1_A"
+    ],
+    "weapon": {
+        "weapon_1": {
+            "model": "R1_A",
+            "active": true,
+            "radius": 15000,
+            "speed": 5000,
+            "intervalTime": 50,
+            "charges": 1,
+            "energy": 50,
+            "reloadingTime": 500
+        },
+        "weapon_2": {
+            "model": "R1_A",
+            "active": true,
+            "radius": 15000,
+            "speed": 5000,
+            "intervalTime": 50,
+            "charges": 1,
+            "energy": 50,
+            "reloadingTime": 500
+        },
+        "weapon_3": {
+            "model": "R1_A",
+            "active": true,
+            "radius": 15000,
+            "speed": 5000,
+            "intervalTime": 50,
+            "charges": 1,
+            "energy": 50,
+            "reloadingTime": 500
+        },
+        "weapon_4": {
+            "model": "R1_A",
+            "active": true,
+            "radius": 15000,
+            "speed": 5000,
+            "intervalTime": 50,
+            "charges": 1,
+            "energy": 50,
+            "reloadingTime": 500
+        },
+        "weapon_5": {
+            "model": "R1_A",
+            "active": true,
+            "radius": 15000,
+            "speed": 5000,
+            "intervalTime": 50,
+            "charges": 1,
+            "energy": 50,
+            "reloadingTime": 500
+        },
+        "weapon_6": {
+            "model": "R1_A",
+            "active": true,
+            "radius": 15000,
+            "speed": 5000,
+            "intervalTime": 50,
+            "charges": 1,
+            "energy": 50,
+            "reloadingTime": 500
+        },
+        "weapon_7": {
+            "model": "R1_A",
+            "active": true,
+            "radius": 15000,
+            "speed": 5000,
+            "intervalTime": 50,
+            "charges": 1,
+            "energy": 50,
+            "reloadingTime": 500
+        },
+        "weapon_8": {
+            "model": "R1_A",
+            "active": true,
+            "radius": 15000,
+            "speed": 5000,
+            "intervalTime": 50,
+            "charges": 1,
+            "energy": 50,
+            "reloadingTime": 500
+        },
+        "weapon_9": {
+            "model": "R1_A",
+            "active": true,
+            "radius": 15000,
+            "speed": 5000,
+            "intervalTime": 50,
+            "charges": 1,
+            "energy": 50,
+            "reloadingTime": 500
+        }
+    }
+}

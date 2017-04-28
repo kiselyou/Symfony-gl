@@ -38,18 +38,13 @@
             multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS - A', '{{asset('/models/S1/A/')}}', 'starship.obj', 'starship.mtl' );
             multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_B, 'SHIPS - B', '{{asset('/models/S1/B/')}}', 'ship.obj', 'ship.mtl' );
             // UPLOAD ROCKETS
-            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_R1_A, 'ROCKETS - A', '{{asset('/models/R1/A/')}}', 'rocket.obj', 'rocket.mtl' );
+            multiLoader.addLoadOBJ( IW.ModelShot.MODEL_R1_A, 'ROCKETS - A', '{{asset('/models/R1/A/')}}', 'rocket.obj', 'rocket.mtl' );
+            // UPLOAD CONFIGS
+            multiLoader.addLoadJSON( IW.PanelControls.CONFIG_ACTION, 'CONFIG', '{{asset('/js/config/action.json')}}', true );
+            multiLoader.addLoadJSON( IW.ModelShot.CONFIG_WEAPON, 'CONFIG', '{{asset('/js/config/weapon.json')}}', true );
 
             multiLoader.setLoadedCallback( function ( params ) {
                 switch ( params.name ) {
-
-                    case IW.SceneControls.MODEL_G1_A:
-
-                        params.object.scale.copy( new THREE.Vector3( 3, 3, 3 ) );
-                        params.object.position.z = 3000;
-                        params.object.position.y = - 200;
-                        initScene.scene.add( params.object );
-                        break;
 
                     case IW.SceneControls.MODEL_S1_A:
 
@@ -57,45 +52,9 @@
                         params.object.scale.copy( new THREE.Vector3( 0.1, 0.1, 0.1 ) );
                         break;
 
-                    case IW.SceneControls.MODEL_S1_B:
-
-                        params.object.rotation.x = - Math.PI / 2;
-                        params.object.scale.copy( new THREE.Vector3( 4, 4, 4 ) );
-                        params.object.position.z = 500;
-                        initScene.scene.add( params.object );
-                        break;
-
-                    case IW.SceneControls.MODEL_S1_C:
-
-                        params.object.position.x = 40;
-                        params.object.scale.copy( new THREE.Vector3( 3, 3, 3 ) );
-                        initScene.scene.add( params.object );
-                        break;
-
-                    case IW.SceneControls.MODEL_S1_D:
-
-                        params.object.position.x = -100;
-                        params.object.children[0].rotation.y = Math.PI;
-                        params.object.children[0].rotation.x = 90 * Math.PI / 180;
-                        params.object.scale.copy( new THREE.Vector3( 3, 3, 3 ) );
-                        initScene.scene.add( params.object );
-                        break;
-
                     case IW.SceneControls.MODEL_R1_A:
 
                         params.object.scale.copy( new THREE.Vector3( 1, 1, 1 ) );
-                        break;
-
-                    case IW.SceneControls.MODEL_R1_B:
-
-                        params.object.scale.copy( new THREE.Vector3( 1, 1, 1 ) );
-                        params.object.children[0].rotation.y = Math.PI;
-                        break;
-
-                    case IW.SceneControls.MODEL_R1_C:
-
-                        params.object.scale.copy( new THREE.Vector3( 1, 1, 1 ) );
-                        params.object.children[0].rotation.y = 90 * Math.PI / 180;
                         break;
                 }
             } );
