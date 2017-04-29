@@ -2,24 +2,18 @@ var IW = IW || {};
 
 /**
  *
- * @param {IW.MultiLoader} multiLoader
  * @param {IW.Model} model
- * @param {IW.ModelShot} shot
  * @constructor
  */
-IW.PanelControls = function ( multiLoader, model, shot ) {
+IW.PanelControls = function ( model ) {
+
+    this.active = false;
 
     /**
      *
      * @type {IW.Model}
      */
     this.model = model;
-
-    /**
-     *
-     * @type {IW.ModelShot}
-     */
-    this.modelShot = shot;
 
     /**
      *
@@ -37,7 +31,7 @@ IW.PanelControls = function ( multiLoader, model, shot ) {
      *
      * @type {{}}
      */
-    this.actionConfig = multiLoader.getFile(IW.PanelControls.CONFIG_ACTION);
+    this.actionConfig = this.model.multiLoader.getFile(IW.PanelControls.CONFIG_ACTION);
 
     /**
      *
@@ -93,7 +87,6 @@ IW.PanelControls = function ( multiLoader, model, shot ) {
      * @return {void}
      */
     this.update = function () {
-
         this.panelAction.updateProgress( 1, this.model.getCurrentEnergy() );
         this.panelAction.updateProgress( 4, this.model.getCurrentSpeed() );
     };
@@ -111,7 +104,7 @@ IW.PanelControls = function ( multiLoader, model, shot ) {
             case IW.PanelControls.ACTION_SHOT:
                 scope.panelAction.addAction( function () {
 
-                    scope.modelShot.shot( param.weapon );
+                    scope.model.modelShot.shot( param.weapon );
 
                 }, param.name, param.icon, param.keyCode, param.active );
                 break;

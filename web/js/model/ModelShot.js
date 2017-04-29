@@ -1,12 +1,10 @@
 var IW = IW || {};
 /**
  *
- * @param {IW.MultiLoader} multiLoader
  * @param {IW.Model} model
- * @param {Scene} scene
  * @constructor
  */
-IW.ModelShot = function ( multiLoader, model, scene ) {
+IW.ModelShot = function ( model ) {
 
     /**
      *
@@ -16,18 +14,12 @@ IW.ModelShot = function ( multiLoader, model, scene ) {
 
     /**
      *
-     * @type {Scene}
-     */
-    this.scene = scene;
-
-    /**
-     *
      * @type {{}}
      */
-    this.weaponConfig = multiLoader.getFile(IW.ModelShot.CONFIG_WEAPON);
+    this.weaponConfig = this.model.multiLoader.getFile(IW.ModelShot.CONFIG_WEAPON);
 
     var intersectExceptUUID = [];
-    var elementsCollision = scene.children.filter( function ( value ) {
+    var elementsCollision = this.model.scene.children.filter( function ( value ) {
 
         return value instanceof THREE.Mesh;
 
@@ -47,6 +39,29 @@ IW.ModelShot = function ( multiLoader, model, scene ) {
     var scope = this;
 
     /**
+     * Callback for shot
+     *
+     * @param {string} weaponType
+     * @callback callbackShot
+     */
+
+    /**
+     *
+     * @type {?callbackShot}
+     * @private
+     */
+    this._callback = null;
+
+    /**
+     *
+     * @param {callbackShot} callback
+     */
+    this.setShotCallback = function ( callback ) {
+        this._callback = callback;
+        return this;
+    };
+
+    /**
      * This method is creating shot, setting parameters and adding in scene his.
      *
      * @param {string|number} type
@@ -62,6 +77,10 @@ IW.ModelShot = function ( multiLoader, model, scene ) {
         if ( !this.weaponConfig.weapon.hasOwnProperty( type ) ) {
             console.warn( 'Can not find weapon "' + type + '"' );
             return;
+        }
+
+        if ( this._callback ) {
+            this._callback.call( this, type );
         }
 
         var config = this.weaponConfig.weapon[ type ];
@@ -97,13 +116,14 @@ IW.ModelShot = function ( multiLoader, model, scene ) {
             var x = p.x + config.radius * Math.cos( scope.model.angle );
             var z = p.z + config.radius * Math.sin( scope.model.angle );
 
-            var mesh = multiLoader.getObject( config.model );
+            var mesh = scope.model.multiLoader.getObject( config.model );
             mesh.speed = config.speed;
             mesh.position.copy( p );
             mesh.positionTo = new THREE.Vector3( x, 0, z );
+            mesh.lookAt( mesh.positionTo );
 
             scope.charges.push( mesh );
-            scope.scene.add( mesh );
+            scope.model.scene.add( mesh );
 
             start++;
 
@@ -153,8 +173,8 @@ IW.ModelShot = function ( multiLoader, model, scene ) {
                 //         // console.log(collisionResults[0][ 'object' ]);
                 //         //
                 //         this.charges.splice( i, 1 );
-                //         scope.scene.remove( mesh );
-                //         scope.scene.remove( collisionResults[0][ 'object' ] );
+                //         scope.model.scene.remove( mesh );
+                //         scope.model.scene.remove( collisionResults[0][ 'object' ] );
                 //         break;
                 //     }
                 // }
@@ -162,7 +182,7 @@ IW.ModelShot = function ( multiLoader, model, scene ) {
                 if ( mesh && mesh.position.distanceTo( mesh.positionTo ) < Math.sqrt( ox * ox + oz * oz ) ) {
 
                     this.charges.splice( i, 1 );
-                    scope.scene.remove( mesh );
+                    scope.model.scene.remove( mesh );
                 }
             }
         }

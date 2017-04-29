@@ -2,14 +2,21 @@ var IW = IW || {};
 
 /**
  *
+ * @param {IW.MultiLoader} multiLoader
+ * @param {Scene} scene
+ * @param {string} [id]
  * @constructor
  */
-IW.Model = function () {
+IW.Model = function ( multiLoader, scene, id ) {
     
     // Parent constructor
     IW.ModelParameters.call(this);
 
-    this.id = null;
+    /**
+     *
+     * @type {string}
+     */
+    this.id = id;
 
     /**
      * It is distance how far calculate position direct
@@ -17,6 +24,30 @@ IW.Model = function () {
      * @type {number}
      */
     this.far = 1000;
+
+    /**
+     *
+     * @type {Scene}
+     */
+    this.scene = scene;
+
+    /**
+     *
+     * @type {?IW.ModelFly}
+     */
+    this.modelFly = new IW.ModelFly( this );
+
+    /**
+     *
+     * @type {IW.MultiLoader}
+     */
+    this.multiLoader = multiLoader;
+
+    /**
+     *
+     * @type {?IW.ModelShot}
+     */
+    this.modelShot = new IW.ModelShot( this );
 
     /**
      * It is position model
@@ -55,13 +86,13 @@ IW.Model = function () {
      * @type {Vector3}
      * @private
      */
-    var _prev = new THREE.Vector3( 0, 0, - this.far );
+    this.prev = new THREE.Vector3( 0, 0, - this.far );
 
     /**
      *
      * @private
      */
-    var _model = null;
+    this.model = null;
 
     /**
      *
@@ -81,7 +112,7 @@ IW.Model = function () {
      * @returns {?Mesh}
      */
     this.getModel = function () {
-        return _model;
+        return this.model;
     };
 
     /**
@@ -89,7 +120,7 @@ IW.Model = function () {
      * @returns {?Vector3}
      */
     this.getPosition = function () {
-        return _model ? _model.position : null;
+        return this.model ? this.model.position : null;
     };
 
     /**
@@ -100,9 +131,9 @@ IW.Model = function () {
      * @returns {IW.Model}
      */
     this.addPosition = function (x, y, z) {
-        _model.position.x += x;
-        _model.position.y += y;
-        _model.position.z += z;
+        this.model.position.x += x;
+        this.model.position.y += y;
+        this.model.position.z += z;
         return this;
     };
 
@@ -112,7 +143,7 @@ IW.Model = function () {
      * @returns {IW.Model}
      */
     this.setPositionTo = function ( v ) {
-        _model.lookAt( v );
+        this.model.lookAt( v );
         this.positionTo.copy( v );
         return this;
     };
@@ -127,17 +158,15 @@ IW.Model = function () {
 
     /**
      *
-     * @param {number} x
-     * @param {number} y
-     * @param {number} z
+     * @param {Vector3} v
+     * @returns {IW.Model}
      * @returns {IW.Model}
      */
-    this.setPosition = function ( x, y, z ) {
-        if ( _model ) {
-            _model.position.x = x;
-            _model.position.y = y;
-            _model.position.z = z;
+    this.setPosition = function (v ) {
+        if ( this.model ) {
+            this.model.position.copy( v );
         }
+
         return this;
     };
 
@@ -149,10 +178,10 @@ IW.Model = function () {
      * @returns {IW.Model}
      */
     this.setRotation = function ( x, y, z ) {
-        if ( _model ) {
-            _model.children[0].rotation.x = x;
-            _model.children[0].rotation.y = y;
-            _model.children[0].rotation.z = z;
+        if ( this.model ) {
+            this.model.children[0].rotation.x = x;
+            this.model.children[0].rotation.y = y;
+            this.model.children[0].rotation.z = z;
         }
         return this;
     };
@@ -165,7 +194,7 @@ IW.Model = function () {
      * @returns {IW.Model}
      */
     this.lookAt = function ( x, y, z ) {
-        _model.lookAt( new THREE.Vector3( x, y, z ) );
+        this.model.lookAt( new THREE.Vector3( x, y, z ) );
         return this;
     };
 
@@ -175,39 +204,53 @@ IW.Model = function () {
      * @returns {IW.Model}
      */
     this.modelInclineZ = function (angle) {
-        _model.children[0].rotation.z = angle;
+        this.model.children[0].rotation.z = angle;
         return this;
     };
 
     /**
      * Load model
      *
-     * @param {IW.MultiLoader} multiLoader
+     * @param {boolean} addToScene
      * @param {string} [str] - It is JSON data model
      * @returns {IW.Model}
      */
-    this.load = function ( multiLoader, str ) {
+    this.load = function ( addToScene, str ) {
+
         if ( str ) {
             this.jsonToObject( str );
-            _model = multiLoader.getObject( this.name );
+            this.model = this.multiLoader.getObject( this.name );
         } else {
-            _model = multiLoader.getObject( this.name );
-            this.angle = startAngle( _prev, _model.position );
+            this.model = this.multiLoader.getObject( this.name );
+            this.angle = startAngle( this.prev, this.model.position );
+        }
+
+        if ( addToScene ) {
+            this.scene.add( this.model );
         }
 
         return this;
     };
 
     /**
+     *
+     * @param {function} [callback]
+     * @return {IW.Model}
+     */
+    this.fly = function ( callback ) {
+        this.modelFly.setEventKeyboard( callback );
+        return this;
+    };
+
+    /**
      * Change model
      *
-     * @param {IW.MultiLoader} multiLoader
      * @param {string} name - It is JSON data model
      * @returns {IW.Model}
      */
-    this.changeModel = function ( multiLoader, name ) {
+    this.changeModel = function ( name ) {
         this.name = name;
-        _model = multiLoader.getObject( name );
+        this.model = this.multiLoader.getObject( name );
         return this;
     };
 
@@ -222,6 +265,17 @@ IW.Model = function () {
      * @return {string}
      */
     this.objectToJSON = function () {
-        return _parentObjectToJSON.call( this, [ 'model' ] );
+        var except = [ 'model', 'modelFly', 'scene', 'multiLoader', 'modelShot', 'keyboard', 'positionTo' ];
+        return _parentObjectToJSON.call( this, except );
     };
+
+    /**
+     *
+     * @param {number} delta
+     */
+    this.update = function ( delta ) {
+
+        this.modelFly.update( delta );
+        this.modelShot.update( delta );
+    }
 };

@@ -20,40 +20,29 @@
 
 		/**
 		 *
-		 * @type {boolean}
-		 */
-		var fly = false;
-
-		/**
-		 *
 		 * @param {number} delta
          */
 		this.update = function ( delta ) {
 
-			var _positionModel = this._model.getPosition();
 			var _speedModel = this._model.getCurrentSpeed();
 
-			if ( fly || _speedModel != 0 ) {
+			if ( motion.fly || _speedModel != 0 ) {
 
 				var positionTo = getPositionTo();
-
 				this._model.setPositionTo( positionTo );
 
 				if ( motion.forward ) {
-
 					this._model.increaseCurrentSpeed();
-
 				} else if ( motion.backward ) {
-
 					this._model.reduceCurrentSpeed();
 				}
 
 				// Авто торможение
 				if ( !motion.forward && !motion.backward && !motion.left && !motion.right ) {
-
 					this._model.autoReduceCurrentSpeed();
 				}
 
+				var _positionModel = this._model.getPosition();
 				var a = positionTo.x - _positionModel.x;
 				var b = positionTo.z - _positionModel.z;
 				var len = Math.sqrt( a * a + b * b ) * IW.ModelFly.SCALE;
@@ -62,9 +51,39 @@
 				var z = b / len * ( _speedModel + delta );
 
 				this._model.addPosition( x, 0, z );
+
+				if ( scope._callback ) {
+					scope._callback.call(this, motion);
+				}
 			}
 
 			incline();
+		};
+
+		/**
+		 * Callback for keyboard
+		 *
+		 * @param {{}.<motion>} motion
+		 * @callback callbackKeyboard
+		 */
+
+		/**
+		 *
+		 * @type {?callbackKeyboard}
+		 * @private
+		 */
+		this._callback = null;
+
+		/**
+		 *
+		 * @param {callbackKeyboard} callback
+		 * @return {IW.ModelFly}
+         */
+		this.setEventKeyboard = function ( callback ) {
+			this._callback = callback;
+			window.addEventListener( 'keydown', keyDown, false );
+			window.addEventListener( 'keyup', keyUp, false );
+			return this;
 		};
 
 		/**
@@ -105,9 +124,36 @@
 
 		/**
 		 *
-		 * @type {{forward: boolean, left: boolean, right: boolean, backward: boolean}}
+		 * @param {string} direction
+         * @param {boolean} status
+         */
+		function motionControl( direction, status ) {
+			if ( motion[direction] !== status ) {
+				motion[direction] = status;
+				motion.fly = status ? status : isFly();
+			}
+		}
+
+		/**
+		 *
+		 * @type {{ forward: boolean, left: boolean, right: boolean, backward: boolean, fly: boolean }}
 		 */
-		var motion = { forward: false, left: false, right: false, backward: false };
+		var motion = { forward: false, left: false, right: false, backward: false, fly: false };
+
+        /**
+         *
+         * @param {{}.<motion>} param
+         * @return {IW.ModelFly}
+         */
+		this.setMotion = function ( param ) {
+		    for ( var property in param ) {
+		        if ( param.hasOwnProperty( property ) ) {
+                    motion[ property ] = param[ property ];
+                }
+            }
+
+            return this;
+        };
 
 		/**
 		 *
@@ -115,24 +161,22 @@
 		 */
 		function keyDown( e ) {
 
-			var _fly = scope._model.keyboard.fly;
+			var keyboard = scope._model.keyboard.fly;
 
 			switch ( e.keyCode ) {
-				case _fly.forward.keyCode:
-					motion.forward = true;
+				case keyboard.forward.keyCode:
+					motionControl( 'forward', true );
 					break;
-				case _fly.left.keyCode:
-					motion.left = true;
+				case keyboard.left.keyCode:
+					motionControl( 'left', true );
 					break;
-				case _fly.right.keyCode:
-					motion.right = true;
+				case keyboard.right.keyCode:
+					motionControl( 'right', true );
 					break;
-				case _fly.backward.keyCode:
-					motion.backward = true;
+				case keyboard.backward.keyCode:
+					motionControl( 'backward', true );
 					break;
 			}
-
-			fly = true;
 		}
 
 		/**
@@ -141,24 +185,22 @@
 		 */
 		function keyUp( e ) {
 
-			var _fly = scope._model.keyboard.fly;
+			var keyboard = scope._model.keyboard.fly;
 
 			switch ( e.keyCode ) {
-				case _fly.forward.keyCode:
-					motion.forward = false;
+				case keyboard.forward.keyCode:
+					motionControl( 'forward', false );
 					break;
-				case _fly.left.keyCode:
-					motion.left = false;
+				case keyboard.left.keyCode:
+					motionControl( 'left', false );
 					break;
-				case _fly.right.keyCode:
-					motion.right = false;
+				case keyboard.right.keyCode:
+					motionControl( 'right', false );
 					break;
-				case _fly.backward.keyCode:
-					motion.backward = false;
+				case keyboard.backward.keyCode:
+					motionControl( 'backward', false );
 					break;
 			}
-
-			fly = isFly();
 		}
 
 		/**
@@ -223,9 +265,6 @@
 				}
 			}
 		}
-
-		window.addEventListener( 'keydown', keyDown, false );
-		window.addEventListener( 'keyup', keyUp, false );
 	};
 
 	/**
