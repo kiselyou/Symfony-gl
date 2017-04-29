@@ -136,7 +136,7 @@ IW.Socket = function ( url ) {
 				if (payload.action == IW.Socket.ACTION_SUBSCRIBE) {
 
 					scope.resourceId = payload.resourceId;
-					connectCallback.call( this, payload, payload.resourceId );
+					connectCallback.call(this, payload, payload.resourceId);
 
 				} else {
 
@@ -149,10 +149,28 @@ IW.Socket = function ( url ) {
 
     /**
      *
+     * @param {function} callback
+     */
+    this.windowCloseControls = function ( callback ) {
+		window.onbeforeunload = function () {
+            callback ? callback.call( this ) : null;
+			scope.session.unsubscribe( PATH_SUBSCRIBE );
+			return null;
+		}
+	};
+
+    /**
+     *
      * @returns {IW.Socket}
      */
     this.disconnected = function ( callback ) {
-		this.socket.on( SOCKET_DISCONNECT, callback );
+		this.socket.on( SOCKET_DISCONNECT, function ( session ) {
+
+			// scope.session.unsubscribe( PATH_SUBSCRIBE );
+            //
+			// callback.call( arguments );
+		} );
+
         return this;
     };
 

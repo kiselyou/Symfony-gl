@@ -136,7 +136,11 @@
          */
         this.labelControl = null;
 
-        var users = [];
+        /**
+         *
+         * @type {Array}
+         */
+        this.clients = [];
 
         var socket = null;
 
@@ -153,6 +157,8 @@
 
                     scope.model = new IW.Model( scope.multiLoader, scope.scene, resourceId );
                     scope.model.load( true );
+
+                    // Set events of fly and send info about position of user model
                     scope.model.fly( function ( moution ) {
                         socket.sendToAll(
                             'update-model-fly',
@@ -167,6 +173,7 @@
                         );
                     } );
 
+                    // Send to all information about shot of user model
                     scope.model.modelShot.setShotCallback( function ( weaponType ) {
                         socket.sendToAll(
                             'update-model-shot',
@@ -176,6 +183,10 @@
                             },
                             true
                         );
+                    } );
+
+                    socket.windowCloseControls( function () {
+                        socket.sendToAll( 'unsubscribe-client', { resourceId: socket.getResourceId() }, true );
                     } );
 
 
@@ -188,6 +199,7 @@
 
                     scope.initOrbitControl();
 
+                    // Send to all information about model of user
                     socket.sendToAll( 'trade-to', {
                         model: scope.model.objectToJSON(),
                         resourceId: resourceId
@@ -197,14 +209,22 @@
 
                 function ( response ) {
 
+                    /**
+                     *
+                     * @type {?IW.Model}
+                     */
+                    var clientModel = null;
+
 			        switch ( response.key ) {
+
+			            // Get information about new client
                         case 'trade-to':
 
-                            // Set model of client to own browser
-                            var userModel = new IW.Model( scope.multiLoader, scope.scene );
-                            userModel.jsonToObject( response.data.model );
-                            userModel.load( true );
-                            users.push( userModel );
+                            // Initialisation model of client to own browser
+                            clientModel = new IW.Model( scope.multiLoader, scope.scene );
+                            clientModel.jsonToObject( response.data.model );
+                            clientModel.load( true );
+                            scope.clients.push( clientModel );
 
                             // Send own model to browser of new client
                             socket.sendToSpecific( 'trade-from', {
@@ -213,45 +233,54 @@
 
                             break;
 
+                        // Get information about old client
                         case 'trade-from':
 
-                            // Set model of client to own browser
-                            var clientModel = new IW.Model( scope.multiLoader, scope.scene );
+                            // Set model of old client to own browser
+                            clientModel = new IW.Model( scope.multiLoader, scope.scene );
                             clientModel.jsonToObject( response.data.model );
                             clientModel.load( true );
-                            users.push( clientModel );
+                            scope.clients.push( clientModel );
 
                             break;
 
+                        // Set information about event fly of client model
                         case 'update-model-fly':
 
-                            /**
-                             * @type {IW.Model}
-                             */
-                            var findUserModel = users.find(function ( value ) {
+                            clientModel = scope.clients.find(function ( value ) {
                                 return value.id == response.data.resourceId;
                             });
 
-                            if ( findUserModel ) {
-                                findUserModel.angle = response.data.modelAngle;
-                                findUserModel.setPosition( JSON.parse( response.data.modelPosition ) );
-                                findUserModel.setPositionTo( JSON.parse( response.data.modelPositionTo ) );
-                                findUserModel.modelFly.setMotion( response.data.modelFly );
+                            if ( clientModel ) {
+                                clientModel.angle = response.data.modelAngle;
+                                clientModel.setPosition( JSON.parse( response.data.modelPosition ) );
+                                clientModel.setPositionTo( JSON.parse( response.data.modelPositionTo ) );
+                                clientModel.modelFly.setMotion( response.data.modelFly );
                             }
 
                             break;
 
+                        // Set information about event shot of client model
                         case 'update-model-shot':
 
-                            /**
-                             * @type {IW.Model}
-                             */
-                            var findUserModel = users.find(function ( value ) {
+                            clientModel = scope.clients.find(function ( value ) {
                                 return value.id == response.data.resourceId;
                             });
 
-                            if ( findUserModel ) {
-                                findUserModel.modelShot.shot( response.data.weaponType );
+                            if ( clientModel ) {
+                                clientModel.modelShot.shot( response.data.weaponType );
+                            }
+
+                            break;
+
+                        // Unsubscribe client. Remove model from scene and model controls
+                        case 'unsubscribe-client':
+                            for ( var c = 0; c < scope.clients.length; c++ ) {
+                                if ( scope.clients[ c ][ 'id' ] === response.data.resourceId ) {
+                                    scope.clients[ c ].removeModel();
+                                    scope.clients.splice( c, 1 );
+                                    break;
+                                }
                             }
 
                             break;
@@ -288,8 +317,8 @@
                         scope.labelControl.update();
                     }
 
-                    for ( var i = 0; i < users.length; i++ ) {
-                        users[ i ].update( delta );
+                    for ( var i = 0; i < scope.clients.length; i++ ) {
+                        scope.clients[ i ].update( delta );
                     }
 
                 }
@@ -307,6 +336,8 @@
 
             scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
             scope.container.appendChild( scope.renderer.domElement );
+
+
 
             initCamera();
             initLight();
@@ -354,34 +385,6 @@
         function render() {
             requestAnimationFrame( render );
 
-
-
-
-            // var delta = clock.getDelta();
-            //
-            // if ( scope.model ) {
-            //     if ( _skyBox ) {
-            //         _skyBox.position.copy( scope.model.getPosition() );
-            //     }
-            //
-            //     if ( orbitControl ) {
-            //         orbitControl.stopMoveCamera();
-            //         orbitControl.target.copy( scope.model.getPosition() );
-            //         orbitControl.update();
-            //     }
-            //
-            //     scope.model.update( delta );
-            // }
-            //
-            // if ( scope.panelControl ) {
-            //     scope.panelControl.update();
-            // }
-            //
-            // if ( scope.labelControl ) {
-            //     scope.labelControl.update();
-            // }
-
-            // scope.renderer.render( scope.scene, scope.camera );
         }
 
         /**

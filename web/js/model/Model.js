@@ -225,6 +225,8 @@ IW.Model = function ( multiLoader, scene, id ) {
             this.angle = startAngle( this.prev, this.model.position );
         }
 
+        this.model[ 'name' ] = this.id;
+
         if ( addToScene ) {
             this.scene.add( this.model );
         }
@@ -251,6 +253,16 @@ IW.Model = function ( multiLoader, scene, id ) {
     this.changeModel = function ( name ) {
         this.name = name;
         this.model = this.multiLoader.getObject( name );
+        return this;
+    };
+
+    /**
+     *
+     * @return {IW.Model}
+     */
+    this.removeModel = function () {
+        this.scene.remove( this.scene.getObjectByName( this.id ) );
+        this.model = null;
         return this;
     };
 

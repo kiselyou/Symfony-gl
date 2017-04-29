@@ -210,7 +210,7 @@
 		 */
 		function isFly() {
 			for ( var key in motion ) {
-				if ( motion.hasOwnProperty( key ) && motion[ key ] ) {
+				if ( 'fly' !== key && motion.hasOwnProperty( key ) && motion[ key ] ) {
 					return true;
 				}
 			}
