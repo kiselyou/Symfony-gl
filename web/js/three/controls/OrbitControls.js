@@ -1061,13 +1061,30 @@ THREE.OrbitControls = function ( object, domElement ) {
 	 *
 	 * @returns {THREE.OrbitControls}
      */
-	this.stopMoveCamera = function () {
+	function stopMoveCamera() {
 		params.move = false;
+	}
+
+	/**
+	 *
+	 * @return {THREE.OrbitControls}
+     */
+	this.enableMouseMoveCamera = function () {
+		scope.domElement.addEventListener( 'mousemove', moveCamera, false );
+		scope.domElement.addEventListener( 'mouseout', stopMoveCamera, false );
 		return this;
 	};
 
-	scope.domElement.addEventListener( 'mousemove', moveCamera, false );
-	scope.domElement.addEventListener( 'mouseout', scope.stopMoveCamera, false );
+	/**
+	 *
+	 * @return {THREE.OrbitControls}
+	 */
+	this.disableMouseMoveCamera = function () {
+		scope.domElement.removeEventListener( 'mousemove', moveCamera, false );
+		scope.domElement.removeEventListener( 'mouseout', stopMoveCamera, false );
+		return this;
+	};
+
 	scope.domElement.addEventListener( 'contextmenu', onContextMenu, false );
 
 	scope.domElement.addEventListener( 'mousedown', onMouseDown, false );

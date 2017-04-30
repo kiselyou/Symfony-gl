@@ -51,6 +51,12 @@
 
         /**
          *
+         * @type {THREE.Clock}
+         */
+        this.clock = new THREE.Clock();
+
+        /**
+         *
          * @type {IW.SceneControls}
          */
         var scope = this;
@@ -138,17 +144,21 @@
 
         /**
          *
-         * @type {Array}
+         * @type {THREE.OrbitControls}
          */
-        this.clients = [];
+        this.orbitControl = new THREE.OrbitControls( this.camera, this.renderer.domElement );
 
+        /**
+         *
+         * @type {?IW.Socket}
+         */
         var socket = null;
 
         /**
          *
          * @returns {void}
          */
-        this.initScene = function () {
+        this.play = function () {
 
             socket = new IW.Socket();
 
@@ -197,8 +207,6 @@
                     scope.labelControl = new IW.LabelControls( scope.model, scope.camera );
                     scope.labelControl.init();
 
-                    scope.initOrbitControl();
-
                     // Send to all information about model of user
                     socket.sendToAll( 'trade-to', {
                         model: scope.model.objectToJSON(),
@@ -224,7 +232,7 @@
                             clientModel = new IW.Model( scope.multiLoader, scope.scene );
                             clientModel.jsonToObject( response.data.model );
                             clientModel.load( true );
-                            scope.clients.push( clientModel );
+                            scope.model.addClientModel( clientModel );
 
                             // Send own model to browser of new client
                             socket.sendToSpecific( 'trade-from', {
@@ -240,48 +248,41 @@
                             clientModel = new IW.Model( scope.multiLoader, scope.scene );
                             clientModel.jsonToObject( response.data.model );
                             clientModel.load( true );
-                            scope.clients.push( clientModel );
+                            scope.model.addClientModel( clientModel );
 
                             break;
 
                         // Set information about event fly of client model
                         case 'update-model-fly':
 
-                            clientModel = scope.clients.find(function ( value ) {
-                                return value.id == response.data.resourceId;
-                            });
-
-                            if ( clientModel ) {
-                                clientModel.angle = response.data.modelAngle;
-                                clientModel.setPosition( JSON.parse( response.data.modelPosition ) );
-                                clientModel.setPositionTo( JSON.parse( response.data.modelPositionTo ) );
-                                clientModel.modelFly.setMotion( response.data.modelFly );
-                            }
+                            scope.model.findClientModel(
+                                response.data.resourceId,
+                                function ( model ) {
+                                    model.angle = response.data.modelAngle;
+                                    model.setPosition( JSON.parse( response.data.modelPosition ) );
+                                    model.setPositionTo( JSON.parse( response.data.modelPositionTo ) );
+                                    model.modelFly.setMotion( response.data.modelFly );
+                                }
+                            );
 
                             break;
 
                         // Set information about event shot of client model
                         case 'update-model-shot':
 
-                            clientModel = scope.clients.find(function ( value ) {
-                                return value.id == response.data.resourceId;
-                            });
-
-                            if ( clientModel ) {
-                                clientModel.modelShot.shot( response.data.weaponType );
-                            }
+                            scope.model.findClientModel(
+                                response.data.resourceId,
+                                function ( model ) {
+                                    model.modelShot.shot( response.data.weaponType );
+                                }
+                            );
 
                             break;
 
                         // Unsubscribe client. Remove model from scene and model controls
                         case 'unsubscribe-client':
-                            for ( var c = 0; c < scope.clients.length; c++ ) {
-                                if ( scope.clients[ c ][ 'id' ] === response.data.resourceId ) {
-                                    scope.clients[ c ].removeModel();
-                                    scope.clients.splice( c, 1 );
-                                    break;
-                                }
-                            }
+
+                            scope.model.removeClientModel( response.data.resourceId );
 
                             break;
                     }
@@ -289,23 +290,29 @@
                 }
             );
 
+            socket.disconnected( function ( error ) {
+                console.log( error );
+            } );
 
-            var fps = 30;
+            this.orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
+            this.orbitControl.enablePan = false;
+            this.orbitControl.enableKeys = false;
+            this.orbitControl.rotateSpeed = 2.0;
+            this.orbitControl.minDistance = 50;
+            this.orbitControl.maxDistance = 250;
+            this.orbitControl.maxPolarAngle = 75 * Math.PI / 180;
+            this.orbitControl.minPolarAngle = 45 * Math.PI / 180;
 
-            setTimeout(function tick() {
-
-                var delta = clock.getDelta();
+            init( function ( delta ) {
 
                 if ( scope.model ) {
+
                     if ( _skyBox ) {
                         _skyBox.position.copy( scope.model.getPosition() );
                     }
 
-                    if ( orbitControl ) {
-                        orbitControl.stopMoveCamera();
-                        orbitControl.target.copy( scope.model.getPosition() );
-                        orbitControl.update();
-                    }
+                    scope.orbitControl.target.copy( scope.model.getPosition() );
+                    scope.orbitControl.update();
 
                     scope.model.update( delta );
 
@@ -316,11 +323,55 @@
                     if ( scope.labelControl ) {
                         scope.labelControl.update();
                     }
+                }
 
-                    for ( var i = 0; i < scope.clients.length; i++ ) {
-                        scope.clients[ i ].update( delta );
-                    }
+            } );
+        };
 
+        /**
+         *
+         * @returns {void}
+         */
+        this.preview = function () {
+
+            scope.model = new IW.Model( scope.multiLoader, scope.scene );
+            scope.model.load( true );
+
+            this.orbitControl.autoRotateSpeed = 0.3;
+            this.orbitControl.minDistance = 50;
+            this.orbitControl.maxDistance = 150;
+            this.orbitControl.autoRotate = true;
+            this.orbitControl.enableKeys = false;
+            this.orbitControl.enablePan = false;
+            this.orbitControl.enableZoom = false;
+            this.orbitControl.dispose();
+
+            init( function () {
+                scope.orbitControl.update();
+            } );
+        };
+
+        /**
+         *
+         * @param {function} renderCallback
+         * @returns {void}
+         */
+        function init( renderCallback ) {
+
+            scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
+            scope.container.appendChild( scope.renderer.domElement );
+
+            addCamera();
+            addLight();
+
+            var fps = 30;
+
+            setTimeout(function tick() {
+
+                var delta = scope.clock.getDelta();
+
+                if ( renderCallback ) {
+                    renderCallback.call( this, delta );
                 }
 
                 scope.renderer.render( scope.scene, scope.camera );
@@ -328,45 +379,7 @@
                 setTimeout(tick, 1000 / fps);
 
             }, 1000 / fps);
-
-
-            socket.disconnected( function ( error ) {
-                console.log( error );
-            } );
-
-            scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
-            scope.container.appendChild( scope.renderer.domElement );
-
-
-
-            initCamera();
-            initLight();
-            render();
-        };
-
-        /**
-         *
-         * @type {?(THREE.OrbitControls)}
-         */
-        var orbitControl = null;
-
-        /**
-         *
-         * @returns {IW.SceneControls}
-         */
-        this.initOrbitControl = function () {
-
-            orbitControl = new THREE.OrbitControls( scope.camera, scope.renderer.domElement );
-            orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
-            orbitControl.enablePan = false;
-            orbitControl.enableKeys = false;
-            orbitControl.rotateSpeed = 2.0;
-            orbitControl.minDistance = 50;
-            orbitControl.maxDistance = 250;
-            orbitControl.maxPolarAngle = 75 * Math.PI / 180;
-            orbitControl.minPolarAngle = 45 * Math.PI / 180;
-            return this;
-        };
+        }
 
         this.showGridHelper = function (flag) {
             if (flag !== false) {
@@ -376,23 +389,11 @@
             }
         };
 
-        var clock = new THREE.Clock();
-
         /**
          *
          * @returns {void}
          */
-        function render() {
-            requestAnimationFrame( render );
-
-        }
-
-        /**
-         *
-         * @returns {void}
-         */
-        function initCamera() {
-
+        function addCamera() {
             scope.camera.position.x = 0;
             scope.camera.position.z = - 350;
             scope.camera.position.y = 150;
@@ -404,7 +405,11 @@
             scope.camera.updateProjectionMatrix();
         }
 
-        function initLight() {
+        /**
+         *
+         * @returns {void}
+         */
+        function addLight() {
             var light = new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 1 );
             light.position.set( 0, 1000, 0 );
             scope.scene.add( light );

@@ -165,10 +165,7 @@ IW.Socket = function ( url ) {
      */
     this.disconnected = function ( callback ) {
 		this.socket.on( SOCKET_DISCONNECT, function ( session ) {
-
-			// scope.session.unsubscribe( PATH_SUBSCRIBE );
-            //
-			// callback.call( arguments );
+			callback.call( this, session );
 		} );
 
         return this;

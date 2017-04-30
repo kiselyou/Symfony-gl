@@ -16,7 +16,7 @@ IW.Model = function ( multiLoader, scene, id ) {
      *
      * @type {string}
      */
-    this.id = id;
+    this.id = id ? id : THREE.Math.generateUUID();
 
     /**
      * It is distance how far calculate position direct
@@ -33,15 +33,15 @@ IW.Model = function ( multiLoader, scene, id ) {
 
     /**
      *
-     * @type {?IW.ModelFly}
-     */
-    this.modelFly = new IW.ModelFly( this );
-
-    /**
-     *
      * @type {IW.MultiLoader}
      */
     this.multiLoader = multiLoader;
+
+    /**
+     *
+     * @type {?IW.ModelFly}
+     */
+    this.modelFly = new IW.ModelFly( this );
 
     /**
      *
@@ -258,12 +258,61 @@ IW.Model = function ( multiLoader, scene, id ) {
 
     /**
      *
+     * @type {Array}
+     */
+    this.clientsModel = [];
+
+    /**
+     *
+     * @param {IW.Model} model
      * @return {IW.Model}
      */
+    this.addClientModel = function ( model ) {
+        this.clientsModel.push( model );
+        return this;
+    };
+
+    /**
+     *
+     *  @param {(string|number)} id
+     * @param {function} callback
+     * @param {function} [error]
+     * @return {IW.Model}
+     */
+    this.findClientModel = function ( id, callback, error ) {
+        var clientModel = this.clientsModel.find(function ( value ) {
+            return value.id == id;
+        });
+
+        if ( clientModel ) {
+            callback.call( this, clientModel );
+        } else {
+            if (error) {
+                error.call(this);
+            }
+        }
+
+        return this;
+    };
+
     this.removeModel = function () {
         this.scene.remove( this.scene.getObjectByName( this.id ) );
         this.model = null;
         return this;
+    };
+
+    /**
+     *
+     * @return {IW.Model}
+     */
+    this.removeClientModel = function ( id ) {
+        for ( var c = 0; c < this.clientsModel.length; c++ ) {
+            if ( this.clientsModel[ c ][ 'id' ] === id ) {
+                this.clientsModel[ c ].removeModel();
+                this.clientsModel.splice( c, 1 );
+                break;
+            }
+        }
     };
 
     /**
@@ -277,7 +326,7 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @return {string}
      */
     this.objectToJSON = function () {
-        var except = [ 'model', 'modelFly', 'scene', 'multiLoader', 'modelShot', 'keyboard', 'positionTo' ];
+        var except = [ 'model', 'modelFly', 'scene', 'multiLoader', 'modelShot', 'keyboard', 'positionTo', 'clientsModel' ];
         return _parentObjectToJSON.call( this, except );
     };
 
@@ -289,5 +338,9 @@ IW.Model = function ( multiLoader, scene, id ) {
 
         this.modelFly.update( delta );
         this.modelShot.update( delta );
+
+        for ( var i = 0; i < this.clientsModel.length; i++ ) {
+            this.clientsModel[ i ].update( delta );
+        }
     }
 };
