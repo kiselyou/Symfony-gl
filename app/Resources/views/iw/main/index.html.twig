@@ -1,0 +1,77 @@
+{% extends 'iw/iw.html.twig' %}
+
+{% block container %}
+
+    <div id="iw-container"></div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+
+    <script type="application/javascript">
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var map = {
+                path: '{{ asset('/images/textures/skybox/B/') }}',
+                names: ['1-right', '2-left', '3-top', '4-bottom', '5-front', '6-back'],
+                extension: '.png'
+            };
+
+            var multiLoader = new IW.MultiLoader();
+            multiLoader.setPositionProgress( IW.ProgressBar.POSITION_B, 50 );
+            multiLoader.hideLabelProgress();
+
+            var sceneControl = new IW.SceneControls( multiLoader, 'iw-container', false );
+            sceneControl.setOpacity( 0 );
+
+            // UPLOAD TEXTURES MAP
+            for ( var i = 0; i < map.names.length; i++ ) {
+                var lbl = 'label - texture ' + map.names[ i ];
+                multiLoader.addLoadTexture( map.names[ i ], lbl, map.path + map.names[ i ] + map.extension );
+            }
+
+            // UPLOAD OBJECTS SHIPS
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'label - object', '{{asset('/models/S1/A/')}}', 'starship.obj', 'starship.mtl' );
+
+            // UPLOAD ROCKETS
+            multiLoader.addLoadOBJ( IW.ModelShot.MODEL_R1_A, 'ROCKETS - A', '{{asset('/models/R1/A/')}}', 'rocket.obj', 'rocket.mtl' );
+
+            // UPLOAD CONFIGS
+            multiLoader.addLoadJSON( IW.PanelControls.CONFIG_ACTION, 'CONFIG', '{{asset('/js/config/action.json')}}', true );
+            multiLoader.addLoadJSON( IW.ModelShot.CONFIG_WEAPON, 'CONFIG', '{{asset('/js/config/weapon.json')}}', true );
+
+            multiLoader.setLoadedCallback( function ( params ) {
+                switch ( params.name ) {
+
+                    case IW.SceneControls.MODEL_S1_A:
+                        params.object.rotation.y = Math.PI;
+                        params.object.scale.copy( new THREE.Vector3( 0.1, 0.1, 0.1 ) );
+                        sceneControl.scene.add( params.object );
+                        break;
+                }
+            } );
+
+            multiLoader.load(function () {
+
+                sceneControl.skyBox( map.names );
+                sceneControl.preview();
+
+                var start = 0;
+                var idInterval = setInterval( function () {
+                    start += 0.01;
+                    sceneControl.setOpacity( start );
+                    if ( start >= 1 ) {
+                        sceneControl.setOpacity( 1 );
+                        clearInterval( idInterval );
+                    }
+                }, 20 );
+            });
+        });
+
+    </script>
+
+{% endblock %}

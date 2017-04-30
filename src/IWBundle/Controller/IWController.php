@@ -10,7 +10,7 @@ class IWController extends Controller
 {
     public function indexAction(Request $request)
     {
-        return $this->render('iw/index.html.twig', [
+        return $this->render('iw/main/index.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..') . DIRECTORY_SEPARATOR,
         ]);
     }

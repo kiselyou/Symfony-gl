@@ -1,4 +1,4 @@
-{% extends 'iw.html.twig' %}
+{% extends 'iw/iw.html.twig' %}
 
 {% block sw_container %}
 
@@ -10,29 +10,15 @@
 
     {{ parent() }}
 
-    <script type="application/x-glsl" id="sky-vertex">
-        varying vec2 vUV;
-
-        void main() {
-          vUV = uv;
-          vec4 pos = vec4(position, 1.0);
-          gl_Position = projectionMatrix * modelViewMatrix * pos;
-        }
-        </script>
-
-            <script type="application/x-glsl" id="sky-fragment">
-        uniform sampler2D texture;
-        varying vec2 vUV;
-
-        void main() {
-          vec4 sample = texture2D(texture, vUV);
-          gl_FragColor = vec4(sample.xyz, sample.w);
-        }
-    </script>
-
     <script type="application/javascript">
 
         document.addEventListener('DOMContentLoaded', function () {
+
+            var map = {
+                path: '{{ asset('/images/textures/skybox/A/') }}',
+                names: ['1-right', '2-left', '3-top', '4-bottom', '5-front', '6-back'],
+                extension: '.png'
+            };
 
             /**
              *
@@ -40,10 +26,14 @@
              */
             var multiLoader = new IW.MultiLoader();
 
-            var initScene = new IW.SceneControls( multiLoader, 'iw-container', false );
+            var sceneControl = new IW.SceneControls( multiLoader, 'iw-container', false );
+            sceneControl.setOpacity( 0 );
 
-            var skyBoxName = 'sky-box-stars';
-            multiLoader.addLoadTexture( skyBoxName, 'TEST - texture', '{{ asset('/images/textures/skybox/stars-4096x2048.png') }}' );
+            // UPLOAD TEXTURES MAP
+            for ( var i = 0; i < map.names.length; i++ ) {
+                var lbl = 'label - texture ' + map.names[ i ];
+                multiLoader.addLoadTexture( map.names[ i ], lbl, map.path + map.names[ i ] + map.extension );
+            }
 
             // UPLOAD SHIPS
             multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS - A', '{{asset('/models/S1/A/')}}', 'starship.obj', 'starship.mtl' );
@@ -66,8 +56,18 @@
             } );
 
             multiLoader.load(function () {
-                initScene.skyBox( skyBoxName );
-                initScene.play();
+                sceneControl.skyBox( map.names );
+                sceneControl.play();
+
+                var start = 0;
+                var idInterval = setInterval( function () {
+                    start += 0.01;
+                    sceneControl.setOpacity( start );
+                    if ( start >= 1 ) {
+                        sceneControl.setOpacity( 1 );
+                        clearInterval( idInterval );
+                    }
+                }, 20 );
             });
         });
     </script>
