@@ -6,8 +6,8 @@ html, body, canvas {
     height: 100%;
     overflow: hidden;
     position: relative;
-    background: url('/web/images/textures/galaxy/stars.png') repeat #000000;
-    background-size: 400px;
+    background: url('/web/images/textures/background/sun-and-earth-1920x1080.jpg') no-repeat #000000;
+    background-size: cover;
 }
 
 .iw-main-page {
@@ -179,7 +179,7 @@ html, body, canvas {
 }
 
 .sw-modal-skin-star {
-    background: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.8);
 }
 
 .sw-modal-skin-panel {

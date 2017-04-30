@@ -12,10 +12,11 @@
          * @type {IW.MultiLoader}
          */
         this.multiLoader = multiLoader;
+
         this.mapSize = {
-            width: 100000,
-            height: 100000,
-            depth: 100000
+            width: 16192,
+            height: 16192,
+            depth: 16192
         };
 
         /**
@@ -61,10 +62,6 @@
          */
         var scope = this;
 
-        window.addEventListener( 'resize', windowResize, false );
-        document.addEventListener( 'contextmenu', contextMenu, false );
-        document.addEventListener( 'keydown', keyDown, false );
-
         /**
          *
          * @returns {Number}
@@ -98,27 +95,56 @@
 
         /**
          *
-         * @param {{path: string, names: Array, extension}} map
+         * @param {string} name
          * @returns {IW.SceneControls}
          */
-        this.map = function ( map ) {
+        this.skyBox = function ( name ) {
 
-            var materials = [];
+            // var materials = [];
 
-            for ( var i = 0; i < map.names.length; i++ ) {
+            // for ( var i = 0; i < map.names.length; i++ ) {
 
-                var texture = scope.multiLoader.getTexture( map.names[ i ] );
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set(5, 5);
+                // var texture = scope.multiLoader.getTexture( map.names[ i ] );
+                // texture.wrapS = THREE.RepeatWrapping;
+                // texture.wrapT = THREE.RepeatWrapping;
+                //
+                // var material = new THREE.MeshBasicMaterial();
+                // material.map = texture;
+                // material.side = THREE.BackSide;
+                // materials.push( material );
 
-                var material = new THREE.MeshBasicMaterial();
-                material.map = texture;
-                material.side = THREE.BackSide;
-                materials.push( material );
-            }
+                // var uniforms = {
+                //     texture: { type: 't', value: scope.multiLoader.getTexture( map.names[ i ] ) }
+                // };
+                //
+                // var material = new THREE.ShaderMaterial( {
+                //     uniforms:       uniforms,
+                //     vertexShader:   document.getElementById('sky-vertex').textContent,
+                //     fragmentShader: document.getElementById('sky-fragment').textContent
+                // });
 
-            _skyBox = new THREE.Mesh( new THREE.BoxGeometry( scope.mapSize.width, scope.mapSize.height, scope.mapSize.depth, 0.1, 0.1, 0.1 ), new THREE.MultiMaterial( materials ) );
+                // materials.push( material );
+
+            // }
+
+            // _skyBox = new THREE.Mesh( new THREE.BoxGeometry( scope.mapSize.width, scope.mapSize.height, scope.mapSize.depth, 0.1, 0.1, 0.1 ), new THREE.MultiMaterial( materials ) );
+
+            var geometry = new THREE.SphereGeometry(15000, 30, 15);
+
+            var uniforms = {
+                texture: { type: 't', value: scope.multiLoader.getTexture( name ) }
+            };
+
+            var material = new THREE.ShaderMaterial( {
+                uniforms:       uniforms,
+                vertexShader:   document.getElementById('sky-vertex').textContent,
+                fragmentShader: document.getElementById('sky-fragment').textContent
+            });
+
+            _skyBox = new THREE.Mesh( geometry, material );
+            _skyBox.scale.set( -0.3, 0.3, 0.3 );
+            _skyBox.rotation.order = 'XZY';
+            _skyBox.renderDepth = 15000;
             scope.scene.add( _skyBox );
 
             return this;
@@ -299,7 +325,7 @@
             this.orbitControl.enableKeys = false;
             this.orbitControl.rotateSpeed = 2.0;
             this.orbitControl.minDistance = 50;
-            this.orbitControl.maxDistance = 250;
+            this.orbitControl.maxDistance = 500;
             this.orbitControl.maxPolarAngle = 75 * Math.PI / 180;
             this.orbitControl.minPolarAngle = 45 * Math.PI / 180;
 
@@ -463,7 +489,11 @@
         this.setOpacity = function ( value ) {
             this.container.style.opacity = value;
             return this;
-        }
+        };
+
+        window.addEventListener( 'resize', windowResize, false );
+        document.addEventListener( 'contextmenu', contextMenu, false );
+        document.addEventListener( 'keydown', keyDown, false );
     };
 
     // CITIES

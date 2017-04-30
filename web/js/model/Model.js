@@ -63,20 +63,20 @@ IW.Model = function ( multiLoader, scene, id ) {
     this.keyboard = {
         fly: {
             forward: {
-                keyName: 'up arrow',
-                keyCode: 38
+                keyName: 'W',
+                keyCode: 87
             },
             left: {
-                keyName: 'left arrow',
-                keyCode: 37
+                keyName: 'A',
+                keyCode: 65
             },
             right: {
-                keyName: 'right arrow',
-                keyCode: 39
+                keyName: 'D',
+                keyCode: 68
             },
             backward: {
-                keyName: 'down arrow',
-                keyCode: 40
+                keyName: 'S',
+                keyCode: 83
             }
         }
     };
