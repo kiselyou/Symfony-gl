@@ -18,13 +18,6 @@ IW.ModelShot = function ( model ) {
      */
     this.weaponConfig = this.model.multiLoader.getFile(IW.ModelShot.CONFIG_WEAPON);
 
-    var intersectExceptUUID = [];
-    var elementsCollision = this.model.scene.children.filter( function ( value ) {
-
-        return value instanceof THREE.Mesh;
-
-    } );
-
     /**
      * It is active shots
      *
@@ -50,14 +43,14 @@ IW.ModelShot = function ( model ) {
      * @type {?callbackShot}
      * @private
      */
-    this._callback = null;
+    this._shotCallback = null;
 
     /**
      *
      * @param {callbackShot} callback
      */
     this.setShotCallback = function ( callback ) {
-        this._callback = callback;
+        this._shotCallback = callback;
         return this;
     };
 
@@ -79,8 +72,8 @@ IW.ModelShot = function ( model ) {
             return;
         }
 
-        if ( this._callback ) {
-            this._callback.call( this, type );
+        if ( this._shotCallback ) {
+            this._shotCallback.call( this, type );
         }
 
         var config = this.weaponConfig.weapon[ type ];
@@ -135,6 +128,53 @@ IW.ModelShot = function ( model ) {
     }
 
     /**
+     * Callback for collision
+     *
+     * @callback callbackCollision
+     */
+
+    /**
+     *
+     * @type {?callbackCollision}
+     * @private
+     */
+    this._collisionCallback = null;
+
+    /**
+     *
+     * @param {callbackCollision} callback
+     * @return {IW.ModelShot}
+     */
+    this.setCollisionShotCallback = function ( callback ) {
+        this._collisionCallback = callback;
+        return this;
+    };
+
+    /**
+     *
+     * @param {THREE.Mesh} mesh
+     * @param {number} key - It is key element in array "this.charges"
+     */
+    function collisionShot( mesh, key ) {
+        scope.model.collision.update( mesh, function ( object ) {
+
+            console.log( object.name );
+
+            if ( scope._collisionCallback ) {
+                scope._collisionCallback.call( this, object );
+            }
+
+            scope.charges.splice( key, 1 );
+            scope.model.scene.remove( mesh );
+            scope.model.scene.remove( object );
+        } );
+    }
+
+    this.removeShot = function ( key, mesh ) {
+
+    };
+
+    /**
      *
      * @param {number} delta
      */
@@ -158,28 +198,11 @@ IW.ModelShot = function ( model ) {
                 mesh.position.z += oz;
                 mesh.lookAt( mesh.positionTo );
 
-                // var originPoint = mesh.position.clone();
-                //
-                // for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
-                //
-                //     var localVertex = mesh.geometry.vertices[vertexIndex].clone();
-                //     var globalVertex = localVertex.applyMatrix4( mesh.matrix );
-                //     var directionVector = globalVertex.sub( mesh.position );
-                //
-                //     var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-                //     var collisionResults = ray.intersectObjects( elementsCollision );
-                //
-                //     if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
-                //         // console.log(collisionResults[0][ 'object' ]);
-                //         //
-                //         this.charges.splice( i, 1 );
-                //         scope.model.scene.remove( mesh );
-                //         scope.model.scene.remove( collisionResults[0][ 'object' ] );
-                //         break;
-                //     }
-                // }
+                collisionShot( mesh, i );
 
                 if ( mesh && mesh.position.distanceTo( mesh.positionTo ) < Math.sqrt( ox * ox + oz * oz ) ) {
+
+                    console.log( '---' );
 
                     this.charges.splice( i, 1 );
                     scope.model.scene.remove( mesh );

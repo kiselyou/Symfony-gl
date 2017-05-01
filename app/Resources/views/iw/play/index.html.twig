@@ -36,24 +36,14 @@
             }
 
             // UPLOAD SHIPS
-            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS - A', '{{asset('/models/S1/A/')}}', 'starship.obj', 'starship.mtl' );
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS - A', '{{asset('/models/S1/A/')}}', 'iwship.obj', 'iwship.mtl' );
             multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_B, 'SHIPS - B', '{{asset('/models/S1/B/')}}', 'ship.obj', 'ship.mtl' );
+
             // UPLOAD ROCKETS
-            multiLoader.addLoadOBJ( IW.ModelShot.MODEL_R1_A, 'ROCKETS - A', '{{asset('/models/R1/A/')}}', 'rocket.obj', 'rocket.mtl' );
+            multiLoader.addLoadOBJ( IW.ModelShot.MODEL_R1_A, 'ROCKETS - A', '{{asset('/models/R1/A/')}}', 'iw-rocket.obj', 'iw-rocket.mtl' );
             // UPLOAD CONFIGS
             multiLoader.addLoadJSON( IW.PanelControls.CONFIG_ACTION, 'CONFIG', '{{asset('/js/config/action.json')}}', true );
             multiLoader.addLoadJSON( IW.ModelShot.CONFIG_WEAPON, 'CONFIG', '{{asset('/js/config/weapon.json')}}', true );
-
-            multiLoader.setLoadedCallback( function ( params ) {
-                switch ( params.name ) {
-
-                    case IW.SceneControls.MODEL_S1_A:
-
-                        params.object.children[0].position.y = -80;
-                        params.object.scale.copy( new THREE.Vector3( 0.1, 0.1, 0.1 ) );
-                        break;
-                }
-            } );
 
             multiLoader.load(function () {
                 sceneControl.skyBox( map.names );

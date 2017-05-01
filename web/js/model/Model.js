@@ -39,13 +39,19 @@ IW.Model = function ( multiLoader, scene, id ) {
 
     /**
      *
-     * @type {?IW.ModelFly}
+     * @type {IW.ModelFly}
      */
     this.modelFly = new IW.ModelFly( this );
 
     /**
      *
-     * @type {?IW.ModelShot}
+     * @type {IW.Collision}
+     */
+    this.collision = new IW.Collision( this );
+
+    /**
+     *
+     * @type {IW.ModelShot}
      */
     this.modelShot = new IW.ModelShot( this );
 
@@ -55,6 +61,13 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @type {Vector3}
      */
     this.positionTo = new THREE.Vector3( 0, 0, this.far );
+
+    /**
+     *
+     * @type {Vector3}
+     * @private
+     */
+    this.prev = new THREE.Vector3( 0, 0, - this.far );
 
     /**
      *
@@ -83,16 +96,15 @@ IW.Model = function ( multiLoader, scene, id ) {
 
     /**
      *
-     * @type {Vector3}
-     * @private
-     */
-    this.prev = new THREE.Vector3( 0, 0, - this.far );
-
-    /**
-     *
      * @private
      */
     this.model = null;
+
+    /**
+     *
+     * @type {Array}
+     */
+    this.clientsModel = [];
 
     /**
      *
@@ -258,17 +270,12 @@ IW.Model = function ( multiLoader, scene, id ) {
 
     /**
      *
-     * @type {Array}
-     */
-    this.clientsModel = [];
-
-    /**
-     *
      * @param {IW.Model} model
      * @return {IW.Model}
      */
     this.addClientModel = function ( model ) {
         this.clientsModel.push( model );
+        this.collision.addObjectCollision( model.id );
         return this;
     };
 
@@ -295,6 +302,10 @@ IW.Model = function ( multiLoader, scene, id ) {
         return this;
     };
 
+    /**
+     *
+     * @return {IW.Model}
+     */
     this.removeModel = function () {
         this.scene.remove( this.scene.getObjectByName( this.id ) );
         this.model = null;
@@ -326,7 +337,17 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @return {string}
      */
     this.objectToJSON = function () {
-        var except = [ 'model', 'modelFly', 'scene', 'multiLoader', 'modelShot', 'keyboard', 'positionTo', 'clientsModel' ];
+        var except = [
+            'model',
+            'scene',
+            'modelFly',
+            'multiLoader',
+            'modelShot',
+            'keyboard',
+            'positionTo',
+            'clientsModel',
+            'collision'
+        ];
         return _parentObjectToJSON.call( this, except );
     };
 

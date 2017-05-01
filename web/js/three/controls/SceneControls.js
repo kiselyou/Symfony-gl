@@ -191,6 +191,26 @@
                             true
                         );
                     } );
+                    
+                    scope.model.modelShot.setCollisionShotCallback( function ( object ) {
+
+                        console.log( 'asdasd' );
+
+                        // socket.sendToAll(
+                        //     'update-model-shot-collision',
+                        //     {
+                        //         weaponType: weaponType,
+                        //         resourceId: socket.getResourceId()
+                        //     },
+                        //     true
+                        // );
+                    } );
+
+                    // Send to all information about model of user
+                    socket.sendToAll( 'trade-to', {
+                        model: scope.model.objectToJSON(),
+                        resourceId: resourceId
+                    }, true );
 
                     socket.windowCloseControls( function () {
                         socket.sendToAll( 'unsubscribe-client', { resourceId: socket.getResourceId() }, true );
@@ -203,13 +223,6 @@
 
                     scope.labelControl = new IW.LabelControls( scope.model, scope.camera );
                     scope.labelControl.init();
-
-                    // Send to all information about model of user
-                    socket.sendToAll( 'trade-to', {
-                        model: scope.model.objectToJSON(),
-                        resourceId: resourceId
-                    }, true );
-
 			    },
 
                 function ( response ) {
@@ -295,8 +308,8 @@
             this.orbitControl.enablePan = false;
             this.orbitControl.enableKeys = false;
             this.orbitControl.rotateSpeed = 2.0;
-            this.orbitControl.minDistance = 50;
-            this.orbitControl.maxDistance = 500;
+            this.orbitControl.minDistance = 20;
+            this.orbitControl.maxDistance = 60;
             this.orbitControl.maxPolarAngle = 75 * Math.PI / 180;
             this.orbitControl.minPolarAngle = 45 * Math.PI / 180;
 
@@ -331,12 +344,12 @@
          */
         this.preview = function () {
 
-            scope.model = new IW.Model( scope.multiLoader, scope.scene );
-            scope.model.load( true );
+            this.model = new IW.Model( scope.multiLoader, scope.scene );
+            this.model.load( true );
 
             this.orbitControl.autoRotateSpeed = 0.3;
-            this.orbitControl.minDistance = 50;
-            this.orbitControl.maxDistance = 150;
+            this.orbitControl.minDistance = 10;
+            this.orbitControl.maxDistance = 30;
             this.orbitControl.autoRotate = true;
             this.orbitControl.enableKeys = false;
             this.orbitControl.enablePan = false;
@@ -346,6 +359,8 @@
             init( function () {
                 scope.orbitControl.update();
             } );
+
+            scope.camera.position.set( 0, 20, 60 );
         };
 
         /**
@@ -392,7 +407,7 @@
          */
         function addCamera() {
 
-            scope.camera.position.set( 0, 150, -350 );
+            scope.camera.position.set( 0, 20, -60 );
             scope.camera.fov = 45;
             scope.camera.near = 0.01;
             scope.camera.far = 2000000;

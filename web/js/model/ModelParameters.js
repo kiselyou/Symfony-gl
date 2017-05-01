@@ -24,13 +24,13 @@ IW.ModelParameters = function () {
      * @type {{current: number, max: number, min: number}}
      */
     this.speed = {
-        acceleration: 20,    // m.s
-        deceleration: 30,   // m.s
+        acceleration: 5,    // m.s
+        deceleration: 10,   // m.s
         current: 0,         // m.s Can not be less than zero. Default 0
-        max:  1650,         // m.s It is maximum speed the model
-        min: -150,	        // m.s If less than zero. The model is moving back
+        max:  450,         // m.s It is maximum speed the model
+        min: -50,	        // m.s If less than zero. The model is moving back
         speedRadiusForward: 0.02,
-        speedRadiusBackward: 0.005
+        speedRadiusBackward: 0.05
     };
 
     /**
@@ -40,7 +40,7 @@ IW.ModelParameters = function () {
      */
     this.incline = {
         angle: 0,                       // It is angle of plane
-        speed: 0.09,                    // Скорость наклона - процент от скорости объекта (radian)
+        speed: 0.5,                    // Скорость наклона - процент от скорости объекта (radian)
         maxAngle: 35 / 180 * Math.PI,        // Максимальный угол наклона ( radian )
         minSpeed: 10                         // Мин. Скорость при которой карабль начинает наклоны
     };

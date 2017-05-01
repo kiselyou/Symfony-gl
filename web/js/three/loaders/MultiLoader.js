@@ -153,7 +153,6 @@ IW.MultiLoader = function () {
      * @returns {Array}
      */
     this.getFiles = function () {
-
         return _files;
     };
 
@@ -179,6 +178,36 @@ IW.MultiLoader = function () {
             directory: directory
         } );
 
+        return this;
+    };
+
+    /**
+     *
+     * @param {*} config
+     * @return {IW.MultiLoader}
+     */
+    this.addLoad = function ( config ) {
+        for ( var type in config ) {
+            if ( config.hasOwnProperty( type ) ) {
+                for ( var i = 0; i < config[ type ].length; i++ ) {
+                    var setting = config[ type ][ i ];
+                    switch ( type ) {
+                        case "OBJ":
+                            setting[ 'type' ] = IW.MultiLoader.LOAD_TYPE_OBJ;
+                            setting[ 'object' ] = null;
+                            break;
+                        case "JSON":
+                            setting[ 'type' ] = IW.MultiLoader.LOAD_TYPE_OBJ;
+                            setting[ 'json' ] = null;
+                            break;
+                        case "TEXTURE":
+                            setting[ 'type' ] = IW.MultiLoader.LOAD_TYPE_TEXTURE;
+                            setting[ 'texture' ] = null;
+                            break;
+                    }
+                }
+            }
+        }
         return this;
     };
 
@@ -421,8 +450,8 @@ IW.MultiLoader = function () {
             params.pathOBJ,
             function ( object ) {
 
-                var geometry = new THREE.SphereGeometry( 5, 10, 10 );
-                var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0, transparent: true } );
+                var geometry = new THREE.BoxGeometry( 2, 2, 2 );
+                var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0.1, transparent: true } );
                 var sphere = new THREE.Mesh( geometry, material );
                 sphere.add( object );
 
