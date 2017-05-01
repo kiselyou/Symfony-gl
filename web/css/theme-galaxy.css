@@ -6,7 +6,7 @@ html, body, canvas {
     height: 100%;
     overflow: hidden;
     position: relative;
-    background: url('/web/images/textures/background/sun-and-earth-1920x1080.jpg') no-repeat #000000;
+    background: url('../images/textures/background/main.jpg') no-repeat #000000;
     background-size: cover;
 }
 
@@ -25,7 +25,7 @@ html, body, canvas {
 }
 
 .sw-aim {
-    background: url("/web/images/aim/aim-circle-red.png");
+    background: url("../images/aim/aim-circle-red.png") no-repeat;
     background-size: contain;
     width: 60px;
     height: 60px;
@@ -179,7 +179,7 @@ html, body, canvas {
 }
 
 .sw-modal-skin-star {
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.7);
 }
 
 .sw-modal-skin-panel {
@@ -276,7 +276,7 @@ html, body, canvas {
 }
 
 .sw-block-errors {
-    padding: 0px;
+    padding: 0;
 }
 
 .sw-block-errors li {
