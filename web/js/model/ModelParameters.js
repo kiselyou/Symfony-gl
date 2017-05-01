@@ -25,7 +25,7 @@ IW.ModelParameters = function () {
      */
     this.speed = {
         acceleration: 5,    // m.s
-        deceleration: 10,   // m.s
+        deceleration: 8,   // m.s
         current: 0,         // m.s Can not be less than zero. Default 0
         max:  450,         // m.s It is maximum speed the model
         min: -50,	        // m.s If less than zero. The model is moving back
@@ -162,6 +162,38 @@ IW.ModelParameters = function () {
             }
         }
         return this;
+    };
+
+    this.getCurrentArmor = function () {
+        return this.armor.current;
+    };
+
+    this.getMaxArmor = function () {
+        return this.armor.max;
+    };
+
+    this.getMinArmor = function () {
+        return this.armor.min;
+    };
+
+    this.getReductionArmor = function () {
+        return this.armor.reduction;
+    };
+
+    this.getCurrentHull = function () {
+        return this.hull.current;
+    };
+
+    this.getMaxHull = function () {
+        return this.hull.max;
+    };
+
+    this.getMinHull = function () {
+        return this.hull.min;
+    };
+
+    this.getReductionHull = function () {
+        return this.hull.reduction;
     };
 
     /**

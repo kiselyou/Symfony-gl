@@ -120,7 +120,7 @@ IW.ModelShot = function ( model ) {
 
             start++;
 
-            if ( start <= config.charges ) {
+            if ( start < config.charges ) {
                 setShotTimeout( config, config.intervalTime, start );
             }
 
@@ -159,14 +159,14 @@ IW.ModelShot = function ( model ) {
         scope.model.collision.update( mesh, function ( object ) {
 
             console.log( object.name );
-
-            if ( scope._collisionCallback ) {
-                scope._collisionCallback.call( this, object );
-            }
-
-            scope.charges.splice( key, 1 );
-            scope.model.scene.remove( mesh );
-            scope.model.scene.remove( object );
+            //
+            // if ( scope._collisionCallback ) {
+            //     scope._collisionCallback.call( this, object );
+            // }
+            //
+            // scope.charges.splice( key, 1 );
+            // scope.model.scene.remove( mesh );
+            // scope.model.scene.remove( object );
         } );
     }
 

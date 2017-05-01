@@ -61,15 +61,14 @@ IW.PanelControls = function ( model ) {
                 var actions = this.actionConfig[ action ];
 
                 for (var i = 0; i < actions.length; i++) {
-                    setActionShot( actions[ i ], action );
+                    setAction( actions[ i ], action );
                 }
             }
         }
 
-
         this.panelAction.addProgress( 1, 'energy', this.model.getMaxEnergy(), this.model.getReductionEnergy(), '#FF9900' );
-        this.panelAction.addProgress( 2, 'armor', 4000, 20, '#008AFA' );
-        this.panelAction.addProgress( 3, 'hull', 1000, 10, '#C10020' );
+        this.panelAction.addProgress( 2, 'armor', this.model.getMaxArmor(), this.model.getReductionArmor(), '#008AFA' );
+        this.panelAction.addProgress( 3, 'hull', this.model.getMaxHull(), this.model.getReductionHull(), '#C10020' );
         this.panelAction.addProgress( 4, 'speed', this.model.getMaxSpeed(), 0, '#FFFFFF' );
 
         this.panelAction.addCallback( 1, function ( param ) {
@@ -88,6 +87,8 @@ IW.PanelControls = function ( model ) {
      */
     this.update = function () {
         this.panelAction.updateProgress( 1, this.model.getCurrentEnergy() );
+        this.panelAction.updateProgress( 2, this.model.getCurrentArmor() );
+        this.panelAction.updateProgress( 3, this.model.getCurrentHull() );
         this.panelAction.updateProgress( 4, this.model.getCurrentSpeed() );
     };
 
@@ -97,7 +98,7 @@ IW.PanelControls = function ( model ) {
      * @param {{ name: [(?string|number)], icon: [(?string|number)], keyCode: [?number], active: [boolean], weapon: string|number }} param
      * @param {number|string} type
      */
-    function setActionShot( param, type ) {
+    function setAction( param, type ) {
 
         switch ( type ) {
             // Add actions - Shot
