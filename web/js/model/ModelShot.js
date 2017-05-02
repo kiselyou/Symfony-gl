@@ -201,9 +201,6 @@ IW.ModelShot = function ( model ) {
                 collisionShot( mesh, i );
 
                 if ( mesh && mesh.position.distanceTo( mesh.positionTo ) < Math.sqrt( ox * ox + oz * oz ) ) {
-
-                    console.log( '---' );
-
                     this.charges.splice( i, 1 );
                     scope.model.scene.remove( mesh );
                 }

@@ -14,9 +14,9 @@
         this.multiLoader = multiLoader;
 
         this.mapSize = {
-            width: 16192,
-            height: 16192,
-            depth: 16192
+            width: 20000,
+            height: 20000,
+            depth: 20000
         };
 
         /**
@@ -42,7 +42,9 @@
          *
          * @type {WebGLRenderer}
          */
-        this.renderer = new THREE.WebGLRenderer();
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.autoClear = false;
 
         /**
          *
@@ -409,8 +411,8 @@
 
             scope.camera.position.set( 0, 20, -60 );
             scope.camera.fov = 45;
-            scope.camera.near = 0.01;
-            scope.camera.far = 2000000;
+            scope.camera.near = 1;
+            scope.camera.far = 20000;
             scope.camera.aspect = scope.getAspect();
             scope.camera.lookAt( scope.scene.position );
             scope.camera.updateProjectionMatrix();
@@ -421,6 +423,7 @@
          * @returns {void}
          */
         function addLight() {
+
             var light = new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 1 );
             light.position.set( 0, 1000, 0 );
             scope.scene.add( light );

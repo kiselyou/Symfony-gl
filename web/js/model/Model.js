@@ -23,7 +23,7 @@ IW.Model = function ( multiLoader, scene, id ) {
      *
      * @type {number}
      */
-    this.far = 1000;
+    this.far = 500;
 
     /**
      *

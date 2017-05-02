@@ -451,7 +451,7 @@ IW.MultiLoader = function () {
             function ( object ) {
 
                 var geometry = new THREE.BoxGeometry( 2, 2, 2 );
-                var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0.1, transparent: true } );
+                var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0.3, transparent: true } );
                 var sphere = new THREE.Mesh( geometry, material );
                 sphere.add( object );
 
