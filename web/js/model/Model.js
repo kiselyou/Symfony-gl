@@ -331,7 +331,6 @@ IW.Model = function ( multiLoader, scene, id ) {
     this.destroyModel = function () {
         this.scene.remove( this.scene.getObjectByName( this.id ) );
         this.model = null;
-        this.model.destroy = false;
         return this;
     };
 

@@ -75,6 +75,14 @@ IW.PanelControls = function ( model ) {
             scope.model.addEnergy( param.reduction );
         });
 
+        // this.panelAction.addCallback( 1, function ( param ) {
+        //     scope.model.addEnergy( param.reduction );
+        // });
+        //
+        // this.panelAction.addCallback( 1, function ( param ) {
+        //     scope.model.addEnergy( param.reduction );
+        // });
+
         this.panelAction.appendActionsTo();
 
         return this;

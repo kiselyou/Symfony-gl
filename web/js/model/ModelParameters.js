@@ -53,7 +53,7 @@ IW.ModelParameters = function () {
     this.energy = {
         current: 9000,  // Текущее значение
         max: 9000,      // Максимальное значение
-        min: 10,        // Минимальное значение
+        min: 0,        // Минимальное значение
         reduction: 5    // Скорость восстановления
     };
 
@@ -65,8 +65,8 @@ IW.ModelParameters = function () {
     this.armor = {
         current: 9000,  // Текущее значение
         max: 9000,      // Максимальное значение
-        min: 10,        // Минимальное значение
-        reduction: 5    // Скорость восстановления
+        min: 0,        // Минимальное значение
+        reduction: 50    // Скорость восстановления
     };
 
     /**
@@ -77,8 +77,8 @@ IW.ModelParameters = function () {
     this.hull = {
         current: 9000,  // Текущее значение
         max: 9000,      // Максимальное значение
-        min: 10,        // Минимальное значение
-        reduction: 5    // Скорость восстановления
+        min: 0,        // Минимальное значение
+        reduction: 50    // Скорость восстановления
     };
 
     /**
@@ -141,11 +141,8 @@ IW.ModelParameters = function () {
     };
 
     this.setParamFromClient = function ( param ) {
-        for ( var property in param ) {
-            if ( param.hasOwnProperty( property ) ) {
-                this[ property ][ 'current' ] = param[ property ];
-            }
-        }
+        this.hull.current = param.hull;
+        this.armor.current = param.armor;
         return this;
     };
 

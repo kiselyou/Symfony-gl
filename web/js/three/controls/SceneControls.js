@@ -294,7 +294,31 @@
 
                         case 'update-model-shot-collision':
 
-                            console.log( response.data.model.param );
+                            var clientName = response.data.model.clientName;
+
+                            if ( clientName === socket.getResourceId() ) {
+
+                                console.log(response.data.model.param.destroy);
+                                if (response.data.model.param.destroy) {
+                                    console.log(22312312);
+                                    scope.model.destroyModel();
+                                } else {
+                                    scope.model.setParamFromClient( response.data.model.param );
+
+                                }
+
+                            } else {
+                                scope.model.findClientModel(
+                                    clientName,
+                                    function ( model ) {
+                                        if (response.data.model.param.destroy) {
+                                            model.destroyClientModel( clientName );
+                                        } else {
+                                            model.setParamFromClient( response.data.model.param );
+                                        }
+                                    }
+                                );
+                            }
 
                             break;
 
@@ -324,7 +348,7 @@
 
             init( function ( delta ) {
 
-                if ( scope.model ) {
+                if ( scope.model.getPosition() ) {
 
                     if ( _skyBox ) {
                         _skyBox.position.copy( scope.model.getPosition() );
