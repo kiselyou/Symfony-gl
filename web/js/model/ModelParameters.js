@@ -160,7 +160,6 @@ IW.ModelParameters = function () {
         var critical = damage.physicalDamage * damage.criticalDamage / 100;
 
         if ((this.armor.current - damage.physicalDamage) < this.getMinArmor()) {
-            console.log( critical, Math.abs( this.armor.current - damage.physicalDamage ) );
             this.hull.current -= Math.abs( this.armor.current - damage.physicalDamage );
             this.armor.current = this.getMinArmor();
         } else {

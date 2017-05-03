@@ -195,19 +195,17 @@
                             true
                         );
                     } );
-                    
-                    scope.model.modelShot.setCollisionShotCallback( function ( object ) {
 
-                        console.log( 'asdasd' );
-
-                        // socket.sendToAll(
-                        //     'update-model-shot-collision',
-                        //     {
-                        //         weaponType: weaponType,
-                        //         resourceId: socket.getResourceId()
-                        //     },
-                        //     true
-                        // );
+                    // Send info about shot collision
+                    scope.model.modelShot.setCollisionShotCallback( function ( paramToClient ) {
+                        socket.sendToAll(
+                            'update-model-shot-collision',
+                            {
+                                model: paramToClient,
+                                resourceId: resourceId
+                            },
+                            true
+                        );
                     } );
 
                     // Send to all information about model of user
@@ -291,6 +289,12 @@
                                     model.modelShot.shot( response.data.weaponType );
                                 }
                             );
+
+                            break;
+
+                        case 'update-model-shot-collision':
+
+                            console.log( response.data.model.param );
 
                             break;
 

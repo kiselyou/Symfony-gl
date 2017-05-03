@@ -54,8 +54,6 @@ IW.Collision = function ( model ) {
         return this;
     };
 
-    // var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-
     /**
      *
      * @param {Mesh} mesh
@@ -80,7 +78,7 @@ IW.Collision = function ( model ) {
             var intersect = ray.intersectObjects( scope.objectsCollision );
 
             if ( intersect.length > 0 && intersect[ 0 ].distance < directionVector.length() ) {
-                callback.call( this, intersect[ 0 ][ 'object' ], mesh );
+                callback.call( this, intersect[ 0 ][ 'object' ] );
                 break;
             }
         }

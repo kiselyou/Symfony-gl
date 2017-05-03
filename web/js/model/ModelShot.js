@@ -157,20 +157,22 @@ IW.ModelShot = function ( model ) {
 
     /**
      *
-     * @param {THREE.Mesh} mesh
+     *
      * @param {number} key - It is key element in array "this.charges"
+     * @param {THREE.Mesh} mesh
+     * @requires {void}
      */
-    function collisionShot( mesh, key ) {
+    function collisionShot( key, mesh ) {
         scope.model.collision.update( mesh, function ( object ) {
 
-            scope.destroyShot( key, mesh );
-
             scope.model.findClientModel( object.name, function ( client ) {
+
+                scope.destroyShot( key, mesh );
 
                 var paramToClient = {
                     weaponKey: key,
                     clientName: object.name,
-                    model: client.setDamage( mesh.damage ).getParamToClient()
+                    param: client.setDamage( mesh.damage ).getParamToClient()
                 };
 
                 if ( scope._collisionCallback ) {
@@ -178,7 +180,7 @@ IW.ModelShot = function ( model ) {
                 }
 
                 if (client.destroy) {
-                    scope.model.destroyClientModel(object.name);
+                    scope.model.destroyClientModel( object.name );
                 }
             } );
         } );
@@ -219,7 +221,13 @@ IW.ModelShot = function ( model ) {
                 mesh.position.z += oz;
                 mesh.lookAt( mesh.positionTo );
 
-                collisionShot( mesh, i );
+
+
+
+                collisionShot( i, mesh );
+
+
+
 
                 if ( mesh && mesh.position.distanceTo( mesh.positionTo ) < Math.sqrt( ox * ox + oz * oz ) ) {
                     scope.destroyShot( i, mesh );
