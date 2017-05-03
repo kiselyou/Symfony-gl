@@ -98,46 +98,6 @@ IW.ModelParameters = function () {
     ];
 
     /**
-     * Set data from json string
-     *
-     * @param {string} str - It is json string of IW.ModelParameters
-     * @return {IW.ModelParameters}
-     */
-    this.jsonToObject = function ( str ) {
-        try {
-
-            var _object = JSON.parse( str );
-            for ( var property in _object ) {
-
-                if ( _object.hasOwnProperty( property ) ) {
-                    this[ property ] = _object[ property ];
-                }
-            }
-
-        } catch ( e ) {
-            console.warn( 'The model data is not correct' );
-        }
-
-        return this;
-    };
-
-    /**
-     * Get json string of current object
-     *
-     * @return {string}
-     */
-    this.objectToJSON = function ( except ) {
-        var object = {};
-        for ( var property in this ) {
-            if ( except === undefined || except.indexOf( property ) === -1 ) {
-                object[ property ] = this[ property ];
-            }
-        }
-
-        return JSON.stringify( object );
-    };
-
-    /**
      * Add action
      *
      * @param {Object.<action>} data
@@ -161,6 +121,58 @@ IW.ModelParameters = function () {
                 break;
             }
         }
+        return this;
+    };
+
+    this.destroy = false;
+
+    this.getParamToClient = function () {
+
+        var hull = this.getCurrentHull();
+        var armor = this.getCurrentArmor();
+
+        this.destroy = hull === this.getMinHull() && armor === this.getMinArmor();
+
+        return {
+            hull: hull,
+            armor: armor,
+            destroy: this.destroy
+        };
+    };
+
+    this.setParamFromClient = function ( param ) {
+        for ( var property in param ) {
+            if ( param.hasOwnProperty( property ) ) {
+                this[ property ][ 'current' ] = param[ property ];
+            }
+        }
+        return this;
+    };
+
+    /**
+     * Calculate and set damage
+     *
+     * @param {{ typeWeapon: string, physicalDamage: number, criticalDamage: number }} damage
+     * @return {IW.ModelParameters}
+     */
+    this.setDamage = function ( damage ) {
+
+        var critical = damage.physicalDamage * damage.criticalDamage / 100;
+
+        if ((this.armor.current - damage.physicalDamage) < this.getMinArmor()) {
+            console.log( critical, Math.abs( this.armor.current - damage.physicalDamage ) );
+            this.hull.current -= Math.abs( this.armor.current - damage.physicalDamage );
+            this.armor.current = this.getMinArmor();
+        } else {
+            this.armor.current -= damage.physicalDamage;
+        }
+
+        if (this.hull.current < this.getMinHull()) {
+            this.hull.current = this.getMinHull();
+        } else {
+            this.hull.current -= critical;
+        }
+
         return this;
     };
 

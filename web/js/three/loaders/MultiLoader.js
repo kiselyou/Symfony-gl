@@ -164,9 +164,10 @@ IW.MultiLoader = function () {
      * @param {string} directory
      * @param {string} pathOBJ
      * @param {string} [pathMTL]
+     * @param {{w: number, h: number, d: number}} [boxSize]
      * @returns {IW.MultiLoader}
      */
-    this.addLoadOBJ = function ( name, label, directory, pathOBJ, pathMTL ) {
+    this.addLoadOBJ = function ( name, label, directory, pathOBJ, pathMTL, boxSize ) {
 
         this.upload.push( {
             type: IW.MultiLoader.LOAD_TYPE_OBJ,
@@ -175,7 +176,8 @@ IW.MultiLoader = function () {
             label: label,
             pathOBJ: pathOBJ,
             pathMTL: pathMTL,
-            directory: directory
+            directory: directory,
+            boxSize: boxSize
         } );
 
         return this;
@@ -437,7 +439,7 @@ IW.MultiLoader = function () {
     /**
      * Start upload object ( model )
      *
-     * @param {{ name: string, pathOBJ: string, object: ?Mesh, pathMTL: string, directory: string }} params
+     * @param {{ name: string, pathOBJ: string, object: ?Mesh, pathMTL: string, directory: string, boxSize: {} }} params
      * @returns {void}
      */
     function loadOBJ( params ) {
@@ -450,9 +452,14 @@ IW.MultiLoader = function () {
             params.pathOBJ,
             function ( object ) {
 
-                var geometry = new THREE.BoxGeometry( 2, 2, 2 );
-                var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0.3, transparent: true } );
+                var w = params.boxSize.w ? params.boxSize.w : 1;
+                var h = params.boxSize.h ? params.boxSize.h : 1;
+                var d = params.boxSize.d ? params.boxSize.d : 1;
+
+                var geometry = new THREE.BoxGeometry( w, h, d );
+                var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0, transparent: true } );
                 var sphere = new THREE.Mesh( geometry, material );
+
                 sphere.add( object );
 
                 params[ 'object' ] = sphere;

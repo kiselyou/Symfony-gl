@@ -164,6 +164,8 @@
 			socket.connect(
 			    function ( response, resourceId ) {
 
+			        console.log(resourceId);
+
                     scope.model = new IW.Model( scope.multiLoader, scope.scene, resourceId );
                     scope.model.load( true );
 
@@ -260,6 +262,7 @@
                             clientModel = new IW.Model( scope.multiLoader, scope.scene );
                             clientModel.jsonToObject( response.data.model );
                             clientModel.load( true );
+                            console.log( response.data.model );
                             scope.model.addClientModel( clientModel );
 
                             break;

@@ -95,7 +95,7 @@ IW.ModelShot = function ( model ) {
 
     /**
      *
-     * @param {{ radius: number, model: (string|number), speed: number, intervalTime: number, charges: number }} config
+     * @param {{ radius: number, model: (string|number), speed: number, intervalTime: number, charges: number, damage: {} }} config
      * @param {number} [timeout] - default 0
      * @param {number} [start] - default 0
      */
@@ -104,13 +104,18 @@ IW.ModelShot = function ( model ) {
         start = start == undefined ? 0 : start;
 
         setTimeout( function () {
-
+            if (!scope.model.getPosition()) {
+                return;
+            }
             var p = scope.model.getPosition();
             var x = p.x + config.radius * Math.cos( scope.model.angle );
             var z = p.z + config.radius * Math.sin( scope.model.angle );
 
             var mesh = scope.model.multiLoader.getObject( config.model );
-            mesh.speed = config.speed;
+
+            mesh.damage = config.damage;
+            mesh.speed = config.speed + scope.model.getCurrentSpeed();
+
             mesh.position.copy( p );
             mesh.positionTo = new THREE.Vector3( x, 0, z );
             mesh.lookAt( mesh.positionTo );
@@ -158,20 +163,36 @@ IW.ModelShot = function ( model ) {
     function collisionShot( mesh, key ) {
         scope.model.collision.update( mesh, function ( object ) {
 
-            console.log( object.name );
-            //
-            // if ( scope._collisionCallback ) {
-            //     scope._collisionCallback.call( this, object );
-            // }
-            //
-            // scope.charges.splice( key, 1 );
-            // scope.model.scene.remove( mesh );
-            // scope.model.scene.remove( object );
+            scope.destroyShot( key, mesh );
+
+            scope.model.findClientModel( object.name, function ( client ) {
+
+                var paramToClient = {
+                    weaponKey: key,
+                    clientName: object.name,
+                    model: client.setDamage( mesh.damage ).getParamToClient()
+                };
+
+                if ( scope._collisionCallback ) {
+                    scope._collisionCallback.call( this, paramToClient );
+                }
+
+                if (client.destroy) {
+                    scope.model.destroyClientModel(object.name);
+                }
+            } );
         } );
     }
 
-    this.removeShot = function ( key, mesh ) {
+    this.destroyShot = function ( key, mesh ) {
+        this.charges.splice( key, 1 );
+        this.model.scene.remove( mesh );
+    };
 
+    this.destroyShots = function () {
+        for ( var i = 0; i < this.charges.length; i++ ) {
+            this.destroyShot( i, this.charges[ i ] );
+        }
     };
 
     /**
@@ -190,7 +211,7 @@ IW.ModelShot = function ( model ) {
                 var b = mesh.positionTo.z - mesh.position.z;
                 var len =  Math.sqrt( a * a + b * b ) * 100;
 
-                var speed = this.model.getCurrentSpeed() + mesh.speed + delta;
+                var speed = mesh.speed + delta;
                 var ox = a / len * speed;
                 var oz = b / len * speed;
 
@@ -201,8 +222,7 @@ IW.ModelShot = function ( model ) {
                 collisionShot( mesh, i );
 
                 if ( mesh && mesh.position.distanceTo( mesh.positionTo ) < Math.sqrt( ox * ox + oz * oz ) ) {
-                    this.charges.splice( i, 1 );
-                    scope.model.scene.remove( mesh );
+                    scope.destroyShot( i, mesh );
                 }
             }
         }

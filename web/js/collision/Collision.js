@@ -54,6 +54,8 @@ IW.Collision = function ( model ) {
         return this;
     };
 
+    // var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+
     /**
      *
      * @param {Mesh} mesh
@@ -62,13 +64,19 @@ IW.Collision = function ( model ) {
      */
     this.update = function ( mesh, callback ) {
 
+        if (this.objectsCollision.length === 0) {
+            return this;
+        }
+
+        var originPoint = mesh.position.clone();
+
         for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
 
             var localVertex = mesh.geometry.vertices[ vertexIndex ].clone();
             var globalVertex = localVertex.applyMatrix4( mesh.matrix );
             var directionVector = globalVertex.sub( mesh.position );
 
-            var ray = new THREE.Raycaster( mesh.position, directionVector.clone().normalize() );
+            var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
             var intersect = ray.intersectObjects( scope.objectsCollision );
 
             if ( intersect.length > 0 && intersect[ 0 ].distance < directionVector.length() ) {
@@ -78,5 +86,5 @@ IW.Collision = function ( model ) {
         }
 
         return this;
-    }
+    };
 };

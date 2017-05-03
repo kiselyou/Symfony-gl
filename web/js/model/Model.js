@@ -60,6 +60,13 @@ IW.Model = function ( multiLoader, scene, id ) {
      *
      * @type {Vector3}
      */
+    this.position = new THREE.Vector3( 0, 0, 0 );
+
+    /**
+     * It is position point where need move
+     *
+     * @type {Vector3}
+     */
     this.positionTo = new THREE.Vector3( 0, 0, this.far );
 
     /**
@@ -146,6 +153,7 @@ IW.Model = function ( multiLoader, scene, id ) {
         this.model.position.x += x;
         this.model.position.y += y;
         this.model.position.z += z;
+        this.setPosition( this.model.position );
         return this;
     };
 
@@ -156,6 +164,7 @@ IW.Model = function ( multiLoader, scene, id ) {
      */
     this.setPositionTo = function ( v ) {
         this.model.lookAt( v );
+        this.prev.copy(this.model.position);
         this.positionTo.copy( v );
         return this;
     };
@@ -174,8 +183,9 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @returns {IW.Model}
      * @returns {IW.Model}
      */
-    this.setPosition = function (v ) {
+    this.setPosition = function ( v ) {
         if ( this.model ) {
+            this.position.copy( v );
             this.model.position.copy( v );
         }
 
@@ -234,9 +244,10 @@ IW.Model = function ( multiLoader, scene, id ) {
             this.model = this.multiLoader.getObject( this.name );
         } else {
             this.model = this.multiLoader.getObject( this.name );
-            this.angle = startAngle( this.prev, this.model.position );
+            this.angle = startAngle( this.prev, this.getPosition() );
         }
 
+        this.setPosition( this.position );
         this.model[ 'name' ] = this.id;
 
         if ( addToScene ) {
@@ -313,6 +324,18 @@ IW.Model = function ( multiLoader, scene, id ) {
     };
 
     /**
+     * Remove model are using effects
+     *
+     * @return {IW.Model}
+     */
+    this.destroyModel = function () {
+        this.scene.remove( this.scene.getObjectByName( this.id ) );
+        this.model = null;
+        this.model.destroy = false;
+        return this;
+    };
+
+    /**
      *
      * @return {IW.Model}
      */
@@ -320,6 +343,7 @@ IW.Model = function ( multiLoader, scene, id ) {
         for ( var c = 0; c < this.clientsModel.length; c++ ) {
             if ( this.clientsModel[ c ][ 'id' ] === id ) {
                 this.clientsModel[ c ].removeModel();
+                this.clientsModel[ c ].modelShot.destroyShots();
                 this.clientsModel.splice( c, 1 );
                 break;
             }
@@ -327,9 +351,49 @@ IW.Model = function ( multiLoader, scene, id ) {
     };
 
     /**
-     * Parent method
+     * Remove client model are using effects
+     *
+     * @return {IW.Model}
      */
-    var _parentObjectToJSON = this.objectToJSON;
+    this.destroyClientModel = function ( id ) {
+        for ( var c = 0; c < this.clientsModel.length; c++ ) {
+            if ( this.clientsModel[ c ][ 'id' ] === id ) {
+                this.clientsModel[ c ].removeModel();
+                this.clientsModel[ c ].modelShot.destroyShots();
+                this.clientsModel.splice( c, 1 );
+                break;
+            }
+        }
+    };
+
+    /**
+     * Set data from json string
+     *
+     * @param {string} str - It is json string of IW.Model
+     * @return {IW.Model}
+     */
+    this.jsonToObject = function ( str ) {
+
+        try {
+
+            var _object = JSON.parse( str );
+            for ( var property in _object ) {
+
+                if ( _object.hasOwnProperty( property ) ) {
+                    if ( ['position', 'positionTo', 'prev'].indexOf( property ) > -1 ) {
+                        this[property].copy( _object[property] );
+                    } else {
+                        this[property] = _object[property];
+                    }
+                }
+            }
+
+        } catch ( e ) {
+            console.warn( 'The model data is not correct' );
+        }
+
+        return this;
+    };
 
     /**
      * Get json string of current object
@@ -344,11 +408,18 @@ IW.Model = function ( multiLoader, scene, id ) {
             'multiLoader',
             'modelShot',
             'keyboard',
-            'positionTo',
             'clientsModel',
             'collision'
         ];
-        return _parentObjectToJSON.call( this, except );
+
+        var object = {};
+        for ( var property in this ) {
+            if ( this.hasOwnProperty(property) && except === undefined || except.indexOf( property ) === -1 ) {
+                object[ property ] = this[ property ];
+            }
+        }
+
+        return JSON.stringify( object );
     };
 
     /**

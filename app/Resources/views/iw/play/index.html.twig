@@ -36,10 +36,10 @@
             }
 
             // UPLOAD SHIPS
-            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS - A', '{{asset('/models/S1/A/')}}', 'iw-ship.obj', 'iw-ship.mtl' );
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS - A', '{{asset('/models/S1/A/')}}', 'iw-ship.obj', 'iw-ship.mtl', { w: 12, h: 3, d: 9 } );
 
             // UPLOAD ROCKETS
-            multiLoader.addLoadOBJ( IW.ModelShot.MODEL_R1_A, 'ROCKETS - A', '{{asset('/models/R1/A/')}}', 'iw-rocket.obj', 'iw-rocket.mtl' );
+            multiLoader.addLoadOBJ( IW.ModelShot.MODEL_R1_A, 'ROCKETS - A', '{{asset('/models/R1/A/')}}', 'iw-rocket.obj', 'iw-rocket.mtl', { w: 1, h: 1, d: 5 } );
             // UPLOAD CONFIGS
             multiLoader.addLoadJSON( IW.PanelControls.CONFIG_ACTION, 'CONFIG', '{{asset('/js/config/action.json')}}', true );
             multiLoader.addLoadJSON( IW.ModelShot.CONFIG_WEAPON, 'CONFIG', '{{asset('/js/config/weapon.json')}}', true );
