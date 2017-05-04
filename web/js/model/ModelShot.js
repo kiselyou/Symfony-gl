@@ -27,12 +27,6 @@ IW.ModelShot = function ( model ) {
     this.charges = [];
 
     /**
-     *
-     * @type {IW.ModelShot}
-     */
-    var scope = this;
-
-    /**
      * It is callback function. Will be call when user shot
      *
      * @param {string} weaponType - It is type weapon. Need for get configuration about it
@@ -60,6 +54,12 @@ IW.ModelShot = function ( model ) {
 	 * @private
 	 */
 	this._collisionCallback = null;
+
+	/**
+	 *
+	 * @type {IW.ModelShot}
+	 */
+	var scope = this;
 
     /**
      *
@@ -102,7 +102,6 @@ IW.ModelShot = function ( model ) {
 
 	/**
 	 *
-	 *
 	 * @param {number} key - It is key element in array "this.charges"
 	 * @param {THREE.Mesh} mesh
 	 * @requires {void}
@@ -110,20 +109,23 @@ IW.ModelShot = function ( model ) {
 	function collisionShot( key, mesh ) {
 		scope.model.collision.update( mesh, function ( object ) {
 			scope.model.findClientModel( object.name, function ( client ) {
-				scope.destroyShot( key, mesh );
+
+				scope.destroyShot( key );
+				client.setDamage( mesh.damage );
 
 				var paramToClient = {
 					weaponKey: key,
 					clientName: object.name,
-					param: client.setDamage( mesh.damage ).getParamToClient()
+					param: client.paramsToJSON( ['armor', 'hull'] ),
+					destroy: client.isDestroyed()
 				};
 
 				if ( scope._collisionCallback ) {
 					scope._collisionCallback.call( this, paramToClient );
 				}
 
-				if (client.destroy) {
-					scope.model.destroyClientModel( object.name );
+				if ( client.isDestroyed() ) {
+					scope.model.destroyModel( object.name );
 				}
 			} );
 		} );
@@ -144,12 +146,11 @@ IW.ModelShot = function ( model ) {
      * Destroy shot from scene are using effect
      *
 	 * @param {string|number} key
-	 * @param {THREE.Mesh} mesh
      * @returns {IW.ModelShot}
 	 */
-	this.destroyShot = function ( key, mesh ) {
+	this.destroyShot = function ( key ) {
+        this.model.scene.remove( this.charges[ key ] );
         this.charges.splice( key, 1 );
-        this.model.scene.remove( mesh );
         return this;
     };
 
@@ -160,7 +161,7 @@ IW.ModelShot = function ( model ) {
 	 */
     this.destroyShots = function () {
         for ( var i = 0; i < this.charges.length; i++ ) {
-            this.destroyShot( i, this.charges[ i ] );
+            this.destroyShot( 0 );
         }
 	    return this;
     };
@@ -216,7 +217,7 @@ IW.ModelShot = function ( model ) {
 	 * @param {number} delta
 	 */
 	this.update = function ( delta ) {
-		if ( this.charges.length > 0 ) {
+		if ( this.charges.length > 0 && this.model.enabled ) {
 			for ( var i = 0; i < this.charges.length; i++ ) {
 
 				var mesh = this.charges[ i ];
@@ -235,7 +236,7 @@ IW.ModelShot = function ( model ) {
 				collisionShot( i, mesh );
 
 				if ( mesh && mesh.position.distanceTo( mesh.positionTo ) < Math.sqrt( ox * ox + oz * oz ) ) {
-					scope.destroyShot( i, mesh );
+					scope.destroyShot( i );
 				}
 			}
 		}

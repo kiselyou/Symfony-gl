@@ -75,13 +75,13 @@ IW.PanelControls = function ( model ) {
             scope.model.addEnergy( param.reduction );
         });
 
-        // this.panelAction.addCallback( 1, function ( param ) {
-        //     scope.model.addEnergy( param.reduction );
-        // });
-        //
-        // this.panelAction.addCallback( 1, function ( param ) {
-        //     scope.model.addEnergy( param.reduction );
-        // });
+        this.panelAction.addCallback( 2, function ( param ) {
+            scope.model.addArmor( param.reduction );
+        });
+
+        this.panelAction.addCallback( 3, function ( param ) {
+            scope.model.addHull( param.reduction );
+        });
 
         this.panelAction.appendActionsTo();
 
@@ -94,10 +94,13 @@ IW.PanelControls = function ( model ) {
      * @return {void}
      */
     this.update = function () {
-        this.panelAction.updateProgress( 1, this.model.getCurrentEnergy() );
-        this.panelAction.updateProgress( 2, this.model.getCurrentArmor() );
-        this.panelAction.updateProgress( 3, this.model.getCurrentHull() );
-        this.panelAction.updateProgress( 4, this.model.getCurrentSpeed() );
+
+        if ( this.model.enabled ) {
+            this.panelAction.updateProgress( 1, this.model.getCurrentEnergy() );
+            this.panelAction.updateProgress( 2, this.model.getCurrentArmor() );
+            this.panelAction.updateProgress( 3, this.model.getCurrentHull() );
+            this.panelAction.updateProgress( 4, this.model.getCurrentSpeed() );
+        }
     };
 
     /**

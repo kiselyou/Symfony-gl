@@ -179,6 +179,25 @@ IW.ModelParameters = function () {
         return this;
     };
 
+    this.isDestroyed = function () {
+        return this.getCurrentHull() <= this.getMinHull();
+    };
+
+    /**
+     * Add armor of model
+     *
+     * @param {number} int
+     * @returns {IW.ModelParameters}
+     */
+    this.addArmor = function ( int ) {
+        if ( this.getCurrentArmor() + int > this.getMaxArmor() ) {
+            this.armor.current = this.getMaxArmor();
+        } else {
+            this.armor.current += int;
+        }
+        return this;
+    };
+
 	/**
      * Get current armor of model
      *
@@ -215,7 +234,22 @@ IW.ModelParameters = function () {
         return this.armor.reduction;
     };
 
-	/**
+    /**
+     * Add hull of model
+     *
+     * @param {number} int
+     * @returns {IW.ModelParameters}
+     */
+    this.addHull = function ( int ) {
+        if ( this.getCurrentHull() + int > this.getMaxHull() ) {
+            this.hull.current = this.getMaxHull();
+        } else {
+            this.hull.current += int;
+        }
+        return this;
+    };
+
+    /**
      * Get current hull of model
      *
 	 * @return {number}

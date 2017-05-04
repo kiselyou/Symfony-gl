@@ -240,7 +240,13 @@
 		 * @param {number} delta
 		 */
 		this.update = function ( delta ) {
+
+			if ( !this._model.enabled ) {
+				return;
+			}
+
 			var _speedModel = this._model.getCurrentSpeed();
+
 			if ( motion.flyStatus || _speedModel !== 0 ) {
 				var positionTo = getPositionTo();
 				this._model.setPositionTo( positionTo );

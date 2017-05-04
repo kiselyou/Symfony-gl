@@ -23,6 +23,12 @@
 
         /**
          *
+         * @type {boolean}
+         */
+        this.enabled = true;
+
+        /**
+         *
          * @type {number}
          */
         this.fixing = 0;

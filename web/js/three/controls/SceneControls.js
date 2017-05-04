@@ -170,7 +170,7 @@
                     scope.model.load( true );
 
                     // Set events of fly and send info about position of user model
-                    scope.model.fly( function ( moution ) {
+                    scope.model.addFlyEvents( function ( moution ) {
                         socket.sendToAll(
                             'update-model-fly',
                             {
@@ -242,8 +242,7 @@
 
                             // Initialisation model of client to own browser
                             clientModel = new IW.Model( scope.multiLoader, scope.scene );
-                            clientModel.jsonToObject( response.data.model );
-                            clientModel.load( true );
+                            clientModel.load( true, response.data.model );
                             scope.model.addClientModel( clientModel );
 
                             // Send own model to browser of new client
@@ -258,9 +257,7 @@
 
                             // Set model of old client to own browser
                             clientModel = new IW.Model( scope.multiLoader, scope.scene );
-                            clientModel.jsonToObject( response.data.model );
-                            clientModel.load( true );
-                            console.log( response.data.model );
+                            clientModel.load( true, response.data.model );
                             scope.model.addClientModel( clientModel );
 
                             break;
@@ -296,25 +293,36 @@
 
                             var clientName = response.data.model.clientName;
 
+                            scope.model.findClientModel(
+                                response.data.resourceId,
+                                function ( client ) {
+                                    client.modelShot.destroyShot( response.data.model.weaponKey );
+                                }
+                            );
+
                             if ( clientName === socket.getResourceId() ) {
 
-                                console.log(response.data.model.param.destroy);
-                                if (response.data.model.param.destroy) {
-                                    console.log(22312312);
-                                    scope.model.destroyModel();
-                                } else {
-                                    scope.model.setParamFromClient( response.data.model.param );
+                                scope.model.paramsJSONToObject( response.data.model.param );
 
+                                if ( response.data.model.destroy ) {
+                                    scope.model.destroyModel();
+
+                                    // Unsubscribe if client was killed
+                                    socket.windowCloseControls( function () {
+                                        socket.sendToAll( 'unsubscribe-client', { resourceId: socket.getResourceId() }, true );
+                                    } );
                                 }
 
                             } else {
+
                                 scope.model.findClientModel(
                                     clientName,
-                                    function ( model ) {
-                                        if (response.data.model.param.destroy) {
-                                            model.destroyClientModel( clientName );
-                                        } else {
-                                            model.setParamFromClient( response.data.model.param );
+                                    function ( client ) {
+
+                                        client.paramsJSONToObject( response.data.model.param );
+
+                                        if ( response.data.model.destroy ) {
+                                            client.destroyModel( clientName );
                                         }
                                     }
                                 );
@@ -348,7 +356,7 @@
 
             init( function ( delta ) {
 
-                if ( scope.model.getPosition() ) {
+                if ( scope.model ) {
 
                     if ( _skyBox ) {
                         _skyBox.position.copy( scope.model.getPosition() );

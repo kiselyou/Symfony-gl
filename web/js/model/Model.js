@@ -97,6 +97,19 @@ IW.Model = function ( multiLoader, scene, id ) {
     this.clientsModel = [];
 
     /**
+     * If is true this model is loaded and active
+     *
+     * @type {boolean}
+     */
+    this.enabled = false;
+
+    /**
+     *
+     * @type {IW.Model}
+     */
+    var scope = this;
+
+    /**
      * Get angle of model
      *
      * @param {Vector3} a - It is previous position
@@ -176,7 +189,6 @@ IW.Model = function ( multiLoader, scene, id ) {
     };
 
     /**
-     * WARNING: Change arguments
      * This method is setting direction of model
      *
      * @param {Vector3|{x: number, y: number, z: number}} v
@@ -188,7 +200,6 @@ IW.Model = function ( multiLoader, scene, id ) {
     };
 
     /**
-     * WARNING: Added argument axis. Need change everywhere places. Rename method from "modelInclineZ" to "modelIncline"
      * This method set angle of incline model
      *
      * @param {string} axis
@@ -216,8 +227,9 @@ IW.Model = function ( multiLoader, scene, id ) {
             this.angle = this.getAngle( this.prev, this.getPosition() );
         }
 
+        initModel();
+
         this.model[ 'name' ] = this.id;
-	    this.position = this.model.position;
 
         if ( addToScene ) {
             this.scene.add( this.model );
@@ -227,13 +239,12 @@ IW.Model = function ( multiLoader, scene, id ) {
     };
 
     /**
-     * WARNING: Need Rename this method
      * This method adds fly control to this model
      *
      * @param {function} [callback]
      * @return {IW.Model}
      */
-    this.fly = function ( callback ) {
+    this.addFlyEvents = function ( callback ) {
         this.modelFly.setEventKeyboard( callback );
         return this;
     };
@@ -273,9 +284,11 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @return {IW.Model}
      */
     this.findClientModel = function ( id, callback, error ) {
-        var clientModel = this.clientsModel.find(function ( value ) {
-            return value.id === id;
-        });
+        var clientModel = this.clientsModel.find(
+            function ( value ) {
+                return value.id === id;
+            }
+        );
 
         if ( clientModel ) {
             callback.call( this, clientModel );
@@ -289,36 +302,47 @@ IW.Model = function ( multiLoader, scene, id ) {
     };
 
     /**
-     * Remove current model
+     * If parameter is empty will be removed current model else will try remove current or client model
      *
+     * @param {string|number} [id]
      * @return {IW.Model}
      */
-    this.removeModel = function () {
-        this.scene.remove( this.scene.getObjectByName( this.id ) );
-	    this.modelShot.destroyShots();
-        this.model = null;
+    this.removeModel = function ( id ) {
+        if ( id === this.id || !id ) {
+            this.enabled = false;
+            this.scene.remove(this.scene.getObjectByName( this.id ));
+            this.modelShot.destroyShots();
+            this.model = null;
+        } else {
+            this.removeClientModel( id );
+        }
         return this;
     };
 
     /**
-     * Remove model are using effects
+     * Remove model are using effects.
+     * If parameter is empty will be removed current model else will try remove current or client model
      *
+     * @param {string|number} [id]
      * @return {IW.Model}
      */
-    this.destroyModel = function () {
-	    this.removeModel();
+    this.destroyModel = function ( id ) {
+	    this.removeModel( id );
     };
 
     /**
      * Remove client model
      *
+     *  @param {string|number} id
      * @return {IW.Model}
      */
     this.removeClientModel = function ( id ) {
+
         for ( var c = 0; c < this.clientsModel.length; c++ ) {
             if ( this.clientsModel[ c ][ 'id' ] === id ) {
-                this.clientsModel[ c ].removeModel();
+                this.clientsModel[ c ].removeModel( id );
                 this.clientsModel.splice( c, 1 );
+                console.log( this.clientsModel, id );
                 break;
             }
         }
@@ -355,6 +379,7 @@ IW.Model = function ( multiLoader, scene, id ) {
         } catch ( e ) {
             console.warn( 'The model data is not correct' );
         }
+
         return this;
     };
 
@@ -377,7 +402,7 @@ IW.Model = function ( multiLoader, scene, id ) {
 
         var object = {};
         for ( var property in this ) {
-            if ( this.hasOwnProperty(property) || except.indexOf( property ) === -1 ) {
+            if ( this.hasOwnProperty(property) && except.indexOf( property ) === -1 ) {
                 object[ property ] = this[ property ];
             }
         }
@@ -392,11 +417,10 @@ IW.Model = function ( multiLoader, scene, id ) {
 	 */
 	this.paramsToJSON = function ( properties ) {
 		var params = {};
-		for ( var property in properties) {
-			if ( properties.hasOwnProperty( property ) ) {
-				params[ property ] = properties[ property ];
-			}
-		}
+		for ( var i = 0; i < properties.length; i++ ) {
+            var property = properties[ i ];
+            params[ property ] = this[ property ];
+        }
 		return JSON.stringify( params );
 	};
 
@@ -426,10 +450,28 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @param {number} delta
      */
     this.update = function ( delta ) {
-        this.modelFly.update( delta );
-        this.modelShot.update( delta );
-        for ( var i = 0; i < this.clientsModel.length; i++ ) {
-            this.clientsModel[ i ].update( delta );
+        if ( this.enabled ) {
+            this.modelFly.update( delta );
+            this.modelShot.update( delta );
+            for ( var i = 0; i < this.clientsModel.length; i++ ) {
+                this.clientsModel[i].update( delta );
+            }
         }
+    };
+
+    /**
+     * Initialisation of necessary data. This method are using in IW.Model.load()
+     *
+     * @returns {void}
+     */
+    function initModel() {
+        // Set default position to model
+        scope.model.position.copy( scope.position );
+        // Set link to property "position" IW.Model.position to IW.Model.model.position
+        scope.position = scope.model.position;
+        // Set direction of model
+        scope.lookAt( scope.positionTo );
+        // Enable this model
+        scope.enabled = true;
     }
 };
