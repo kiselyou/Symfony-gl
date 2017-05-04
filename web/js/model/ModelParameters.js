@@ -7,100 +7,129 @@ var IW = IW || {};
 IW.ModelParameters = function () {
 
     /**
+     * It is reserved name of model. Are using in model loader "IW.MultiLoader"
      *
      * @type {string|number}
      */
     this.name = IW.ModelParameters.MODEL_DEFAULT;
 
     /**
+     * It is angle direction of model
      *
      * @type {number}
      */
     this.angle = 0;
 
-    /**
-     * It is direct speed of object
+	/**
+     * It is configuration of speed of current model
      *
-     * @type {{current: number, max: number, min: number}}
-     */
-    this.speed = {
+	 * @type {{acceleration: number, deceleration: number, current: number, max: number, min: number, speedRadiusForward: number, speedRadiusBackward: number}}
+	 */
+	this.speed = {
         acceleration: 5,    // m.s
-        deceleration: 8,   // m.s
+        deceleration: 8,    // m.s
         current: 0,         // m.s Can not be less than zero. Default 0
-        max:  450,         // m.s It is maximum speed the model
+        max:  450,          // m.s It is maximum speed the model
         min: -50,	        // m.s If less than zero. The model is moving back
         speedRadiusForward: 0.02,
         speedRadiusBackward: 0.05
     };
 
-    /**
-     * It is parameter for incline object
+	/**
+     * It is configuration of incline of current model
      *
-     * @type {{angle: number, speed: number, max: number, inclineMinSpeed: number}}
-     */
-    this.incline = {
-        angle: 0,                       // It is angle of plane
-        speed: 0.5,                    // Скорость наклона - процент от скорости объекта (radian)
-        maxAngle: 35 / 180 * Math.PI,        // Максимальный угол наклона ( radian )
-        minSpeed: 10                         // Мин. Скорость при которой карабль начинает наклоны
+	 * @type {{angle: number, speed: number, maxAngle: number, minSpeed: number}}
+	 */
+	this.incline = {
+        angle: 0,                       // It is angle incline
+        speed: 0.5,                     // It is speed incline ( radian )
+        maxAngle: 35 / 180 * Math.PI,   // It is max angle incline ( radian )
+        minSpeed: 10                    // It is min speed of model where will begin inclines
+    };
+
+	/**
+     * It is configuration of energy of current model
+     *
+	 * @type {{current: number, max: number, min: number, reduction: number}}
+	 */
+	this.energy = {
+        current: 9000,
+        max: 9000,
+        min: 0,
+        reduction: 5
+    };
+
+	/**
+     * It is configuration of armor of current model
+     *
+	 * @type {{current: number, max: number, min: number, reduction: number}}
+	 */
+	this.armor = {
+        current: 9000,
+        max: 9000,
+        min: 0,
+        reduction: 50
+    };
+
+	/**
+     * It is configuration of hull of current model
+     *
+	 * @type {{current: number, max: number, min: number, reduction: number}}
+	 */
+	this.hull = {
+        current: 9000,
+        max: 9000,
+        min: 0,
+        reduction: 50
     };
 
     /**
-     * Показатели энергии
-     *
-     * @type {{current: number, max: number, min: number}}
-     */
-    this.energy = {
-        current: 9000,  // Текущее значение
-        max: 9000,      // Максимальное значение
-        min: 0,        // Минимальное значение
-        reduction: 5    // Скорость восстановления
-    };
-
-    /**
-     * Показатели брони
-     *
-     * @type {{current: number, max: number, min: number}}
-     */
-    this.armor = {
-        current: 9000,  // Текущее значение
-        max: 9000,      // Максимальное значение
-        min: 0,        // Минимальное значение
-        reduction: 50    // Скорость восстановления
-    };
-
-    /**
-     * Показатели корпуса
-     *
-     * @type {{current: number, max: number, min: number}}
-     */
-    this.hull = {
-        current: 9000,  // Текущее значение
-        max: 9000,      // Максимальное значение
-        min: 0,        // Минимальное значение
-        reduction: 50    // Скорость восстановления
-    };
-
-    /**
+     * It is configuration action for current model
      *
      * @type {{}}
      */
     this.actions = [
-        {
+	    {
             id: 1,                                  // It is unique id of action
             name: '1',                              // It is name action for client. Can see in user panel
             icon: 'move',                           // It is icon action for client. Can see in user panel
             keyCode: 49,                            // Keyboard key
             active: false,                          // Active action or not. Can see in user panel
             type: IW.ModelParameters.GUN_1,         // It is type of gun - for system
-            action: IW.ModelParameters.ACTION_SHOT  // It is name action - for system (Тип действия)
+            action: IW.ModelParameters.ACTION_SHOT  // It is name action - for system
         }
     ];
 
-    /**
-     * Add action
+	/**
+     * It is configuration keyboard for current model
      *
-     * @param {Object.<action>} data
+	 * @type {{fly: {forward: {keyName: string, keyCode: number}, left: {keyName: string, keyCode: number}, right: {keyName: string, keyCode: number}, backward: {keyName: string, keyCode: number}}}}
+	 */
+	this.keyboard = {
+		fly: {
+			forward: {
+				keyName: 'W',
+				keyCode: 87
+			},
+			left: {
+				keyName: 'A',
+				keyCode: 65
+			},
+			right: {
+				keyName: 'D',
+				keyCode: 68
+			},
+			backward: {
+				keyName: 'S',
+				keyCode: 83
+			}
+		}
+	};
+
+    /**
+     * Add action of model
+     *
+     * @param {{}} data
      * @return {IW.ModelParameters}
      */
     this.addAction = function ( data ) {
@@ -109,7 +138,7 @@ IW.ModelParameters = function () {
     };
 
     /**
-     * Remove action
+     * Remove action of model
      *
      * @param {string|number} id
      * @return {IW.ModelParameters}
@@ -121,28 +150,6 @@ IW.ModelParameters = function () {
                 break;
             }
         }
-        return this;
-    };
-
-    this.destroy = false;
-
-    this.getParamToClient = function () {
-
-        var hull = this.getCurrentHull();
-        var armor = this.getCurrentArmor();
-
-        this.destroy = hull === this.getMinHull() && armor === this.getMinArmor();
-
-        return {
-            hull: hull,
-            armor: armor,
-            destroy: this.destroy
-        };
-    };
-
-    this.setParamFromClient = function ( param ) {
-        this.hull.current = param.hull;
-        this.armor.current = param.armor;
         return this;
     };
 
@@ -172,47 +179,89 @@ IW.ModelParameters = function () {
         return this;
     };
 
-    this.getCurrentArmor = function () {
+	/**
+     * Get current armor of model
+     *
+	 * @return {number}
+	 */
+	this.getCurrentArmor = function () {
         return this.armor.current;
     };
 
+	/**
+     * Get max armor of model
+     *
+	 * @return {number}
+	 */
     this.getMaxArmor = function () {
         return this.armor.max;
     };
 
-    this.getMinArmor = function () {
+	/**
+     * Get min armor of model
+     *
+	 * @return {number}
+	 */
+	this.getMinArmor = function () {
         return this.armor.min;
     };
 
+	/**
+     * Get reduction armor of model
+     *
+	 * @return {number}
+	 */
     this.getReductionArmor = function () {
         return this.armor.reduction;
     };
 
-    this.getCurrentHull = function () {
+	/**
+     * Get current hull of model
+     *
+	 * @return {number}
+	 */
+	this.getCurrentHull = function () {
         return this.hull.current;
     };
 
+	/**
+     * Get max hull of model
+     *
+	 * @return {number}
+	 */
     this.getMaxHull = function () {
         return this.hull.max;
     };
 
+	/**
+	 * Get min hull of model
+	 *
+	 * @return {number}
+	 */
     this.getMinHull = function () {
         return this.hull.min;
     };
 
+	/**
+	 * Get reduction hull of model
+	 *
+	 * @return {number}
+	 */
     this.getReductionHull = function () {
         return this.hull.reduction;
     };
 
-    /**
-     *
-     * @returns {number}
-     */
+	/**
+	 * Get max speed of model
+	 *
+	 * @return {number}
+	 */
     this.getMaxSpeed = function () {
         return this.speed.max;
     };
 
     /**
+     * Get current speed of model
      *
      * @returns {number}
      */
@@ -221,62 +270,51 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Auto reduce current speed of model
      *
      * @returns {IW.ModelParameters}
      */
-    this.autoReduceCurrentSpeed = function () {
+    this.reduceCurrentSpeedAuto = function () {
         if ( this.getCurrentSpeed() > this.speed.deceleration ) {
-
             this.speed.current -= this.speed.deceleration;
-
         } else if ( this.getCurrentSpeed() < - this.speed.deceleration ) {
-
             this.speed.current += this.speed.deceleration;
-
         } else {
-
             this.speed.current = 0;
         }
-
         return this;
     };
 
     /**
+     * Increase current speed of model
      *
      * @returns {IW.ModelParameters}
      */
     this.increaseCurrentSpeed = function () {
-
         if ( this.getCurrentSpeed() < this.speed.max ) {
-
             this.speed.current += this.speed.acceleration;
-
         } else if ( this.getCurrentSpeed() < this.speed.max ) {
-
             this.speed.current = this.speed.max;
         }
         return this;
     };
 
     /**
+     * Reduce current speed of model
      *
      * @returns {IW.ModelParameters}
      */
     this.reduceCurrentSpeed = function () {
-
         if (this.getCurrentSpeed() > this.speed.min) {
-
             this.speed.current -= this.getCurrentSpeed() < 0 ? this.speed.deceleration / 10 : this.speed.deceleration;
-
         } else if ( this.getCurrentSpeed() < this.speed.min ) {
-
             this.speed.current = this.speed.min;
         }
-
         return this;
     };
 
     /**
+     * Gets speed radius forward
      *
      * @returns {number}
      */
@@ -285,6 +323,7 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Gets speed radius backward
      *
      * @returns {number}
      */
@@ -293,6 +332,7 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Get current energy of model
      *
      * @returns {number}
      */
@@ -301,6 +341,7 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Get max energy of model
      *
      * @returns {number}
      */
@@ -309,6 +350,7 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Add energy of model
      *
      * @param {number} int
      * @returns {IW.ModelParameters}
@@ -319,11 +361,11 @@ IW.ModelParameters = function () {
         } else {
             this.energy.current += int;
         }
-
         return this;
     };
 
     /**
+     * Get reduction energy of model
      *
      * @returns {number}
      */
@@ -332,6 +374,7 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Get incline speed of model
      *
      * @returns {number}
      */
@@ -340,6 +383,7 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Get incline min speed of model
      *
      * @returns {number}
      */
@@ -348,6 +392,7 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Get incline angle of model
      *
      * @returns {number}
      */
@@ -356,6 +401,7 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Get incline max angle of model
      *
      * @returns {number|*}
      */
@@ -364,6 +410,7 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Reduce incline angle of model
      *
      * @returns {IW.ModelParameters}
      */
@@ -374,6 +421,7 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Auto-increase incline angle of model
      *
      * @returns {IW.ModelParameters}
      */
@@ -384,11 +432,13 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Adds increase incline angle of model
      *
+     * @param {number} int
      * @returns {IW.ModelParameters}
      */
-    this.addInclineAngle = function ( step ) {
-        this.incline.angle += step;
+    this.addInclineAngle = function ( int ) {
+        this.incline.angle += int;
         return this;
     };
 };

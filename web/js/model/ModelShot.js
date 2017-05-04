@@ -13,10 +13,11 @@ IW.ModelShot = function ( model ) {
     this.model = model;
 
     /**
+     * It is configuration weapon of current user
      *
      * @type {{}}
      */
-    this.weaponConfig = this.model.multiLoader.getFile(IW.ModelShot.CONFIG_WEAPON);
+    this.weaponConfig = this.model.multiLoader.getFile( IW.ModelShot.CONFIG_WEAPON );
 
     /**
      * It is active shots
@@ -32,66 +33,33 @@ IW.ModelShot = function ( model ) {
     var scope = this;
 
     /**
-     * Callback for shot
+     * It is callback function. Will be call when user shot
      *
-     * @param {string} weaponType
+     * @param {string} weaponType - It is type weapon. Need for get configuration about it
      * @callback callbackShot
      */
 
     /**
+     * It is callback function. Will be call when user shot
      *
      * @type {?callbackShot}
      * @private
      */
     this._shotCallback = null;
 
-    /**
-     *
-     * @param {callbackShot} callback
-     */
-    this.setShotCallback = function ( callback ) {
-        this._shotCallback = callback;
-        return this;
-    };
+	/**
+	 * It is callback function. Will be call when collide of shot
+	 *
+	 * @callback callbackCollision
+	 */
 
-    /**
-     * This method is creating shot, setting parameters and adding in scene his.
-     *
-     * @param {string|number} type
-     * @returns {void}
-     */
-    this.shot = function ( type ) {
-
-        if ( !this.weaponConfig.hasOwnProperty( 'weapon' ) ) {
-            console.warn( 'Config is not correct' );
-            return;
-        }
-
-        if ( !this.weaponConfig.weapon.hasOwnProperty( type ) ) {
-            console.warn( 'Can not find weapon "' + type + '"' );
-            return;
-        }
-
-        if ( this._shotCallback ) {
-            this._shotCallback.call( this, type );
-        }
-
-        var config = this.weaponConfig.weapon[ type ];
-
-        if ( ( this.model.getCurrentEnergy() >= config.energy ) && config.active ) {
-
-            config.active = false;
-            this.model.addEnergy( - config.energy );
-
-            setShotTimeout( config, 0 );
-
-            setTimeout( function () {
-
-                config.active = true;
-
-            }, config.reloadingTime );
-        }
-    };
+	/**
+     * It is callback function. Will be call when collide of shot
+	 *
+	 * @type {?callbackCollision}
+	 * @private
+	 */
+	this._collisionCallback = null;
 
     /**
      *
@@ -101,7 +69,7 @@ IW.ModelShot = function ( model ) {
      */
     function setShotTimeout( config, timeout, start ) {
 
-        start = start == undefined ? 0 : start;
+        start = start === undefined ? 0 : start;
 
         setTimeout( function () {
             if (!scope.model.getPosition()) {
@@ -132,20 +100,37 @@ IW.ModelShot = function ( model ) {
         }, timeout );
     }
 
-    /**
-     * Callback for collision
-     *
-     * @callback callbackCollision
-     */
+	/**
+	 *
+	 *
+	 * @param {number} key - It is key element in array "this.charges"
+	 * @param {THREE.Mesh} mesh
+	 * @requires {void}
+	 */
+	function collisionShot( key, mesh ) {
+		scope.model.collision.update( mesh, function ( object ) {
+			scope.model.findClientModel( object.name, function ( client ) {
+				scope.destroyShot( key, mesh );
+
+				var paramToClient = {
+					weaponKey: key,
+					clientName: object.name,
+					param: client.setDamage( mesh.damage ).getParamToClient()
+				};
+
+				if ( scope._collisionCallback ) {
+					scope._collisionCallback.call( this, paramToClient );
+				}
+
+				if (client.destroy) {
+					scope.model.destroyClientModel( object.name );
+				}
+			} );
+		} );
+	}
 
     /**
-     *
-     * @type {?callbackCollision}
-     * @private
-     */
-    this._collisionCallback = null;
-
-    /**
+     * It is callback function. Will be call when collide of shot
      *
      * @param {callbackCollision} callback
      * @return {IW.ModelShot}
@@ -155,90 +140,109 @@ IW.ModelShot = function ( model ) {
         return this;
     };
 
-    /**
+	/**
+     * Destroy shot from scene are using effect
      *
-     *
-     * @param {number} key - It is key element in array "this.charges"
-     * @param {THREE.Mesh} mesh
-     * @requires {void}
-     */
-    function collisionShot( key, mesh ) {
-        scope.model.collision.update( mesh, function ( object ) {
-
-            scope.model.findClientModel( object.name, function ( client ) {
-
-                scope.destroyShot( key, mesh );
-
-                var paramToClient = {
-                    weaponKey: key,
-                    clientName: object.name,
-                    param: client.setDamage( mesh.damage ).getParamToClient()
-                };
-
-                if ( scope._collisionCallback ) {
-                    scope._collisionCallback.call( this, paramToClient );
-                }
-
-                if (client.destroy) {
-                    scope.model.destroyClientModel( object.name );
-                }
-            } );
-        } );
-    }
-
-    this.destroyShot = function ( key, mesh ) {
+	 * @param {string|number} key
+	 * @param {THREE.Mesh} mesh
+     * @returns {IW.ModelShot}
+	 */
+	this.destroyShot = function ( key, mesh ) {
         this.charges.splice( key, 1 );
         this.model.scene.remove( mesh );
+        return this;
     };
 
+	/**
+	 * Destroy all shots from scene are using effect
+	 *
+	 * @returns {IW.ModelShot}
+	 */
     this.destroyShots = function () {
         for ( var i = 0; i < this.charges.length; i++ ) {
             this.destroyShot( i, this.charges[ i ] );
         }
+	    return this;
     };
 
-    /**
-     *
-     * @param {number} delta
-     */
-    this.update = function ( delta ) {
+	/**
+	 * It is callback function. Will be call when user shot
+	 *
+	 * @param {callbackShot} callback
+	 */
+	this.setShotCallback = function ( callback ) {
+		this._shotCallback = callback;
+		return this;
+	};
 
-        if ( this.charges.length > 0 ) {
+	/**
+	 * This method is creating shot, setting parameters and adding it to scene
+	 *
+	 * @param {string|number} type
+	 * @returns {void}
+	 */
+	this.shot = function ( type ) {
+		if ( !this.weaponConfig.hasOwnProperty( 'weapon' ) ) {
+			console.warn( 'Config is not correct' );
+			return;
+		}
 
-            for ( var i = 0; i < this.charges.length; i++ ) {
+		if ( !this.weaponConfig.weapon.hasOwnProperty( type ) ) {
+			console.warn( 'Can not find weapon "' + type + '"' );
+			return;
+		}
 
-                var mesh = this.charges[ i ];
+		if ( this._shotCallback ) {
+			this._shotCallback.call( this, type );
+		}
 
-                var a = mesh.positionTo.x - mesh.position.x;
-                var b = mesh.positionTo.z - mesh.position.z;
-                var len =  Math.sqrt( a * a + b * b ) * 100;
+		var config = this.weaponConfig.weapon[ type ];
 
-                var speed = mesh.speed + delta;
-                var ox = a / len * speed;
-                var oz = b / len * speed;
+		if ( ( this.model.getCurrentEnergy() >= config.energy ) && config.active ) {
+			config.active = false;
+			this.model.addEnergy( - config.energy );
 
-                mesh.position.x += ox;
-                mesh.position.z += oz;
-                mesh.lookAt( mesh.positionTo );
+			setShotTimeout( config, 0 );
 
+			setTimeout( function () {
+				config.active = true;
+			}, config.reloadingTime );
+		}
+	};
 
+	/**
+     * Update position of shot
+	 *
+	 * @param {number} delta
+	 */
+	this.update = function ( delta ) {
+		if ( this.charges.length > 0 ) {
+			for ( var i = 0; i < this.charges.length; i++ ) {
 
+				var mesh = this.charges[ i ];
+				var a = mesh.positionTo.x - mesh.position.x;
+				var b = mesh.positionTo.z - mesh.position.z;
+				var len =  Math.sqrt( a * a + b * b ) * 100;
 
-                collisionShot( i, mesh );
+				var speed = mesh.speed + delta;
+				var ox = a / len * speed;
+				var oz = b / len * speed;
 
+				mesh.position.x += ox;
+				mesh.position.z += oz;
+				mesh.lookAt( mesh.positionTo );
 
+				collisionShot( i, mesh );
 
-
-                if ( mesh && mesh.position.distanceTo( mesh.positionTo ) < Math.sqrt( ox * ox + oz * oz ) ) {
-                    scope.destroyShot( i, mesh );
-                }
-            }
-        }
-    };
+				if ( mesh && mesh.position.distanceTo( mesh.positionTo ) < Math.sqrt( ox * ox + oz * oz ) ) {
+					scope.destroyShot( i, mesh );
+				}
+			}
+		}
+	};
 };
 
 IW.ModelShot.CONFIG_WEAPON = 'config-weapon';
-
 IW.ModelShot.MODEL_R1_A = 'R1_A';
 IW.ModelShot.MODEL_R1_B = 'R1_B';
 IW.ModelShot.MODEL_R1_C = 'R1_C';

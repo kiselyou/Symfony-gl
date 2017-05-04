@@ -6,6 +6,7 @@ var IW = IW || {};
  * @param {Scene} scene
  * @param {string} [id]
  * @constructor
+ * @augments ModelParameters
  */
 IW.Model = function ( multiLoader, scene, id ) {
     
@@ -32,44 +33,49 @@ IW.Model = function ( multiLoader, scene, id ) {
     this.scene = scene;
 
     /**
+     * Object IW.MultiLoader
      *
      * @type {IW.MultiLoader}
      */
     this.multiLoader = multiLoader;
 
     /**
+     * Object IW.ModelFly
      *
      * @type {IW.ModelFly}
      */
     this.modelFly = new IW.ModelFly( this );
 
     /**
+     * Object IW.Collision
      *
      * @type {IW.Collision}
      */
     this.collision = new IW.Collision( this );
 
     /**
+     * Object IW.ModelShot
      *
      * @type {IW.ModelShot}
      */
     this.modelShot = new IW.ModelShot( this );
 
     /**
-     * It is position model
+     * It is current position of model
      *
      * @type {Vector3}
      */
     this.position = new THREE.Vector3( 0, 0, 0 );
 
     /**
-     * It is position point where need move
+     * It is position of point where model will be moving
      *
      * @type {Vector3}
      */
     this.positionTo = new THREE.Vector3( 0, 0, this.far );
 
     /**
+     * It is previous position of model
      *
      * @type {Vector3}
      * @private
@@ -77,99 +83,55 @@ IW.Model = function ( multiLoader, scene, id ) {
     this.prev = new THREE.Vector3( 0, 0, - this.far );
 
     /**
+     * It is mesh of model
      *
-     * @type {{fly: {forward: {keyName: string, keyCode: number}, left: {keyName: string, keyCode: number}, right: {keyName: string, keyCode: number}, backward: {keyName: string, keyCode: number}}}}
-     */
-    this.keyboard = {
-        fly: {
-            forward: {
-                keyName: 'W',
-                keyCode: 87
-            },
-            left: {
-                keyName: 'A',
-                keyCode: 65
-            },
-            right: {
-                keyName: 'D',
-                keyCode: 68
-            },
-            backward: {
-                keyName: 'S',
-                keyCode: 83
-            }
-        }
-    };
-
-    /**
-     *
-     * @private
+     * @type{?THREE.Mesh}
      */
     this.model = null;
 
     /**
+     * List models of clients
      *
-     * @type {Array}
+     * @type {Array.<IW.Model>}
      */
     this.clientsModel = [];
 
     /**
+     * Get angle of model
      *
-     * @param {Vector3} a
-     * @param {Vector3} b
+     * @param {Vector3} a - It is previous position
+     * @param {Vector3} b - It is current position
      * @returns {number}
      */
-    function startAngle( a, b ) {
-
+    this.getAngle = function ( a, b ) {
         var v = new THREE.Vector3();
         v.subVectors( b, a );
         return Math.atan2( v.z, v.x );
-    }
+    };
 
     /**
+     * Get mesh of model
      *
-     * @returns {?Mesh}
+     * @returns {?THREE.Mesh}
      */
     this.getModel = function () {
         return this.model;
     };
 
     /**
+     * Set position of point where will be moving model
      *
-     * @returns {?Vector3}
-     */
-    this.getPosition = function () {
-        return this.model ? this.model.position : null;
-    };
-
-    /**
-     *
-     * @param {number} x
-     * @param {number} y
-     * @param {number} z
-     * @returns {IW.Model}
-     */
-    this.addPosition = function (x, y, z) {
-        this.model.position.x += x;
-        this.model.position.y += y;
-        this.model.position.z += z;
-        this.setPosition( this.model.position );
-        return this;
-    };
-
-    /**
-     *
-     * @param {Vector3} v
+     * @param {Vector3|{x: number, y: number, z: number}} v
      * @returns {IW.Model}
      */
     this.setPositionTo = function ( v ) {
-        this.model.lookAt( v );
-        this.prev.copy(this.model.position);
+        this.lookAt( v );
         this.positionTo.copy( v );
         return this;
     };
 
     /**
+     * Get position of point where will be moving model
      *
      * @returns {Vector3}
      */
@@ -177,78 +139,85 @@ IW.Model = function ( multiLoader, scene, id ) {
         return this.positionTo;
     };
 
+	/**
+     * Get position model
+	 *
+	 * @returns {Vector3}
+	 */
+	this.getPosition = function () {
+		return this.position;
+	};
+
+	/**
+     * Increase model position
+	 *
+	 * @param {Vector3|{x: number, y: number, z: number}} v
+	 * @returns {IW.Model}
+	 */
+	this.addPosition = function ( v ) {
+		this.prev.copy( this.position );
+		this.position.x += v.x;
+		this.position.y += v.y;
+		this.position.z += v.z;
+		return this;
+	};
+
     /**
+     * Set position of model
      *
-     * @param {Vector3} v
-     * @returns {IW.Model}
+     * @param {Vector3|{x: number, y: number, z: number}} v
      * @returns {IW.Model}
      */
     this.setPosition = function ( v ) {
         if ( this.model ) {
-            this.position.copy( v );
-            this.model.position.copy( v );
-        }
-
-        return this;
-    };
-
-    /**
-     *
-     * @param {number} x
-     * @param {number} y
-     * @param {number} z
-     * @returns {IW.Model}
-     */
-    this.setRotation = function ( x, y, z ) {
-        if ( this.model ) {
-            this.model.children[0].rotation.x = x;
-            this.model.children[0].rotation.y = y;
-            this.model.children[0].rotation.z = z;
+	        this.position.copy( v );
         }
         return this;
     };
 
     /**
+     * WARNING: Change arguments
+     * This method is setting direction of model
      *
-     * @param {number} x
-     * @param {number} y
-     * @param {number} z
+     * @param {Vector3|{x: number, y: number, z: number}} v
      * @returns {IW.Model}
      */
-    this.lookAt = function ( x, y, z ) {
-        this.model.lookAt( new THREE.Vector3( x, y, z ) );
+    this.lookAt = function ( v ) {
+        this.model.lookAt( v );
         return this;
     };
 
     /**
+     * WARNING: Added argument axis. Need change everywhere places. Rename method from "modelInclineZ" to "modelIncline"
+     * This method set angle of incline model
      *
+     * @param {string} axis
      * @param {number} angle
      * @returns {IW.Model}
      */
-    this.modelInclineZ = function (angle) {
-        this.model.children[0].rotation.z = angle;
+    this.modelIncline = function ( axis, angle ) {
+        this.model.children[0]['rotation'][axis] = angle;
         return this;
     };
 
     /**
-     * Load model
+     * Loads model and set necessary parameters
      *
-     * @param {boolean} addToScene
-     * @param {string} [str] - It is JSON data model
+     * @param {boolean} addToScene - If true model will be added to scene
+     * @param {string} [json] - It is JSON data model
      * @returns {IW.Model}
      */
-    this.load = function ( addToScene, str ) {
-
-        if ( str ) {
-            this.jsonToObject( str );
+    this.load = function ( addToScene, json ) {
+        if ( json ) {
+            this.jsonToObject( json );
             this.model = this.multiLoader.getObject( this.name );
         } else {
             this.model = this.multiLoader.getObject( this.name );
-            this.angle = startAngle( this.prev, this.getPosition() );
+            this.angle = this.getAngle( this.prev, this.getPosition() );
         }
 
-        this.setPosition( this.position );
         this.model[ 'name' ] = this.id;
+	    this.position = this.model.position;
 
         if ( addToScene ) {
             this.scene.add( this.model );
@@ -258,6 +227,8 @@ IW.Model = function ( multiLoader, scene, id ) {
     };
 
     /**
+     * WARNING: Need Rename this method
+     * This method adds fly control to this model
      *
      * @param {function} [callback]
      * @return {IW.Model}
@@ -268,7 +239,8 @@ IW.Model = function ( multiLoader, scene, id ) {
     };
 
     /**
-     * Change model
+     * WARNING: This method are not using yet
+     * Change model of user
      *
      * @param {string} name - It is JSON data model
      * @returns {IW.Model}
@@ -280,6 +252,8 @@ IW.Model = function ( multiLoader, scene, id ) {
     };
 
     /**
+     * WARNING: This method move to class ModelControl
+     * Add client
      *
      * @param {IW.Model} model
      * @return {IW.Model}
@@ -291,15 +265,16 @@ IW.Model = function ( multiLoader, scene, id ) {
     };
 
     /**
+     * Find model of client
      *
-     *  @param {(string|number)} id
+     * @param {(string|number)} id
      * @param {function} callback
      * @param {function} [error]
      * @return {IW.Model}
      */
     this.findClientModel = function ( id, callback, error ) {
         var clientModel = this.clientsModel.find(function ( value ) {
-            return value.id == id;
+            return value.id === id;
         });
 
         if ( clientModel ) {
@@ -314,11 +289,13 @@ IW.Model = function ( multiLoader, scene, id ) {
     };
 
     /**
+     * Remove current model
      *
      * @return {IW.Model}
      */
     this.removeModel = function () {
         this.scene.remove( this.scene.getObjectByName( this.id ) );
+	    this.modelShot.destroyShots();
         this.model = null;
         return this;
     };
@@ -329,12 +306,11 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @return {IW.Model}
      */
     this.destroyModel = function () {
-        this.scene.remove( this.scene.getObjectByName( this.id ) );
-        this.model = null;
-        return this;
+	    this.removeModel();
     };
 
     /**
+     * Remove client model
      *
      * @return {IW.Model}
      */
@@ -342,7 +318,6 @@ IW.Model = function ( multiLoader, scene, id ) {
         for ( var c = 0; c < this.clientsModel.length; c++ ) {
             if ( this.clientsModel[ c ][ 'id' ] === id ) {
                 this.clientsModel[ c ].removeModel();
-                this.clientsModel[ c ].modelShot.destroyShots();
                 this.clientsModel.splice( c, 1 );
                 break;
             }
@@ -355,47 +330,36 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @return {IW.Model}
      */
     this.destroyClientModel = function ( id ) {
-        for ( var c = 0; c < this.clientsModel.length; c++ ) {
-            if ( this.clientsModel[ c ][ 'id' ] === id ) {
-                this.clientsModel[ c ].removeModel();
-                this.clientsModel[ c ].modelShot.destroyShots();
-                this.clientsModel.splice( c, 1 );
-                break;
-            }
-        }
+	    this.removeClientModel( id );
     };
 
     /**
-     * Set data from json string
+     * Sets data from json string
      *
      * @param {string} str - It is json string of IW.Model
      * @return {IW.Model}
      */
     this.jsonToObject = function ( str ) {
-
         try {
-
             var _object = JSON.parse( str );
+            var vector = ['position', 'positionTo', 'prev'];
             for ( var property in _object ) {
-
                 if ( _object.hasOwnProperty( property ) ) {
-                    if ( ['position', 'positionTo', 'prev'].indexOf( property ) > -1 ) {
+                    if ( vector.indexOf( property ) > -1 ) {
                         this[property].copy( _object[property] );
                     } else {
                         this[property] = _object[property];
                     }
                 }
             }
-
         } catch ( e ) {
             console.warn( 'The model data is not correct' );
         }
-
         return this;
     };
 
     /**
-     * Get json string of current object
+     * Gets json string of current object
      *
      * @return {string}
      */
@@ -413,23 +377,57 @@ IW.Model = function ( multiLoader, scene, id ) {
 
         var object = {};
         for ( var property in this ) {
-            if ( this.hasOwnProperty(property) && except === undefined || except.indexOf( property ) === -1 ) {
+            if ( this.hasOwnProperty(property) || except.indexOf( property ) === -1 ) {
                 object[ property ] = this[ property ];
             }
         }
-
         return JSON.stringify( object );
     };
 
+	/**
+     * Get string parameters of model from object
+	 *
+	 * @param {[]} properties
+	 * @return {string}
+	 */
+	this.paramsToJSON = function ( properties ) {
+		var params = {};
+		for ( var property in properties) {
+			if ( properties.hasOwnProperty( property ) ) {
+				params[ property ] = properties[ property ];
+			}
+		}
+		return JSON.stringify( params );
+	};
+
+	/**
+     * Set parameters of model from string
+	 *
+	 * @param {string} json
+	 * @return {IW.Model}
+	 */
+	this.paramsJSONToObject = function ( json ) {
+		try {
+			var properties = JSON.parse( json );
+			for ( var property in properties) {
+				if ( properties.hasOwnProperty( property ) ) {
+					this[ property ] = properties[ property ];
+				}
+			}
+		} catch ( e ) {
+			console.warn( 'The params of model are not correct' );
+		}
+		return this;
+	};
+
     /**
+     * Update information of current model
      *
      * @param {number} delta
      */
     this.update = function ( delta ) {
-
         this.modelFly.update( delta );
         this.modelShot.update( delta );
-
         for ( var i = 0; i < this.clientsModel.length; i++ ) {
             this.clientsModel[ i ].update( delta );
         }
