@@ -149,7 +149,9 @@ IW.ModelShot = function ( model ) {
      * @returns {IW.ModelShot}
 	 */
 	this.destroyShot = function ( key ) {
-        this.model.scene.remove( this.charges[ key ] );
+	    var mesh = this.charges[ key ];
+        this.model.explosion.createExplosion( IW.ROCKET_STING, mesh.position );
+        this.model.scene.remove( mesh );
         this.charges.splice( key, 1 );
         return this;
     };
@@ -244,6 +246,3 @@ IW.ModelShot = function ( model ) {
 };
 
 IW.ModelShot.CONFIG_WEAPON = 'config-weapon';
-IW.ModelShot.MODEL_R1_A = 'R1_A';
-IW.ModelShot.MODEL_R1_B = 'R1_B';
-IW.ModelShot.MODEL_R1_C = 'R1_C';

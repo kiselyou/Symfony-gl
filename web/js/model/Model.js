@@ -3,10 +3,10 @@ var IW = IW || {};
 /**
  *
  * @param {IW.MultiLoader} multiLoader
- * @param {Scene} scene
+ * @param {THREE.Scene} scene
  * @param {string} [id]
+ * @augments IW.ModelParameters
  * @constructor
- * @augments ModelParameters
  */
 IW.Model = function ( multiLoader, scene, id ) {
     
@@ -28,7 +28,7 @@ IW.Model = function ( multiLoader, scene, id ) {
 
     /**
      *
-     * @type {Scene}
+     * @type {THREE.Scene}
      */
     this.scene = scene;
 
@@ -105,9 +105,25 @@ IW.Model = function ( multiLoader, scene, id ) {
 
     /**
      *
+     * @type {?IW.Explosion}
+     */
+    this.explosion = null;
+
+    /**
+     *
      * @type {IW.Model}
      */
     var scope = this;
+
+    /**
+     *
+     * @param {IW.Explosion} obj
+     * @returns {IW.Model}
+     */
+    this.setExplosion = function ( obj ) {
+        this.explosion = obj;
+        return this;
+    };
 
     /**
      * Get angle of model
@@ -328,6 +344,7 @@ IW.Model = function ( multiLoader, scene, id ) {
      */
     this.destroyModel = function ( id ) {
 	    this.removeModel( id );
+        this.explosion.createExplosion( IW.ROCKET_STING, this.getPosition() );
     };
 
     /**
@@ -397,7 +414,8 @@ IW.Model = function ( multiLoader, scene, id ) {
             'modelShot',
             'keyboard',
             'clientsModel',
-            'collision'
+            'collision',
+            'explosion'
         ];
 
         var object = {};

@@ -28,7 +28,7 @@
 
         /**
          *
-         * @type {Scene}
+         * @type {THREE.Scene}
          */
         this.scene = new THREE.Scene();
 
@@ -131,6 +131,12 @@
 
         /**
          *
+         * @type {IW.Explosion}
+         */
+        this.explosion = null;
+
+        /**
+         *
          * @type {?IW.PanelControls}
          */
         this.panelControl = null;
@@ -166,8 +172,11 @@
 
 			        console.log(resourceId);
 
+                    scope.explosion = new IW.Explosion( scope.multiLoader, scope.scene );
                     scope.model = new IW.Model( scope.multiLoader, scope.scene, resourceId );
+                    scope.model.setExplosion( scope.explosion );
                     scope.model.load( true );
+
 
                     // Set events of fly and send info about position of user model
                     scope.model.addFlyEvents( function ( moution ) {
@@ -243,6 +252,7 @@
 
                             // Initialisation model of client to own browser
                             clientModel = new IW.Model( scope.multiLoader, scope.scene );
+                            clientModel.setExplosion( scope.explosion );
                             clientModel.load( true, response.data.model );
                             scope.model.addClientModel( clientModel );
 
@@ -258,6 +268,7 @@
 
                             // Set model of old client to own browser
                             clientModel = new IW.Model( scope.multiLoader, scope.scene );
+                            clientModel.setExplosion( scope.explosion );
                             clientModel.load( true, response.data.model );
                             scope.model.addClientModel( clientModel );
 
@@ -358,11 +369,13 @@
 
                 if ( scope.model ) {
 
-
-                    if ( group && shockwaveGroup ) {
-                        group.tick();
-                        // shockwaveGroup.tick();
+                    if (scope.explosion) {
+                        scope.explosion.update();
                     }
+                    // if ( group && shockwaveGroup ) {
+                    //     // group.tick( delta );
+                    //     shockwaveGroup.tick();
+                    // }
 
 
 
@@ -398,154 +411,200 @@
 
 
 
-            scope.clock.getDelta();
-
-            var group = new SPE.Group( {
-                    maxParticleCount: 500,
-                    texture: {
-                        value: scope.multiLoader.getTexture( 'explosion' ),
-                        frames: new THREE.Vector2( 5, 5 ),
-                        loop: 1
-                    },
-                    depthTest: true,
-                    depthWrite: false,
-                    blending: THREE.AdditiveBlending,
-                    scale: 600,
-                    fixedTimeStep: 0.03
-                } ),
-                shockwaveGroup = new SPE.Group( {
-                    maxParticleCount: 500,
-                    texture: {
-                        value: scope.multiLoader.getTexture( 'smoke' ),
-                    },
-                    depthTest: false,
-                    depthWrite: true,
-                    blending: THREE.NormalBlending,
-                } ),
-                shockwave = new SPE.Emitter( {
-                    particleCount: 200,
-                    type: SPE.distributions.DISC,
-                    position: {
-                        radius: 5,
-                        spread: new THREE.Vector3( 5 )
-                    },
-                    maxAge: {
-                        value: 2,
-                        spread: 0
-                    },
-                    // duration: 1,
-                    activeMultiplier: 2000,
-                    velocity: {
-                        value: new THREE.Vector3( 40 )
-                    },
-                    rotation: {
-                        axis: new THREE.Vector3( 1, 0, 0 ),
-                        angle: Math.PI * 0.5,
-                        static: true
-                    },
-                    size: { value: 2 },
-                    color: {
-                        value: [
-                            new THREE.Color( 0.4, 0.2, 0.1 ),
-                            new THREE.Color( 0.2, 0.2, 0.2 )
-                        ]
-                    },
-                    opacity: { value: [0.5, 0.2, 0] }
-                }),
-                debris = new SPE.Emitter( {
-                    particleCount: 100,
-                    type: SPE.distributions.SPHERE,
-                    position: {
-                        radius: 0.1,
-                    },
-                    maxAge: {
-                        value: 2
-                    },
-                    // duration: 2,
-                    activeMultiplier: 40,
-                    velocity: {
-                        value: new THREE.Vector3( 100 )
-                    },
-                    acceleration: {
-                        value: new THREE.Vector3( 0, -20, 0 ),
-                        distribution: SPE.distributions.BOX
-                    },
-                    size: { value: 2 },
-                    drag: {
-                        value: 1
-                    },
-                    color: {
-                        value: [
-                            new THREE.Color( 1, 1, 1 ),
-                            new THREE.Color( 1, 1, 0 ),
-                            new THREE.Color( 1, 0, 0 ),
-                            new THREE.Color( 0.4, 0.2, 0.1 )
-                        ]
-                    },
-                    opacity: { value: [0.4, 0] }
-                }),
-                fireball = new SPE.Emitter( {
-                    particleCount: 20,
-                    type: SPE.distributions.SPHERE,
-                    position: {
-                        radius: 1
-                    },
-                    maxAge: { value: 2 },
-                    // duration: 1,
-                    activeMultiplier: 20,
-                    velocity: {
-                        value: new THREE.Vector3( 10 )
-                    },
-                    size: { value: [20, 100] },
-                    color: {
-                        value: [
-                            new THREE.Color( 0.5, 0.1, 0.05 ),
-                            new THREE.Color( 0.2, 0.2, 0.2 )
-                        ]
-                    },
-                    opacity: { value: [0.5, 0.35, 0.1, 0] }
-                }),
-                mist = new SPE.Emitter( {
-                    particleCount: 50,
-                    position: {
-                        spread: new THREE.Vector3( 10, 10, 10 ),
-                        distribution: SPE.distributions.SPHERE
-                    },
-                    maxAge: { value: 2 },
-                    // duration: 1,
-                    activeMultiplier: 2000,
-                    velocity: {
-                        value: new THREE.Vector3( 8, 3, 10 ),
-                        distribution: SPE.distributions.SPHERE
-                    },
-                    size: { value: 40 },
-                    color: {
-                        value: new THREE.Color( 0.2, 0.2, 0.2 )
-                    },
-                    opacity: { value: [0, 0, 0.2, 0] }
-                }),
-                flash = new SPE.Emitter( {
-                    particleCount: 50,
-                    position: { spread: new THREE.Vector3( 5, 5, 5 ) },
-                    velocity: {
-                        spread: new THREE.Vector3( 30 ),
-                        distribution: SPE.distributions.SPHERE
-                    },
-                    size: { value: [2, 20, 20, 20] },
-                    maxAge: { value: 2 },
-                    activeMultiplier: 2000,
-                    opacity: { value: [0.5, 0.25, 0, 0] }
-                } );
-
-            group.addEmitter( fireball ).addEmitter( flash );
-            shockwaveGroup.addEmitter( debris ).addEmitter( mist ).addEmitter( shockwave );
-
-            scope.scene.add( shockwaveGroup.mesh );
-            scope.scene.add( group.mesh );
-
-
-
-
+            // scope.clock.getDelta();
+            //
+            // var group = new SPE.Group( {
+            //         maxParticleCount: 50000,
+            //         texture: {
+            //             value: scope.multiLoader.getTexture( 'explosion' ),
+            //             frames: new THREE.Vector2( 5, 5 ),
+            //             loop: 1
+            //         },
+            //         depthTest: true,
+            //         depthWrite: false,
+            //         blending: THREE.AdditiveBlending,
+            //         scale: 600,
+            //         fixedTimeStep: 0.03
+            //     } ),
+            //     shockwaveGroup = new SPE.Group( {
+            //         maxParticleCount: 500,
+            //         texture: {
+            //             value: scope.multiLoader.getTexture( 'smoke' ),
+            //         },
+            //         depthTest: false,
+            //         depthWrite: true,
+            //         blending: THREE.NormalBlending,
+            //     } ),
+            //     shockwave = new SPE.Emitter( {
+            //         particleCount: 200,
+            //         type: SPE.distributions.DISC,
+            //         position: {
+            //             radius: 5,
+            //             spread: new THREE.Vector3( 5 )
+            //         },
+            //         maxAge: {
+            //             value: 2,
+            //             spread: 0
+            //         },
+            //         // duration: 1,
+            //         activeMultiplier: 2000,
+            //         velocity: {
+            //             value: new THREE.Vector3( 40 )
+            //         },
+            //         rotation: {
+            //             axis: new THREE.Vector3( 1, 0, 0 ),
+            //             angle: Math.PI * 0.5,
+            //             static: true
+            //         },
+            //         size: { value: 2 },
+            //         color: {
+            //             value: [
+            //                 new THREE.Color( 0.4, 0.2, 0.1 ),
+            //                 new THREE.Color( 0.2, 0.2, 0.2 )
+            //             ]
+            //         },
+            //         opacity: { value: [0.5, 0.2, 0] }
+            //     }),
+            //     debris = new SPE.Emitter( {
+            //         particleCount: 100,
+            //         type: SPE.distributions.SPHERE,
+            //         position: {
+            //             radius: 0.1,
+            //         },
+            //         maxAge: {
+            //             value: 2
+            //         },
+            //         // duration: 2,
+            //         activeMultiplier: 40,
+            //         velocity: {
+            //             value: new THREE.Vector3( 100 )
+            //         },
+            //         acceleration: {
+            //             value: new THREE.Vector3( 0, -20, 0 ),
+            //             distribution: SPE.distributions.BOX
+            //         },
+            //         size: { value: 2 },
+            //         drag: {
+            //             value: 1
+            //         },
+            //         color: {
+            //             value: [
+            //                 new THREE.Color( 1, 1, 1 ),
+            //                 new THREE.Color( 1, 1, 0 ),
+            //                 new THREE.Color( 1, 0, 0 ),
+            //                 new THREE.Color( 0.4, 0.2, 0.1 )
+            //             ]
+            //         },
+            //         opacity: { value: [0.4, 0] }
+            //     }),
+            //     fireball = new SPE.Emitter( {
+            //         particleCount: 20,
+            //         type: SPE.distributions.SPHERE,
+            //         position: {
+            //             radius: 1
+            //         },
+            //         maxAge: { value: 2 },
+            //         // duration: 1,
+            //         activeMultiplier: 20,
+            //         velocity: {
+            //             value: new THREE.Vector3( 10 )
+            //         },
+            //         size: { value: [20, 100] },
+            //         color: {
+            //             value: [
+            //                 new THREE.Color( 0.5, 0.1, 0.05 ),
+            //                 new THREE.Color( 0.2, 0.2, 0.2 )
+            //             ]
+            //         },
+            //         opacity: { value: [0.5, 0.35, 0.1, 0] }
+            //     }),
+            //     mist = new SPE.Emitter( {
+            //         particleCount: 50,
+            //         position: {
+            //             spread: new THREE.Vector3( 10, 10, 10 ),
+            //             distribution: SPE.distributions.SPHERE
+            //         },
+            //         maxAge: { value: 2 },
+            //         // duration: 1,
+            //         activeMultiplier: 2000,
+            //         velocity: {
+            //             value: new THREE.Vector3( 8, 3, 10 ),
+            //             distribution: SPE.distributions.SPHERE
+            //         },
+            //         size: { value: 40 },
+            //         color: {
+            //             value: new THREE.Color( 0.2, 0.2, 0.2 )
+            //         },
+            //         opacity: { value: [0, 0, 0.2, 0] }
+            //     }),
+            //     flash = new SPE.Emitter( {
+            //         particleCount: 50,
+            //         position: { spread: new THREE.Vector3( 5, 5, 5 ) },
+            //         velocity: {
+            //             spread: new THREE.Vector3( 30 ),
+            //             distribution: SPE.distributions.SPHERE
+            //         },
+            //         size: { value: [2, 20, 20, 20] },
+            //         maxAge: { value: 2 },
+            //         activeMultiplier: 2000,
+            //         opacity: { value: [0.5, 0.25, 0, 0] }
+            //     } );
+            //
+            // var  emitterSettings = {
+            //     type: SPE.distributions.SPHERE,
+            //     position: {
+            //         spread: new THREE.Vector3( 5 ),
+            //         radius: 3,
+            //     },
+            //     velocity: {
+            //         value: new THREE.Vector3( 150 )
+            //     },
+            //     size: {
+            //         value: [ 30, 40 ]
+            //     },
+            //     opacity: {
+            //         value: [0.5, 0]
+            //     },
+            //     color: {
+            //         value: [new THREE.Color('yellow'),new THREE.Color('red')]
+            //     },
+            //     particleCount: 20,
+            //     alive: true,
+            //     duration: 0.05,
+            //     maxAge: {
+            //         value: 0.1
+            //     }
+            // };
+            //
+            // // Add a mousedown listener. When mouse is clicked, a new explosion will be created.
+            // document.addEventListener( 'mousedown', createExplosion, false );
+            // // Do the same for a keydown event
+            // document.addEventListener( 'keydown', createExplosion, false );
+            //
+            // // group.addEmitter( fireball ).addEmitter( flash );
+            // // console.log( group );
+            // // shockwaveGroup.addEmitter( debris ).addEmitter( mist ).addEmitter( shockwave );
+            //
+            // // scope.scene.add( shockwaveGroup.mesh );
+            //
+            // shockwaveGroup = new SPE.Group({
+            //     texture: {
+            //         value: scope.multiLoader.getTexture( 'smoke' )
+            //     },
+            //     blending: THREE.AdditiveBlending
+            // });
+            //
+            // shockwaveGroup.addPool( 1, emitterSettings, false );
+            //
+            // scope.scene.add( shockwaveGroup.mesh );
+            //
+            //
+            // var pos = new THREE.Vector3( 0, 0, 50 );
+            // // Trigger an explosion and random co-ords.
+            // function createExplosion() {
+            //     shockwaveGroup.triggerPoolEmitter( 1, pos );
+            //
+            // }
 
 
 

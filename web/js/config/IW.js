@@ -1,4 +1,4 @@
-var IW = {};
+var IW = IW || {};
 
 // ROCKETS
 IW.ROCKET_STING = 'STING';
