@@ -8,7 +8,7 @@
     IW.PanelAction = function ( htmlId ) {
 
         /** @const {number} */
-        var PANEL_MIN_WIDTH = 320;
+        var PANEL_MIN_WIDTH = 400;
 
         var PANEL_MAX_WIDTH = 1000;
 
@@ -287,34 +287,69 @@
             element.innerHTML = params.label + ': ' + max + ' / ' + params.number.toFixed( scope.fixing ) + ' ' + unit;
         }
 
-        /**
-         *
-         */
+        // /**
+        //  *
+        //  * @param {(string|number)} key
+        //  * @param {string} label
+        //  * @param {?number} [max]
+        //  * @param {?number} [reduction]
+        //  * @param {?string} [color]
+        //  * @param {?string} [callback]
+        //  * @param {?string} [unit]
+        //  * @returns {IW.PanelAction}
+        //  */
+        // this.addProgress = function ( key, label, max, reduction, color, callback, unit ) {
+        //
+        //     progress.push( {
+        //         key: key,
+        //         label: label,
+        //         color: color,
+        //         callback: callback,
+        //         unit: unit,
+        //         params: {
+        //             current: 0,
+        //             max: 100,
+        //             min: 0,
+        //             reduction: 5
+        //         }
+        //     } );
+        //
+        //     progress.push(
+        //         {
+        //             key: key,
+        //             label: label,
+        //             number: 0,
+        //             max: max,
+        //             reduction: reduction,
+        //             color: color,
+        //             unit: unit,
+        //             callback: callback
+        //         }
+        //     );
+        //     return this;
+        // };
 
         /**
          *
          * @param {(string|number)} key
          * @param {string} label
-         * @param {?number} [max]
-         * @param {?number} [reduction]
-         * @param {?string} [color]
-         * @param {?string} [callback]
-         * @param {?string} [unit]
+         * @param {string} color
+         * @param { { current: number, max: number, min: number, reduction: number } } params
+         * @param {function} [callback]
+         * @param {string} [unit]
          * @returns {IW.PanelAction}
          */
-        this.addProgress = function ( key, label, max, reduction, color, callback, unit ) {
-            progress.push(
-                {
-                    key: key,
-                    label: label,
-                    number: 0,
-                    max: max,
-                    reduction: reduction,
-                    color: color,
-                    unit: unit,
-                    callback: callback
-                }
-            );
+        this.addProgress = function ( key, label, color, params, callback, unit ) {
+
+            progress.push( {
+                key: key,
+                label: label,
+                color: color,
+                callback: callback,
+                unit: unit,
+                params: params
+            } );
+
             return this;
         };
 
@@ -385,7 +420,6 @@
             panel.classList.add('sw-panel-control');
             panel.classList.add('sw-modal-skin-panel');
             panel.style.position = 'absolute';
-            panel.style.width = size.width + 'px';
 
             panel.style.left = size.left + 'px';
             panel.style.bottom = size.bottom + 'px';
@@ -397,12 +431,11 @@
 
         /**
          *
-         * @returns {{width: Number, height: Number, left: number, top: number}}
+         * @returns {{height: Number, left: number, top: number}}
          */
         function getSize() {
 
             return {
-                width: PANEL_MIN_WIDTH,
                 left: 0,
                 bottom: 0
             }
@@ -420,7 +453,6 @@
 
             var size = getSize();
             panel.style.left = size.left + 'px';
-            panel.style.width = size.width + 'px';
             panel.style.bottom = size.bottom + 'px';
         }
 

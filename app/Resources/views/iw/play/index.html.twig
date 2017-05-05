@@ -35,6 +35,10 @@
                 multiLoader.addLoadTexture( map.names[ i ], lbl, map.path + map.names[ i ] + map.extension );
             }
 
+            multiLoader.addLoadTexture( 'smoke', 'SPRITE', '{{ asset('/images/effects/smokeparticle.png') }}' );
+            multiLoader.addLoadTexture( 'explosion', 'SPRITE', '{{ asset('/images/effects/sprite-explosion2.png') }}' );
+
+
             // UPLOAD SHIPS
             multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS - A', '{{asset('/models/S1/A/')}}', 'iw-ship.obj', 'iw-ship.mtl', { w: 12, h: 3, d: 9 } );
 

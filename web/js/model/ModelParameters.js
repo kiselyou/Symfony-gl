@@ -164,17 +164,13 @@ IW.ModelParameters = function () {
         var critical = damage.physicalDamage * damage.criticalDamage / 100;
 
         if ((this.armor.current - damage.physicalDamage) < this.getMinArmor()) {
-            this.hull.current -= Math.abs( this.armor.current - damage.physicalDamage );
+            this.addHull( - Math.abs( this.armor.current - damage.physicalDamage ) );
             this.armor.current = this.getMinArmor();
         } else {
             this.armor.current -= damage.physicalDamage;
         }
 
-        if (this.hull.current < this.getMinHull()) {
-            this.hull.current = this.getMinHull();
-        } else {
-            this.hull.current -= critical;
-        }
+        this.addHull( - critical );
 
         return this;
     };
@@ -243,6 +239,8 @@ IW.ModelParameters = function () {
     this.addHull = function ( int ) {
         if ( this.getCurrentHull() + int > this.getMaxHull() ) {
             this.hull.current = this.getMaxHull();
+        } else if ( this.getCurrentHull() - int < this.getMinHull() ) {
+            this.hull.current = this.getMinHull();
         } else {
             this.hull.current += int;
         }
