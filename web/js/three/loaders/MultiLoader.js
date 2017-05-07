@@ -452,17 +452,7 @@ IW.MultiLoader = function () {
             params.pathOBJ,
             function ( object ) {
 
-                var w = params.boxSize.w ? params.boxSize.w : 1;
-                var h = params.boxSize.h ? params.boxSize.h : 1;
-                var d = params.boxSize.d ? params.boxSize.d : 1;
-
-                var geometry = new THREE.BoxGeometry( w, h, d );
-                var material = new THREE.MeshLambertMaterial( { color: 0x4AB5E2, opacity: 0, transparent: true } );
-                var sphere = new THREE.Mesh( geometry, material );
-
-                sphere.add( object );
-
-                params[ 'object' ] = sphere;
+                params.object = object;
                 _objects.push( params );
 
                 if ( _objectLoadedCallback ) {

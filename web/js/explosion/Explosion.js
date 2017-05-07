@@ -9,16 +9,16 @@ var IW = IW || {};
  */
 IW.Explosion = function ( multiLoader, scene ) {
 
+    // Parent constructor
+    IW.ExplosionOptions.call( this );
+
     /**
      *
      * @type {THREE.Scene}
      */
     this.scene = scene;
 
-    // Parent constructor
-    IW.ExplosionOptions.call( this );
-
-    var smoke = new SPE.Group( {
+    var group_1 = new SPE.Group( {
         maxParticleCount: 50000,
         texture: {
             value: multiLoader.getTexture( 'smoke' )
@@ -26,21 +26,60 @@ IW.Explosion = function ( multiLoader, scene ) {
         blending: THREE.AdditiveBlending
     } );
 
-    smoke.addPool( 1, this.sting, false );
+    group_1.addPool( 1, this.sting, false );
 
-    this.scene.add( smoke.mesh );
+    this.scene.add( group_1.mesh );
+
+    var group_2 = new SPE.Group( {
+        maxParticleCount: 50000,
+        texture: {
+            value: multiLoader.getTexture( 'explosion' ),
+            frames: new THREE.Vector2( 5, 5 ),
+            loop: 1
+        },
+        depthTest: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        scale: 600,
+        fixedTimeStep: 0.03
+    } );
+
+    group_2.addPool( 1, this.fireball, false );
+
+    this.scene.add( group_2.mesh );
+
+    var group_3 = new SPE.Group( {
+        maxParticleCount: 50000,
+        texture: {
+            value: multiLoader.getTexture( 'smoke' )
+        },
+        blending: THREE.AdditiveBlending
+    } );
+
+    group_3
+        .addPool( 1, this.debris, false )
+        .addPool( 2, this.mist, false );
+
+    this.scene.add( group_3.mesh );
 
     /**
      * Trigger an explosion
      *
-     * @param {string|number} type
+     * @param {string|number} type - possible values ( 1 | 2 )
      * @param {Vector3} position
      * @returns {IW.Explosion}
      */
     this.createExplosion = function ( type, position ) {
         switch ( type ) {
-            case IW.ROCKET_STING:
-                smoke.triggerPoolEmitter( 1, position );
+            case 1:
+                group_1.triggerPoolEmitter( 1, position );
+                break;
+            case 2:
+                group_2
+                    .triggerPoolEmitter( 1, position );
+                group_3
+                    .triggerPoolEmitter( 1, position )
+                    .triggerPoolEmitter( 2, position );
                 break;
         }
         return this;
@@ -51,6 +90,8 @@ IW.Explosion = function ( multiLoader, scene ) {
      * @returns {void}
      */
     this.update = function () {
-        smoke.tick();
+        group_1.tick();
+        group_2.tick();
+        group_3.tick();
     };
 };

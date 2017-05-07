@@ -320,58 +320,41 @@ IW.Model = function ( multiLoader, scene, id ) {
     /**
      * If parameter is empty will be removed current model else will try remove current or client model
      *
-     * @param {string|number} [id]
+     * @param {boolean} effect
+     * @param {?|string|number} [id]
      * @return {IW.Model}
      */
-    this.removeModel = function ( id ) {
+    this.destroyModel = function ( effect, id ) {
         if ( id === this.id || !id ) {
+            if (effect) {
+                this.explosion.createExplosion( 2, this.getPosition() );
+            }
             this.enabled = false;
-            this.scene.remove(this.scene.getObjectByName( this.id ));
             this.modelShot.destroyShots();
+            this.scene.remove(this.scene.getObjectByName( this.id ));
             this.model = null;
         } else {
-            this.removeClientModel( id );
+            this.removeClientModel( effect, id );
         }
         return this;
     };
 
     /**
-     * Remove model are using effects.
-     * If parameter is empty will be removed current model else will try remove current or client model
-     *
-     * @param {string|number} [id]
-     * @return {IW.Model}
-     */
-    this.destroyModel = function ( id ) {
-	    this.removeModel( id );
-        this.explosion.createExplosion( IW.ROCKET_STING, this.getPosition() );
-    };
-
-    /**
      * Remove client model
      *
-     *  @param {string|number} id
+     * @param {boolean} effect
+     * @param {string|number} id
      * @return {IW.Model}
      */
-    this.removeClientModel = function ( id ) {
-
+    this.removeClientModel = function ( effect, id ) {
         for ( var c = 0; c < this.clientsModel.length; c++ ) {
             if ( this.clientsModel[ c ][ 'id' ] === id ) {
-                this.clientsModel[ c ].removeModel( id );
+                this.clientsModel[ c ].destroyModel( effect, id );
                 this.clientsModel.splice( c, 1 );
-                console.log( this.clientsModel, id );
                 break;
             }
         }
-    };
-
-    /**
-     * Remove client model are using effects
-     *
-     * @return {IW.Model}
-     */
-    this.destroyClientModel = function ( id ) {
-	    this.removeClientModel( id );
+        return this;
     };
 
     /**

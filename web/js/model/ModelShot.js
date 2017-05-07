@@ -125,7 +125,7 @@ IW.ModelShot = function ( model ) {
 				}
 
 				if ( client.isDestroyed() ) {
-					scope.model.destroyModel( object.name );
+					scope.model.destroyModel( true, object.name );
 				}
 			} );
 		} );
@@ -150,7 +150,7 @@ IW.ModelShot = function ( model ) {
 	 */
 	this.destroyShot = function ( key ) {
 	    var mesh = this.charges[ key ];
-        this.model.explosion.createExplosion( IW.ROCKET_STING, mesh.position );
+        this.model.explosion.createExplosion( 1, mesh.position );
         this.model.scene.remove( mesh );
         this.charges.splice( key, 1 );
         return this;

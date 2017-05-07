@@ -56,6 +56,18 @@ IW.Collision = function ( model ) {
 
     /**
      *
+     * @type {Box3}
+     */
+    var box1 = new THREE.Box3();
+
+    /**
+     *
+     * @type {Box3}
+     */
+    var box2 = new THREE.Box3();
+
+    /**
+     *
      * @param {Mesh} mesh
      * @param {function} callback
      * @return {IW.Collision}
@@ -66,19 +78,14 @@ IW.Collision = function ( model ) {
             return this;
         }
 
-        var originPoint = mesh.position.clone();
+        for (var i = 0; i < scope.objectsCollision.length; i++) {
 
-        for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
+            box1.setFromObject( scope.objectsCollision[ i ] );
+            box2.setFromObject( mesh );
 
-            var localVertex = mesh.geometry.vertices[ vertexIndex ].clone();
-            var globalVertex = localVertex.applyMatrix4( mesh.matrix );
-            var directionVector = globalVertex.sub( mesh.position );
-
-            var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-            var intersect = ray.intersectObjects( scope.objectsCollision );
-
-            if ( intersect.length > 0 && intersect[ 0 ].distance < directionVector.length() ) {
-                callback.call( this, intersect[ 0 ][ 'object' ] );
+            if ( box1.intersectsBox( box2 ) ) {
+                // console.log( scope.objectsCollision[ i ].id );
+                callback.call( this, scope.objectsCollision[ i ] );
                 break;
             }
         }
