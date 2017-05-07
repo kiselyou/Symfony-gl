@@ -318,7 +318,7 @@
                                 if ( response.data.model.destroy ) {
 
                                     scope.model.destroyModel( true, scope.model.id );
-
+                                    scope.labelControl.removeLabels();
                                     // Unsubscribe if client was killed
                                     socket.windowCloseControls( function () {
                                         socket.sendToAll( 'unsubscribe-client', { resourceId: socket.getResourceId() }, true );

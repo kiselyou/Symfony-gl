@@ -287,69 +287,31 @@
             element.innerHTML = params.label + ': ' + max + ' / ' + params.number.toFixed( scope.fixing ) + ' ' + unit;
         }
 
-        // /**
-        //  *
-        //  * @param {(string|number)} key
-        //  * @param {string} label
-        //  * @param {?number} [max]
-        //  * @param {?number} [reduction]
-        //  * @param {?string} [color]
-        //  * @param {?string} [callback]
-        //  * @param {?string} [unit]
-        //  * @returns {IW.PanelAction}
-        //  */
-        // this.addProgress = function ( key, label, max, reduction, color, callback, unit ) {
-        //
-        //     progress.push( {
-        //         key: key,
-        //         label: label,
-        //         color: color,
-        //         callback: callback,
-        //         unit: unit,
-        //         params: {
-        //             current: 0,
-        //             max: 100,
-        //             min: 0,
-        //             reduction: 5
-        //         }
-        //     } );
-        //
-        //     progress.push(
-        //         {
-        //             key: key,
-        //             label: label,
-        //             number: 0,
-        //             max: max,
-        //             reduction: reduction,
-        //             color: color,
-        //             unit: unit,
-        //             callback: callback
-        //         }
-        //     );
-        //     return this;
-        // };
-
         /**
          *
          * @param {(string|number)} key
          * @param {string} label
-         * @param {string} color
-         * @param { { current: number, max: number, min: number, reduction: number } } params
-         * @param {function} [callback]
-         * @param {string} [unit]
+         * @param {?number} [max]
+         * @param {?number} [reduction]
+         * @param {?string} [color]
+         * @param {?string} [callback]
+         * @param {?string} [unit]
          * @returns {IW.PanelAction}
          */
-        this.addProgress = function ( key, label, color, params, callback, unit ) {
+        this.addProgress = function ( key, label, max, reduction, color, callback, unit ) {
 
-            progress.push( {
-                key: key,
-                label: label,
-                color: color,
-                callback: callback,
-                unit: unit,
-                params: params
-            } );
-
+            progress.push(
+                {
+                    key: key,
+                    label: label,
+                    number: 0,
+                    max: max,
+                    reduction: reduction,
+                    color: color,
+                    unit: unit,
+                    callback: callback
+                }
+            );
             return this;
         };
 

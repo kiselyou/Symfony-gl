@@ -17,6 +17,8 @@ IW.LabelControls = function ( model, camera, container ) {
      */
     this.model = model;
 
+    this.removed = false;
+
     /**
      * This method append labels to scene
      *
@@ -29,12 +31,21 @@ IW.LabelControls = function ( model, camera, container ) {
         return this;
     };
 
+    this.removeLabels = function () {
+        this.remove( IW.Labels.TPL_AIM );
+        this.remove( IW.Labels.TPL_SPEED );
+    };
+
     /**
      * Update labels
      *
      * @returns {void}
      */
     this.update = function () {
+
+        if (this.removed) {
+            return;
+        }
 
         this.updateLabel( IW.Labels.TPL_SPEED, 'Speed: ' + this.model.getCurrentSpeed() );
         this.updatePosition( IW.Labels.TPL_SPEED, this.model.getPosition(), IW.Labels.POSITION_RT );

@@ -331,7 +331,7 @@ IW.Model = function ( multiLoader, scene, id ) {
             }
             this.enabled = false;
             this.modelShot.destroyShots();
-            this.scene.remove(this.scene.getObjectByName( this.id ));
+            this.scene.remove( this.scene.getObjectByName( this.id ) );
             this.model = null;
         } else {
             this.removeClientModel( effect, id );

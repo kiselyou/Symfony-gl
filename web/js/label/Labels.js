@@ -222,6 +222,11 @@ IW.Labels = function ( camera, container ) {
         return this;
     };
 
+    this.remove = function ( name ) {
+        var element = getElement( name );
+        element.remove();
+    };
+
     this.addClass = function ( htmlClass ) {
 
     };
