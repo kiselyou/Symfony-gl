@@ -180,13 +180,12 @@
 
                     // Set events of fly and send info about position of user model
                     scope.model.addFlyEvents( function ( moution ) {
+
                         socket.sendToAll(
                             'update-model-fly',
                             {
                                 modelFly: moution,
-                                modelAngle: scope.model.angle,
-                                modelPosition: JSON.stringify(scope.model.getPosition()),
-                                modelPositionTo: JSON.stringify(scope.model.getPositionTo()),
+                                modelParam: scope.model.paramsToJSON( ['position', 'positionTo', 'incline', 'angle'] ),
                                 resourceId: socket.getResourceId()
                             },
                             true
@@ -280,10 +279,10 @@
                             scope.model.findClientModel(
                                 response.data.resourceId,
                                 function ( model ) {
-                                    model.angle = response.data.modelAngle;
-                                    model.setPosition( JSON.parse( response.data.modelPosition ) );
-                                    model.setPositionTo( JSON.parse( response.data.modelPositionTo ) );
+                                    model.paramsJSONToObject( response.data.modelParam );
+                                    model.setPositionTo( model.getPositionTo() );
                                     model.modelFly.setMotion( response.data.modelFly );
+
                                 }
                             );
 

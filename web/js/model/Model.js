@@ -366,7 +366,6 @@ IW.Model = function ( multiLoader, scene, id ) {
     this.jsonToObject = function ( str ) {
         try {
             var _object = JSON.parse( str );
-            // console.log( _object );
             var vector = ['position', 'positionTo', 'prev'];
             for ( var property in _object ) {
                 if ( _object.hasOwnProperty( property ) ) {
@@ -433,11 +432,18 @@ IW.Model = function ( multiLoader, scene, id ) {
 	 * @return {IW.Model}
 	 */
 	this.paramsJSONToObject = function ( json ) {
+        var vector = ['position', 'positionTo', 'prev'];
 		try {
 			var properties = JSON.parse( json );
 			for ( var property in properties) {
 				if ( properties.hasOwnProperty( property ) ) {
-					this[ property ] = properties[ property ];
+
+                    if ( vector.indexOf( property ) > -1 ) {
+                        this[property].copy( properties[ property ] );
+                    } else {
+                        this[ property ] = properties[ property ];
+                    }
+
 				}
 			}
 		} catch ( e ) {
