@@ -683,9 +683,9 @@
         function addCamera() {
 
             scope.camera.position.set( 0, 20, -60 );
-            scope.camera.fov = 45;
+            scope.camera.fov = 60;
             scope.camera.near = 1;
-            scope.camera.far = 20000;
+            scope.camera.far = 100000;
             scope.camera.aspect = scope.getAspect();
             scope.camera.lookAt( scope.scene.position );
             scope.camera.updateProjectionMatrix();

@@ -276,6 +276,7 @@
 					scope._callback.call(this, motion);
 				}
 			}
+
 			calculateIncline();
 		};
 	};

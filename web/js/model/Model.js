@@ -223,7 +223,7 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @returns {IW.Model}
      */
     this.modelIncline = function ( axis, angle ) {
-        this.model.children[0]['rotation'][axis] = angle;
+        this.model.children[0]['rotation'][ axis ] = angle;
         return this;
     };
 
@@ -366,6 +366,7 @@ IW.Model = function ( multiLoader, scene, id ) {
     this.jsonToObject = function ( str ) {
         try {
             var _object = JSON.parse( str );
+            // console.log( _object );
             var vector = ['position', 'positionTo', 'prev'];
             for ( var property in _object ) {
                 if ( _object.hasOwnProperty( property ) ) {

@@ -452,7 +452,10 @@ IW.MultiLoader = function () {
             params.pathOBJ,
             function ( object ) {
 
-                params.object = object;
+                var group = new THREE.Object3D();
+                group.add( object );
+
+                params.object = group;
                 _objects.push( params );
 
                 if ( _objectLoadedCallback ) {

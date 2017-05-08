@@ -43,7 +43,7 @@ IW.ModelParameters = function () {
 	this.incline = {
         angle: 0,                       // It is angle incline
         speed: 0.5,                     // It is speed incline ( radian )
-        maxAngle: 35 / 180 * Math.PI,   // It is max angle incline ( radian )
+        maxAngle: 45 / 180 * Math.PI,   // It is max angle incline ( radian )
         minSpeed: 10                    // It is min speed of model where will begin inclines
     };
 
