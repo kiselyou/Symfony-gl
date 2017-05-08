@@ -164,10 +164,9 @@ IW.MultiLoader = function () {
      * @param {string} directory
      * @param {string} pathOBJ
      * @param {string} [pathMTL]
-     * @param {{w: number, h: number, d: number}} [boxSize]
      * @returns {IW.MultiLoader}
      */
-    this.addLoadOBJ = function ( name, label, directory, pathOBJ, pathMTL, boxSize ) {
+    this.addLoadOBJ = function ( name, label, directory, pathOBJ, pathMTL ) {
 
         this.upload.push( {
             type: IW.MultiLoader.LOAD_TYPE_OBJ,
@@ -176,8 +175,7 @@ IW.MultiLoader = function () {
             label: label,
             pathOBJ: pathOBJ,
             pathMTL: pathMTL,
-            directory: directory,
-            boxSize: boxSize
+            directory: directory
         } );
 
         return this;
@@ -439,7 +437,7 @@ IW.MultiLoader = function () {
     /**
      * Start upload object ( model )
      *
-     * @param {{ name: string, pathOBJ: string, object: ?Mesh, pathMTL: string, directory: string, boxSize: {} }} params
+     * @param {{ name: string, pathOBJ: string, object: ?Mesh, pathMTL: string, directory: string }} params
      * @returns {void}
      */
     function loadOBJ( params ) {

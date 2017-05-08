@@ -152,11 +152,11 @@
 		 *
 		 * @returns {Vector3}
 		 */
-		function getPositionTo() {
+		function getPositionTo( far, angle ) {
 			changeAngle();
 			var m = scope._model.getPosition();
-			var x = m.x + scope._model.far * Math.cos( scope._model.angle );
-			var z = m.z + scope._model.far * Math.sin( scope._model.angle );
+			var x = m.x + far * Math.cos( angle );
+			var z = m.z + far * Math.sin( angle );
 			_positionTo.setX( x );
 			_positionTo.setZ( z );
 			return _positionTo;
@@ -248,7 +248,13 @@
 			var _speedModel = this._model.getCurrentSpeed();
 
 			if ( motion.flyStatus || _speedModel !== 0 ) {
-				var positionTo = getPositionTo();
+
+				// scope._model.collision.update( scope._model.getModel(), function ( object ) {
+                //
+                //
+				// } );
+
+				var positionTo = getPositionTo( scope._model.far, scope._model.angle );
 				this._model.setPositionTo( positionTo );
 
 				if ( motion.forward ) {

@@ -458,7 +458,7 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @param {number} delta
      */
     this.update = function ( delta ) {
-        if ( this.enabled ) {
+        if ( this.enabled && this.model ) {
             this.modelFly.update( delta );
             this.modelShot.update( delta );
             for ( var i = 0; i < this.clientsModel.length; i++ ) {

@@ -44,7 +44,7 @@ IW.Explosion = function ( multiLoader, scene ) {
         fixedTimeStep: 0.03
     } );
 
-    group_2.addPool( 1, this.fireball, false );
+    group_2.addPool( 1, this.fireball, true );
 
     this.scene.add( group_2.mesh );
 
@@ -57,8 +57,8 @@ IW.Explosion = function ( multiLoader, scene ) {
     } );
 
     group_3
-        .addPool( 1, this.debris, false )
-        .addPool( 2, this.mist, false );
+        .addPool( 1, this.debris, true )
+        .addPool( 2, this.mist, true );
 
     this.scene.add( group_3.mesh );
 

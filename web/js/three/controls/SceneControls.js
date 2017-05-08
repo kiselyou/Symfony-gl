@@ -344,7 +344,7 @@
                         // Unsubscribe client. Remove model from scene and model controls
                         case 'unsubscribe-client':
 
-                            scope.model.removeClientModel( response.data.resourceId );
+                            scope.model.removeClientModel( true, response.data.resourceId );
 
                             break;
                     }

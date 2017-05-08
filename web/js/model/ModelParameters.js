@@ -293,6 +293,15 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Get min speed of model
+     *
+     * @return {number}
+     */
+    this.getMinSpeed = function () {
+        return this.speed.min;
+    };
+
+    /**
      * Get current speed of model
      *
      * @returns {number}
@@ -361,6 +370,15 @@ IW.ModelParameters = function () {
      */
     this.getSpeedRadiusBackward = function () {
         return this.speed.speedRadiusBackward / 3;
+    };
+
+    /**
+     * Set current speed of model
+     *
+     * @returns {number}
+     */
+    this.setCurrentSpeed = function ( speed ) {
+        return this.speed.current = speed;
     };
 
     /**

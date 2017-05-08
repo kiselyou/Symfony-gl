@@ -35,7 +35,8 @@ IW.Collision = function ( model ) {
 
     /**
      *
-     * @return {IW.Collision}
+     * @param {string} name
+     * @returns {IW.Collision}
      */
     this.addObjectCollision = function ( name ) {
         this.names.push( name );
@@ -68,15 +69,11 @@ IW.Collision = function ( model ) {
 
     /**
      *
-     * @param {Mesh} mesh
+     * @param {THREE.Mesh} mesh
      * @param {function} callback
      * @return {IW.Collision}
      */
     this.update = function ( mesh, callback ) {
-
-        if (this.objectsCollision.length === 0) {
-            return this;
-        }
 
         for (var i = 0; i < scope.objectsCollision.length; i++) {
 
@@ -84,7 +81,6 @@ IW.Collision = function ( model ) {
             box2.setFromObject( mesh );
 
             if ( box1.intersectsBox( box2 ) ) {
-                // console.log( scope.objectsCollision[ i ].id );
                 callback.call( this, scope.objectsCollision[ i ] );
                 break;
             }
