@@ -36,7 +36,7 @@ IW.Socket = function ( url ) {
 	 *
 	 * @type {WS.connect}
      */
-    this.socket = WS.connect( url ? url : 'ws://127.0.0.1:9006' );
+    this.socket = WS.connect( url ? url : findSocketUrl() );
 
 	/**
 	 *
@@ -177,7 +177,22 @@ IW.Socket = function ( url ) {
     function error() {
         console.log( arguments );
     }
+
+	/**
+	 * Find socket url
+	 *
+	 * @returns {?string}
+     */
+    function findSocketUrl() {
+    	var script = document.querySelector('script[' + IW.Socket.DATA_SOCKET_URL + ']');
+		if ( script ) {
+			return script.getAttribute(IW.Socket.DATA_SOCKET_URL);
+		}
+		return null;
+	}
 };
+
+IW.Socket.DATA_SOCKET_URL = 'data-socket-url';
 
 /**
  *

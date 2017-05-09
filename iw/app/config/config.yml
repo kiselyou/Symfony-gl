@@ -2,6 +2,7 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
+    - { resource: socket.yml }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -75,8 +76,8 @@ swiftmailer:
 # Web Socket Configuration
 gos_web_socket:
     server:
-        port: 9006        #The port the socket server will listen on
-        host: 127.0.0.1   #The host ip to bind to
+        port: "%socket_port%"        #The port the socket server will listen on
+        host: "%socket_host%"   #The host ip to bind to
         router:
             resources: ["@SocketBundle/Resources/config/routing.yml"]
 

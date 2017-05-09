@@ -169,8 +169,8 @@
 		 * @param {boolean} status - it is value which need to set
 		 */
 		function motionControl( direction, status ) {
-			if ( motion[direction] !== status ) {
-				motion[direction] = status;
+			if ( motion[ direction ] !== status ) {
+				motion[ direction ] = status;
 				motion.flyStatus = status ? status : isFly();
 			}
 		}
@@ -218,7 +218,7 @@
 		 *
 		 * @return {{}.<motion>}
 		 */
-		this.setMotion = function () {
+		this.getMotion = function () {
 			return motion;
 		};
 
@@ -231,8 +231,29 @@
 			this._callback = callback;
 			window.addEventListener( 'keydown', keyDown, false );
 			window.addEventListener( 'keyup', keyUp, false );
+			callToClient();
 			return this;
 		};
+
+		function callToClient() {
+
+			if ( scope._callback ) {
+
+				var fps = 6;
+				var statusCallToClient = true;
+
+				setTimeout(function tick() {
+
+					if ( motion.flyStatus || statusCallToClient ) {
+						scope._callback.call(this, motion);
+					}
+
+					setTimeout(tick, 1000 / fps);
+					statusCallToClient = motion.flyStatus;
+
+				}, 1000 / fps);
+			}
+		}
 
 		/**
 		 * Update calculate position of model in order to move model
@@ -277,10 +298,6 @@
 				var z = b / len * ( _speedModel + delta );
 
 				this._model.addPosition( { x: x, y: 0, z: z } );
-
-				if ( scope._callback ) {
-					scope._callback.call(this, motion);
-				}
 			}
 
 			calculateIncline();

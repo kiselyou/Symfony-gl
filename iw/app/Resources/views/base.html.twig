@@ -40,8 +40,8 @@
 
             <script type="application/javascript" src="{{ asset('bundles/goswebsocket/js/vendor/autobahn.min.js') }}"></script>
             <script type="application/javascript" src="{{ asset('bundles/goswebsocket/js/gos_web_socket_client.js') }}"></script>
-            <script type="application/javascript" src="{{ asset('js/socket/Socket.js') }}"></script>
-
+            {% set socket_url = 'ws://' ~ gos_web_socket_server_host ~ ':' ~ gos_web_socket_server_port %}
+            <script type="application/javascript" src="{{ asset('js/socket/Socket.js') }}" data-socket-url="{{ socket_url }}"></script>
         {% endblock %}
 
     </body>
