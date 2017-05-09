@@ -1,0 +1,63 @@
+{% extends 'iw/iw.html.twig' %}
+
+{% block container %}
+
+    <div id="iw-container"></div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+
+    <script type="application/javascript">
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var map = {
+                path: '{{ asset('images/textures/skybox/A/') }}',
+                names: [ 'px', 'nx', 'py', 'ny', 'pz', 'nz' ],
+                extension: '.png'
+            };
+
+            var multiLoader = new IW.MultiLoader();
+            multiLoader.setPositionProgress( IW.ProgressBar.POSITION_B, 50 );
+            multiLoader.hideLabelProgress();
+
+            var sceneControl = new IW.SceneControls( multiLoader, 'iw-container', false );
+            sceneControl.setOpacity( 0 );
+
+            // UPLOAD TEXTURES MAP
+            for ( var i = 0; i < map.names.length; i++ ) {
+                var lbl = 'label - texture ' + map.names[ i ];
+                multiLoader.addLoadTexture( map.names[ i ], lbl, map.path + map.names[ i ] + map.extension );
+            }
+
+            // UPLOAD OBJECTS SHIPS
+            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS - A', '{{asset('models/S1/A/')}}', 'iw-ship.obj', 'iw-ship.mtl' );
+
+            // UPLOAD CONFIGS
+            multiLoader.addLoadJSON( IW.PanelControls.CONFIG_ACTION, 'CONFIG', '{{asset('js/config/action.json')}}', true );
+            multiLoader.addLoadJSON( IW.ModelShot.CONFIG_WEAPON, 'CONFIG', '{{asset('js/config/weapon.json')}}', true );
+
+            multiLoader.load(function () {
+
+                sceneControl.skyBox( map.names );
+                sceneControl.preview();
+
+                var start = 0;
+                var idInterval = setInterval( function () {
+                    start += 0.01;
+                    sceneControl.setOpacity( start );
+                    if ( start >= 1 ) {
+                        sceneControl.setOpacity( 1 );
+                        clearInterval( idInterval );
+                    }
+                }, 20 );
+            });
+        });
+
+    </script>
+
+{% endblock %}
