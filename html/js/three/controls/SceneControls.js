@@ -181,8 +181,6 @@
                     // Set events of fly and send info about position of user model
                     scope.model.addFlyEvents( function ( moution ) {
 
-                        console.log( moution );
-
                         socket.sendToAll(
                             'update-model-fly',
                             {
