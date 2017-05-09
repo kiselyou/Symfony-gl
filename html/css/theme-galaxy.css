@@ -6,7 +6,7 @@ html, body, canvas {
     height: 100%;
     overflow: hidden;
     position: relative;
-    background: url('../images/textures/background/main.jpg') no-repeat #000000;
+    background: url('../images/textures/background/main.png') #000000;
     background-size: cover;
 }
 

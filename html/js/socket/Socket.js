@@ -36,7 +36,7 @@ IW.Socket = function ( url ) {
 	 *
 	 * @type {WS.connect}
      */
-    this.socket = WS.connect( url ? url : 'ws://127.0.0.1:8080' );
+    this.socket = WS.connect( url ? url : 'ws://127.0.0.1:9006' );
 
 	/**
 	 *
