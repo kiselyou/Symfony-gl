@@ -1,3 +1,7 @@
 play_index:
     path: /
     defaults: { _controller: "IWBundle:Play:index" }
+
+play_config:
+    path: /configuration
+    defaults: { _controller: "IWBundle:Play:configuration" }

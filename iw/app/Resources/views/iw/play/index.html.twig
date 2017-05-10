@@ -4,64 +4,96 @@
 
     <div id="iw-container"></div>
 
+    {{ dump( asset('models/R1/iw-rocket/') ) }}
+
 {% endblock %}
 
 {% block javascripts %}
 
     {{ parent() }}
 
+    <script type="application/javascript" src="{{ asset('js/controller/play/PlayController.js') }}"></script>
+
     <script type="application/javascript">
 
         document.addEventListener('DOMContentLoaded', function () {
 
-            var map = {
-                path: '{{ asset('images/textures/skybox/A/') }}',
-                names: [ 'px', 'nx', 'py', 'ny', 'pz', 'nz' ],
-                extension: '.png'
-            };
+            var ajax = new IW.Ajax();
+            ajax.open( '{{ path('play_config') }}' );
+            ajax.send(
+                function ( userConfig ) {
 
-            /**
-             *
-             * @type {IW.MultiLoader}
-             */
-            var multiLoader = new IW.MultiLoader();
-
-            var sceneControl = new IW.SceneControls( multiLoader, 'iw-container', false );
-            sceneControl.setOpacity( 0 );
-
-            // UPLOAD TEXTURES MAP
-            for ( var i = 0; i < map.names.length; i++ ) {
-                var lbl = 'label - texture ' + map.names[ i ];
-                multiLoader.addLoadTexture( map.names[ i ], lbl, map.path + map.names[ i ] + map.extension );
-            }
-
-            multiLoader.addLoadTexture( 'smoke', 'SPRITE', '{{ asset('images/effects/smokeparticle.png') }}' );
-            multiLoader.addLoadTexture( 'explosion', 'SPRITE', '{{ asset('images/effects/sprite-explosion2.png') }}' );
-
-
-            // UPLOAD SHIPS
-            multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS', '{{asset('models/S1/A/')}}', 'iw-ship.obj', 'iw-ship.mtl' );
-
-            // UPLOAD ROCKETS
-            multiLoader.addLoadOBJ( IW.ROCKET_STING, 'ROCKETS', '{{asset('models/R1/A/')}}', 'iw-rocket.obj', 'iw-rocket.mtl' );
-            // UPLOAD CONFIGS
-            multiLoader.addLoadJSON( IW.PanelControls.CONFIG_ACTION, 'CONFIG', '{{asset('js/config/action.json')}}', true );
-            multiLoader.addLoadJSON( IW.ModelShot.CONFIG_WEAPON, 'CONFIG', '{{asset('js/config/weapon.json')}}', true );
-
-            multiLoader.load( function () {
-                sceneControl.skyBox( map.names );
-                sceneControl.play();
-
-                var start = 0;
-                var idInterval = setInterval( function () {
-                    start += 0.01;
-                    sceneControl.setOpacity( start );
-                    if ( start >= 1 ) {
-                        sceneControl.setOpacity( 1 );
-                        clearInterval( idInterval );
+                    try {
+                        var play = new IW.PlayController( JSON.parse(userConfig) );
+                        play
+                                .loadSprites()
+                                .loadSkyBox()
+                                .loadModels()
+                                .loadJson()
+                                .start();
+//                        play.start();
+                    } catch ( e ) {
+                        console.warn(e);
                     }
-                }, 20 );
-            } );
+                },
+                function () {
+                    console.warn('Error');
+                }
+            );
+
+
+
+
+
+
+            {#var map = {#}
+                {#path: '{{ asset('images/textures/skybox/A/') }}',#}
+                {#names: [ 'px', 'nx', 'py', 'ny', 'pz', 'nz' ],#}
+                {#extension: '.png'#}
+            {#};#}
+
+            {#/**#}
+             {#*#}
+             {#* @type {IW.MultiLoader}#}
+             {#*/#}
+            {#var multiLoader = new IW.MultiLoader();#}
+
+            {#var sceneControl = new IW.SceneControls( multiLoader, 'iw-container', false );#}
+            {#sceneControl.setOpacity( 0 );#}
+
+            {#// UPLOAD TEXTURES MAP#}
+            {#for ( var i = 0; i < map.names.length; i++ ) {#}
+                {#var lbl = 'label - texture ' + map.names[ i ];#}
+                {#multiLoader.addLoadTexture( map.names[ i ], lbl, map.path + map.names[ i ] + map.extension );#}
+            {#}#}
+
+            {#multiLoader.addLoadTexture( 'smoke', 'SPRITE', '{{ asset('images/effects/smokeparticle.png') }}' );#}
+            {#multiLoader.addLoadTexture( 'explosion', 'SPRITE', '{{ asset('images/effects/sprite-explosion2.png') }}' );#}
+
+
+            {#// UPLOAD SHIPS#}
+            {#multiLoader.addLoadOBJ( IW.SceneControls.MODEL_S1_A, 'SHIPS', '{{asset('models/S1/iw-ship/')}}', 'iw-ship.obj', 'iw-ship.mtl' );#}
+
+            {#// UPLOAD ROCKETS#}
+            {#multiLoader.addLoadOBJ( IW.ROCKET_STING, 'ROCKETS', '{{asset('models/R1/iw-rocket/')}}', 'iw-rocket.obj', 'iw-rocket.mtl' );#}
+            {#// UPLOAD CONFIGS#}
+            {#multiLoader.addLoadJSON( IW.PanelControls.CONFIG_ACTION, 'CONFIG', '{{asset('js/config/action.json')}}', true );#}
+            {#multiLoader.addLoadJSON( IW.ModelShot.CONFIG_WEAPON, 'CONFIG', '{{asset('js/config/weapon.json')}}', true );#}
+
+            {#multiLoader.load( function () {#}
+                {#sceneControl.skyBox( map.names );#}
+                {#sceneControl.play();#}
+
+                {#var start = 0;#}
+                {#var idInterval = setInterval( function () {#}
+                    {#start += 0.01;#}
+                    {#sceneControl.setOpacity( start );#}
+                    {#if ( start >= 1 ) {#}
+                        {#sceneControl.setOpacity( 1 );#}
+                        {#clearInterval( idInterval );#}
+                    {#}#}
+                {#}, 20 );#}
+            {#} );#}
         });
     </script>
 

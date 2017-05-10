@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd Maps/Texture.png
+map_Kd maps/Texture.png
 
 newmtl None_untitl55555555555555ed.png.001
 Ns 94.117647
