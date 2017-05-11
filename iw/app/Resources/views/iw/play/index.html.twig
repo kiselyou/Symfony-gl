@@ -4,42 +4,29 @@
 
     <div id="iw-container"></div>
 
-    {{ dump( asset('models/R1/iw-rocket/') ) }}
-
 {% endblock %}
 
 {% block javascripts %}
 
     {{ parent() }}
 
-    <script type="application/javascript" src="{{ asset('js/controller/play/PlayController.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/controller/Prepare.js') }}"></script>
 
     <script type="application/javascript">
 
         document.addEventListener('DOMContentLoaded', function () {
 
-            var ajax = new IW.Ajax();
-            ajax.open( '{{ path('play_config') }}' );
-            ajax.send(
-                function ( userConfig ) {
+            var ajaxUrl = '{{ path('play_config') }}';
 
-                    try {
-                        var play = new IW.PlayController( JSON.parse(userConfig) );
-                        play
-                                .loadSprites()
-                                .loadSkyBox()
-                                .loadModels()
-                                .loadJson()
-                                .start();
-//                        play.start();
-                    } catch ( e ) {
-                        console.warn(e);
-                    }
-                },
-                function () {
-                    console.warn('Error');
-                }
-            );
+            var play = new IW.Prepare();
+            play
+                .loadSprites()
+                .loadSkyBox()
+                .loadModels()
+                .loadJson()
+                .startAjax( ajaxUrl, function ( multiLoader, ajaxData ) {
+                    console.log( multiLoader, ajaxData );
+                } );
 
 
 
@@ -81,18 +68,18 @@
             {#multiLoader.addLoadJSON( IW.ModelShot.CONFIG_WEAPON, 'CONFIG', '{{asset('js/config/weapon.json')}}', true );#}
 
             {#multiLoader.load( function () {#}
-                {#sceneControl.skyBox( map.names );#}
-                {#sceneControl.play();#}
-
-                {#var start = 0;#}
-                {#var idInterval = setInterval( function () {#}
-                    {#start += 0.01;#}
-                    {#sceneControl.setOpacity( start );#}
-                    {#if ( start >= 1 ) {#}
-                        {#sceneControl.setOpacity( 1 );#}
-                        {#clearInterval( idInterval );#}
-                    {#}#}
-                {#}, 20 );#}
+//                sceneControl.skyBox( map.names );
+//                sceneControl.play();
+//
+//                var start = 0;
+//                var idInterval = setInterval( function () {
+//                    start += 0.01;
+//                    sceneControl.setOpacity( start );
+//                    if ( start >= 1 ) {
+//                        sceneControl.setOpacity( 1 );
+//                        clearInterval( idInterval );
+//                    }
+//                }, 20 );
             {#} );#}
         });
     </script>
