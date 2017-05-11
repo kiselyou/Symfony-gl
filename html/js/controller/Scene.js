@@ -2,9 +2,14 @@ var IW = IW || {};
 
 /**
  *
+ * @param {string} idContainer
+ * @augments IW.SkyBox
  * @constructor
  */
-IW.Scene = function ( idElement ) {
+IW.Scene = function ( idContainer ) {
+
+    // Parent constructor
+    IW.SkyBox.call( this );
 
     /**
      *
@@ -16,7 +21,7 @@ IW.Scene = function ( idElement ) {
      *
      * @type {Element}
      */
-    this.container = document.getElementById( idElement );
+    this.container = document.getElementById( idContainer );
 
     /**
      *
@@ -31,6 +36,12 @@ IW.Scene = function ( idElement ) {
      * @type {PerspectiveCamera}
      */
     this.camera = new THREE.PerspectiveCamera();
+
+    /**
+     *
+     * @type {THREE.OrbitControls}
+     */
+    this.orbitControl = new THREE.OrbitControls( this.camera, this.renderer.domElement );
 
     /**
      *
@@ -112,7 +123,6 @@ IW.Scene = function ( idElement ) {
      * @returns {IW.Scene}
      */
     this.prod = function () {
-        window.addEventListener( 'resize', windowResize, false );
         document.addEventListener( 'contextmenu', contextMenu, false );
         document.addEventListener( 'keydown', keyDown, false );
         return this;
@@ -124,9 +134,13 @@ IW.Scene = function ( idElement ) {
      * @returns {IW.Scene}
      */
     this.init = function ( renderCallback ) {
-        this.show();
+        this.hide();
         this.renderer.setSize( this.getWidth(), this.getHeight() );
         this.container.appendChild( this.renderer.domElement );
+
+        this.buildEnvironment( new THREE.Vector3(), function ( environment ) {
+            scope.scene.add( environment );
+        } );
 
         setCamera();
         setLight();
@@ -142,9 +156,47 @@ IW.Scene = function ( idElement ) {
                 renderCallback.call( this, delta );
             }
 
+            scope.orbitControl.update();
+
             setTimeout(tick, 1000 / fps);
 
         }, 1000 / fps);
+
+        this.show();
+        return this;
+    };
+
+    /**
+     * Set config orbit controls for play
+     *
+     * @returns {IW.Scene}
+     */
+    this.playsConfigOrbitControl = function () {
+        this.orbitControl.mouseButtons = { ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT };
+        this.orbitControl.enablePan = false;
+        this.orbitControl.enableKeys = false;
+        this.orbitControl.rotateSpeed = 2.0;
+        this.orbitControl.minDistance = 20;
+        this.orbitControl.maxDistance = 60;
+        this.orbitControl.maxPolarAngle = 75 * Math.PI / 180;
+        this.orbitControl.minPolarAngle = 45 * Math.PI / 180;
+        return this;
+    };
+
+    /**
+     * Set config orbit controls for preview
+     *
+     * @returns {IW.Scene}
+     */
+    this.previewConfigOrbitControl = function () {
+        this.orbitControl.autoRotateSpeed = 0.3;
+        this.orbitControl.minDistance = 10;
+        this.orbitControl.maxDistance = 30;
+        this.orbitControl.autoRotate = true;
+        this.orbitControl.enableKeys = false;
+        this.orbitControl.enablePan = false;
+        this.orbitControl.enableZoom = false;
+        this.orbitControl.dispose();
         return this;
     };
 
@@ -224,4 +276,6 @@ IW.Scene = function ( idElement ) {
                 break;
         }
     }
+
+    window.addEventListener( 'resize', windowResize, false );
 };

@@ -11,22 +11,30 @@
     {{ parent() }}
 
     <script type="application/javascript" src="{{ asset('js/controller/Prepare.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/controller/Player.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/controller/SkyBox.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('js/controller/Scene.js') }}"></script>
 
     <script type="application/javascript">
 
         document.addEventListener('DOMContentLoaded', function () {
 
             var ajaxUrl = '{{ path('play_config') }}';
+            var scene = new IW.Scene( 'iw-container' );
 
-            var play = new IW.Prepare();
-            play
+            scene
                 .loadSprites()
                 .loadSkyBox()
                 .loadModels()
                 .loadJson()
+                .playsConfigOrbitControl()
                 .startAjax( ajaxUrl, function ( multiLoader, ajaxData ) {
                     console.log( multiLoader, ajaxData );
+                    scene
+                        .startPlay()
+                        .init();
                 } );
+
 
 
 

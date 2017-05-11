@@ -37,7 +37,7 @@ IW.Prepare = function () {
      *
      * @type {{room: string, names: string[], extension: string}}
      */
-    var skyBox = {
+    this.skyBox = {
         room: 'A',
         names: [ 'px', 'nx', 'py', 'ny', 'pz', 'nz' ],
         extension: '.png'
@@ -81,9 +81,9 @@ IW.Prepare = function () {
      * @returns {IW.Prepare}
      */
     this.loadSkyBox = function () {
-        for ( var i = 0; i < skyBox.names.length; i++ ) {
-            var path = this.basePath + IW.Prepare.DIR_SKYBOX + '/' + skyBox.room + '/' + skyBox.names[ i ] + skyBox.extension;
-            this.multiLoader.addLoadTexture( skyBox.names[ i ], IW.Prepare.LBL_LOAD_SKYBOX, path );
+        for ( var i = 0; i < this.skyBox.names.length; i++ ) {
+            var path = this.basePath + IW.Prepare.DIR_SKYBOX + '/' + this.skyBox.room + '/' + this.skyBox.names[ i ] + this.skyBox.extension;
+            this.multiLoader.addLoadTexture( this.skyBox.names[ i ], IW.Prepare.LBL_LOAD_SKYBOX, path );
         }
         return this;
     };

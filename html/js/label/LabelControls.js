@@ -3,7 +3,7 @@ var IW = IW || {};
 /**
  *
  * @param {IW.Model} model
- * @param {Camera} camera
+ * @param {THREE.Camera} camera
  * @param {Element} [container]
  * @constructor
  */

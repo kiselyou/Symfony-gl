@@ -3,20 +3,13 @@ var IW = IW || {};
 /**
  *
  * @param {IW.MultiLoader} multiLoader
- * @param {THREE.Scene} scene
  * @augments IW.ExplosionOptions
  * @constructor
  */
-IW.Explosion = function ( multiLoader, scene ) {
+IW.Explosion = function ( multiLoader ) {
 
     // Parent constructor
     IW.ExplosionOptions.call( this );
-
-    /**
-     *
-     * @type {THREE.Scene}
-     */
-    this.scene = scene;
 
     var group_1 = new SPE.Group( {
         maxParticleCount: 50000,
@@ -27,8 +20,6 @@ IW.Explosion = function ( multiLoader, scene ) {
     } );
 
     group_1.addPool( 1, this.sting, false );
-
-    this.scene.add( group_1.mesh );
 
     var group_2 = new SPE.Group( {
         maxParticleCount: 50000,
@@ -46,8 +37,6 @@ IW.Explosion = function ( multiLoader, scene ) {
 
     group_2.addPool( 1, this.fireball, true );
 
-    this.scene.add( group_2.mesh );
-
     var group_3 = new SPE.Group( {
         maxParticleCount: 50000,
         texture: {
@@ -60,7 +49,17 @@ IW.Explosion = function ( multiLoader, scene ) {
         .addPool( 1, this.debris, true )
         .addPool( 2, this.mist, true );
 
-    this.scene.add( group_3.mesh );
+    /**
+     *
+     * @param {THREE.Scene} scene
+     * @returns {IW.Explosion}
+     */
+    this.addToScene = function ( scene ) {
+        scene.add( group_1.mesh );
+        scene.add( group_2.mesh );
+        scene.add( group_3.mesh );
+        return this;
+    };
 
     /**
      * Trigger an explosion
@@ -69,7 +68,7 @@ IW.Explosion = function ( multiLoader, scene ) {
      * @param {Vector3} position
      * @returns {IW.Explosion}
      */
-    this.createExplosion = function ( type, position ) {
+    this.shot = function ( type, position ) {
         switch ( type ) {
             case 1:
                 group_1.triggerPoolEmitter( 1, position );
