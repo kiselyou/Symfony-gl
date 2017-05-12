@@ -4,11 +4,10 @@ var IW = IW || {};
  *
  * @param {IW.MultiLoader} multiLoader
  * @param {THREE.Scene} scene
- * @param {string} [id]
  * @augments IW.ModelParameters
  * @constructor
  */
-IW.Model = function ( multiLoader, scene, id ) {
+IW.Model = function ( multiLoader, scene ) {
     
     // Parent constructor
     IW.ModelParameters.call(this);
@@ -17,7 +16,7 @@ IW.Model = function ( multiLoader, scene, id ) {
      *
      * @type {string}
      */
-    this.id = id ? id : THREE.Math.generateUUID();
+    this.id = THREE.Math.generateUUID();
 
     /**
      * It is distance how far calculate position direct
@@ -59,6 +58,12 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @type {IW.ModelShot}
      */
     this.modelShot = new IW.ModelShot( this );
+
+    /**
+     *
+     * @type {IW.Explosion}
+     */
+    this.explosion = new IW.Explosion( this );
 
     /**
      * It is current position of model
@@ -105,23 +110,17 @@ IW.Model = function ( multiLoader, scene, id ) {
 
     /**
      *
-     * @type {?IW.Explosion}
-     */
-    this.explosion = null;
-
-    /**
-     *
      * @type {IW.Model}
      */
     var scope = this;
 
     /**
      *
-     * @param {IW.Explosion} obj
+     * @param {(string|number)} id
      * @returns {IW.Model}
      */
-    this.setExplosion = function ( obj ) {
-        this.explosion = obj;
+    this.setID = function ( id ) {
+        this.id = id;
         return this;
     };
 
@@ -243,12 +242,17 @@ IW.Model = function ( multiLoader, scene, id ) {
             this.angle = this.getAngle( this.prev, this.getPosition() );
         }
 
-        initModel();
+        if ( !this.model ) {
+            console.warn( 'The model "' + this.name + '" was not found' );
+        } else {
 
-        this.model[ 'name' ] = this.id;
+            initModel();
 
-        if ( addToScene ) {
-            this.scene.add( this.model );
+            this.model[ 'name' ] = this.id;
+
+            if ( addToScene ) {
+                this.scene.add( this.model );
+            }
         }
 
         return this;
@@ -327,7 +331,7 @@ IW.Model = function ( multiLoader, scene, id ) {
     this.destroyModel = function ( effect, id ) {
         if ( id === this.id || !id ) {
             if (effect) {
-                this.explosion.createExplosion( 2, this.getPosition() );
+                this.explosion.addEvent( 2, this.getPosition() );
             }
             this.enabled = false;
             this.modelShot.destroyShots();
@@ -458,12 +462,15 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @param {number} delta
      */
     this.update = function ( delta ) {
+
         if ( this.enabled && this.model ) {
             this.modelFly.update( delta );
             this.modelShot.update( delta );
             for ( var i = 0; i < this.clientsModel.length; i++ ) {
-                this.clientsModel[i].update( delta );
+                this.clientsModel[ i ].update( delta );
             }
+
+            this.explosion.update();
         }
     };
 

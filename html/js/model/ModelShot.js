@@ -17,7 +17,7 @@ IW.ModelShot = function ( model ) {
      *
      * @type {{}}
      */
-    this.weaponConfig = this.model.multiLoader.getFile( IW.ModelShot.CONFIG_WEAPON );
+    this.weaponConfig = this.model.multiLoader.getFile( IW.Prepare.CONFIG_KEY_WEAPON );
 
     /**
      * It is active shots
@@ -150,7 +150,7 @@ IW.ModelShot = function ( model ) {
 	 */
 	this.destroyShot = function ( key ) {
 	    var mesh = this.charges[ key ];
-        this.model.explosion.createExplosion( 1, mesh.position );
+        this.model.explosion.addEvent( 1, mesh.position );
         this.model.scene.remove( mesh );
         this.charges.splice( key, 1 );
         return this;
@@ -185,8 +185,9 @@ IW.ModelShot = function ( model ) {
 	 * @returns {void}
 	 */
 	this.shot = function ( type ) {
-		if ( !this.weaponConfig.hasOwnProperty( 'weapon' ) ) {
-			console.warn( 'Config is not correct' );
+
+		if ( !this.weaponConfig || !this.weaponConfig.hasOwnProperty( 'weapon' ) ) {
+			console.warn( 'Config "weapon" is not correct' );
 			return;
 		}
 
@@ -244,5 +245,3 @@ IW.ModelShot = function ( model ) {
 		}
 	};
 };
-
-IW.ModelShot.CONFIG_WEAPON = 'config-weapon';

@@ -29,7 +29,10 @@ IW.Prepare = function () {
      * @type {{names: string[], extension: string}}
      */
     var sprites = {
-        names: ['sprite-explosion2', 'smokeparticle'],
+        names: {
+            smoke: 'smokeparticle',
+            explosion: 'sprite-explosion2'
+        },
         extension: '.png'
     };
 
@@ -47,7 +50,10 @@ IW.Prepare = function () {
      *
      * @type {string[]}
      */
-    var json = [ 'action', 'weapon' ];
+    var json = {
+        action: 'action',
+        weapon: 'weapon'
+    };
 
     /**
      *
@@ -69,9 +75,13 @@ IW.Prepare = function () {
      * @returns {IW.Prepare}
      */
     this.loadSprites = function () {
-        for ( var i = 0; i < sprites.names.length; i++ ) {
-            var path = this.basePath + IW.Prepare.DIR_SPRITES + '/' + sprites.names[ i ] + sprites.extension;
-            this.multiLoader.addLoadTexture( sprites.names[ i ], IW.Prepare.LBL_LOAD_SPRITES, path );
+        for ( var key in sprites.names ) {
+            if ( sprites.names.hasOwnProperty( key ) ) {
+                this.multiLoader.addLoadTexture(
+                    key, IW.Prepare.LBL_LOAD_SPRITES,
+                    this.basePath + IW.Prepare.DIR_SPRITES + '/' + sprites.names[ key ] + sprites.extension
+                );
+            }
         }
         return this;
     };
@@ -93,9 +103,15 @@ IW.Prepare = function () {
      * @returns {IW.Prepare}
      */
     this.loadJson = function () {
-        for ( var i = 0; i < json.length; i++ ) {
-            var path = this.basePath + IW.Prepare.DIR_CONFIG + '/' + json[ i ] + '.json';
-            this.multiLoader.addLoadJSON( json[ i ], IW.Prepare.LBL_LOAD_CONFIG, path, true );
+        for ( var key in json ) {
+            if ( json.hasOwnProperty( key ) ) {
+                this.multiLoader.addLoadJSON(
+                    key,
+                    IW.Prepare.LBL_LOAD_CONFIG,
+                    this.basePath + IW.Prepare.DIR_CONFIG + '/' + json[ key ] + '.json',
+                    true
+                );
+            }
         }
         return this;
     };
@@ -172,3 +188,12 @@ IW.Prepare.LBL_LOAD_SKYBOX = 'Load Sky Box';
 IW.Prepare.LBL_LOAD_MODELS = 'Load Models';
 IW.Prepare.LBL_LOAD_CONFIG = 'Load Config';
 IW.Prepare.LBL_LOAD_SPRITES = 'Load Sprites';
+
+IW.Prepare.CONFIG_KEY_ACTION = 'action';
+IW.Prepare.CONFIG_KEY_WEAPON = 'weapon';
+
+IW.Prepare.MODEL_SHIP_S1 = 'iw-ship';
+IW.Prepare.MODEL_ROCKET_R1 = 'iw-rocket';
+
+IW.Prepare.SPRITE_SMOKE = 'smoke';
+IW.Prepare.SPRITE_EXPLOSION = 'explosion';

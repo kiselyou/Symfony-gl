@@ -2,13 +2,13 @@ var IW = IW || {};
 
 /**
  *
- * @augments IW.Player
+ * @augments IW.Prepare
  * @constructor
  */
 IW.SkyBox = function () {
 
     // Parent constructor
-    IW.Player.call(this);
+    IW.Prepare.call(this);
 
     /**
      *
@@ -46,10 +46,9 @@ IW.SkyBox = function () {
      * Build Sky Box and set link to position
      *
      * @param {buildSkuBoxDone} event
-     * @param {THREE.Vector3} position
      * @returns {IW.SkyBox}
      */
-    this.buildEnvironment = function ( position, event ) {
+    this.buildEnvironment = function ( event ) {
 
         var materials = [];
 
@@ -67,7 +66,7 @@ IW.SkyBox = function () {
 
         var geometry = new THREE.BoxGeometry( this.width, this.height, this.depth, 1, 1, 1 );
         this.environment = new THREE.Mesh( geometry, new THREE.MultiMaterial( materials ) );
-        this.environment.position.copy( position );
+        this.environment.position.copy( new THREE.Vector3() );
         event.call( this, this.environment );
         return this;
     };

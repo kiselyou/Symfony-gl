@@ -27,7 +27,7 @@ IW.Scene = function ( idContainer ) {
      *
      * @type {WebGLRenderer}
      */
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer = new THREE.WebGLRenderer( { antialias: true } );
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.autoClear = false;
 
@@ -129,16 +129,24 @@ IW.Scene = function ( idContainer ) {
     };
 
     /**
+     * Call in request animation frame
+     *
+     * @param {number} delta
+     * @callback animation
+     */
+
+    /**
      * Init scene
      *
+     * @param {animation} [event]
      * @returns {IW.Scene}
      */
-    this.init = function ( renderCallback ) {
+    this.init = function ( event ) {
         this.hide();
         this.renderer.setSize( this.getWidth(), this.getHeight() );
         this.container.appendChild( this.renderer.domElement );
 
-        this.buildEnvironment( new THREE.Vector3(), function ( environment ) {
+        this.buildEnvironment( function ( environment ) {
             scope.scene.add( environment );
         } );
 
@@ -152,8 +160,8 @@ IW.Scene = function ( idContainer ) {
 
             var delta = scope.clock.getDelta();
 
-            if ( renderCallback ) {
-                renderCallback.call( this, delta );
+            if ( event ) {
+                event.call( this, delta );
             }
 
             scope.orbitControl.update();

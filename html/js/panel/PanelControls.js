@@ -31,7 +31,7 @@ IW.PanelControls = function ( model ) {
      *
      * @type {{}}
      */
-    this.actionConfig = this.model.multiLoader.getFile(IW.PanelControls.CONFIG_ACTION);
+    this.actionConfig = this.model.multiLoader.getFile(IW.Prepare.CONFIG_KEY_ACTION);
 
     /**
      *
@@ -131,8 +131,6 @@ IW.PanelControls = function ( model ) {
         }
     }
 };
-
-IW.PanelControls.CONFIG_ACTION = 'config-action';
 
 /**
  *

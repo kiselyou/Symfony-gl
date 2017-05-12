@@ -495,10 +495,4 @@ IW.ModelParameters = function () {
 
 IW.ModelParameters.GUN_1 = 1;
 IW.ModelParameters.ACTION_SHOT = 1;
-
-IW.ModelParameters.MODEL_S1_A = 'S1_A';
-IW.ModelParameters.MODEL_S1_B = 'S1_B';
-IW.ModelParameters.MODEL_S1_C = 'S1_C';
-IW.ModelParameters.MODEL_S1_D = 'S1_D';
-
-IW.ModelParameters.MODEL_DEFAULT = IW.ModelParameters.MODEL_S1_A;
+IW.ModelParameters.MODEL_DEFAULT = 'iw-ship';

@@ -20,19 +20,18 @@
         document.addEventListener('DOMContentLoaded', function () {
 
             var ajaxUrl = '{{ path('play_config') }}';
-            var scene = new IW.Scene( 'iw-container' );
+            var play = new IW.Player( 'iw-container' );
 
-            scene
+            play
                 .loadSprites()
                 .loadSkyBox()
                 .loadModels()
                 .loadJson()
                 .playsConfigOrbitControl()
                 .startAjax( ajaxUrl, function ( multiLoader, ajaxData ) {
-                    console.log( multiLoader, ajaxData );
-                    scene
-                        .startPlay()
-                        .init();
+                    play
+                        .setConnect()
+                        .init( play.updateModel );
                 } );
 
 
