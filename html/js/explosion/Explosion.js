@@ -23,6 +23,7 @@ IW.Explosion = function ( model ) {
         blending: THREE.AdditiveBlending
     } );
 
+    group_1.mesh.frustumCulled = false;
     group_1.addPool( 1, this.sting, true );
     this.model.scene.add( group_1.mesh );
 
@@ -40,6 +41,7 @@ IW.Explosion = function ( model ) {
         fixedTimeStep: 0.03
     } );
 
+    group_2.mesh.frustumCulled = false;
     group_2.addPool( 1, this.fireball, false );
     this.model.scene.add( group_2.mesh );
 
@@ -51,6 +53,7 @@ IW.Explosion = function ( model ) {
         blending: THREE.AdditiveBlending
     } );
 
+    group_3.mesh.frustumCulled = false;
     group_3
         .addPool( 1, this.debris, false )
         .addPool( 2, this.mist, false );

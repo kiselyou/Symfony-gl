@@ -28,8 +28,9 @@ IW.Scene = function ( idContainer ) {
      * @type {WebGLRenderer}
      */
     this.renderer = new THREE.WebGLRenderer( { antialias: true } );
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    this.renderer.autoClear = false;
+    // this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // this.renderer.autoClear = false;
+    this.renderer.setPixelRatio( window.devicePixelRatio );
 
     /**
      *
@@ -144,7 +145,10 @@ IW.Scene = function ( idContainer ) {
     this.init = function ( event ) {
         this.hide();
         this.renderer.setSize( this.getWidth(), this.getHeight() );
+        this.renderer.setClearColor(0x000000);
         this.container.appendChild( this.renderer.domElement );
+        this.renderer.gammaInput = true;
+        this.renderer.gammaOutput = true;
 
         this.buildEnvironment( function ( environment ) {
             scope.scene.add( environment );
@@ -154,7 +158,7 @@ IW.Scene = function ( idContainer ) {
         setLight();
         render();
 
-        var fps = 30;
+        var fps = 40;
         var delay = 1000 / fps;
 
         setTimeout(function tick() {
@@ -166,8 +170,7 @@ IW.Scene = function ( idContainer ) {
             }
 
             scope.orbitControl.update();
-
-            setTimeout(tick, delay);
+            setTimeout( tick, delay );
 
         }, delay);
 
@@ -227,7 +230,7 @@ IW.Scene = function ( idContainer ) {
     function setCamera() {
         scope.camera.position.set( 0, 20, -60 );
         scope.camera.fov = 60;
-        scope.camera.near = 1;
+        scope.camera.near = 0.1;
         scope.camera.far = 100000;
         scope.camera.aspect = scope.getAspect();
         scope.camera.lookAt( scope.scene.position );
@@ -242,6 +245,12 @@ IW.Scene = function ( idContainer ) {
     function setLight() {
         var light = new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 1 );
         light.position.set( 0, 1000, 0 );
+        scope.scene.add( light );
+
+        light = new THREE.DirectionalLight( 0xaabbff, 0.5 );
+        light.position.x = 300;
+        light.position.y = 250;
+        light.position.z = -500;
         scope.scene.add( light );
     }
 

@@ -67,6 +67,12 @@ IW.Model = function ( multiLoader, scene, id ) {
     this.explosion = new IW.Explosion( this );
 
     /**
+     *
+     * @type {IW.AnimationControls}
+     */
+    this.animation = new IW.AnimationControls( this );
+
+    /**
      * It is current position of model
      *
      * @type {Vector3}
@@ -251,11 +257,13 @@ IW.Model = function ( multiLoader, scene, id ) {
 
             this.model[ 'name' ] = this.id;
 
+            this.animation.startAnimation( this.name );
+
             if ( addToScene ) {
                 this.scene.add( this.model );
             }
         }
-
+        // initParticles();
         return this;
     };
 
@@ -336,6 +344,7 @@ IW.Model = function ( multiLoader, scene, id ) {
             }
             this.enabled = false;
             this.modelShot.destroyShots();
+            this.animation.remove();
             this.scene.remove( this.scene.getObjectByName( this.id ) );
             this.model = null;
         } else {
@@ -403,7 +412,8 @@ IW.Model = function ( multiLoader, scene, id ) {
             'keyboard',
             'clientsModel',
             'collision',
-            'explosion'
+            'explosion',
+            'animation'
         ];
 
         var object = {};
@@ -466,6 +476,7 @@ IW.Model = function ( multiLoader, scene, id ) {
         if ( this.enabled && this.model ) {
             this.modelFly.update( delta );
             this.modelShot.update( delta );
+            this.animation.update();
             for ( var i = 0; i < this.clientsModel.length; i++ ) {
                 this.clientsModel[ i ].update( delta );
             }

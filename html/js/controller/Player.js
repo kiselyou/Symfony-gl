@@ -37,6 +37,12 @@ IW.Player = function ( idScene ) {
 
     /**
      *
+     * @type {?IW.LabelControls}
+     */
+    this.labels = null;
+
+    /**
+     *
      * @type {IW.Player}
      */
     var scope = this;
@@ -62,6 +68,48 @@ IW.Player = function ( idScene ) {
     };
 
     /**
+     * Socket key
+     *
+     * @type {string}
+     */
+    var SOCKET_MODEL_FLY = 'update-model-fly';
+
+    /**
+     * Socket key
+     *
+     * @type {string}
+     */
+    var SOCKET_MODEL_SHOT = 'update-model-shot';
+
+    /**
+     * Socket key
+     *
+     * @type {string}
+     */
+    var SOCKET_SHOT_COLLISION = 'update-shot-collision';
+
+    /**
+     * Socket key
+     *
+     * @type {string}
+     */
+    var SOCKET_REMOVE_CLIENT = 'remove-client';
+
+    /**
+     * Socket key
+     *
+     * @type {string}
+     */
+    var SOCKET_TRADE_TO = 'trade-to';
+
+    /**
+     * Socket key
+     *
+     * @type {string}
+     */
+    var SOCKET_TRADE_FROM = 'trade-from';
+
+    /**
      *
      * @returns {IW.Player}
      */
@@ -78,6 +126,9 @@ IW.Player = function ( idScene ) {
                 scope.panels = new IW.PanelControls( scope.model );
                 scope.panels.initPanelAction();
                 scope.panels.initPanelMap();
+
+                scope.labels = new IW.LabelControls( scope.model, scope.camera );
+                scope.labels.init();
             },
             function ( response ) {
                 scope.receive( response );
@@ -87,19 +138,12 @@ IW.Player = function ( idScene ) {
         return this;
     };
 
-    var SOCKET_MODEL_FLY = 'update-model-fly';
-    var SOCKET_MODEL_SHOT = 'update-model-shot';
-    var SOCKET_SHOT_COLLISION = 'update-shot-collision';
-    var SOCKET_REMOVE_CLIENT = 'remove-client';
-    var SOCKET_TRADE_TO = 'trade-to';
-    var SOCKET_TRADE_FROM = 'trade-from';
-
     /**
      *
      * @returns {IW.Player}
      */
     this.giveBack = function ( response, resourceId ) {
-
+        // Socket event when window are closing
         scope.socket.windowCloseControls( function () {
             scope.socket.sendToAll( SOCKET_REMOVE_CLIENT, { resourceId: scope.getPlayerID() }, true );
             scope.socket.unsubscribe();
@@ -153,9 +197,7 @@ IW.Player = function ( idScene ) {
             // Get information about new client
             case SOCKET_TRADE_TO:
                 // Initialisation client model to own browser
-                scope.model.addClientModel(
-                    new IW.Model( scope.multiLoader, scope.scene ).load( true, data.model )
-                );
+                scope.model.addClientModel( new IW.Model( scope.multiLoader, scope.scene ).load( true, data.model ) );
                 // Send own model to browser of new client
                 scope.socket.sendToSpecific( SOCKET_TRADE_FROM, { model: scope.model.objectToJSON() }, data.resourceId );
                 break;
@@ -163,9 +205,7 @@ IW.Player = function ( idScene ) {
             // Get information about old client
             case SOCKET_TRADE_FROM:
                 // Set model of old client to own browser
-                scope.model.addClientModel(
-                    new IW.Model( scope.multiLoader, scope.scene ).load( true, data.model )
-                );
+                scope.model.addClientModel( new IW.Model( scope.multiLoader, scope.scene ).load( true, data.model ) );
                 break;
 
             case SOCKET_MODEL_FLY:
@@ -214,14 +254,16 @@ IW.Player = function ( idScene ) {
                     }
                 );
 
+                // Current player
                 if ( dataModel.clientName === scope.getPlayerID() ) {
                     scope.model.paramsJSONToObject( dataModel.param );
                     if ( dataModel.destroy ) {
                         // Unsubscribe if client was killed
                         scope.model.destroyModel( true, scope.model.id );
-                        // scope.labelControl.removeLabels();
+                        scope.labels.removeLabels();
                         scope.socket.unsubscribe();
                     }
+                // Any players except current player
                 } else {
                     scope.model.findClientModel(
                         dataModel.clientName,
@@ -263,6 +305,10 @@ IW.Player = function ( idScene ) {
 
         if ( scope.panels ) {
             scope.panels.update();
+        }
+
+        if ( scope.labels ) {
+            scope.labels.update();
         }
     }
 };

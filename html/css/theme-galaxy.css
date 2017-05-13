@@ -25,7 +25,7 @@ html, body, canvas {
 }
 
 .sw-aim {
-    background: url("../images/aim/aim-circle-red.gif") no-repeat;
+    background: url("../images/aim/aim.png") no-repeat;
     background-size: contain;
     width: 60px;
     height: 60px;

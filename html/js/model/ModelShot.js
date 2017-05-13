@@ -150,9 +150,13 @@ IW.ModelShot = function ( model ) {
 	 */
 	this.destroyShot = function ( key ) {
 	    var mesh = this.charges[ key ];
-        this.model.explosion.addEvent( 1, mesh.position );
-        this.model.scene.remove( mesh );
-        this.charges.splice( key, 1 );
+		if ( mesh ) {
+			this.model.explosion.addEvent(1, mesh.position);
+			this.model.scene.remove(mesh);
+			this.charges.splice(key, 1);
+		} else {
+			console.warn( 'Shot is not exist' );
+		}
         return this;
     };
 

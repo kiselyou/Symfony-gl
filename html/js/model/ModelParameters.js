@@ -11,7 +11,7 @@ IW.ModelParameters = function () {
      *
      * @type {string|number}
      */
-    this.name = IW.ModelParameters.MODEL_DEFAULT;
+    this.name = IW.Prepare.MODEL_EXPLORER;
 
     /**
      * It is angle direction of model
@@ -495,4 +495,3 @@ IW.ModelParameters = function () {
 
 IW.ModelParameters.GUN_1 = 1;
 IW.ModelParameters.ACTION_SHOT = 1;
-IW.ModelParameters.MODEL_DEFAULT = 'iw-ship';

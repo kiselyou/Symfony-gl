@@ -5,6 +5,7 @@ var IW = IW || {};
  * @param {IW.Model} model
  * @param {THREE.Camera} camera
  * @param {Element} [container]
+ * @augments IW.Labels
  * @constructor
  */
 IW.LabelControls = function ( model, camera, container ) {
@@ -27,7 +28,7 @@ IW.LabelControls = function ( model, camera, container ) {
     this.init = function () {
 
         this.append( IW.Labels.TPL_AIM, '' );
-        this.append( IW.Labels.TPL_SPEED, this.model.getCurrentSpeed(), this.model.getPosition(), IW.Labels.POSITION_RT );
+        this.append( IW.Labels.TPL_SPEED, this.model.getCurrentSpeed(), this.model.getPosition() );
         return this;
     };
 
@@ -47,8 +48,8 @@ IW.LabelControls = function ( model, camera, container ) {
             return;
         }
 
-        this.updateLabel( IW.Labels.TPL_SPEED, 'Speed: ' + this.model.getCurrentSpeed() );
-        this.updatePosition( IW.Labels.TPL_SPEED, this.model.getPosition(), IW.Labels.POSITION_RT );
+        this.updateLabel( IW.Labels.TPL_SPEED, this.model.getCurrentSpeed() );
+        this.updatePosition( IW.Labels.TPL_SPEED, this.model.getPositionTo(), { left: 25, top: -10 } );
         this.updatePosition( IW.Labels.TPL_AIM, this.model.getPositionTo(), IW.Labels.POSITION_C );
     }
 };

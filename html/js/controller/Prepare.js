@@ -30,10 +30,10 @@ IW.Prepare = function () {
      */
     var sprites = {
         names: {
-            smoke: 'smokeparticle',
-            explosion: 'sprite-explosion2'
-        },
-        extension: '.png'
+            aim: 'aim/aim.png',
+            smoke: 'effects/smokeparticle.png',
+            explosion: 'effects/sprite-explosion2.png'
+        }
     };
 
     /**
@@ -60,7 +60,7 @@ IW.Prepare = function () {
      * @type {*[]}
      */
     var models = [
-        { type: 'S1', name: 'iw-ship' },
+        { type: 'S1', name: 'Explorer' },
         { type: 'R1', name: 'iw-rocket' }
     ];
 
@@ -79,7 +79,7 @@ IW.Prepare = function () {
             if ( sprites.names.hasOwnProperty( key ) ) {
                 this.multiLoader.addLoadTexture(
                     key, IW.Prepare.LBL_LOAD_SPRITES,
-                    this.basePath + IW.Prepare.DIR_SPRITES + '/' + sprites.names[ key ] + sprites.extension
+                    this.basePath + IW.Prepare.DIR_SPRITES + '/' + sprites.names[ key ]
                 );
             }
         }
@@ -179,7 +179,7 @@ IW.Prepare = function () {
     };
 };
 
-IW.Prepare.DIR_SPRITES = '/images/effects';
+IW.Prepare.DIR_SPRITES = '/images/';
 IW.Prepare.DIR_SKYBOX = '/images/textures/skybox';
 IW.Prepare.DIR_CONFIG = '/js/config';
 IW.Prepare.DIR_MODELS = '/models';
@@ -192,7 +192,7 @@ IW.Prepare.LBL_LOAD_SPRITES = 'Load Sprites';
 IW.Prepare.CONFIG_KEY_ACTION = 'action';
 IW.Prepare.CONFIG_KEY_WEAPON = 'weapon';
 
-IW.Prepare.MODEL_SHIP_S1 = 'iw-ship';
+IW.Prepare.MODEL_EXPLORER = 'Explorer';
 IW.Prepare.MODEL_ROCKET_R1 = 'iw-rocket';
 
 IW.Prepare.SPRITE_SMOKE = 'smoke';
