@@ -70,9 +70,8 @@ IW.Player = function ( idScene ) {
         this.socket.connect(
             function ( response, resourceId ) {
 
-                scope.model = new IW.Model( scope.multiLoader, scope.scene );
+                scope.model = new IW.Model( scope.multiLoader, scope.scene, resourceId );
                 scope.model.load( true );
-                scope.model.setID( resourceId );
                 scope.setPlayerID( resourceId );
                 scope.giveBack( response, resourceId );
 
@@ -91,7 +90,7 @@ IW.Player = function ( idScene ) {
     var SOCKET_MODEL_FLY = 'update-model-fly';
     var SOCKET_MODEL_SHOT = 'update-model-shot';
     var SOCKET_SHOT_COLLISION = 'update-shot-collision';
-    var SOCKET_UNSUBSCRIBE = 'unsubscribe-client';
+    var SOCKET_REMOVE_CLIENT = 'remove-client';
     var SOCKET_TRADE_TO = 'trade-to';
     var SOCKET_TRADE_FROM = 'trade-from';
 
@@ -102,7 +101,8 @@ IW.Player = function ( idScene ) {
     this.giveBack = function ( response, resourceId ) {
 
         scope.socket.windowCloseControls( function () {
-            scope.socket.sendToAll( SOCKET_UNSUBSCRIBE, { resourceId: scope.getPlayerID() }, true );
+            scope.socket.sendToAll( SOCKET_REMOVE_CLIENT, { resourceId: scope.getPlayerID() }, true );
+            scope.socket.unsubscribe();
         } );
 
         // Send to all information about model of new user
@@ -148,15 +148,14 @@ IW.Player = function ( idScene ) {
      */
     this.receive = function ( response ) {
         var data = response.data;
-        var clientModel = null;
         switch ( response.key ) {
 
             // Get information about new client
             case SOCKET_TRADE_TO:
                 // Initialisation client model to own browser
-                clientModel = new IW.Model( scope.multiLoader, scope.scene );
-                clientModel.load( true, data.model );
-                scope.model.addClientModel( clientModel );
+                scope.model.addClientModel(
+                    new IW.Model( scope.multiLoader, scope.scene ).load( true, data.model )
+                );
                 // Send own model to browser of new client
                 scope.socket.sendToSpecific( SOCKET_TRADE_FROM, { model: scope.model.objectToJSON() }, data.resourceId );
                 break;
@@ -164,9 +163,9 @@ IW.Player = function ( idScene ) {
             // Get information about old client
             case SOCKET_TRADE_FROM:
                 // Set model of old client to own browser
-                clientModel = new IW.Model( scope.multiLoader, scope.scene );
-                clientModel.load( true, data.model );
-                scope.model.addClientModel( clientModel );
+                scope.model.addClientModel(
+                    new IW.Model( scope.multiLoader, scope.scene ).load( true, data.model )
+                );
                 break;
 
             case SOCKET_MODEL_FLY:
@@ -203,8 +202,6 @@ IW.Player = function ( idScene ) {
             case SOCKET_SHOT_COLLISION:
 
                 var dataModel = data.model;
-                var clientName = data.clientName;
-
                 scope.model.findClientModel(
                     data.resourceId,
                     /**
@@ -217,19 +214,17 @@ IW.Player = function ( idScene ) {
                     }
                 );
 
-                if ( clientName === scope.getPlayerID() ) {
+                if ( dataModel.clientName === scope.getPlayerID() ) {
                     scope.model.paramsJSONToObject( dataModel.param );
                     if ( dataModel.destroy ) {
+                        // Unsubscribe if client was killed
                         scope.model.destroyModel( true, scope.model.id );
                         // scope.labelControl.removeLabels();
-                        // Unsubscribe if client was killed
-                        scope.socket.windowCloseControls( function () {
-                            scope.socket.sendToAll( SOCKET_UNSUBSCRIBE, { resourceId: scope.getPlayerID() }, true );
-                        } );
+                        scope.socket.unsubscribe();
                     }
                 } else {
                     scope.model.findClientModel(
-                        clientName,
+                        dataModel.clientName,
                         /**
                          * Set parameters to client model
                          *
@@ -246,7 +241,7 @@ IW.Player = function ( idScene ) {
                 break;
 
             // Unsubscribe client. Remove model from scene and model controls
-            case SOCKET_UNSUBSCRIBE:
+            case SOCKET_REMOVE_CLIENT:
                 scope.model.removeClientModel( true, data.resourceId );
                 break;
         }

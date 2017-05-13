@@ -155,6 +155,7 @@ IW.Scene = function ( idContainer ) {
         render();
 
         var fps = 30;
+        var delay = 1000 / fps;
 
         setTimeout(function tick() {
 
@@ -166,9 +167,9 @@ IW.Scene = function ( idContainer ) {
 
             scope.orbitControl.update();
 
-            setTimeout(tick, 1000 / fps);
+            setTimeout(tick, delay);
 
-        }, 1000 / fps);
+        }, delay);
 
         this.show();
         return this;

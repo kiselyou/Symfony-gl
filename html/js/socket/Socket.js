@@ -147,6 +147,16 @@ IW.Socket = function ( url ) {
 		} );
     };
 
+	/**
+	 * Unsubscribe the user
+	 *
+	 * @returns {IW.Socket}
+     */
+    this.unsubscribe = function () {
+		scope.session.unsubscribe( PATH_SUBSCRIBE );
+		return this;
+	};
+
     /**
      *
      * @param {function} callback

@@ -11,13 +11,9 @@ IW.Explosion = function ( model ) {
     // Parent constructor
     IW.ExplosionOptions.call( this );
 
-    this.model = model;
+    this._id = THREE.Math.generateUUID();
 
-    /**
-     *
-     * @type {IW.Explosion}
-     */
-    var scope = this;
+    this.model = model;
 
     var group_1 = new SPE.Group( {
         maxParticleCount: 50000,
@@ -28,6 +24,7 @@ IW.Explosion = function ( model ) {
     } );
 
     group_1.addPool( 1, this.sting, true );
+    this.model.scene.add( group_1.mesh );
 
     var group_2 = new SPE.Group( {
         maxParticleCount: 50000,
@@ -43,7 +40,8 @@ IW.Explosion = function ( model ) {
         fixedTimeStep: 0.03
     } );
 
-    group_2.addPool( 1, this.fireball, true );
+    group_2.addPool( 1, this.fireball, false );
+    this.model.scene.add( group_2.mesh );
 
     var group_3 = new SPE.Group( {
         maxParticleCount: 50000,
@@ -54,12 +52,16 @@ IW.Explosion = function ( model ) {
     } );
 
     group_3
-        .addPool( 1, this.debris, true )
-        .addPool( 2, this.mist, true );
+        .addPool( 1, this.debris, false )
+        .addPool( 2, this.mist, false );
 
-    this.model.scene.add( group_1.mesh );
-    this.model.scene.add( group_2.mesh );
     this.model.scene.add( group_3.mesh );
+
+    /**
+     *
+     * @type {THREE.Clock}
+     */
+    var clock = new THREE.Clock();
 
     /**
      * Trigger an explosion
@@ -72,6 +74,10 @@ IW.Explosion = function ( model ) {
         switch ( type ) {
             case 1:
                 group_1.triggerPoolEmitter( 1, position );
+                this._update( 200, function ( dt ) {
+                    group_1.tick();
+                } );
+
                 break;
             case 2:
                 group_2
@@ -79,6 +85,11 @@ IW.Explosion = function ( model ) {
                 group_3
                     .triggerPoolEmitter( 1, position )
                     .triggerPoolEmitter( 2, position );
+
+                this._update( 3000, function () {
+                    group_2.tick();
+                    group_3.tick();
+                } );
                 break;
         }
         return this;
@@ -86,11 +97,22 @@ IW.Explosion = function ( model ) {
 
     /**
      *
+     * @param {number} time - It is time life (milliseconds)
+     * @param {function} action
      * @returns {void}
      */
-    this.update = function () {
-        group_1.tick();
-        group_2.tick();
-        group_3.tick();
+    this._update = function ( time, action ) {
+        var start = 0;
+        var fps = 60;
+        var delay = 1000 / fps;
+        var dt = clock.getDelta();
+
+        setTimeout( function tick() {
+            action.call( this, dt );
+            if ( start < time ) {
+                setTimeout( tick, delay );
+            }
+            start += delay;
+        }, delay );
     };
 };

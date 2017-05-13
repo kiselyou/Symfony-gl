@@ -10,23 +10,23 @@ IW.ExplosionOptions= function () {
         type: SPE.distributions.SPHERE,
         position: {
             spread: new THREE.Vector3( 5 ),
-            radius: 3
+            radius: 1
         },
         velocity: {
-            value: new THREE.Vector3( 150 )
+            value: new THREE.Vector3( 100 )
         },
         size: {
-            value: [ 30, 40 ]
+            value: [ 10, 20 ]
         },
         opacity: {
-            value: [0.5, 0]
+            value: [ 0.5, 0.2 ]
         },
         color: {
-            value: [new THREE.Color('yellow'),new THREE.Color('red')]
+            value: [new THREE.Color('yellow'), new THREE.Color('red')]
         },
-        particleCount: 20,
+        particleCount: 10,
         alive: true,
-        duration: 0.05,
+        duration: 0.02,
         maxAge: {
             value: 0.1
         }

@@ -4,10 +4,11 @@ var IW = IW || {};
  *
  * @param {IW.MultiLoader} multiLoader
  * @param {THREE.Scene} scene
+ * @param {?string|number} [id]
  * @augments IW.ModelParameters
  * @constructor
  */
-IW.Model = function ( multiLoader, scene ) {
+IW.Model = function ( multiLoader, scene, id ) {
     
     // Parent constructor
     IW.ModelParameters.call(this);
@@ -16,7 +17,7 @@ IW.Model = function ( multiLoader, scene ) {
      *
      * @type {string}
      */
-    this.id = THREE.Math.generateUUID();
+    this.id = id ? id : THREE.Math.generateUUID();
 
     /**
      * It is distance how far calculate position direct
@@ -329,7 +330,7 @@ IW.Model = function ( multiLoader, scene ) {
      * @return {IW.Model}
      */
     this.destroyModel = function ( effect, id ) {
-        if ( id === this.id || !id ) {
+        if ( id === this.id || id === undefined ) {
             if (effect) {
                 this.explosion.addEvent( 2, this.getPosition() );
             }
@@ -462,15 +463,12 @@ IW.Model = function ( multiLoader, scene ) {
      * @param {number} delta
      */
     this.update = function ( delta ) {
-
         if ( this.enabled && this.model ) {
             this.modelFly.update( delta );
             this.modelShot.update( delta );
             for ( var i = 0; i < this.clientsModel.length; i++ ) {
                 this.clientsModel[ i ].update( delta );
             }
-
-            this.explosion.update();
         }
     };
 

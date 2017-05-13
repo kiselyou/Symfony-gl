@@ -12,7 +12,7 @@
             "reloadingTime": 500,
             "damage": {
                 "type": "rocket",
-                "physicalDamage": 500,
+                "physicalDamage": 50,
                 "criticalDamage": 5
             }
         },
