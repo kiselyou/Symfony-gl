@@ -1,6 +1,5 @@
 
 var MESSAGE_SERVER = 'Sorry, check with the site admin for error: ';
-var DIR_ROUTES = __dirname + '/server/routing/';
 
 var fs = require('fs');
 var cheerio = require('cheerio');
@@ -9,7 +8,10 @@ var express = require('express');
 var app = express();
 var appDir = getEnvironment(config);
 
-app.use(express.static(__dirname + '/' + appDir + '/'));
+var DIR_ROUTES = __dirname + '/server/routing/';
+var DIT_TEMPLATES =  __dirname + '/' + appDir + '/templates/';
+
+// app.use(express.static(__dirname + '/' + appDir + '/'));
 
 fs.readdir(DIR_ROUTES, function (err, routes) {
     var routeConfig = [];
@@ -19,7 +21,7 @@ fs.readdir(DIR_ROUTES, function (err, routes) {
 });
 
 app.get('/', function (req, res) {
-    fs.readFile(appDir + '/index.html', function (error, content) {
+    fs.readFile(appDir + '/index.html', null, function (error, content) {
         if (error) {
             if (error.code === 'ENOENT') {
                 fs.readFile(appDir + '/404.html', function (error, content) {
@@ -28,7 +30,7 @@ app.get('/', function (req, res) {
                         res.end(MESSAGE_SERVER + error.code + ' ..\n');
                     } else {
                         res.writeHead(200, {'Content-Type': 'text/html'});
-                        res.end(content, config.charset);
+                        res.end(content, config.encoding);
                     }
                 });
             } else {
@@ -37,7 +39,7 @@ app.get('/', function (req, res) {
             }
         } else {
             res.writeHead(200, {'Content-Type': 'text/html'});
-            res.end(content, config.charset);
+            res.end(buildTemplate(content), config.encoding);
         }
     });
 });
@@ -59,7 +61,22 @@ function getEnvironment(config) {
     return 'app';
 }
 
-function buildTemplate(html) {
-    var $ = cheerio.load(html);
-    console.log(1);
+/**
+ *
+ * @param {string} content
+ * @returns {*}
+ */
+function buildTemplate(content) {
+
+    var $ = cheerio.load(content);
+    $('[data-include]').each(function() {
+        var path = DIT_TEMPLATES + $(this).attr('data-include');
+        if (fs.existsSync(path)) {
+            $(this).replaceWith(buildTemplate(fs.readFileSync(path, {encoding: config.encoding})));
+        } else {
+            console.log('Template was not found in path ' + path);
+        }
+    });
+
+    return $.html();
 }
