@@ -20,7 +20,6 @@ fs.readdir(DIR_ROUTES, function (err, routes) {
 
 app.get('/', function (req, res) {
     fs.readFile(appDir + '/index.html', function (error, content) {
-        console.log(error, content);
         if (error) {
             if (error.code === 'ENOENT') {
                 fs.readFile(appDir + '/404.html', function (error, content) {
@@ -58,4 +57,9 @@ function getEnvironment(config) {
         }
     }
     return 'app';
+}
+
+function buildTemplate(html) {
+    var $ = cheerio.load(html);
+    console.log(1);
 }

@@ -5,7 +5,7 @@
 		"dist": false
 	},
 	"port": 4000,
-	"host": "galaxy.com",
+	"host": "localhost",
 	"template": {
 		"dir": "templates"
 	}
