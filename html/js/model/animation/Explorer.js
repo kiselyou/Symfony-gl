@@ -58,8 +58,6 @@ IW.Explorer = function ( model ) {
     this.remove = function () {
         emitter.remove();
         this.model.scene.remove( particleGroup.mesh );
-        particleGroup = null;
-        emitter = null;
         return this;
     };
 

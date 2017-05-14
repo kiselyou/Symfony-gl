@@ -158,7 +158,7 @@ IW.Scene = function ( idContainer ) {
         setLight();
         render();
 
-        var fps = 40;
+        var fps = 30;
         var delay = 1000 / fps;
 
         setTimeout(function tick() {
