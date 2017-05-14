@@ -1,0 +1,12 @@
+{
+	"charset": "utf-8",
+	"environment": {
+		"app": true,
+		"dist": false
+	},
+	"port": 4000,
+	"host": "galaxy.com",
+	"template": {
+		"dir": "templates"
+	}
+}

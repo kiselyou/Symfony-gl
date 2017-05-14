@@ -13,7 +13,7 @@ gulp.task('useref', function(){
 		.pipe(useref())
 		.pipe(gulpIf('*.js', uglify()))
 		.pipe(gulpIf('*.css', cssnano()))
-		.pipe(gulp.dest('dist'))
+		.pipe(gulp.dest('dist'));
 });
 
 gulp.task('images', function(){
@@ -21,12 +21,22 @@ gulp.task('images', function(){
 		.pipe(cache(imagemin({
 			interlaced: true
 		})))
-		.pipe(gulp.dest('dist/images'))
+		.pipe(gulp.dest('dist/images'));
 });
 
 gulp.task('fonts', function() {
 	return gulp.src('app/fonts/**/*')
-		.pipe(gulp.dest('dist/fonts'))
+		.pipe(gulp.dest('dist/fonts'));
+});
+
+gulp.task('models', function() {
+	return gulp.src('app/models/*')
+		.pipe(gulp.dest('dist/models'));
+});
+
+gulp.task('icon', function() {
+	return gulp.src('app/*.ico')
+		.pipe(gulp.dest('dist'));
 });
 
 gulp.task('clean:dist', function() {
@@ -34,5 +44,5 @@ gulp.task('clean:dist', function() {
 });
 
 gulp.task('build', function (callback) {
-	runSequence('clean:dist', ['useref', 'images', 'fonts'], callback)
+	runSequence('clean:dist', ['useref', 'images', 'fonts', 'models', 'icon'], callback);
 });
