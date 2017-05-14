@@ -19,7 +19,7 @@ IW.Explorer = function ( model ) {
     this.initParticles = function () {
 
         particleGroup = new SPE.Group({
-            maxParticleCount: 50,
+            maxParticleCount: 100,
             texture: {
                 value: this.model.multiLoader.getTexture( IW.Prepare.SPRITE_SMOKE )
             }
@@ -29,6 +29,7 @@ IW.Explorer = function ( model ) {
 
         emitter = new SPE.Emitter({
             type: SPE.distributions.BOX,
+            maxAge: { value: 1.5 },
             position: {
                 value: new THREE.Vector3(0, 0, 0)
             },
@@ -36,13 +37,13 @@ IW.Explorer = function ( model ) {
                 value: new THREE.Vector3(0, 0, -4)
             },
             color: {
-                value: [ new THREE.Color(0x1DD898), new THREE.Color( 'blue' ) ],
-                spread: new THREE.Vector3(1, 1, 1)
+                value: [ new THREE.Color(0xFFFFFF), new THREE.Color( 'blue' ) ],
+                spread: new THREE.Vector3(0, 0, 0)
             },
             size: {
-                value: [4, 0]
+                value: [3, 0]
             },
-            particleCount: 40
+            particleCount: 80
         });
 
         particleGroup.addEmitter( emitter );
@@ -55,9 +56,8 @@ IW.Explorer = function ( model ) {
      * @returns {IW.Explorer}
      */
     this.remove = function () {
-
         emitter.remove();
-        this.model.scene.remove( particleGroup );
+        this.model.scene.remove( particleGroup.mesh );
         particleGroup = null;
         emitter = null;
         return this;
@@ -68,17 +68,22 @@ IW.Explorer = function ( model ) {
      *
      */
     this.update = function () {
-        if (particleGroup && emitter) {
-            var dt = this.model.getCurrentSpeed() / this.model.getMaxSpeed() + 0.15;
-            particleGroup.tick(dt);
+        if ( particleGroup && emitter ) {
+            var dt = this.model.getCurrentSpeed() / this.model.getMaxSpeed() + 0.9;
+            particleGroup.tick( dt * 2 );
             var v = this.model.getPosition();
-            emitter.position.value = emitter.position.value.set(v.x, v.y, v.z);
+            emitter.position.value = emitter.position.value.set( v.x, v.y, v.z );
 
 
-            var far = -4;
+            if ( dt == 0.9 ) {
+                emitter.disable();
+            } else {
+                emitter.enable();
+            }
+            var far = - ( 1 + dt * 4 );
             var x = far * Math.cos(this.model.angle);
             var z = far * Math.sin(this.model.angle);
-            emitter.velocity.value = emitter.velocity.value.set(x, 0, z);
+            emitter.velocity.value = emitter.velocity.value.set( x, 0, z );
         }
     }
 };

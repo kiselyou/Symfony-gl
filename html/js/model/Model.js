@@ -263,7 +263,6 @@ IW.Model = function ( multiLoader, scene, id ) {
                 this.scene.add( this.model );
             }
         }
-        // initParticles();
         return this;
     };
 
