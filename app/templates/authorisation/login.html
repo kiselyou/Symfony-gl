@@ -1,0 +1,106 @@
+<div class="sw-modal sw-modal-skin-star well-sm hidden">
+
+    <div class="sw-modal-head">
+
+        <div class="pull-left">
+            <span>IronWar</span>
+        </div>
+
+        <div class="pull-right">
+            <span><i class="glyphicon glyphicon-forward"></i> Registration</span>
+        </div>
+
+    </div>
+
+    <div class="sw-modal-body">
+
+        <form class="bs-example bs-example-form" id="form" role="form" action="{{ path('_login') }}" method="POST">
+
+            <div class="form-group">
+                <label for="a_username"> Username </label>
+                <span class="sw-star">*</span>
+                <div class="sw-field input-group">
+                    <span class="input-group-addon">
+                        <i class="glyphicon glyphicon-user"></i>
+                    </span>
+                    <input type="text" class="form-control" name="username" id="a_username" placeholder="Username" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="a_password"> Password </label>
+                <span class="sw-star">*</span>
+                <div class="input-group sw-field">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-lock"></i>
+                        </span>
+                    <input type="password" class="form-control" name="password" id="a_password" placeholder="Password" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <label for="a_remember_me">Remember</label>
+                <input type="checkbox" name="_remember_me" id="a_remember_me">
+
+                <div class="pull-right">
+                    <button type="button" class="sw-btn btn-xs" id="_send_form">
+                        <i class="glyphicon glyphicon-log-in"></i>
+                        Login
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <ul class="sw-block-errors sw-text-error" id="_error">
+                        <!--{% if error %}-->
+                        <!--<li><i class="glyphicon glyphicon-exclamation-sign"></i> {{ error.messageKey|trans(error.messageData, 'security') }}</li>-->
+                        <!--{% endif %}-->
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<template data-include="authorisation/registration.html"></template>
+
+<script type="application/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        var username = 'username';
+        var password = 'password';
+        var btn = document.getElementById('_send_form');
+
+        var validation = new IW.Validation();
+        validation.addEventCheckAll('click', btn);
+        validation.addEventCheckAll('keyup', 'input');
+        validation.addGroupMarker('span');
+
+        validation.addRile(username, {
+            required: true,
+            max: 25,
+            min: 6,
+            label: '_USERNAME'
+        });
+
+        validation.addRile(password, {
+            required: true,
+            max: 25,
+            min: 6,
+            isSame: username,
+            label: '_PASSWORD'
+        });
+
+        validation.setCallbackSuccess(function (element) {
+            if (element == btn) {
+                document.getElementById('form').submit();
+            }
+        });
+
+        validation.messagesAppendTo('#_error');
+        validation.listen();
+    });
+</script>

@@ -1,0 +1,37 @@
+<div class="main-container">
+    <div class="sw-modal iw-main-page sw-modal-size-12">
+        <div class="sw-modal-head">
+            <div class="header">
+
+                <div data-include="navigation/main-menu.html"></div>
+
+                <div class="sw-logo">
+                    <h2 class=""><a href="">IronWar</a></h2>
+                    <small> ONLINE </small>
+                </div>
+
+            </div>
+        </div>
+        <div class="sw-modal-body">
+
+            asdasdasdas
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var container = document.body.querySelector('.sw-modal-body');
+        var tpl = new IW.Templates();
+        tpl.load( 'authorisation/login.html', function ( str ) {
+
+            var temp = document.createElement('div');
+            temp.innerHTML = str;
+            container.appendChild(temp);
+
+//            console.log(temp.querySelector('script'));
+//            container.appendChild(temp.querySelector('script'));
+        } );
+    });
+</script>

@@ -11,7 +11,11 @@ var appDir = getEnvironment(config);
 var DIR_ROUTES = __dirname + '/server/routing/';
 var DIT_TEMPLATES =  __dirname + '/' + appDir + '/templates/';
 
-// app.use(express.static(__dirname + '/' + appDir + '/'));
+var bodyParser = require('body-parser');
+
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 fs.readdir(DIR_ROUTES, function (err, routes) {
     var routeConfig = [];
@@ -43,6 +47,25 @@ app.get('/', function (req, res) {
         }
     });
 });
+
+app.get('/template', function (req, res) {
+    console.log(req.query);
+});
+
+app.post('/template', function (req, res) {
+    fs.readFile(DIT_TEMPLATES + req.body['template'], null, function (error, content) {
+        if (error) {
+            res.writeHead(500);
+            res.end(MESSAGE_SERVER + error.code + ' ..\n');
+        } else {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.end(buildTemplate(content), config.encoding);
+        }
+    });
+
+});
+
+app.use(express.static(__dirname + '/' + appDir));
 
 app.listen(config.port, config.host);
 

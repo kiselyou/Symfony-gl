@@ -1,0 +1,165 @@
+<div class="sw-modal sw-modal-size-6 sw-modal-skin-star well-sm">
+
+    <div class="sw-modal-head">
+
+        <div class="pull-left">
+            <span>IronWar</span>
+        </div>
+
+        <div class="pull-right">
+            <span><i class="glyphicon glyphicon-forward"></i> Registration</span>
+        </div>
+
+    </div>
+
+    <div class="sw-modal-body">
+
+        <div class="row">
+            <div class="col-lg-6">
+
+                <div class="form-group">
+                    <label for="r_username"> Username </label>
+                    <span class="sw-star">*</span>
+                    <div class="sw-field input-group sw-input-status">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-user"></i>
+                        </span>
+
+                        <input type="text" class="form-control" required name="username" id="r_username" placeholder="Username" autocomplete="off">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-6">
+
+                <div class="form-group">
+                    <label for="r_email"> Email </label>
+                    <span class="sw-star">*</span>
+                    <div class="sw-field input-group">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-envelope"></i>
+                        </span>
+                        <input type="text" class="form-control" required name="email" id="r_email" placeholder="Email" autocomplete="off">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+
+                <div class="form-group">
+                    <label for="r_password"> Password </label>
+                    <span class="sw-star">*</span>
+                    <div class="sw-field input-group">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-lock"></i>
+                        </span>
+                        <input type="password" class="form-control" required name="password" id="r_password" placeholder="********" autocomplete="off">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-6">
+
+                <div class="form-group">
+                    <label for="r_confirm_password"> Confirm Password </label>
+                    <span class="sw-star">*</span>
+                    <div class="sw-field input-group">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-lock"></i>
+                        </span>
+                        <input type="password" class="form-control" required name="confirm_password" id="r_confirm_password" placeholder="********" autocomplete="off">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="form-group">
+
+            <div class="pull-right">
+                <button type="button" class="sw-btn btn-xs" id="_send_form">
+                    <i class="glyphicon glyphicon-save"></i>
+                    Apply
+                </button>
+            </div>
+
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-lg-12">
+
+                <ul class="sw-block-errors sw-text-error" id="_error">
+                    <!--{% for error in errors %}-->
+                    <!--<li><i class="glyphicon glyphicon-exclamation-sign"></i> {{ error.propertyPath|capitalize }}: {{ error.message }}</li>-->
+                    <!--{% endfor %}-->
+                </ul>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="application/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var username = '{{ username.full_name }}';
+        var email = '{{ email.full_name }}';
+        var password = '{{ password.full_name }}';
+        var confirmPassword = '{{ confirmPassword.full_name }}';
+        var btn = document.getElementById('_send_form');
+
+        var validation = new IW.Validation();
+        validation.addEventCheckAll('click', btn);
+        validation.addEventCheckAll('keyup', 'input');
+
+        validation.addGroupMarker('span');
+
+        validation.addRile(username, {
+            required: true,
+            max: 25,
+            min: 6,
+            label: 'username'
+        });
+
+        validation.addRile(email, {
+            required: true,
+            max: 60,
+            min: 5,
+            label: 'email'
+        });
+
+        validation.addRile(password, {
+            required: true,
+            max: 25,
+            min: 6,
+            isMatch: username,
+            label: 'password'
+        });
+
+        validation.addRile(confirmPassword, {
+            required: true,
+            isMatch: username,
+            isNotSame: password,
+            label: 'confirmPassword'
+        });
+
+        validation.setCallbackSuccess(function (element) {
+            if (element == btn) {
+                document.getElementById('form').submit();
+            }
+        });
+
+        validation.messagesAppendTo('#_error');
+
+        validation.listen();
+    });
+
+</script>
