@@ -40,6 +40,7 @@ IW.Templates = function () {
                 function ( template ) {
                     scope._loaded.push({ name: name, tpl: template });
                     event.call( this, template );
+
                 },
                 function () {
 
