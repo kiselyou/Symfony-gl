@@ -14,7 +14,11 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
-/.idea/
+/.idea/*
+
+
+/iw/*
+/html/*
 
 /dist/*
 /node_modules/*
