@@ -1,0 +1,13 @@
+<div id="iw-block-preview"></div>
+
+<script>
+    var play = new IW.Player( 'iw-block-preview' );
+
+    play
+        .loadSkyBox()
+        .loadModels()
+        .previewConfigOrbitControl()
+        .start(function ( multiLoader, ajaxData ) {
+            play.init();
+        });
+</script>

@@ -62,7 +62,6 @@ app.post('/template', function (req, res) {
             res.end(buildTemplate(content), config.encoding);
         }
     });
-
 });
 
 app.use(express.static(__dirname + '/' + appDir));

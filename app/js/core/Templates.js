@@ -7,9 +7,6 @@ var IW = IW || {};
  */
 IW.Templates = function () {
 
-    // Parent constructor
-    IW.Ajax.call( this );
-
     var PATH_TO_LOAD = '/template';
 
     this._loaded = [];
@@ -31,10 +28,11 @@ IW.Templates = function () {
         var tpl = this._loaded.find(function (item) {
             return item['name'] === name;
         });
+
         if (tpl) {
             event.call( this, tpl.tpl );
         } else {
-            this.post(
+            new IW.Ajax().post(
                 PATH_TO_LOAD,
                 { template: name },
                 function ( template ) {
@@ -54,28 +52,29 @@ IW.Templates = function () {
     this.paste = function (selector, str) {
         var to = document.querySelectorAll(selector);
         if (to) {
-            var element = document.createElement('div');
-            element.innerHTML = str;
+            var el = document.createElement('div');
+            el.innerHTML = str;
 
-            for (var a = 0; a < to.length; a++) {
-                to[a].appendChild(element);
+            for (var b = 0; b < to.length; b++) {
+                to[b].appendChild(el);
             }
 
-            var scriptElements = element.querySelectorAll('script');
-            for (var i = 0; i < scriptElements.length; i++) {
-                this._evalScript(scriptElements[i]);
+            var script = el.querySelectorAll('script');
+            for (var i = 0; i < script.length; i++) {
+                this._evalScript(script[i]);
+                script[i].remove();
             }
         }
     };
 
     /**
      *
-     * @param {Element|HTMLElement} element
+     * @param {Element|HTMLElement} el
      * @return {void}
      * @private
      */
-    this._evalScript = function (element) {
-        var data = (element.text || element.textContent || element.innerHTML || '' ),
+    this._evalScript = function (el) {
+        var data = (el.text || el.textContent || el.innerHTML || '' ),
             body = document.getElementsByTagName('body')[0] || document.documentElement,
             script = document.createElement('script');
 

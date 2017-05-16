@@ -10,7 +10,7 @@ html, body, canvas {
     background-size: cover;
 }
 
-.iw-main-page {
+.iw-block-preview {
     position: absolute;
     z-index: 1;
 }
@@ -179,7 +179,7 @@ html, body, canvas {
 }
 
 .sw-modal-skin-star {
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.3);
 }
 
 .sw-modal-skin-panel {
@@ -311,7 +311,9 @@ html, body, canvas {
 }
 
 label,
-.sw-btn {
+.sw-btn,
+.sw-link,
+.sw-modal-head {
     -moz-user-select: none;
     -webkit-user-select: none;
 }

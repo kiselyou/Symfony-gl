@@ -14,14 +14,13 @@ IW.Ajax = function () {
      * @param {?({}|[])} param
      * @param {function} success
      * @param {function} [error]
-     * @returns {IW.Ajax}
+     * @returns {void}
      */
     this.post = function ( url, param, success, error ) {
         xhr.open(IW.Ajax.POST, url);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(this._prepareParams(param, IW.Ajax.POST));
-        this._execute(success, error);
-        return this;
+        this._execute( xhr, success, error );
     };
 
     /**
@@ -30,34 +29,34 @@ IW.Ajax = function () {
      * @param {?({}|[])} param
      * @param {function} success
      * @param {function} [error]
-     * @returns {IW.Ajax}
+     * @returns {void}
      */
     this.get = function ( url, param, success, error ) {
         var getUrl = this._concatUrl(url, this._prepareParams(param, IW.Ajax.GET));
         xhr.open(IW.Ajax.GET, getUrl);
         xhr.send();
-        this._execute(success, error);
-        return this;
+        this._execute( xhr, success, error );
     };
 
     /**
      *
+     * @param {XMLHttpRequest} http
      * @param {function} success
      * @param {function} [error]
      * @returns {IW.Ajax}
      */
-    this._execute = function ( success, error ) {
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState != 4) {
+    this._execute = function ( http, success, error ) {
+        http.onreadystatechange = function() {
+            if (http.readyState != 4) {
                 return;
             }
 
-            if (xhr.status != 200) {
+            if (http.status != 200) {
                 if (error) {
-                    error.call(this, xhr.status, xhr.statusText);
+                    error.call(this, http.status, http.statusText);
                 }
             } else {
-                success.call(this, xhr.responseText);
+                success.call(this, http.responseText);
             }
         };
         return this;

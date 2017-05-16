@@ -60,8 +60,8 @@ IW.Prepare = function () {
      * @type {*[]}
      */
     var models = [
-        { type: 'S1', name: 'Explorer' },
-        { type: 'R1', name: 'iw-rocket' }
+        { type: 'ships', name: 'explorer' },
+        { type: 'rockets', name: 'iw-rocket' }
     ];
 
     /**
