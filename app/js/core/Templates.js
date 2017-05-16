@@ -50,4 +50,46 @@ IW.Templates = function () {
         }
         return this;
     };
+
+    this.paste = function (selector, str) {
+        var to = document.querySelectorAll(selector);
+        if (to) {
+            var element = document.createElement('div');
+            element.innerHTML = str;
+
+            for (var a = 0; a < to.length; a++) {
+                to[a].appendChild(element);
+            }
+
+            var scriptElements = element.querySelectorAll('script');
+            for (var i = 0; i < scriptElements.length; i++) {
+                this._evalScript(scriptElements[i]);
+            }
+        }
+    };
+
+    /**
+     *
+     * @param {Element|HTMLElement} element
+     * @return {void}
+     * @private
+     */
+    this._evalScript = function (element) {
+        var data = (element.text || element.textContent || element.innerHTML || '' ),
+            body = document.getElementsByTagName('body')[0] || document.documentElement,
+            script = document.createElement('script');
+
+        script.type = 'text/javascript';
+
+        try {
+            // doesn't work on ie...
+            script.appendChild(document.createTextNode(data));
+        } catch(e) {
+            // IE has funky script nodes
+            script.text = data;
+        }
+
+        body.appendChild(script);
+        body.removeChild(script);
+    };
 };

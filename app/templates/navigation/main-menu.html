@@ -1,27 +1,26 @@
-<template data-include="navigation/test.html"></template>
 <ul class="nav nav-pills pull-right sw-naw">
-    <li class="sw-active">
-        <a href="{{ path( 'play_index' ) }}" class="sw-btn">
+    <li class="">
+        <div class="sw-btn">
             <i class="glyphicon glyphicon-play"></i>
             IW
-        </a>
+        </div>
     </li>
     <li>
-        <a href="{{ path( '_logout' ) }}" class="sw-btn">
+        <div class="sw-btn">
             <i class="glyphicon glyphicon-log-out"></i>
-            {{ '_LOGOUT'|trans }}
-        </a>
+            Logout
+        </div>
     </li>
     <li>
-        <a href="{{ path('_registration') }}" class="sw-btn">
-            <i class="glyphicon glyphicon-registration-mark"></i>
-            {{ '_REGISTRATION'|trans }}
-        </a>
-    </li>
-    <li>
-        <a href="{{ path( '_login' ) }}" class="sw-btn">
+        <div class="sw-btn" data-iw-action="switch" data-iw-hide="#iw-block-login" data-iw-show="#iw-block-registration">
             <i class="glyphicon glyphicon-log-in"></i>
-            {{ '_LOGIN'|trans }}
-        </a>
+            Login
+        </div>
+    </li>
+    <li>
+        <div class="sw-btn" data-iw-action="switch" data-iw-hide="#iw-block-registration" data-iw-show="#iw-block-login">
+            <i class="glyphicon glyphicon-registration-mark"></i>
+            Registration
+        </div>
     </li>
 </ul>

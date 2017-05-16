@@ -25,11 +25,7 @@
         var container = document.body.querySelector('.sw-modal-body');
         var tpl = new IW.Templates();
         tpl.load( 'authorisation/login.html', function ( str ) {
-
-            var temp = document.createElement('div');
-            temp.innerHTML = str;
-            container.appendChild(temp);
-
+            tpl.paste('.sw-modal-body', str);
         } );
     });
 </script>
