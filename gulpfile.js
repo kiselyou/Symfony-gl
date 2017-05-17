@@ -24,6 +24,12 @@ gulp.task('images', function(){
 		.pipe(gulp.dest('dist/images'));
 });
 
+//lessc app/less/config.less app/css/test.css
+gulp.task('font-awesome', function() {
+	return gulp.src('node_modules/font-awesome/fonts/**/*')
+		.pipe(gulp.dest('app/fonts'));
+});
+
 gulp.task('fonts', function() {
 	return gulp.src('app/fonts/**/*')
 		.pipe(gulp.dest('dist/fonts'));
@@ -46,3 +52,4 @@ gulp.task('clean:dist', function() {
 gulp.task('build', function (callback) {
 	runSequence('clean:dist', ['useref', 'images', 'fonts', 'models', 'icon'], callback);
 });
+

@@ -29,5 +29,9 @@
     "url": "https://github.com/kiselyou/galaxy/issues"
   },
   "homepage": "https://github.com/kiselyou/galaxy#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "font-awesome": "^4.7.0",
+    "less": "^2.7.2"
+  }
 }
