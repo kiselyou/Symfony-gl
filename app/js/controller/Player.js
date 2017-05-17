@@ -109,6 +109,12 @@ IW.Player = function ( idScene ) {
      */
     var SOCKET_TRADE_FROM = 'trade-from';
 
+    this.initModelPreview = function () {
+        scope.model = new IW.Model( scope.multiLoader, scope.scene );
+        scope.model.load( true );
+        return this;
+    };
+
     /**
      *
      * @returns {IW.Player}

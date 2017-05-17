@@ -57,12 +57,12 @@ IW.Prepare = function () {
 
     /**
      *
-     * @type {*[]}
+     * @type {{ships: *[], rockets: *[]}}
      */
-    var models = [
-        { type: 'ships', name: 'explorer' },
-        { type: 'rockets', name: 'iw-rocket' }
-    ];
+    this.models = {
+        ships: ['explorer'],
+        rockets: ['iw-rocket']
+    };
 
     /**
      *
@@ -117,14 +117,41 @@ IW.Prepare = function () {
     };
 
     /**
+     * Upload only one model
+     *
+     * @param {string} name - It is name of model
+     * @param {string} category - It is category of model
+     * @returns {IW.Prepare}
+     */
+    this.loadModel = function (name, category) {
+        var path = this.basePath + IW.Prepare.DIR_MODELS + '/' + category + '/' + name + '/';
+        this.multiLoader.addLoadOBJ( name, IW.Prepare.LBL_LOAD_MODELS, path, name + '.obj', name + '.mtl' );
+        return this;
+    };
+
+    /**
+     *
+     * @param {Array.<IW.Prepare.models.ships|IW.Prepare.models.rockets>} arr
+     * @param {string} category - it is name category of model. Possible values ( 'ships' | 'rockets' )
+     * @returns {IW.Prepare}
+     */
+    this.loadModels = function (arr, category) {
+        for ( var i = 0; i < arr.length; i++ ) {
+            this.loadModel( arr[ i ], category );
+        }
+        return this;
+    };
+
+    /**
+     * Load all configured model
      *
      * @returns {IW.Prepare}
      */
-    this.loadModels = function () {
-        for ( var i = 0; i < models.length; i++ ) {
-            var conf = models[ i ];
-            var path = this.basePath + IW.Prepare.DIR_MODELS + '/' + conf.type + '/' + conf.name + '/';
-            this.multiLoader.addLoadOBJ( conf.name, IW.Prepare.LBL_LOAD_MODELS, path, conf.name + '.obj', conf.name + '.mtl' );
+    this.loadAllModels = function () {
+        for (var key in this.models) {
+            if (this.models.hasOwnProperty(key)) {
+                this.loadModels( this.models[key], key );
+            }
         }
         return this;
     };
@@ -185,16 +212,19 @@ IW.Prepare.DIR_SKYBOX = '/images/textures/skybox';
 IW.Prepare.DIR_CONFIG = '/js/config';
 IW.Prepare.DIR_MODELS = '/models';
 
-IW.Prepare.LBL_LOAD_SKYBOX = 'Load Sky Box';
-IW.Prepare.LBL_LOAD_MODELS = 'Load Models';
-IW.Prepare.LBL_LOAD_CONFIG = 'Load Config';
-IW.Prepare.LBL_LOAD_SPRITES = 'Load Sprites';
+IW.Prepare.LBL_LOAD_SKYBOX = 'Environment';
+IW.Prepare.LBL_LOAD_MODELS = 'Models';
+IW.Prepare.LBL_LOAD_CONFIG = 'Config';
+IW.Prepare.LBL_LOAD_SPRITES = 'Sprites';
 
 IW.Prepare.CONFIG_KEY_ACTION = 'action';
 IW.Prepare.CONFIG_KEY_WEAPON = 'weapon';
 
-IW.Prepare.MODEL_EXPLORER = 'Explorer';
-IW.Prepare.MODEL_ROCKET_R1 = 'iw-rocket';
-
 IW.Prepare.SPRITE_SMOKE = 'smoke';
 IW.Prepare.SPRITE_EXPLOSION = 'explosion';
+
+IW.Prepare.MODEL_EXPLORER = 'explorer';
+IW.Prepare.MODEL_ROCKET_R1 = 'iw-rocket';
+
+IW.Prepare.CATEGORY_SHIPS = 'ships';
+IW.Prepare.CATEGORY_ROCKETS = 'rockets';

@@ -123,7 +123,10 @@ IW.Scene = function ( idContainer ) {
      *
      * @returns {IW.Scene}
      */
-    this.prod = function () {
+    this.prod = function (flag) {
+        if (flag === false) {
+            return this;
+        }
         document.addEventListener( 'contextmenu', contextMenu, false );
         document.addEventListener( 'keydown', keyDown, false );
         return this;
@@ -202,8 +205,6 @@ IW.Scene = function ( idContainer ) {
      */
     this.previewConfigOrbitControl = function () {
         this.orbitControl.autoRotateSpeed = 0.3;
-        this.orbitControl.minDistance = 10;
-        this.orbitControl.maxDistance = 30;
         this.orbitControl.autoRotate = true;
         this.orbitControl.enableKeys = false;
         this.orbitControl.enablePan = false;
@@ -283,14 +284,10 @@ IW.Scene = function ( idContainer ) {
 
         switch ( e.which ) {
             case 123:
-                if ( scope.lock ) {
-                    e.preventDefault();
-                }
+                e.preventDefault();
                 break;
             case 122:
-                if ( scope.lock ) {
-                    e.preventDefault();
-                }
+                e.preventDefault();
                 break;
         }
     }

@@ -103,10 +103,8 @@ html, body, canvas {
 }
 
 /*===================================================================================================================*/
-
-.sw-modal > div {
-    margin: 10px;
-    padding: 10px;
+.sw-modal-panel-nead {
+    min-height: 12px;
 }
 
 .sw-modal-head {
@@ -114,10 +112,13 @@ html, body, canvas {
     font-weight: bold;
     border-bottom: 1px solid rgba(127,255,255,0.25);
     overflow: hidden;
+    margin: 10px;
+    padding: 10px;
 }
 
 .sw-modal-body {
-
+    margin: 10px;
+    padding: 10px;
 }
 
 .sw-text-right {
@@ -175,7 +176,7 @@ html, body, canvas {
 .sw-modal-size-12 {
     width: 98%;
     margin: 1% 1%;
-    height: 96%;
+    height: 98%;
 }
 
 .sw-modal-skin-star {
@@ -342,7 +343,7 @@ label,
     background: transparent;
     border: 1px solid rgba(127,255,255,0.75);
     border-radius: 4px;
-    padding: 10px 10px;
+    padding: 6px 10px;
     cursor: pointer;
     text-decoration: none;
     display: inline;
@@ -362,6 +363,7 @@ label,
 
 .sw-link {
     cursor: pointer;
+    margin: 5px;
 }
 
 .sw-link:hover {
