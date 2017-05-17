@@ -13,7 +13,6 @@ var DIT_TEMPLATES =  __dirname + '/' + appDir + '/templates/';
 
 var bodyParser = require('body-parser');
 
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
@@ -43,7 +42,7 @@ app.get('/', function (req, res) {
             }
         } else {
             res.writeHead(200, {'Content-Type': 'text/html'});
-            res.end(buildTemplate(content), config.encoding);
+            res.end(includeTemplate(content), config.encoding, true);
         }
     });
 });
@@ -59,7 +58,7 @@ app.post('/template', function (req, res) {
             res.end(MESSAGE_SERVER + error.code + ' ..\n');
         } else {
             res.writeHead(200, {'Content-Type': 'text/html'});
-            res.end(buildTemplate(content), config.encoding);
+            res.end(includeTemplate(content), config.encoding, true);
         }
     });
 });
@@ -84,21 +83,58 @@ function getEnvironment(config) {
 }
 
 /**
+ * Include template
  *
  * @param {string} content
+ * @param {boolean} extend
  * @returns {*}
  */
-function buildTemplate(content) {
+function includeTemplate(content, extend) {
     var path;
     var $ = cheerio.load(content);
 
-    $('[data-extend]').each(function () {
-        path = DIT_TEMPLATES + $(this).attr('data-extend');
-        var blockName = $(this).attr('data-block');
+    if(extend) {
+        var str = extendTemplate($);
+        if (str) {
+            return str;
+        }
+    }
+
+    $('[data-include]').each(function() {
+        path = DIT_TEMPLATES + $(this).attr('data-include');
         if (fs.existsSync(path)) {
+            $(this).replaceWith(includeTemplate(fs.readFileSync(path, {encoding: config.encoding}), true));
+        } else {
+            console.log('Include: Template was not found in path ' + path);
+        }
+    });
+
+    return $.html();
+}
+
+/**
+ * Extend template
+ *
+ * @param {cheerio} $ the template
+ * @returns {boolean|string}
+ */
+function extendTemplate($) {
+    $('[data-extend]').each(function () {
+
+        var blockName = $(this).attr('data-block');
+
+        if (!blockName) {
+            console.log('Extend: The block was not found '  + blockName);
+            return false;
+        }
+
+        path = DIT_TEMPLATES + $(this).attr('data-extend');
+
+        if (fs.existsSync(path)) {
+
             var $$ = cheerio.load(fs.readFileSync(path, {encoding: config.encoding}));
             $$('[data-block="' + blockName + '"]').replaceWith($(this).children());
-            $(this).replaceWith(buildTemplate($$.html()));
+            $(this).replaceWith(includeTemplate($$.html(), true));
             return $.html();
 
         } else {
@@ -106,15 +142,5 @@ function buildTemplate(content) {
         }
     });
 
-
-    $('[data-include]').each(function() {
-        path = DIT_TEMPLATES + $(this).attr('data-include');
-        if (fs.existsSync(path)) {
-            $(this).replaceWith(buildTemplate(fs.readFileSync(path, {encoding: config.encoding})));
-        } else {
-            console.log('Include: Template was not found in path ' + path);
-        }
-    });
-
-    return $.html();
+    return false;
 }
