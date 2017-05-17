@@ -48,7 +48,7 @@ app.get('/', function (req, res) {
     });
 });
 
-app.get('/template', function (req, res) {
+app.get('/play', function (req, res) {
     console.log(req.query);
 });
 
@@ -89,14 +89,30 @@ function getEnvironment(config) {
  * @returns {*}
  */
 function buildTemplate(content) {
-
+    var path;
     var $ = cheerio.load(content);
+
+    $('[data-extend]').each(function () {
+        path = DIT_TEMPLATES + $(this).attr('data-extend');
+        var blockName = $(this).attr('data-block');
+        if (fs.existsSync(path)) {
+            var $$ = cheerio.load(fs.readFileSync(path, {encoding: config.encoding}));
+            $$('[data-block="' + blockName + '"]').replaceWith($(this).children());
+            $(this).replaceWith(buildTemplate($$.html()));
+            return $.html();
+
+        } else {
+            console.log('Extend: Template was not found in path ' + path);
+        }
+    });
+
+
     $('[data-include]').each(function() {
-        var path = DIT_TEMPLATES + $(this).attr('data-include');
+        path = DIT_TEMPLATES + $(this).attr('data-include');
         if (fs.existsSync(path)) {
             $(this).replaceWith(buildTemplate(fs.readFileSync(path, {encoding: config.encoding})));
         } else {
-            console.log('Template was not found in path ' + path);
+            console.log('Include: Template was not found in path ' + path);
         }
     });
 

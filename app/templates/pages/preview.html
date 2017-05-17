@@ -1,23 +1,26 @@
-<div id="iw-block-preview"></div>
+<template data-extend="container/main-container.html" data-block="iw-block-preview">
+    <div id="iw-block-preview"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var preview = false;
+            document.getElementById('iw-pages-preview').addEventListener('click', function () {
+                if (!preview) {
+                    preview = true;
+                    this.classList.add('hidden');
+                    var play = new IW.Player('iw-block-preview');
 
-<script>
-    var preview = false;
-    document.getElementById('iw-pages-preview').addEventListener('click', function () {
-        if (!preview) {
-            preview = true;
-            this.classList.add('hidden');
-            var play = new IW.Player('iw-block-preview');
-
-            play
-                .prod(false)
-                .loadSkyBox()
-                .loadModel(IW.Prepare.MODEL_EXPLORER, IW.Prepare.CATEGORY_SHIPS)
-                .previewConfigOrbitControl()
-                .start(function (multiLoader, ajaxData) {
                     play
-                            .initModelPreview()
-                            .init();
-                });
-        }
-    });
-</script>
+                        .prod(false)
+                        .loadSkyBox()
+                        .loadModel(IW.Prepare.MODEL_EXPLORER, IW.Prepare.CATEGORY_SHIPS)
+                        .previewConfigOrbitControl()
+                        .start(function (multiLoader, ajaxData) {
+                            play
+                                .initModelPreview()
+                                .init();
+                        });
+                }
+            });
+        });
+    </script>
+</template>
