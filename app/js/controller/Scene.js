@@ -229,7 +229,7 @@ IW.Scene = function ( idContainer ) {
      * @returns {void}
      */
     function setCamera() {
-        scope.camera.position.set( 0, 20, -60 );
+        scope.camera.position.set( 0, 20, -40 );
         scope.camera.fov = 60;
         scope.camera.near = 0.1;
         scope.camera.far = 100000;
