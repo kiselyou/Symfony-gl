@@ -7,6 +7,12 @@
     margin: 10% 35%;
     position: absolute;
     z-index: 1;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+
+    &__skin_dark {
+        background: @modal_background_dark;
+    }
 
     &__control {
         min-height: 10px;
@@ -24,10 +30,12 @@
     &__body {
         margin: @modal_margin;
         padding: @modal_padding;
+        overflow: hidden;
     }
 
     &__foot {
         min-height: 12px;
+        overflow: hidden;
     }
 
     &__size_full {
