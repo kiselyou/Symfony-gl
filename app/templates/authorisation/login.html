@@ -1,29 +1,34 @@
-<div id="iw-block-login" class="hidden">
-    <div class="sw-modal sw-modal-skin-star well-sm">
-        <div class="sw-modal-panel-nead">
-            <div class="pull-right sw-link">
-                <span data-iw-action="switch" data-iw-hide="#iw-block-login"><i class="fa fa-times-circle fa-lg pull-right" aria-hidden="true"></i> </span>
+<div id="iw_block_login" class="iw_hidden">
+
+    <div class="iw_modal iw_modal__size_1">
+        <div class="iw_modal__control">
+            <div class="iw_block_right iw_margin_r_px_10">
+                <span data-iw-action="switch" data-iw-hide="#iw_block_login" class="iw_btn iw_btn__link">
+                    <i class="iw iw-remove-sign iw_text__md"></i>
+                </span>
             </div>
         </div>
-        <div class="sw-modal-head">
+        <div class="iw_modal__head">
 
-            <div class="pull-left">
+            <div class="iw_block_left">
                 <span>Login</span>
             </div>
-            <div class="pull-right sw-link">
-                <span data-iw-action="switch" data-iw-hide="#iw-block-login" data-iw-show="#iw-block-registration"><i class="fa fa-id-card-o fa-lg" aria-hidden="true"></i> Registration </span>
+            <div class="iw_block_right">
+                <span data-iw-action="switch" data-iw-hide="#iw_block_login" data-iw-show="#iw_block_registration" class="iw_btn iw_btn__link">
+                    Registration
+                </span>
             </div>
 
         </div>
 
-        <div class="sw-modal-body">
+        <div class="iw_modal__body">
 
-            <form class="bs-example bs-example-form" id="form_login" role="form" action="" method="POST">
+            <form id="form_login" role="form" action="" method="POST">
 
                 <div class="form-group">
                     <label for="a_username"> Username </label>
                     <span class="sw-star">*</span>
-                    <div class="sw-field input-group">
+                    <div class="sw-field iw_input__group">
                         <span class="input-group-addon">
                             <i class="glyphicon glyphicon-user"></i>
                         </span>
@@ -71,7 +76,7 @@
     </div>
 </div>
 
-<div id="iw-block-registration" class="hidden">
+<div id="iw_block_registration" class="iw_hidden">
     <template data-include="authorisation/registration.html"></template>
 </div>
 
@@ -118,10 +123,10 @@
                     var elementsShow = document.querySelectorAll(this.getAttribute('data-iw-show'));
                     var a;
                     for (a = 0; a < elementsHide.length; a++) {
-                        elementsHide[a].classList.add('hidden');
+                        elementsHide[a].classList.add('iw_hidden');
                     }
                     for (a = 0; a < elementsShow.length; a++) {
-                        elementsShow[a].classList.remove('hidden');
+                        elementsShow[a].classList.remove('iw_hidden');
                     }
                     break;
             }

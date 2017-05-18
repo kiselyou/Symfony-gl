@@ -1,0 +1,50 @@
+.generate-padding(@i: 0) when (@i =< @padding_count) {
+
+  .iw_padding_px_@{i} {
+    padding: unit(@i, px);
+  }
+
+  .iw_padding_pct_@{i} {
+    padding: unit(@i, %);
+  }
+
+  .iw_padding_v_px_@{i} {
+    padding-top: unit(@i, px);
+    padding-bottom: unit(@i, px);
+  }
+
+  .iw_padding_v_pct_@{i} {
+    padding-top: unit(@i, %);
+    padding-bottom: unit(@i, %);
+  }
+
+  .iw_padding_h_px_@{i} {
+    padding-left: unit(@i, px);
+    padding-right: unit(@i, px);
+  }
+
+  .iw_padding_h_pct_@{i} {
+    padding-left: unit(@i, %);
+    padding-right: unit(@i, %);
+  }
+
+  .iw_padding_l_px_@{i} {
+    padding-left: unit(@i, px);
+  }
+
+  .iw_padding_l_pct_@{i} {
+    padding-left: unit(@i, %);
+  }
+
+  .iw_padding_r_px_@{i} {
+    padding-right: unit(@i, px);
+  }
+
+  .iw_padding_r_pct_@{i} {
+    padding-right: unit(@i, %);
+  }
+
+  .generate-padding(@i + @padding_step);
+}
+
+.generate-padding();

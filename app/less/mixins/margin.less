@@ -1,0 +1,50 @@
+.generate-margin(@i: 0) when (@i =< @margin_count) {
+
+  .iw_margin_px_@{i} {
+    margin: unit(@i, px);
+  }
+
+  .iw_margin_pct_@{i} {
+    margin: unit(@i, %);
+  }
+
+  .iw_margin_v_px_@{i} {
+    margin-top: unit(@i, px);
+    margin-bottom: unit(@i, px);
+  }
+
+  .iw_margin_v_pct_@{i} {
+    margin-top: unit(@i, %);
+    margin-bottom: unit(@i, %);
+  }
+
+  .iw_margin_h_px_@{i} {
+    margin-left: unit(@i, px);
+    margin-right: unit(@i, px);
+  }
+
+  .iw_margin_h_pct_@{i} {
+    margin-left: unit(@i, %);
+    margin-right: unit(@i, %);
+  }
+
+  .iw_margin_l_px_@{i} {
+    margin-left: unit(@i, px);
+  }
+
+  .iw_margin_l_pct_@{i} {
+    margin-left: unit(@i, %);
+  }
+
+  .iw_margin_r_px_@{i} {
+    margin-right: unit(@i, px);
+  }
+
+  .iw_margin_r_pct_@{i} {
+    margin-right: unit(@i, %);
+  }
+
+  .generate-margin(@i + @margin_step);
+}
+
+.generate-margin();

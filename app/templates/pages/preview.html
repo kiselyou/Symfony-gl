@@ -1,13 +1,15 @@
-<template data-extend="container/main-container.html" data-block="iw-block-preview">
-    <div id="iw-block-preview"></div>
+<template data-extend="container/default.html" data-block="iw__block__extend__preview">
+
+    <div id="iw_canvas_preview"></div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var preview = false;
-            document.getElementById('iw-pages-preview').addEventListener('click', function () {
+            document.getElementById('iw_show_preview').addEventListener('click', function () {
                 if (!preview) {
                     preview = true;
-                    this.classList.add('hidden');
-                    var play = new IW.Player('iw-block-preview');
+                    this.classList.add('iw_hidden');
+                    var play = new IW.Player('iw_canvas_preview');
 
                     play
                         .prod(false)

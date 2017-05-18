@@ -1,0 +1,50 @@
+.iw_btn {
+  color: @font_color;
+  background: transparent;
+  border: 1px solid @border_color;
+  border-radius: @border_radius;
+  padding: 6px 10px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline;
+
+  &:hover {
+    color: @font_color_h;
+    background-color: @background_color_h;
+  }
+
+  &:focus {
+    outline: none;
+    color: @font_color_f;
+    background-color: @background_color_f;
+  }
+
+  &:active {
+    outline: none;
+    color: @font_color_a;
+    background-color: @background_color_a;
+  }
+
+  &__link {
+    cursor: pointer;
+    padding: initial;
+    border: none;
+  }
+
+  &__link:hover {
+    color: @font_color_h;
+    background: none;
+  }
+
+  &__link:focus {
+    outline: none;
+    color: @font_color_f;
+    background: none;
+  }
+
+  &__link:active {
+    outline: none;
+    color: @font_color_a;
+    background: none;
+  }
+}
