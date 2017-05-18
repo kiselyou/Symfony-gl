@@ -1,7 +1,47 @@
-.body {
-  background: #FFF !important;
-  color: #AAA;
+@modal_margin: 10px;
+@modal_padding: 10px;
+.iw_modal {
+    box-shadow: inset 0 0 12px @font_color;
+    border: 1px solid @border_color;
+    border-radius: 5px;
+    overflow: hidden;
+    min-width: 30%;
+    margin: 10% 35%;
+    position: absolute;
+    z-index: 1;
+    &__control {
+        min-height: 12px;
+    }
+    &__head {
+        min-height: 40px;
+        font-weight: bold;
+        border-bottom: 1px solid @border_color;
+        overflow: hidden;
+        margin: @modal_margin;
+        padding: @modal_padding;
+    }
+    &__body {
+        margin: @modal_margin;
+        padding: @modal_padding;
+    }
+    &__foot {
+        min-height: 12px;
+    }
 }
-.ssss {
-  color: #FFF;
+
+@iw-modal-size-name: iw_size_modal;
+@iw-modal-size-count: 6;
+
+.generate-model-size(@i: 1) when (@i =< @iw-modal-size-count) {
+
+    .@{iw-modal-size-name}_@{i} {
+        @size: (@i + 6) * (100% / (@iw-modal-size-count * 2)) - 2;
+        @margin: (100 - @size) / 2;
+        width: @size;
+        min-height: @size;
+        margin: @margin / 2 @margin;
+    }
+    .generate-model-size(@i + 1);
 }
+
+.generate-model-size();

@@ -157,7 +157,7 @@ html, body, canvas {
     }
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 600px) {
     .sw-modal {
         width: 80%;
         margin: 10% 10%;

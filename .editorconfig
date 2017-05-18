@@ -12,6 +12,6 @@ end_of_line = lf
 insert_final_newline = true
 
 # 4 space indentation
-[*.json]
+[*.json, *.css, *.less]
 indent_style = tab
 indent_size = 4
