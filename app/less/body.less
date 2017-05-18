@@ -13,18 +13,18 @@ html, body, canvas {
 body {
   background: #000000 url('../images/textures/background/main.png');
 }
-.clearfix {
+.iw_clearfix {
   clear: both;
 }
-.center-block {
+.iw_block_center {
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
-.pull-right {
+.iw_pull_right {
   float: right;
 }
-.pull-left {
+.iw_pull_left {
   float: left;
 }
 .hidden {
@@ -79,80 +79,80 @@ a:focus {
 
 .generate-margin(@i: 0) when (@i =< @margin_count) {
 
-  .margin_px_@{i} {
+  .iw_margin_px_@{i} {
     margin: unit(@i, px);
   }
-  .margin_pct_@{i} {
+  .iw_margin_pct_@{i} {
     margin: unit(@i, %);
   }
-  .margin_v_px_@{i} {
+  .iw_margin_v_px_@{i} {
     margin-top: unit(@i, px);
     margin-bottom: unit(@i, px);
   }
-  .margin_v_pct_@{i} {
+  .iw_margin_v_pct_@{i} {
     margin-top: unit(@i, %);
     margin-bottom: unit(@i, %);
   }
-  .margin_h_px_@{i} {
+  .iw_margin_h_px_@{i} {
     margin-left: unit(@i, px);
     margin-right: unit(@i, px);
   }
-  .margin_h_pct_@{i} {
+  .iw_margin_h_pct_@{i} {
     margin-left: unit(@i, %);
     margin-right: unit(@i, %);
   }
-  .margin_l_px_@{i} {
+  .iw_margin_l_px_@{i} {
     margin-left: unit(@i, px);
   }
-  .margin_l_pct_@{i} {
+  .iw_margin_l_pct_@{i} {
     margin-left: unit(@i, %);
   }
-  .margin_r_px_@{i} {
+  .iw_margin_r_px_@{i} {
     margin-right: unit(@i, px);
   }
-  .margin_r_pct_@{i} {
+  .iw_margin_r_pct_@{i} {
     margin-right: unit(@i, %);
   }
 
   .generate-margin(@i + @margin_step);
 }
 
-.generate-padding();
+.generate-margin();
 
 .generate-padding(@i: 0) when (@i =< @padding_count) {
 
-  .padding_px_@{i} {
+  .iw_padding_px_@{i} {
     padding: unit(@i, px);
   }
-  .padding_pct_@{i} {
+  .iw_padding_pct_@{i} {
     padding: unit(@i, %);
   }
-  .padding_v_px_@{i} {
+  .iw_padding_v_px_@{i} {
     padding-top: unit(@i, px);
     padding-bottom: unit(@i, px);
   }
-  .padding_v_pct_@{i} {
+  .iw_padding_v_pct_@{i} {
     padding-top: unit(@i, %);
     padding-bottom: unit(@i, %);
   }
-  .padding_h_px_@{i} {
+  .iw_padding_h_px_@{i} {
     padding-left: unit(@i, px);
     padding-right: unit(@i, px);
   }
-  .padding_h_pct_@{i} {
+  .iw_padding_h_pct_@{i} {
     padding-left: unit(@i, %);
     padding-right: unit(@i, %);
   }
-  .padding_l_px_@{i} {
+  .iw_padding_l_px_@{i} {
     padding-left: unit(@i, px);
   }
-  .padding_l_pct_@{i} {
+  .iw_padding_l_pct_@{i} {
     padding-left: unit(@i, %);
   }
-  .padding_r_px_@{i} {
+  .iw_padding_r_px_@{i} {
     padding-right: unit(@i, px);
   }
-  .padding_r_pct_@{i} {
+  .iw_padding_r_pct_@{i} {
     padding-right: unit(@i, %);
   }
 
