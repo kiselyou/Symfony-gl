@@ -46,20 +46,25 @@
             margin: 0.5%;
         }
 
-        @count: 12;
-        .generate-model-size(@i: 1) when (@i =< (@count - 4)) {
-
-            &_@{i} {
-                @size: (@i + 4) * (100% / @count) - 2;
-                @margin: (100 - @size) / 2;
-                width: @size;
-                min-height: @size / 2;
-                margin: (@margin / 5) @margin;
-            }
-
-            .generate-model-size(@i + 1);
+        &_xs {
+            width: 32%;
+            min-height: 19.83333333%;
+            margin: 6.03333333% 34%;
         }
-
-        .generate-model-size();
+        &_sm {
+            width: 48%;
+            min-height: 24%;
+            margin: 5.2% 26%;
+        }
+        &_md {
+            width: 56.33333333%;
+            min-height: 28.16666667%;
+            margin: 4.36666667% 21.83333333%;
+        }
+        &_lg {
+            width: 64.66666667%;
+            min-height: 32.33333333%;
+            margin: 3.53333333% 17.66666667%;
+        }
     }
 }

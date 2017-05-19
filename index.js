@@ -9,7 +9,9 @@ var app = express();
 var appDir = getEnvironment(config);
 
 var DIR_ROUTES = __dirname + '/server/routing/';
-var DIT_TEMPLATES =  __dirname + '/' + appDir + '/templates/';
+
+var DIR_TEMPLATES =  __dirname + '/' + appDir + '/templates/html/';
+var DIR_TEMPLATES_JS =  __dirname + '/' + appDir + '/templates/html/';
 
 var bodyParser = require('body-parser');
 
@@ -53,7 +55,7 @@ app.get('/play', function (req, res) {
 });
 
 app.post('/template', function (req, res) {
-    fs.readFile(DIT_TEMPLATES + req.body['template'], null, function (error, content) {
+    fs.readFile(DIR_TEMPLATES + req.body['template'], null, function (error, content) {
         if (error) {
             res.writeHead(500);
             res.end(MESSAGE_SERVER + error.code + ' ..\n');
@@ -102,7 +104,7 @@ function includeTemplate(content, extend) {
     }
 
     $('[data-include]').each(function() {
-        path = DIT_TEMPLATES + $(this).attr('data-include');
+        path = DIR_TEMPLATES + $(this).attr('data-include');
         if (fs.existsSync(path)) {
             $(this).replaceWith(includeTemplate(fs.readFileSync(path, {encoding: config.encoding}), true));
         } else {
@@ -129,7 +131,7 @@ function extendTemplate($) {
             return false;
         }
 
-        path = DIT_TEMPLATES + $(this).attr('data-extend');
+        path = DIR_TEMPLATES + $(this).attr('data-extend');
 
         if (fs.existsSync(path)) {
 

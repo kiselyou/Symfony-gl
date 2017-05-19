@@ -967,45 +967,25 @@ h6,
   min-height: 98%;
   margin: 0.5%;
 }
-.iw_modal_size_1 {
-  width: 39.66666667%;
+.iw_modal_size_xs {
+  width: 32%;
   min-height: 19.83333333%;
-  margin: 6.03333333% 30.16666667%;
+  margin: 6.03333333% 34%;
 }
-.iw_modal_size_2 {
+.iw_modal_size_sm {
   width: 48%;
   min-height: 24%;
   margin: 5.2% 26%;
 }
-.iw_modal_size_3 {
+.iw_modal_size_md {
   width: 56.33333333%;
   min-height: 28.16666667%;
   margin: 4.36666667% 21.83333333%;
 }
-.iw_modal_size_4 {
+.iw_modal_size_lg {
   width: 64.66666667%;
   min-height: 32.33333333%;
   margin: 3.53333333% 17.66666667%;
-}
-.iw_modal_size_5 {
-  width: 73%;
-  min-height: 36.5%;
-  margin: 2.7% 13.5%;
-}
-.iw_modal_size_6 {
-  width: 81.33333333%;
-  min-height: 40.66666667%;
-  margin: 1.86666667% 9.33333333%;
-}
-.iw_modal_size_7 {
-  width: 89.66666667%;
-  min-height: 44.83333333%;
-  margin: 1.03333333% 5.16666667%;
-}
-.iw_modal_size_8 {
-  width: 98%;
-  min-height: 49%;
-  margin: 0.2% 1%;
 }
 .iw_btn {
   color: rgba(0, 255, 255, 0.5);
