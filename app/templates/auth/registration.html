@@ -1,9 +1,9 @@
-<div class="iw_modal iw_modal__size_1 iw_modal__skin_dark">
+<div class="iw_modal iw_modal_size_1 iw_modal_skin_dark">
 
     <div class="iw_modal__control">
-        <div class="iw_block_right iw_margin_r_px_10">
+        <div class="iw_block_right">
             <span data-iw-action="switch" data-iw-hide="#iw_block_registration">
-                <i class="iw iw-remove-sign iw_text__md"></i>
+                <i class="iw iw-remove-sign iw_text_md"></i>
             </span>
         </div>
     </div>
@@ -15,7 +15,7 @@
         </div>
 
         <div class="iw_block_right">
-            <span data-iw-action="switch" data-iw-hide="#iw_block_registration" data-iw-show="#iw_block_login" class="iw_btn iw_btn__link">
+            <span data-iw-action="switch" data-iw-hide="#iw_block_registration" data-iw-show="#iw_block_login" class="iw_btn iw_btn_skin_link">
                 Login
             </span>
         </div>
@@ -119,52 +119,54 @@
 </div>
 
 <script type="application/javascript">
-    var btn = document.getElementById('_send_form');
-    var validation = new IW.Validation('#form_reg');
-    validation.addEventCheckAll('click', btn);
-    validation.addEventCheckAll('keyup', 'input');
+    document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('_send_form');
+        var validation = new IW.Validation('#form_reg');
+        validation.addEventCheckAll('click', btn);
+        validation.addEventCheckAll('keyup', 'input');
 
-    validation.addGroupMarker('span');
+        validation.addGroupMarker('span');
 
-    btn.addEventListener('click', function() {
-        console.log(1);
+        btn.addEventListener('click', function () {
+            console.log(1);
+        });
+
+        validation.addRile('username', {
+            required: true,
+            max: 25,
+            min: 6,
+            label: 'Username'
+        });
+
+        validation.addRile('email', {
+            required: true,
+            max: 60,
+            min: 5,
+            label: 'Email'
+        });
+
+        validation.addRile('password', {
+            required: true,
+            max: 25,
+            min: 6,
+            isMatch: 'username',
+            label: 'Password'
+        });
+
+        validation.addRile('confirm_password', {
+            required: true,
+            isMatch: 'username',
+            isNotSame: 'password',
+            label: 'Confirm Password'
+        });
+
+        validation.setCallbackSuccess(function (element) {
+            if (element == btn) {
+                //            document.getElementById('form_reg').submit();
+            }
+        });
+
+        validation.messagesAppendTo('#reg_error');
+        validation.listen();
     });
-
-    validation.addRile('username', {
-        required: true,
-        max: 25,
-        min: 6,
-        label: 'Username'
-    });
-
-    validation.addRile('email', {
-        required: true,
-        max: 60,
-        min: 5,
-        label: 'Email'
-    });
-
-    validation.addRile('password', {
-        required: true,
-        max: 25,
-        min: 6,
-        isMatch: 'username',
-        label: 'Password'
-    });
-
-    validation.addRile('confirm_password', {
-        required: true,
-        isMatch: 'username',
-        isNotSame: 'password',
-        label: 'Confirm Password'
-    });
-
-    validation.setCallbackSuccess(function (element) {
-        if (element == btn) {
-//            document.getElementById('form_reg').submit();
-        }
-    });
-
-    validation.messagesAppendTo('#reg_error');
-    validation.listen();
 </script>

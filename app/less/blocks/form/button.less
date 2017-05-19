@@ -25,26 +25,29 @@
     background-color: @background_color_a;
   }
 
-  &__link {
-    cursor: pointer;
-    padding: initial;
-    border: none;
-  }
+  &_skin {
 
-  &__link:hover {
-    color: @font_color_h;
-    background: none;
-  }
+    &_link {
+      cursor: pointer;
+      padding: initial;
+      border: none;
 
-  &__link:focus {
-    outline: none;
-    color: @font_color_f;
-    background: none;
-  }
+      &:hover {
+        color: @font_color_h;
+        background: none;
+      }
 
-  &__link:active {
-    outline: none;
-    color: @font_color_a;
-    background: none;
+      &:focus {
+        outline: none;
+        color: @font_color_f;
+        background: none;
+      }
+
+      &:active {
+        outline: none;
+        color: @font_color_a;
+        background: none;
+      }
+    }
   }
 }

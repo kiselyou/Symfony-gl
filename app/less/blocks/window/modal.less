@@ -10,13 +10,8 @@
     -moz-user-select: none;
     -webkit-user-select: none;
 
-    &__skin_dark {
-        background: @modal_background_dark;
-    }
-
     &__control {
-        min-height: 10px;
-        margin-top: 10px;
+        padding: 10px 10px;
     }
 
     &__head {
@@ -38,24 +33,33 @@
         overflow: hidden;
     }
 
-    &__size_full {
-        width: 99%;
-        min-height: 98%;
-        margin: 0.5%;
+    &_skin {
+        &_dark {
+            background: @modal_background_dark;
+        }
     }
-    @iw-modal-size-count: 12;
-    .generate-model-size(@i: 1) when (@i =< (@iw-modal-size-count - 4)) {
 
-        &__size_@{i} {
-            @size: (@i + 4) * (100% / @iw-modal-size-count) - 2;
-            @margin: (100 - @size) / 2;
-            width: @size;
-            min-height: @size / 2;
-            margin: (@margin / 5) @margin;
+    &_size {
+        &_full {
+            width: 99%;
+            min-height: 98%;
+            margin: 0.5%;
         }
 
-        .generate-model-size(@i + 1);
-    }
+        @count: 12;
+        .generate-model-size(@i: 1) when (@i =< (@count - 4)) {
 
-    .generate-model-size();
+            &_@{i} {
+                @size: (@i + 4) * (100% / @count) - 2;
+                @margin: (100 - @size) / 2;
+                width: @size;
+                min-height: @size / 2;
+                margin: (@margin / 5) @margin;
+            }
+
+            .generate-model-size(@i + 1);
+        }
+
+        .generate-model-size();
+    }
 }

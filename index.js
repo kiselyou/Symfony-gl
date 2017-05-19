@@ -42,7 +42,8 @@ app.get('/', function (req, res) {
             }
         } else {
             res.writeHead(200, {'Content-Type': 'text/html'});
-            res.end(includeTemplate(content), config.encoding, true);
+            var template = scriptsFilter(includeTemplate(content));
+            res.end(template, config.encoding, true);
         }
     });
 });
@@ -143,4 +144,17 @@ function extendTemplate($) {
     });
 
     return false;
+}
+
+/**
+ *
+ * @param {string} content
+ * @return {*}
+ */
+function scriptsFilter(content) {
+    var $ = cheerio.load(content);
+    $('script').each(function () {
+        $('body:last-child').append($(this));
+    });
+    return $.html();
 }

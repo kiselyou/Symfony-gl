@@ -1,32 +1,33 @@
 <div>
-    <div id="iw-main-block-preview" class="iw_position_a">
-        <template data-block="iw__block__extend__preview"></template>
-    </div>
 
-    <div class="iw_modal iw_modal__size_full">
+    <template data-block="iw__block__extend__preview"></template>
+
+    <div class="iw_modal iw_modal_size_full">
 
         <div class="iw_modal__head">
 
             <div class="iw_logo iw_block_left">
-                <h2 class="iw_logo__name iw_margin_px_0"><a href="">IronWar</a></h2>
+                <h2 class="iw_logo__name"><a href="">IronWar</a></h2>
                 <small class="iw_logo__signature"> ONLINE </small>
             </div>
 
             <div class="iw_block_right">
-                <template data-include="navigation/main-menu.html"></template>
+                <template data-include="nav/main.html"></template>
             </div>
 
         </div>
 
-        <div class="iw_modal__body" id="iw-main-container-body"></div>
+        <div class="iw_modal__body" id="iw-main-container-body">
+            <template data-include="auth/login.html"></template>
+        </div>
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var tpl = new IW.Templates();
-        tpl.load( 'authorisation/login.html', function ( str ) {
-            tpl.paste('#iw-main-container-body', str);
-        } );
-    });
-</script>
+<!--<script>-->
+    <!--document.addEventListener('DOMContentLoaded', function () {-->
+        <!--var tpl = new IW.Templates();-->
+        <!--tpl.load( 'auth/login.html', function ( str ) {-->
+            <!--tpl.paste('#iw-main-container-body', str);-->
+        <!--} );-->
+    <!--});-->
+<!--</script>-->
