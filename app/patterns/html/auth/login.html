@@ -1,0 +1,79 @@
+<div id="iw_block_login" class="iw_hidden">
+
+    <div class="iw_modal iw_modal_size_xs iw_modal_skin_dark">
+        <div class="iw_modal__control">
+            <div class="iw_block_right">
+                <span data-iw-action="switch" data-iw-hide="#iw_block_login" class="iw_btn iw_btn_skin_link">
+                    <i class="iw iw-remove-sign iw_text_md"></i>
+                </span>
+            </div>
+        </div>
+        <div class="iw_modal__head">
+
+            <div class="iw_block_left">
+                <span>Login</span>
+            </div>
+            <div class="iw_block_right">
+                <span data-iw-action="switch" data-iw-hide="#iw_block_login" data-iw-show="#iw_block_registration" class="iw_btn iw_btn_skin_link">
+                    Registration
+                </span>
+            </div>
+
+        </div>
+
+        <div class="iw_modal__body">
+
+            <form id="form_login" role="form" action="" method="POST">
+
+                <div class="iw_row">
+                    <div class="iw_group">
+                        <label for="a_username"> Username </label>
+                        <span class="iw_star">*</span>
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-user"></i>
+                        </span>
+                        <input type="text" class="form-control" name="username" id="a_username" placeholder="Username" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="iw_row">
+                    <div class="col-lg-12">
+                        <div class="iw_group">
+                            <label for="a_password"> Password </label>
+                            <span class="iw_star">*</span>
+                            <span class="input-group-addon">
+                                <i class="glyphicon glyphicon-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" name="password" id="a_password" placeholder="Password" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="iw_row">
+                    <div class="col-lg-12">
+                        <label for="a_remember_me">Remember</label>
+                        <input type="checkbox" name="_remember_me" id="a_remember_me">
+
+                        <div class="iw_block_right">
+                            <button type="button" class="iw_btn" id="_send_form">
+                                <i class="iw iw-log-in"></i>
+                                Login
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="iw_row">
+                    <div class="iw_col-lg-12">
+
+                        <ul class="sw-block-errors sw-text-error" id="login_error">
+                            <!--{% if error %}-->
+                            <!--<li><i class="glyphicon glyphicon-exclamation-sign"></i> {{ error.messageKey|trans(error.messageData, 'security') }}</li>-->
+                            <!--{% endif %}-->
+                        </ul>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

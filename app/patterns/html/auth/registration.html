@@ -25,10 +25,9 @@
     <div class="iw_modal__body">
         <form class="bs-example bs-example-form" id="form_reg" role="form" action="" method="POST">
 
-            <div class="row">
-                <div class="col-lg-6">
-
-                    <div class="form-group">
+            <div class="iw_row">
+                <div class="iw_col-lg-6">
+                    <div class="iw_group">
                         <label for="r_username"> Username </label>
                         <span class="sw-star">*</span>
                         <div class="sw-field input-group sw-input-status">
@@ -41,9 +40,8 @@
                     </div>
 
                 </div>
-                <div class="col-lg-6">
-
-                    <div class="form-group">
+                <div class="iw_col-lg-6">
+                    <div class="iw_group">
                         <label for="r_email"> Email </label>
                         <span class="sw-star">*</span>
                         <div class="sw-field input-group">
@@ -57,8 +55,8 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-lg-6">
+            <div class="iw_row">
+                <div class="iw_col-lg-6">
 
                     <div class="form-group">
                         <label for="r_password"> Password </label>
@@ -72,7 +70,7 @@
                     </div>
 
                 </div>
-                <div class="col-lg-6">
+                <div class="iw_col-lg-6">
 
                     <div class="form-group">
                         <label for="r_confirm_password"> Confirm Password </label>
@@ -89,7 +87,7 @@
             </div>
 
 
-            <div class="form-group">
+            <div class="iw_row">
 
                 <div class="iw_block_right">
                     <button type="button" class="iw_btn" id="_send_form">
@@ -100,10 +98,8 @@
 
             </div>
 
-            <div class="clearfix"></div>
-
-            <div class="row">
-                <div class="col-lg-12">
+            <div class="iw_row">
+                <div class="iw_col-lg-12">
 
                     <ul class="sw-block-errors sw-text-error" id="reg_error">
                         <!--{% for error in errors %}-->
@@ -117,56 +113,3 @@
     </div>
 
 </div>
-
-<script type="application/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        var btn = document.getElementById('_send_form');
-        var validation = new IW.Validation('#form_reg');
-        validation.addEventCheckAll('click', btn);
-        validation.addEventCheckAll('keyup', 'input');
-
-        validation.addGroupMarker('span');
-
-        btn.addEventListener('click', function () {
-            console.log(1);
-        });
-
-        validation.addRile('username', {
-            required: true,
-            max: 25,
-            min: 6,
-            label: 'Username'
-        });
-
-        validation.addRile('email', {
-            required: true,
-            max: 60,
-            min: 5,
-            label: 'Email'
-        });
-
-        validation.addRile('password', {
-            required: true,
-            max: 25,
-            min: 6,
-            isMatch: 'username',
-            label: 'Password'
-        });
-
-        validation.addRile('confirm_password', {
-            required: true,
-            isMatch: 'username',
-            isNotSame: 'password',
-            label: 'Confirm Password'
-        });
-
-        validation.setCallbackSuccess(function (element) {
-            if (element == btn) {
-                //            document.getElementById('form_reg').submit();
-            }
-        });
-
-        validation.messagesAppendTo('#reg_error');
-        validation.listen();
-    });
-</script>
