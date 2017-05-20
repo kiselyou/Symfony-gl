@@ -5,7 +5,7 @@ var btn = document.getElementById('_send_form');
 var validation = new IW.Validation('#form_login');
 validation.addEventCheckAll('click', btn);
 validation.addEventCheckAll('keyup', 'input');
-validation.addGroupMarker('span');
+validation.findParent('.iw_group');
 
 validation.addRile(username, {
     required: true,

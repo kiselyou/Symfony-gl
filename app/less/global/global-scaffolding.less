@@ -10,6 +10,7 @@ html, body, canvas {
   color: @font_color;
   font-size: @font_size;
   font-family: @font-family;
+  line-height: 1.42857143;
 }
 
 body {
@@ -34,9 +35,8 @@ a:focus {
   outline-offset: -2px;
 }
 
-input[type="text"],
-input[type="password"] {
-  .input
+label {
+  font-weight: bold;
 }
 
 .generate-h-font-size(@i: 1) when (@i =< 6) {

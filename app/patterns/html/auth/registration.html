@@ -2,7 +2,7 @@
 
     <div class="iw_modal__control">
         <div class="iw_block_right">
-            <span data-iw-action="switch" data-iw-hide="#iw_block_registration">
+            <span data-iw-action="switch" data-iw-hide="#iw_block_registration" class="iw_btn iw_btn_skin_link">
                 <i class="iw iw-remove-sign iw_text_md"></i>
             </span>
         </div>
@@ -30,12 +30,12 @@
                     <div class="iw_group">
                         <label for="r_username"> Username </label>
                         <span class="iw_star">*</span>
-                        <div class="sw-field input-group sw-input-status">
-                            <span class="input-group-addon">
-                                <i class="glyphicon glyphicon-user"></i>
+                        <div class="iw_group">
+                            <span class="iw_group__addon">
+                                <i class="iw iw-user"></i>
                             </span>
 
-                            <input type="text" class="form-control" required name="username" id="r_username" placeholder="Username" autocomplete="off">
+                            <input type="text" class="iw_group__control" required name="username" id="r_username" placeholder="Username" autocomplete="off">
                         </div>
                     </div>
 
@@ -44,11 +44,11 @@
                     <div class="iw_group">
                         <label for="r_email"> Email </label>
                         <span class="iw_star">*</span>
-                        <div class="sw-field input-group">
-                            <span class="input-group-addon">
-                                <i class="glyphicon glyphicon-envelope"></i>
+                        <div class="iw_group">
+                            <span class="iw_group__addon">
+                                <i class="iw iw-envelope"></i>
                             </span>
-                            <input type="text" class="form-control" required name="email" id="r_email" placeholder="Email" autocomplete="off">
+                            <input type="text" class="iw_group__control" required name="email" id="r_email" placeholder="Email" autocomplete="off">
                         </div>
                     </div>
 
@@ -61,11 +61,11 @@
                     <div class="iw_group">
                         <label for="r_password"> Password </label>
                         <span class="iw_star">*</span>
-                        <div class="sw-field input-group">
-                            <span class="input-group-addon">
-                                <i class="glyphicon glyphicon-lock"></i>
+                        <div class="iw_group">
+                            <span class="iw_group__addon">
+                                <i class="iw iw-lock"></i>
                             </span>
-                            <input type="password" class="form-control" required name="password" id="r_password" placeholder="********" autocomplete="off">
+                            <input type="password" class="iw_group__control" required name="password" id="r_password" placeholder="********" autocomplete="off">
                         </div>
                     </div>
 
@@ -75,11 +75,11 @@
                     <div class="iw_group">
                         <label for="r_confirm_password"> Confirm Password </label>
                         <span class="iw_star">*</span>
-                        <div class="sw-field input-group">
-                            <span class="input-group-addon">
-                                <i class="glyphicon glyphicon-lock"></i>
+                        <div class="iw_group">
+                            <span class="iw_group__addon">
+                                <i class="iw iw-lock"></i>
                             </span>
-                            <input type="password" class="form-control" required name="confirm_password" id="r_confirm_password" placeholder="********" autocomplete="off">
+                            <input type="password" class="iw_group__control" required name="confirm_password" id="r_confirm_password" placeholder="********" autocomplete="off">
                         </div>
                     </div>
 
@@ -101,7 +101,7 @@
             <div class="iw_row">
                 <div class="iw_col_xs_12 iw_col_sm_12 iw_col_md_12 iw_col_lg_12">
 
-                    <ul class="sw-block-errors sw-text-error" id="reg_error">
+                    <ul class="iw_error" id="reg_error">
                         <!--{% for error in errors %}-->
                         <!--<li><i class="glyphicon glyphicon-exclamation-sign"></i> {{ error.propertyPath|capitalize }}: {{ error.message }}</li>-->
                         <!--{% endfor %}-->

@@ -3,7 +3,7 @@ var validation = new IW.Validation('#form_reg');
 validation.addEventCheckAll('click', btn);
 validation.addEventCheckAll('keyup', 'input');
 
-validation.addGroupMarker('span');
+validation.findParent('.iw_group');
 
 btn.addEventListener('click', function () {
     console.log(1);

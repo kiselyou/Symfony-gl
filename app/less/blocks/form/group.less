@@ -1,5 +1,54 @@
 .iw_group {
-  margin: 0;
+  display: table;
+  width: 100%;
+
+  &__addon {
+    display: table-cell;
+    width: 1%;
+    border-radius: 4px;
+    color: rgba(0, 255, 255, 0.7);
+    background: transparent;
+    border: 1px solid rgba(127, 255, 255, 0.7);
+    padding: 0 10px;
+  }
+
+  &__control {
+    .input
+  }
+
+  & &__addon:last-child,
+  & &__control:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  & &__addon:first-child,
+  & &__control:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &__addon:last-child {
+    border-left: 0;
+  }
+
+  &__addon:first-child {
+    border-right: 0;
+  }
+
+  & &__control:not(:first-child):not(:last-child) {
+    border-radius: 0;
+  }
+
+  &_error &__addon,
+  &_error &__control {
+    border-bottom: solid 1px @form_coror_important;
+  }
+
+  &_success &__addon,
+  &_success &__control {
+    border-bottom: solid 1px @form_coror_success;
+  }
 
   &_xs {
     padding: 5px

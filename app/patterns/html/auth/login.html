@@ -27,26 +27,26 @@
 
                 <div class="iw_row">
                     <div class="iw_col_xs_12 iw_col_sm_12 iw_col_md_12 iw_col_lg_12">
+                        <label for="a_username"> Username </label>
+                        <span class="iw_star">*</span>
                         <div class="iw_group">
-                            <label for="a_username"> Username </label>
-                            <span class="iw_star">*</span>
-                            <span class="input-group-addon">
-                                <i class="glyphicon glyphicon-user"></i>
+                            <span class="iw_group__addon">
+                                <i class="iw iw-user"></i>
                             </span>
-                            <input type="text" class="form-control" name="username" id="a_username" placeholder="Username" autocomplete="off">
+                            <input type="text" class="iw_group__control" name="username" id="a_username" placeholder="Username" autocomplete="off">
                         </div>
                     </div>
                 </div>
 
                 <div class="iw_row">
                     <div class="iw_col_xs_12 iw_col_sm_12 iw_col_md_12 iw_col_lg_12">
+                        <label for="a_password"> Password </label>
+                        <span class="iw_star">*</span>
                         <div class="iw_group">
-                            <label for="a_password"> Password </label>
-                            <span class="iw_star">*</span>
-                            <span class="input-group-addon">
-                                <i class="glyphicon glyphicon-lock"></i>
+                            <span class="iw_group__addon">
+                                <i class="iw iw-lock"></i>
                             </span>
-                            <input type="password" class="form-control" name="password" id="a_password" placeholder="Password" autocomplete="off">
+                            <input type="password" class="iw_group__control" name="password" id="a_password" placeholder="Password" autocomplete="off">
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                 <div class="iw_row">
                     <div class="iw_col_xs_12 iw_col_sm_12 iw_col_md_12 iw_col_lg_12">
 
-                        <ul class="sw-block-errors sw-text-error" id="login_error">
+                        <ul class="iw_error" id="login_error">
                             <!--{% if error %}-->
                             <!--<li><i class="glyphicon glyphicon-exclamation-sign"></i> {{ error.messageKey|trans(error.messageData, 'security') }}</li>-->
                             <!--{% endif %}-->

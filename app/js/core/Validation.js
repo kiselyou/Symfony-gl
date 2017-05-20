@@ -49,7 +49,7 @@ var IW = IW || {};
         var _itemsFragment = [];
         var fragment = document.createDocumentFragment();
 
-        function clearMessges() {
+        function clearMessages() {
             for (var a = 0; a < _itemsFragment.length; a++) {
                 _itemsFragment[a].remove()
             }
@@ -60,7 +60,7 @@ var IW = IW || {};
          */
         function showMessages() {
 
-            clearMessges();
+            clearMessages();
 
             if (!scope.enableMessage) {
                 return;
@@ -213,22 +213,19 @@ var IW = IW || {};
          *
          * @type {?string}
          */
-        var _groupMarker = null;
+        this._closest = null;
+
+        this.error = IW.Validation.GROUP_CLASS_ERROR;
+        this.success = IW.Validation.GROUP_CLASS_SUCCESS;
 
         /**
-         *
-         * @type {boolean}
-         */
-        this.enableMarker = true;
-
-        /**
-         * Add element to group marker (Success or error). This element must be on same layer what is field
+         * Find parent element and add class style (error or success)
          *
          * @param {string} selector
          * @returns {IW.Validation}
          */
-        this.addGroupMarker = function ( selector ) {
-            _groupMarker = selector;
+        this.findParent = function ( selector ) {
+            this._closest = selector;
             return this;
         };
 
@@ -342,8 +339,8 @@ var IW = IW || {};
         function validateCurrent(element, callback) {
 
             if (element.value === '') {
-                resetMarker(element);
-                clearMessges();
+                resetBlockError(element);
+                clearMessages();
                 return;
             }
 
@@ -353,8 +350,8 @@ var IW = IW || {};
             var listFields = findField(name);
             checkNodeList(listFields, rule);
 
-            setMarkers(_errors, true);
-            setMarkers(_success, false);
+            setErrorToElement(_errors, true);
+            setErrorToElement(_success, false);
             showMessages();
 
             if (callback) {
@@ -375,8 +372,8 @@ var IW = IW || {};
                 checkNodeList(listFields, _rules[i]['rule']);
             }
 
-            setMarkers(_errors, true);
-            setMarkers(_success, false);
+            setErrorToElement(_errors, true);
+            setErrorToElement(_success, false);
             showMessages();
 
             if (callback) {
@@ -430,10 +427,10 @@ var IW = IW || {};
          *
          * @param {Element} element
          */
-        function resetMarker(element) {
-            element.classList.remove(IW.Validation.VALIDATE_CLASS_SUCCESS);
-            element.classList.remove(IW.Validation.VALIDATE_CLASS_ERROR);
-            resetGroupMarker(element);
+        function resetBlockError(element) {
+            element.classList.remove(scope.success);
+            element.classList.remove(scope.error);
+            resetParentBlockError(element);
         }
 
         /**
@@ -441,12 +438,12 @@ var IW = IW || {};
          *
          * @param {Element} element
          */
-        function resetGroupMarker(element) {
-            if (_groupMarker) {
-                var group = element.parentElement.querySelectorAll(_groupMarker);
+        function resetParentBlockError(element) {
+            if (scope._closest) {
+                var group = element.closest(scope._closest);
                 for (var i = 0; i < group.length; i++) {
-                    group[i].classList.remove(IW.Validation.VALIDATE_CLASS_SUCCESS);
-                    group[i].classList.remove(IW.Validation.VALIDATE_CLASS_ERROR);
+                    group[i].classList.remove(scope.success);
+                    group[i].classList.remove(scope.error);
                 }
             }
         }
@@ -457,18 +454,12 @@ var IW = IW || {};
          * @param {boolean} isError
          * @returns {void}
          */
-        function setMarkers(fields, isError) {
-            if (scope.enableMarker) {
-
-                for (var i = 0; i < fields.length; i++) {
-                    if (isError) {
-                        fields[i].field.classList.remove(IW.Validation.VALIDATE_CLASS_SUCCESS);
-                        fields[i].field.classList.add(IW.Validation.VALIDATE_CLASS_ERROR);
-                    } else {
-                        fields[i].field.classList.remove(IW.Validation.VALIDATE_CLASS_ERROR);
-                        fields[i].field.classList.add(IW.Validation.VALIDATE_CLASS_SUCCESS);
-                    }
-                    setGroupMarkers(fields[i].field, isError);
+        function setErrorToElement(fields, isError) {
+            for (var i = 0; i < fields.length; i++) {
+                if (scope._closest) {
+                    parentBlockError(fields[i].field, isError);
+                } else {
+                    blockError(fields[i], isError);
                 }
             }
         }
@@ -479,19 +470,34 @@ var IW = IW || {};
          * @param {boolean} isError
          * @returns {void}
          */
-        function setGroupMarkers(field, isError) {
-            if (_groupMarker) {
-
-                var groupMarkers = field.parentElement.querySelectorAll(_groupMarker);
-                for (var i = 0; i < groupMarkers.length; i++) {
-                    if (isError) {
-                        groupMarkers[i].classList.remove(IW.Validation.VALIDATE_CLASS_SUCCESS);
-                        groupMarkers[i].classList.add(IW.Validation.VALIDATE_CLASS_ERROR);
-                    } else {
-                        groupMarkers[i].classList.remove(IW.Validation.VALIDATE_CLASS_ERROR);
-                        groupMarkers[i].classList.add(IW.Validation.VALIDATE_CLASS_SUCCESS);
-                    }
+        function parentBlockError(field, isError) {
+            var groupMarkers = field.closest(scope._closest);
+            if (groupMarkers) {
+                if (isError) {
+                    groupMarkers.classList.remove(scope.success);
+                    groupMarkers.classList.add(scope.error);
+                } else {
+                    groupMarkers.classList.remove(scope.error);
+                    groupMarkers.classList.add(scope.success);
                 }
+            } else {
+                blockError(field, isError);
+            }
+        }
+
+        /**
+         *
+         * @param {Element} field
+         * @param {boolean} isError
+         * @returns {void}
+         */
+        function blockError(field, isError) {
+            if (isError) {
+                field.classList.remove(IW.Validation.INPUT_CLASS_SUCCESS);
+                field.classList.add(IW.Validation.INPUT_CLASS_ERROR);
+            } else {
+                field.classList.remove(IW.Validation.INPUT_CLASS_ERROR);
+                field.classList.add(IW.Validation.INPUT_CLASS_SUCCESS);
             }
         }
 
@@ -517,7 +523,6 @@ var IW = IW || {};
          * @returns {void}
          */
         function addError( field, type, rule ) {
-
             _errors.push({
                 field: field,
                 type: type,
@@ -604,7 +609,7 @@ var IW = IW || {};
          *
          * @type {string}
          */
-        this.locale = locale != undefined ? locale : IW.Validation.LOCALE_RU;
+        this.locale = locale != undefined ? locale : IW.Validation.LOCALE_EN;
 
         /**
          *
@@ -741,5 +746,8 @@ IW.Validation.MESSAGE[IW.Validation.LOCALE_EN][IW.Validation.VALIDATE_TYPE_ISNOT
 IW.Validation.MESSAGE[IW.Validation.LOCALE_EN][IW.Validation.VALIDATE_TYPE_ISSAME] = 'values must not match';
 IW.Validation.MESSAGE[IW.Validation.LOCALE_EN][IW.Validation.VALIDATE_TYPE_ISMATCH] = 'values must not have a sequence of identical characters';
 
-IW.Validation.VALIDATE_CLASS_ERROR = 'sw-status-error';
-IW.Validation.VALIDATE_CLASS_SUCCESS = 'sw-status-success';
+IW.Validation.GROUP_CLASS_ERROR = 'iw_group_error';
+IW.Validation.GROUP_CLASS_SUCCESS = 'iw_group_success';
+
+IW.Validation.INPUT_CLASS_ERROR = 'iw_input_error';
+IW.Validation.INPUT_CLASS_SUCCESS = 'iw_input_success';
