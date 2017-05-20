@@ -7,7 +7,6 @@ var config = require(__dirname + '/server/config/config.json');
 var express = require('express');
 var app = express();
 
-
 // ADD TO CLASS REQUEST
 var DIR_APP = getEnvironment(config);
 var PATH_APP = __dirname + '/' + DIR_APP;
@@ -26,7 +25,7 @@ var PATH_ROUTES = __dirname + DIR_ROUTES;
 var cache = {
     scripts: [],
     patterns: [],
-    build: null
+    build: []
 };
 
 var bodyParser = require('body-parser');
@@ -34,52 +33,137 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-fs.readdir(PATH_ROUTES, function (err, routes) {
-    var routeConfig = [];
-    for ( var i = 0; i < routes.length; i++ ) {
-        var path = concatPath(PATH_ROUTES, routes[ i ]);
-        routeConfig.push(require(path));
+// GET ROUTES
+var routes = [];
+try {
+    var filedRoute = fs.readdirSync(PATH_ROUTES);
+
+    for ( var r = 0; r < filedRoute.length; r++ ) {
+        var path = concatPath(PATH_ROUTES, filedRoute[ r ]);
+        var data = require(path);
+        for (var key in data) {
+            if (data.hasOwnProperty(key)) {
+                data[key]['name'] = key;
+                routes.push(data[key]);
+            }
+        }
     }
-});
+
+} catch (error) {
+    console.log('Routes: ' + error.code);
+}
 
 // CREATE ROUTING CLASS
-app.get('/', function (req, res) {
-    var path = concatPath(DIR_APP, '/index.html');
-    fs.readFile(path, null, function (error, content) {
-        if (error) {
-            if (error.code === 'ENOENT') {
-                fs.readFile(DIR_APP + '/404.html', function (error, content) {
-                    if (error) {
-                        res.writeHead(500);
-                        res.end(MESSAGE_SERVER + error.code + ' ..\n');
-                    } else {
-                        res.writeHead(200, {'Content-Type': 'text/html'});
-                        res.end(content, config.encoding);
-                    }
-                });
-            } else {
-                res.writeHead(500);
-                res.end(MESSAGE_SERVER + error.code + ' ..\n');
-            }
-        } else {
-            res.writeHead(200, {'Content-Type': 'text/html'});
+// app.get('/', function (req, res) {
 
+    // var path = concatPath(DIR_APP, '/index.html');
+    // fs.readFile(path, null, function (error, content) {
+    //     if (error) {
+    //         if (error.code === 'ENOENT') {
+    //             fs.readFile(DIR_APP + '/404.html', function (error, content) {
+    //                 if (error) {
+    //                     res.writeHead(500);
+    //                     res.end(MESSAGE_SERVER + error.code + ' ..\n');
+    //                 } else {
+    //                     res.writeHead(200, {'Content-Type': 'text/html'});
+    //                     res.end(content, config.encoding);
+    //                 }
+    //             });
+    //         } else {
+    //             res.writeHead(500);
+    //             res.end(MESSAGE_SERVER + error.code + ' ..\n');
+    //         }
+    //     } else {
+    //         res.writeHead(200, {'Content-Type': 'text/html'});
+    //
+    //
+    //         cache.scripts = [];
+    //         cache.patterns = [];
+    //         cache.build = null;
+    //
+    //         if (!cache.build) {
+    //             cache.build = loadScript(includePattern(content));
+    //         }
+    //         res.end(cache.build, config.encoding, true);
+    //     }
+    // });
+// });
 
-            cache.scripts = [];
-            cache.patterns = [];
-            cache.build = null;
+// CONTROL ROUTES
+for (var i = 0; i < routes.length; i++) {
 
-            if (!cache.build) {
-                cache.build = loadScript(includePattern(content));
-            }
-            res.end(cache.build, config.encoding, true);
+    switch (routes[i]['type']) {
+        case 'pattern':
+            createRoute(routes[i]['route'], routes[i]['method'], routes[i]['viewPath']);
+            break;
+    }
+}
+
+/**
+ *
+ * @param {string} route - It is HTTP route
+ * @param {method} method - possible values ( 'GET' | 'POST' )
+ * @param {string} viewPath - It is path to html pattern
+ * @returns {void}
+ */
+function createRoute(route, method, viewPath) {
+    switch (method) {
+        case 'POST':
+            app.post(route, function (req, res) {
+                uploadPattern(res, viewPath);
+            });
+            break;
+        default:
+            app.get(route, function (req, res) {
+                uploadPattern(res, viewPath);
+            });
+            break;
+    }
+}
+
+/**
+ *
+ * @param {{}} res
+ * @param {string} viewPath - It is path to html pattern
+ * @returns {void}
+ */
+function uploadPattern(res, viewPath) {
+    var pathIndex = concatPath(DIR_APP, '/index.html');
+
+    try {
+        var indexHTML = fs.readFileSync(pathIndex);
+
+        res.writeHead(200, {'Content-Type': 'text/html'});
+
+        cache.scripts = [];
+        cache.patterns = [];
+        cache.build = null;
+
+        if (!cache.build) {
+            var $ = cheerio.load(indexHTML);
+            $('body').prepend('<template data-include="' + viewPath + '"></template>');
+            cache.build = loadScript(includePattern($.html(), true));
         }
-    });
-});
+        res.end(cache.build, config.encoding, true);
 
-app.get('/play', function (req, res) {
-    console.log(req.query);
-});
+    } catch (error) {
+
+        if (error.code === 'ENOENT') {
+            fs.readFile(DIR_APP + '/404.html', function (error, content) {
+                if (error) {
+                    res.writeHead(500);
+                    res.end(MESSAGE_SERVER + error.code + ' ..\n');
+                } else {
+                    res.writeHead(200, {'Content-Type': 'text/html'});
+                    res.end(content, config.encoding);
+                }
+            });
+        } else {
+            res.writeHead(500);
+            res.end(MESSAGE_SERVER + error.code + ' ..\n');
+        }
+    }
+}
 
 app.post('/template', function (req, res) {
     var path = concatPath(PATH_TEMPLATES_HTML, req.body['template']);

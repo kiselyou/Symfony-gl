@@ -30,9 +30,9 @@ IW.Prepare = function () {
      */
     var sprites = {
         names: {
-            aim: 'aim/aim.png',
-            smoke: 'effects/smokeparticle.png',
-            explosion: 'effects/sprite-explosion2.png'
+            aim: 'textures/aim/aim.png',
+            smoke: 'sprites/smokeparticle.png',
+            explosion: 'sprites/sprite-explosion2.png'
         }
     };
 

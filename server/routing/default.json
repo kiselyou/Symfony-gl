@@ -1,3 +1,20 @@
 {
-
+  "index": {
+    "route": "/",
+    "type": "pattern",
+    "viewPath": "/pages/preview.html",
+    "method": "GET"
+  },
+  "user": {
+    "route": "/user",
+    "type": "pattern",
+    "viewPath": "/pages/user.html",
+    "method": "GET"
+  },
+  "play": {
+    "route": "/play",
+    "type": "pattern",
+    "viewPath": "/pages/play.html",
+    "method": "GET"
+  }
 }
