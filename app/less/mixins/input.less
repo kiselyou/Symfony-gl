@@ -1,9 +1,10 @@
 .input() {
   width: ~"calc(100% - 20px)";
-  height: 25px;
-  border-radius: 4px;
-  color: rgba(127,255,255,0.75);
+  height: 30px;
+  border-radius: @form_border_radius;
+  color: @form_font_color;
   background: transparent;
-  border: 1px solid rgba(127,255,255,0.4);
+  border: 1px solid @form_border_color;
   padding: 0 10px;
+  outline: none;
 }

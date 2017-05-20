@@ -7,5 +7,27 @@
     .input
   }
 
+  &[type="text"]:hover,
+  &[type="password"]:hover,
+  input[type="text"]:hover,
+  input[type="password"]:hover {
+    color: @form_font_color_h;
+    background-color: @background_color_h;
+  }
 
+  &[type="text"]:focus,
+  &[type="password"]:focus,
+  input[type="text"]:focus,
+  input[type="password"]:focus {
+    outline: none;
+    color: @form_font_color_f;
+  }
+
+  &[type="text"]:active,
+  &[type="password"]:active,
+  input[type="text"]:active,
+  input[type="password"]:active {
+    outline: none;
+    color: @form_font_color_a;
+  }
 }

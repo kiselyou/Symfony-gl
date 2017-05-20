@@ -1,6 +1,6 @@
 .iw_modal {
     box-shadow: inset 0 0 12px @font_color;
-    border: 1px solid @border_color;
+    border: 1px solid @modal_border_color;
     border-radius: 5px;
     overflow: hidden;
     min-width: 30%;
@@ -16,7 +16,7 @@
 
     &__head {
         font-weight: bold;
-        border-bottom: 1px solid @border_color;
+        border-bottom: 1px solid @modal_border_color;
         overflow: hidden;
         margin: @modal_margin;
         padding: @modal_padding;
@@ -65,6 +65,25 @@
             width: 64.66666667%;
             min-height: 32.33333333%;
             margin: 3.53333333% 17.66666667%;
+        }
+
+        @media (max-width: 768px) {
+            &_xs {
+                width: 60%;
+                margin: 4% 20%;
+            }
+            &_sm {
+                width: 60%;
+                margin: 4% 20%;
+            }
+            &_md {
+                width: 80%;
+                margin: 4% 10%;
+            }
+            &_lg {
+                width: 80%;
+                margin: 4% 10%;
+            }
         }
     }
 }
