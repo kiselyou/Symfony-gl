@@ -1,8 +1,10 @@
+require('array.prototype.find').shim();
 
 var config = require(__dirname + '/server/config/config.json');
 var IW = require('./server/core/Routes');
 var route = new IW.Routes( config );
 route.init();
+
 //
 // var MESSAGE_SERVER = 'Sorry, check with the site admin for error: ';
 //

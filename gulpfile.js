@@ -25,24 +25,30 @@ gulp.task('images', function(){
 });
 
 //lessc app/less/config.less app/css/test.css
-gulp.task('font-awesome', function() {
-	return gulp.src('node_modules/font-awesome/fonts/**/*')
-		.pipe(gulp.dest('app/fonts'));
-});
 
-gulp.task('fonts', function() {
-	return gulp.src('app/fonts/**/*')
-		.pipe(gulp.dest('dist/fonts'));
-});
+gulp.task('move', function() {
 
-gulp.task('models', function() {
-	return gulp.src('app/models/*')
-		.pipe(gulp.dest('dist/models'));
-});
-
-gulp.task('icon', function() {
-	return gulp.src('app/*.ico')
+	gulp.src('app/*.ico')
 		.pipe(gulp.dest('dist'));
+
+	gulp.src('app/**/*.json')
+		.pipe(gulp.dest('dist'));
+
+	gulp
+		.src('app/models/**/*')
+		.pipe(gulp.dest('dist/models'));
+
+	gulp
+		.src('app/fonts/**/*')
+		.pipe(gulp.dest('dist/fonts'));
+
+	gulp
+		.src('app/patterns/**/*.js')
+		.pipe(gulp.dest('dist/patterns'));
+
+	gulp
+		.src('app/patterns/**/*.html')
+		.pipe(gulp.dest('dist/patterns'));
 });
 
 gulp.task('clean:dist', function() {
@@ -50,6 +56,7 @@ gulp.task('clean:dist', function() {
 });
 
 gulp.task('build', function (callback) {
-	runSequence('clean:dist', ['useref', 'images', 'fonts', 'models', 'icon'], callback);
+	// runSequence('clean:dist', ['useref', 'images', 'fonts', 'models', 'icon'], callback);
+	runSequence('clean:dist', ['useref', 'images', 'move'], callback);
 });
 

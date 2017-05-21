@@ -22,6 +22,8 @@ IW.Routes.prototype.constructor = IW.Routes;
  * @returns {Array}
  */
 IW.Routes.prototype._control = function () {
+    var scope = this;
+    // Upload configured routes
     for (var i = 0; i < this.routes.length; i++) {
         /**
          *
@@ -34,6 +36,14 @@ IW.Routes.prototype._control = function () {
                 break;
         }
     }
+
+    // Setting public directory
+    app.use(express.static(this.PATH_APP));
+
+    // Setting page error
+    app.get('*', function(req, res) {
+        scope.response(res, scope.uploadPatternError('The page was not found in GET path: "' + req.url + '"'));
+    });
 };
 
 /**
@@ -49,12 +59,12 @@ IW.Routes.prototype._createRoute = function (route, method, viewPath) {
     switch (method) {
         case 'POST':
             app.post(route, function (req, res) {
-                scope._response(res, scope.uploadPattern(res, viewPath));
+                scope.response(res, scope.uploadPattern(route, viewPath));
             });
             break;
         default:
             app.get(route, function (req, res) {
-                scope._response(res, scope.uploadPattern(res, viewPath));
+                scope.response(res, scope.uploadPattern(route, viewPath));
             });
             break;
     }
@@ -65,9 +75,8 @@ IW.Routes.prototype._createRoute = function (route, method, viewPath) {
  *
  * @param {{}} res
  * @param {{ status: boolean, content: string, error: string }} pattern
- * @private
  */
-IW.Routes.prototype._response = function (res, pattern) {
+IW.Routes.prototype.response = function (res, pattern) {
     if (pattern.status) {
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.end(pattern.content, this.config.encoding, true);
@@ -90,7 +99,6 @@ IW.Routes.prototype.init = function () {
 
     this._control();
 
-    app.use(express.static(this.PATH_APP));
     app.listen(this.config.port, this.config.host);
 };
 

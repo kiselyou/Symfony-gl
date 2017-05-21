@@ -29,8 +29,24 @@ IW.Request = function (config) {
                 return environment;
             }
         }
-        return 'app';
+        return IW.Request.ENVIRONMENT_PROD;
     }
+};
+
+/**
+ *
+ * @returns {boolean}
+ */
+IW.Request.prototype.isDev = function () {
+    return this.DIR_APP === IW.Request.ENVIRONMENT_DEV;
+};
+
+/**
+ *
+ * @returns {boolean}
+ */
+IW.Request.prototype.isProd = function () {
+    return this.DIR_APP === IW.Request.ENVIRONMENT_PROD;
 };
 
 /**
@@ -82,6 +98,9 @@ IW.Request.prototype.getRoutes = function () {
 IW.Request.prototype.concatPath = function (dir, str) {
     return dir.replace(/(\/)$/, '') + '/' + str.replace(/^(\/)/, '');
 };
+
+IW.Request.ENVIRONMENT_PROD = 'dist';
+IW.Request.ENVIRONMENT_DEV = 'app';
 
 IW.Request.TEMPLATE_JS = '/js';
 IW.Request.TEMPLATE_HTML = '/html';
