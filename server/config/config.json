@@ -4,6 +4,6 @@
 		"app": true,
 		"dist": false
 	},
-	"port": 4000,
-	"host": "localhost"
+	"port": 8000,
+	"host": "127.0.0.1"
 }

@@ -1,3 +1,5 @@
+var io = require('socket.io');
+
 require('array.prototype.find').shim();
 
 var config = require(__dirname + '/server/config/config.json');

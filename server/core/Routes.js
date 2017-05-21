@@ -2,6 +2,7 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+
 var IW = require('./TemplateLoader') || {};
 
 IW.Routes = function ( config ) {
@@ -85,6 +86,15 @@ IW.Routes.prototype.response = function (res, pattern) {
         res.end(pattern.content);
         console.log(pattern.error);
     }
+};
+
+IW.Routes.prototype.initSocket = function () {
+    // io.on('connection', function (socket) {
+    //     socket.emit('news', { hello: 'world' });
+    //     socket.on('my other event', function (data) {
+    //         console.log(data);
+    //     });
+    // });
 };
 
 /**
