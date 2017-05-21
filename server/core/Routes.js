@@ -38,7 +38,7 @@ IW.Routes.prototype._control = function () {
     }
 
     // Setting public directory
-    app.use(express.static(this.PATH_APP));
+    app.use(express.static(this.DIR_APP));
 
     // Setting page error
     app.get('*', function(req, res) {
