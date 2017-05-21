@@ -3,6 +3,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 
+var io = require('./Socket.js') || {};
 var IW = require('./TemplateLoader') || {};
 
 IW.Routes = function ( config ) {
@@ -88,19 +89,20 @@ IW.Routes.prototype.response = function (res, pattern) {
     }
 };
 
+/**
+ *
+ * @returns {IW.Routes}
+ */
 IW.Routes.prototype.initSocket = function () {
-    // io.on('connection', function (socket) {
-    //     socket.emit('news', { hello: 'world' });
-    //     socket.on('my other event', function (data) {
-    //         console.log(data);
-    //     });
-    // });
+    var socket = new io.Socket(app);
+    socket.listen('news');
+    return this;
 };
 
 /**
  * This method is creating routes and is beginning listen server
  *
- * @returns {void}
+ * @returns {IW.Routes}
  */
 IW.Routes.prototype.init = function () {
 
@@ -110,6 +112,7 @@ IW.Routes.prototype.init = function () {
     this._control();
 
     app.listen(this.config.port, this.config.host);
+    return this;
 };
 
 module.exports = IW;
