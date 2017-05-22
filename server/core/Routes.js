@@ -95,7 +95,7 @@ IW.Routes.prototype.response = function (res, pattern) {
  */
 IW.Routes.prototype.initSocket = function () {
     var socket = new io.Socket(app);
-    socket.listen('news');
+    socket.listen('play');
     return this;
 };
 

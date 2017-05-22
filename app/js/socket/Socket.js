@@ -1,54 +1,25 @@
 var IW = IW || {};
 
 /**
+ * Before are using make sure that was included file "socket.io.js"
  *
- * @param {string} [url]
+ * @param {string} url
  * @constructor
  */
 IW.Socket = function ( url ) {
 
 	/**
-	 *
-	 * @type {string}
-     */
-    var SOCKET_CONNECT = 'socket/connect';
-
-	/**
-	 *
-	 * @type {string}
-	 */
-    var SOCKET_DISCONNECT = 'socket/disconnect';
-
-	/**
-	 *
-	 * @type {string}
-	 */
-    var PATH_SUBSCRIBE = 'iw/socket/play';
-
-	/**
-	 *
-	 * @type {string}
-	 */
-    var PATH_GET_USER = 'iw/socket/data/user';
-
-	/**
 	 * Set connect
 	 *
-	 * @type {WS.connect}
+	 * @type {io.connect}
      */
-    this.socket = WS.connect( url ? url : findSocketUrl() );
-
-	/**
-	 *
-	 * @type {null}
-     */
-    this.session = null;
+	this.socket = io.connect(url);
 
 	/**
 	 *
 	 * @type {?number}
      */
-	this.resourceId = null;
+	this.id = null;
 
 	/**
 	 *
@@ -60,26 +31,22 @@ IW.Socket = function ( url ) {
 	 *
 	 * @return {?number}
      */
-	this.getResourceId = function () {
-		return this.resourceId;
+	this.getID = function () {
+		return this.id;
 	};
 
     /**
+	 * Send message only to current client
      *
 	 * @param {(string|number)} key
      * @param {object} data
      */
     this.sendToCurrent = function( key, data ) {
-        if ( this.session ) {
-			this.session.publish(
-            	PATH_SUBSCRIBE,
-				{
-					key: key,
-					data: data,
-					target: IW.Socket.ACTION_CURRENT
-				}
-			);
-        }
+
+		this.socket.emit(IW.Socket.EVENT_SENDER, {
+			key: key,
+			data: data
+		});
     };
 
 	/**
@@ -87,20 +54,15 @@ IW.Socket = function ( url ) {
 	 *
 	 * @param {(string|number)} key
 	 * @param {object} data
-	 * @param {number} client - id is resourceId of client
+	 * @param {number} receiverID - it is ID of client
 	 */
-	this.sendToSpecific = function( key, data, client ) {
-		if ( this.session ) {
-			this.session.publish(
-				PATH_SUBSCRIBE,
-				{
-					key: key,
-					data: data,
-					resourceId: client,
-					target: IW.Socket.ACTION_SPECIFIC
-				}
-			);
-		}
+	this.sendToSpecific = function( key, data, receiverID ) {
+
+		this.socket.emit(IW.Socket.EVENT_SPECIFIC, {
+			key: key,
+			data: data,
+			receiverID: receiverID
+		});
 	};
 
 	/**
@@ -111,40 +73,50 @@ IW.Socket = function ( url ) {
 	 * @param {boolean} [currentExcept]
 	 */
 	this.sendToAll = function( key, data, currentExcept ) {
-		if ( this.session ) {
-			this.session.publish(
-				PATH_SUBSCRIBE,
-				{
-					key: key,
-					data: data,
-					target: currentExcept ? IW.Socket.ACTION_CURRENT_EXCEPT : IW.Socket.ACTION_ALL
-				}
-			);
+
+		var params = {
+			key: key,
+			data: data
+		};
+
+		if (currentExcept) {
+			// Send to all except my
+			this.socket.emit( IW.Socket.EVENT_EXCEPT_SENDER, params );
+
+		} else {
+			// Send to all
+			this.socket.emit( IW.Socket.EVENT_ALL, params );
 		}
 	};
 
-    /**
-     *
-     * @returns {IW.Socket}
+	/**
+	 * Set socket connect
+	 *
+	 * @param {function} connectCallback
+	 * @param {function} messageCallback
      */
     this.connect = function ( connectCallback, messageCallback ) {
 
-		this.socket.on( SOCKET_CONNECT, function( session ) {
-			scope.session = session;
-			scope.session.subscribe( PATH_SUBSCRIBE, function ( url, payload ) {
+		this.socket.on(IW.Socket.EVENT_CONNECTED, function (data) {
+			scope.id = data.id;
+			connectCallback.call( this, data);
+		});
 
-				if (payload.action == IW.Socket.ACTION_SUBSCRIBE) {
+		this.socket.on(IW.Socket.EVENT_ALL, function (data) {
+			messageCallback.call( this, IW.Socket.EVENT_ALL, data, scope.getID() );
+		});
 
-					scope.resourceId = payload.resourceId;
-					connectCallback.call(this, payload, payload.resourceId);
+		this.socket.on(IW.Socket.EVENT_SENDER, function (data) {
+			messageCallback.call( this, IW.Socket.EVENT_SENDER, data, scope.getID() );
+		});
 
-				} else {
+		this.socket.on(IW.Socket.EVENT_EXCEPT_SENDER, function (data) {
+			messageCallback.call( this, IW.Socket.EVENT_EXCEPT_SENDER, data, scope.getID() );
+		});
 
-					messageCallback.call( this, payload, payload.resourceId );
-				}
-
-			} );
-		} );
+		this.socket.on(IW.Socket.EVENT_SPECIFIC, function (data) {
+			messageCallback.call( this, IW.Socket.EVENT_SPECIFIC, data, scope.getID() );
+		});
     };
 
 	/**
@@ -153,7 +125,7 @@ IW.Socket = function ( url ) {
 	 * @returns {IW.Socket}
      */
     this.unsubscribe = function () {
-		scope.session.unsubscribe( PATH_SUBSCRIBE );
+		this.socket.emit(IW.Socket.EVENT_DISCONNECT, { clientID: this.getID() });
 		return this;
 	};
 
@@ -164,7 +136,7 @@ IW.Socket = function ( url ) {
     this.windowCloseControls = function ( callback ) {
 		window.onbeforeunload = function () {
             callback ? callback.call( this ) : null;
-			scope.session.unsubscribe( PATH_SUBSCRIBE );
+			scope.unsubscribe();
 			return null;
 		}
 	};
@@ -174,62 +146,46 @@ IW.Socket = function ( url ) {
      * @returns {IW.Socket}
      */
     this.disconnected = function ( callback ) {
-		this.socket.on( SOCKET_DISCONNECT, function ( session ) {
-			callback.call( this, session );
-		} );
+		this.socket.on(IW.Socket.EVENT_DISCONNECT, function(data) {
+			callback.call( this, data );
+		});
 
         return this;
     };
-
-    /**
-     *
-     */
-    function error() {
-        console.log( arguments );
-    }
-
-	/**
-	 * Find socket url
-	 *
-	 * @returns {?string}
-     */
-    function findSocketUrl() {
-    	var script = document.querySelector('script[' + IW.Socket.DATA_SOCKET_URL + ']');
-		if ( script ) {
-			return script.getAttribute(IW.Socket.DATA_SOCKET_URL);
-		}
-		return null;
-	}
 };
 
-IW.Socket.DATA_SOCKET_URL = 'data-socket-url';
+/**
+ *
+ * @type {string}
+ */
+IW.Socket.EVENT_CONNECTED = 'connected';
 
 /**
  *
- * @type {number}
+ * @type {string}
  */
-IW.Socket.ACTION_SUBSCRIBE = 0;
+IW.Socket.EVENT_SENDER = 'sender';
 
 /**
  *
- * @type {number}
+ * @type {string}
  */
-IW.Socket.ACTION_CURRENT = 1;
+IW.Socket.EVENT_EXCEPT_SENDER = 'except-sender';
 
 /**
  *
- * @type {number}
+ * @type {string}
  */
-IW.Socket.ACTION_CURRENT_EXCEPT = 2;
+IW.Socket.EVENT_SPECIFIC = 'specific';
 
 /**
  *
- * @type {number}
+ * @type {string}
  */
-IW.Socket.ACTION_SPECIFIC = 3;
+IW.Socket.EVENT_ALL = 'all';
 
 /**
  *
- * @type {number}
+ * @type {string}
  */
-IW.Socket.ACTION_ALL = 4;
+IW.Socket.EVENT_DISCONNECT = 'disconnect';

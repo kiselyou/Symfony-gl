@@ -25,6 +25,12 @@ IW.Player = function ( idScene ) {
 
     /**
      *
+     * @type {string}
+     */
+    this.socketConnect = 'http://localhost:3000/play';
+
+    /**
+     *
      * @type {?IW.Socket}
      */
     this.socket = null;
@@ -120,7 +126,9 @@ IW.Player = function ( idScene ) {
      * @returns {IW.Player}
      */
     this.setConnect = function () {
-        this.socket = new IW.Socket();
+
+        this.socket = new IW.Socket(this.socketConnect);
+
         this.socket.connect(
             function ( response, resourceId ) {
 
@@ -136,8 +144,8 @@ IW.Player = function ( idScene ) {
                 scope.labels = new IW.LabelControls( scope.model, scope.camera );
                 scope.labels.init();
             },
-            function ( response ) {
-                scope.receive( response );
+            function ( event, response ) {
+                scope.receive( event, response );
             }
         );
 
@@ -193,10 +201,11 @@ IW.Player = function ( idScene ) {
 
     /**
      *
+     * @param {string} event - It is name event
      * @param {{ key: (string|number), data: {}, resourceId: ?(string|number) }} response
      * @returns {IW.Player}
      */
-    this.receive = function ( response ) {
+    this.receive = function ( event, response ) {
         var data = response.data;
         switch ( response.key ) {
 

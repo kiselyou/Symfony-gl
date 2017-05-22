@@ -43,47 +43,57 @@ IW.Socket.prototype.server = null;
  */
 IW.Socket.prototype.listen = function (namespace) {
     var scope = this;
-    this.io
-        .of(namespace)
-        .on('connection', function(socket){
+
+    var room = this.io.of(namespace);
+
+    room.on('connection', function(socket){
 
             console.log(socket.id);
 
             // Подписался
-            socket.emit('connected', { hello: 'Ты подписался на ' + namespace + ' Вот тебе ID: ' + socket.id, id: socket.id });
+            socket.emit(IW.Socket.EVENT_CONNECTED, { clientID: socket.id });
 
             // Слушаем запросы клиента
 
             // Отправить ответ только себе
-            socket.on('action-only-sender', function (data) {
-                // Что нибуди делаем с данными и возаращаем ответ себеже
-                console.log('Только себе', data);
-                // socket.emit('only-sender', { message: 'Ты отправил сообщения себе!' });
-                socket.emit('only-sender', { message: 'Ты отправил сообщения себе!' });
+            socket.on(IW.Socket.EVENT_SENDER, function (data) {
+                socket.emit(IW.Socket.EVENT_SENDER, data);
             });
 
             // Отправить всем кроме себя
-            socket.on('action-except-sender', function (data) {
-                console.log('Всем кроме себя', data);
+            socket.on(IW.Socket.EVENT_EXCEPT_SENDER, function (data) {
                 // Отправляем сообщени всем кроме себя
-                socket.broadcast.emit('except-sender', data);
+                socket.broadcast.emit(IW.Socket.EVENT_EXCEPT_SENDER, data);
 
             });
 
             // Отправить конкретномы пользователю сообщение
-            socket.on('action-only-specific', function (data) {
-                console.log(data);
-                socket.broadcast.to(data.id).emit('only-specific', data);
+            socket.on(IW.Socket.EVENT_SPECIFIC, function (data) {
+                socket.broadcast.to(data.receiverID).emit(IW.Socket.EVENT_SPECIFIC, data);
             });
 
-            socket.on('action-to-all', function (data) {
-                console.log(data);
-                // scope.io.of(namespace).emit('to-all', data);
-                scope.io.emit('to-all', data);
+            socket.on(IW.Socket.EVENT_ALL, function (data) {
+                room.emit(IW.Socket.EVENT_ALL, data);
+            });
+
+            socket.on(IW.Socket.EVENT_DISCONNECT, function () {
+                // room.emit('disconnected', { clientID: socket.id });
+                socket.broadcast.emit(IW.Socket.EVENT_DISCONNECT, { clientID: socket.id });
             });
         });
 
     this.server.listen(3000);
 };
+
+/**
+ *
+ * @type {string}
+ */
+IW.Socket.EVENT_CONNECTED = 'connected';
+IW.Socket.EVENT_SENDER = 'sender';
+IW.Socket.EVENT_EXCEPT_SENDER = 'except-sender';
+IW.Socket.EVENT_SPECIFIC = 'specific';
+IW.Socket.EVENT_ALL = 'all';
+IW.Socket.EVENT_DISCONNECT = 'disconnect';
 
 module.exports = IW;

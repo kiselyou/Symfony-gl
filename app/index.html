@@ -15,7 +15,7 @@
 </head>
 <body>
 
-
+    <script type="application/javascript" src="/js/socket.io.js"></script>
 
     <!--build:js /js/iw.min.js -->
 
@@ -28,8 +28,6 @@
     <script type="application/javascript" src="/js/core/Validation.js"></script>
 
     <script type="application/javascript" src="/js/ui/ProgressBar.js"></script>
-
-    <script type="application/javascript" src="/js/socket/SocketControls.js"></script>
 
     <script type="application/javascript" src="/js/collision/Collision.js"></script>
 
@@ -55,51 +53,12 @@
     <script type="application/javascript" src="/js/model/Model.js"></script>
 
     <script type="application/javascript" src="/js/controls/OrbitControls.js"></script>
-
+    <script type="application/javascript" src="/js/socket/Socket.js"></script>
     <script type="application/javascript" src="/js/controller/Prepare.js"></script>
     <script type="application/javascript" src="/js/controller/Player.js"></script>
     <script type="application/javascript" src="/js/controller/SkyBox.js"></script>
     <script type="application/javascript" src="/js/controller/Scene.js"></script>
     <!-- endbuild -->
-
-    <script type="application/javascript" src="/js/socket.io.js"></script>
-    <script>
-        var socket = io.connect('http://localhost:3000/news');
-        var clientID = null;
-        // Подписался
-        socket.on('connected', function (data) {
-
-            clientID = data.id;
-
-            console.log(clientID, data);
-
-            // Отправляем запрос на сервер для получения информации - принимаем ответ в "only-sender"
-            socket.emit('action-only-sender', { my: 'data' });
-
-            // Отправляем информацию всем кроме себя - принимаем ответ в "except-sender"
-            socket.emit('action-except-sender', { my: 'Привет я в системе', id: clientID });
-
-            // Отправить всем и себе
-            socket.emit('action-to-all', { my: 'this message to all and my' });
-        });
-
-        socket.on('only-sender', function (data) {
-            console.log(data);
-        });
-
-        socket.on('except-sender', function (data) {
-            console.log(data, data.id);
-            socket.emit('action-only-specific', { my: 'A я уже давно в системе', id: data.id });
-        });
-
-        socket.on('only-specific', function (data) {
-            console.log('Message for specific user', data);
-        });
-
-        socket.on('to-all', function (data) {
-            console.log('All', data);
-        });
-    </script>
 
 </body>
 </html>
