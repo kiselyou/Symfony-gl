@@ -131,7 +131,7 @@ IW.Player = function ( idScene ) {
 
         this.socket.connect(
             function ( response, resourceId ) {
-
+console.log(resourceId);
                 scope.model = new IW.Model( scope.multiLoader, scope.scene, resourceId );
                 scope.model.load( true );
                 scope.setPlayerID( resourceId );
@@ -162,7 +162,6 @@ IW.Player = function ( idScene ) {
             scope.socket.sendToAll( SOCKET_REMOVE_CLIENT, { resourceId: scope.getPlayerID() }, true );
             scope.socket.unsubscribe();
         } );
-
         // Send to all information about model of new user
         scope.socket.sendToAll( SOCKET_TRADE_TO, {model: scope.model.objectToJSON(), resourceId: scope.getPlayerID() }, true );
 
@@ -207,10 +206,12 @@ IW.Player = function ( idScene ) {
      */
     this.receive = function ( event, response ) {
         var data = response.data;
+
         switch ( response.key ) {
 
             // Get information about new client
             case SOCKET_TRADE_TO:
+                console.log(data);
                 // Initialisation client model to own browser
                 scope.model.addClientModel( new IW.Model( scope.multiLoader, scope.scene ).load( true, data.model ) );
                 // Send own model to browser of new client
@@ -219,6 +220,7 @@ IW.Player = function ( idScene ) {
 
             // Get information about old client
             case SOCKET_TRADE_FROM:
+                console.log(data);
                 // Set model of old client to own browser
                 scope.model.addClientModel( new IW.Model( scope.multiLoader, scope.scene ).load( true, data.model ) );
                 break;

@@ -51,7 +51,7 @@ IW.Socket.prototype.listen = function (namespace) {
         console.log(socket.id);
 
         // Подписался
-        var params = JSON.stringify({ clientID: socket.id });
+        var params = { clientID: socket.id };
         socket.emit(IW.Socket.EVENT_CONNECTED, params);
 
         // Слушаем запросы клиента
@@ -79,7 +79,7 @@ IW.Socket.prototype.listen = function (namespace) {
 
         socket.on(IW.Socket.EVENT_DISCONNECT, function () {
             // room.emit('disconnected', { clientID: socket.id });
-            var params = JSON.stringify({ clientID: socket.id });
+            var params = { clientID: socket.id };
             socket.broadcast.emit(IW.Socket.EVENT_DISCONNECTED, params);
         });
     });

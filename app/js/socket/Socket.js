@@ -47,7 +47,8 @@ IW.Socket = function ( url ) {
 			data: data
 		};
 
-		this.socket.emit(IW.Socket.EVENT_SENDER, JSON.stringify(params));
+		this.socket.emit(IW.Socket.EVENT_SENDER, params);
+		//console.log('send - MY');
     };
 
 	/**
@@ -64,7 +65,8 @@ IW.Socket = function ( url ) {
 			receiverID: receiverID
 		};
 
-		this.socket.emit(IW.Socket.EVENT_SPECIFIC, JSON.stringify(params));
+		this.socket.emit(IW.Socket.EVENT_SPECIFIC, params);
+		//console.log('send - SPECIFIC');
 	};
 
 	/**
@@ -83,13 +85,14 @@ IW.Socket = function ( url ) {
 
 		if (currentExcept) {
 			// Send to all except my
-			this.socket.emit( IW.Socket.EVENT_EXCEPT_SENDER, JSON.stringify(params) );
+			this.socket.emit( IW.Socket.EVENT_EXCEPT_SENDER, params );
+			//console.log('send - EXCEPT');
 
 		} else {
 			// Send to all
-			this.socket.emit( IW.Socket.EVENT_ALL, JSON.stringify(params) );
+			this.socket.emit( IW.Socket.EVENT_ALL, params );
+			//console.log('send - ALL');
 		}
-		console.log('emit all');
 	};
 
 	/**
@@ -101,29 +104,33 @@ IW.Socket = function ( url ) {
     this.connect = function ( connectCallback, messageCallback ) {
 
 		this.socket.on(IW.Socket.EVENT_CONNECTED, function ( data ) {
-			var params = JSON.parse( data );
-			scope.id = params.id;
-			connectCallback.call( this, params);
+			var params = data;
+			scope.id = params.clientID;
+			connectCallback.call( this, params, scope.getID() );
 		});
 
 		this.socket.on(IW.Socket.EVENT_ALL, function ( data ) {
-			var params = JSON.parse( data );
+			var params = data;
 			messageCallback.call( this, IW.Socket.EVENT_ALL, params, scope.getID() );
+			//console.log('get - ALL');
 		});
 
 		this.socket.on(IW.Socket.EVENT_SENDER, function ( data ) {
-			var params = JSON.parse( data );
+			var params = data;
 			messageCallback.call( this, IW.Socket.EVENT_SENDER, params, scope.getID() );
+			//console.log('get - ALL SENDER');
 		});
 
 		this.socket.on(IW.Socket.EVENT_EXCEPT_SENDER, function ( data ) {
-			var params = JSON.parse( data );
+			var params = data;
 			messageCallback.call( this, IW.Socket.EVENT_EXCEPT_SENDER, params, scope.getID() );
+			//console.log('get - ALL EXCEPT');
 		});
 
 		this.socket.on(IW.Socket.EVENT_SPECIFIC, function ( data ) {
-			var params = JSON.parse( data );
+			var params = data;
 			messageCallback.call( this, IW.Socket.EVENT_SPECIFIC, params, scope.getID() );
+			//console.log('get - SPECIFIC');
 		});
     };
 
@@ -133,7 +140,7 @@ IW.Socket = function ( url ) {
 	 * @returns {IW.Socket}
      */
     this.unsubscribe = function () {
-		var params = JSON.stringify({ clientID: this.getID() });
+		var params = { clientID: this.getID() };
 		this.socket.emit(IW.Socket.EVENT_DISCONNECTED, params);
 		return this;
 	};
@@ -156,7 +163,7 @@ IW.Socket = function ( url ) {
      */
     this.disconnected = function ( callback ) {
 		this.socket.on(IW.Socket.EVENT_DISCONNECT, function( data ) {
-			callback.call( this, JSON.parse( data ) );
+			callback.call( this, data );
 		});
 
         return this;
