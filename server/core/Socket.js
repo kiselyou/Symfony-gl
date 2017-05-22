@@ -48,39 +48,41 @@ IW.Socket.prototype.listen = function (namespace) {
 
     room.on('connection', function(socket){
 
-            console.log(socket.id);
+        console.log(socket.id);
 
-            // Подписался
-            socket.emit(IW.Socket.EVENT_CONNECTED, { clientID: socket.id });
+        // Подписался
+        var params = JSON.stringify({ clientID: socket.id });
+        socket.emit(IW.Socket.EVENT_CONNECTED, params);
 
-            // Слушаем запросы клиента
+        // Слушаем запросы клиента
 
-            // Отправить ответ только себе
-            socket.on(IW.Socket.EVENT_SENDER, function (data) {
-                socket.emit(IW.Socket.EVENT_SENDER, data);
-            });
-
-            // Отправить всем кроме себя
-            socket.on(IW.Socket.EVENT_EXCEPT_SENDER, function (data) {
-                // Отправляем сообщени всем кроме себя
-                socket.broadcast.emit(IW.Socket.EVENT_EXCEPT_SENDER, data);
-
-            });
-
-            // Отправить конкретномы пользователю сообщение
-            socket.on(IW.Socket.EVENT_SPECIFIC, function (data) {
-                socket.broadcast.to(data.receiverID).emit(IW.Socket.EVENT_SPECIFIC, data);
-            });
-
-            socket.on(IW.Socket.EVENT_ALL, function (data) {
-                room.emit(IW.Socket.EVENT_ALL, data);
-            });
-
-            socket.on(IW.Socket.EVENT_DISCONNECT, function () {
-                // room.emit('disconnected', { clientID: socket.id });
-                socket.broadcast.emit(IW.Socket.EVENT_DISCONNECT, { clientID: socket.id });
-            });
+        // Отправить ответ только себе
+        socket.on(IW.Socket.EVENT_SENDER, function (data) {
+            socket.emit(IW.Socket.EVENT_SENDER, data);
         });
+
+        // Отправить всем кроме себя
+        socket.on(IW.Socket.EVENT_EXCEPT_SENDER, function (data) {
+            // Отправляем сообщени всем кроме себя
+            socket.broadcast.emit(IW.Socket.EVENT_EXCEPT_SENDER, data);
+
+        });
+
+        // Отправить конкретномы пользователю сообщение
+        socket.on(IW.Socket.EVENT_SPECIFIC, function (data) {
+            socket.broadcast.to(data.receiverID).emit(IW.Socket.EVENT_SPECIFIC, data);
+        });
+
+        socket.on(IW.Socket.EVENT_ALL, function (data) {
+            room.emit(IW.Socket.EVENT_ALL, data);
+        });
+
+        socket.on(IW.Socket.EVENT_DISCONNECT, function () {
+            // room.emit('disconnected', { clientID: socket.id });
+            var params = JSON.stringify({ clientID: socket.id });
+            socket.broadcast.emit(IW.Socket.EVENT_DISCONNECTED, params);
+        });
+    });
 
     this.server.listen(3000);
 };
@@ -95,5 +97,6 @@ IW.Socket.EVENT_EXCEPT_SENDER = 'except-sender';
 IW.Socket.EVENT_SPECIFIC = 'specific';
 IW.Socket.EVENT_ALL = 'all';
 IW.Socket.EVENT_DISCONNECT = 'disconnect';
+IW.Socket.EVENT_DISCONNECTED = 'disconnected';
 
 module.exports = IW;
