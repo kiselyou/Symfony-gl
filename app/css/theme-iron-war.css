@@ -924,11 +924,9 @@ h6,
 }
 .iw_text_skin_error {
   color: #faa000;
-  font-weight: bold;
 }
 .iw_text_skin_success {
   color: #1cac78;
-  font-weight: bold;
 }
 .iw_text_xs {
   font-size: 10px;
@@ -1429,4 +1427,18 @@ h6,
 }
 .iw_group_lg {
   padding: 20px;
+}
+.iw_aim {
+  background: url('../images/textures/aim/aim.png') no-repeat;
+  background-size: contain;
+  width: 60px;
+  height: 60px;
+  position: absolute;
+}
+.iw_2d_label {
+  width: 80px;
+  height: 40px;
+  color: #FFFFFF;
+  font-size: 9px;
+  position: absolute;
 }

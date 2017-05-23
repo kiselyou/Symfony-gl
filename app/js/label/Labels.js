@@ -51,8 +51,7 @@ IW.Labels = function ( camera, container ) {
     this.templateAim = function ( label ) {
         var div = document.createElement('div');
         div.setAttribute(ATTR_DATA, IW.Labels.TPL_AIM);
-        div.classList.add('sw-aim');
-        div.style.position = 'absolute';
+        div.classList.add('iw_aim');
         div.style.top = -1000;
         div.style.left = -1000;
         div.innerHTML = label;
@@ -62,8 +61,7 @@ IW.Labels = function ( camera, container ) {
     this.templateSpeed = function ( label ) {
         var div = document.createElement('div');
         div.setAttribute(ATTR_DATA, IW.Labels.TPL_SPEED);
-        div.classList.add('sw-label-speed');
-        div.style.position = 'absolute';
+        div.classList.add('iw_2d_label');
         div.style.top = -1000;
         div.style.left = -1000;
         div.innerHTML = label;
@@ -74,8 +72,7 @@ IW.Labels = function ( camera, container ) {
 
         var div = document.createElement('div');
         div.setAttribute(ATTR_DATA, IW.Labels.TPL_DISTANCE);
-        div.classList.add('sw-label-distance');
-        div.style.position = 'absolute';
+        div.classList.add('iw_2d_label');
         div.style.top = -1000;
         div.style.left = -1000;
         div.innerHTML = label;
@@ -85,8 +82,7 @@ IW.Labels = function ( camera, container ) {
     this.templateLabel = function ( label ) {
         var div = document.createElement('div');
         div.setAttribute(ATTR_DATA, IW.Labels.TPL_LABEL);
-        div.classList.add('sw-label-speed');
-        div.style.position = 'absolute';
+        div.classList.add('iw_2d_label');
         div.style.top = -1000;
         div.style.left = -1000;
         div.innerHTML = label;

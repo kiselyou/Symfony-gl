@@ -48,8 +48,6 @@ IW.Socket.prototype.listen = function (namespace) {
 
     room.on('connection', function(socket){
 
-        console.log(socket.id);
-
         // Подписался
         var params = { clientID: socket.id };
         socket.emit(IW.Socket.EVENT_CONNECTED, params);
@@ -68,7 +66,7 @@ IW.Socket.prototype.listen = function (namespace) {
 
         });
 
-        // Отправить конкретномы пользователю сообщение
+        // Отправить конкретному пользователю сообщение
         socket.on(IW.Socket.EVENT_SPECIFIC, function (data) {
             socket.broadcast.to(data.receiverID).emit(IW.Socket.EVENT_SPECIFIC, data);
         });
@@ -79,8 +77,11 @@ IW.Socket.prototype.listen = function (namespace) {
 
         socket.on(IW.Socket.EVENT_DISCONNECT, function () {
             // room.emit('disconnected', { clientID: socket.id });
-            var params = { clientID: socket.id };
-            socket.broadcast.emit(IW.Socket.EVENT_DISCONNECTED, params);
+            socket.broadcast.emit(IW.Socket.EVENT_DISCONNECTED, { clientID: socket.id });
+        });
+
+        socket.on(IW.Socket.EVENT_REMOVE, function () {
+            socket.broadcast.emit(IW.Socket.EVENT_REMOVED, { clientID: socket.id });
         });
     });
 
@@ -98,5 +99,7 @@ IW.Socket.EVENT_SPECIFIC = 'specific';
 IW.Socket.EVENT_ALL = 'all';
 IW.Socket.EVENT_DISCONNECT = 'disconnect';
 IW.Socket.EVENT_DISCONNECTED = 'disconnected';
+IW.Socket.EVENT_REMOVE = 'remove';
+IW.Socket.EVENT_REMOVED = 'removed';
 
 module.exports = IW;

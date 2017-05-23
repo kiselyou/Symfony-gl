@@ -104,33 +104,33 @@ IW.Socket = function ( url ) {
     this.connect = function ( connectCallback, messageCallback ) {
 
 		this.socket.on(IW.Socket.EVENT_CONNECTED, function ( data ) {
-			var params = data;
-			scope.id = params.clientID;
-			connectCallback.call( this, params, scope.getID() );
+			scope.id = data.clientID;
+			connectCallback.call( this, data, scope.getID() );
 		});
 
 		this.socket.on(IW.Socket.EVENT_ALL, function ( data ) {
-			var params = data;
-			messageCallback.call( this, IW.Socket.EVENT_ALL, params, scope.getID() );
+			messageCallback.call( this, IW.Socket.EVENT_ALL, data, scope.getID() );
 			//console.log('get - ALL');
 		});
 
 		this.socket.on(IW.Socket.EVENT_SENDER, function ( data ) {
-			var params = data;
-			messageCallback.call( this, IW.Socket.EVENT_SENDER, params, scope.getID() );
+			messageCallback.call( this, IW.Socket.EVENT_SENDER, data, scope.getID() );
 			//console.log('get - ALL SENDER');
 		});
 
 		this.socket.on(IW.Socket.EVENT_EXCEPT_SENDER, function ( data ) {
-			var params = data;
-			messageCallback.call( this, IW.Socket.EVENT_EXCEPT_SENDER, params, scope.getID() );
+			messageCallback.call( this, IW.Socket.EVENT_EXCEPT_SENDER, data, scope.getID() );
 			//console.log('get - ALL EXCEPT');
 		});
 
 		this.socket.on(IW.Socket.EVENT_SPECIFIC, function ( data ) {
-			var params = data;
-			messageCallback.call( this, IW.Socket.EVENT_SPECIFIC, params, scope.getID() );
+			messageCallback.call( this, IW.Socket.EVENT_SPECIFIC, data, scope.getID() );
 			//console.log('get - SPECIFIC');
+		});
+
+		this.socket.on(IW.Socket.EVENT_REMOVED, function ( data ) {
+			messageCallback.call( this, IW.Socket.EVENT_REMOVED, data, scope.getID() );
+			//console.log('get - REMOVED');
 		});
     };
 
@@ -140,8 +140,7 @@ IW.Socket = function ( url ) {
 	 * @returns {IW.Socket}
      */
     this.unsubscribe = function () {
-		var params = { clientID: this.getID() };
-		this.socket.emit(IW.Socket.EVENT_DISCONNECTED, params);
+		this.socket.emit(IW.Socket.EVENT_REMOVE, { clientID: this.getID() });
 		return this;
 	};
 
@@ -162,7 +161,7 @@ IW.Socket = function ( url ) {
      * @returns {IW.Socket}
      */
     this.disconnected = function ( callback ) {
-		this.socket.on(IW.Socket.EVENT_DISCONNECT, function( data ) {
+		this.socket.on(IW.Socket.EVENT_DISCONNECTED, function( data ) {
 			callback.call( this, data );
 		});
 
@@ -211,3 +210,15 @@ IW.Socket.EVENT_DISCONNECT = 'disconnect';
  * @type {string}
  */
 IW.Socket.EVENT_DISCONNECTED = 'disconnected';
+
+/**
+ *
+ * @type {string}
+ */
+IW.Socket.EVENT_REMOVE = 'remove';
+
+/**
+ *
+ * @type {string}
+ */
+IW.Socket.EVENT_REMOVED = 'removed';

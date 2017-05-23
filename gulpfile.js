@@ -25,7 +25,7 @@ gulp.task('images', function(){
 });
 
 //lessc app/less/config.less app/css/test.css
-
+//lessc app/less/build.less app/css/theme-iron-war.css
 gulp.task('move', function() {
 
 	gulp.src('app/*.ico')
