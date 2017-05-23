@@ -1435,10 +1435,75 @@ h6,
   height: 60px;
   position: absolute;
 }
-.iw_2d_label {
+.iw_label {
   width: 80px;
   height: 40px;
   color: #FFFFFF;
   font-size: 9px;
   position: absolute;
+}
+.iw_controls {
+  width: 100%;
+  height: 50px;
+  color: rgba(0, 255, 255, 0.5);
+  box-shadow: inset 0 0 12px rgba(0, 255, 255, 0.5);
+  font-size: 12px;
+  font-weight: bold;
+  border-top: 1px solid rgba(127, 255, 255, 0.4);
+  padding: 5px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+.iw_mini-map {
+  width: 300px;
+  height: 250px;
+  border-radius: 5px 0 0 0;
+  border-top: 1px solid rgba(127, 255, 255, 0.4);
+  border-left: 1px solid rgba(127, 255, 255, 0.4);
+  box-shadow: inset 0 0 12px rgba(0, 255, 255, 0.5);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: #000000;
+}
+.iw_model-info {
+  position: absolute;
+  width: 280px;
+}
+.iw_model-info__flask-h {
+  height: 5px;
+  margin: 5px;
+  border-radius: 3px;
+  border: 1px solid rgba(127, 255, 255, 0.4);
+}
+.iw_model-info__flask-h_range {
+  height: 5px;
+}
+.iw_model-info__flask-h_range_energy {
+  background: #FF9900;
+}
+.iw_model-info__flask-h_range_armor {
+  background: #008AFA;
+}
+.iw_model-info__flask-h_range_hull {
+  background: #C10020;
+}
+.iw_model-info__flask-h_range_speed {
+  background: #FFFFFF;
+}
+.iw_model-info__flask-v {
+  height: 33px;
+  width: 18px;
+  float: left;
+  margin: 3px;
+  border-radius: 3px;
+  border: 1px solid rgba(127, 255, 255, 0.4);
+}
+.iw_model-info__flask-v_range {
+  height: 25px;
+  background: rgba(100, 255, 255, 0.2);
+}
+.iw_model-info__flask-v_range_energy {
+  background: rgba(100, 255, 255, 0.2);
 }

@@ -16,5 +16,11 @@
     "type": "pattern",
     "viewPath": "/pages/play.html",
     "method": "GET"
+  },
+  "dev": {
+    "route": "/dev",
+    "type": "pattern",
+    "viewPath": "/pages/dev.html",
+    "method": "GET"
   }
 }
