@@ -1585,24 +1585,58 @@ h6,
   position: absolute;
 }
 .iw_controls {
-  width: 350px;
+  width: 360px;
   height: 50px;
-  color: rgba(0, 255, 255, 0.5);
-  box-shadow: inset 0 0 12px rgba(0, 255, 255, 0.5);
-  font-size: 12px;
-  font-weight: bold;
   border-top: 1px solid rgba(127, 255, 255, 0.4);
   border-right: 1px solid rgba(127, 255, 255, 0.4);
+  border-radius: 0 4px 0 0;
+  box-shadow: inset 0 0 12px rgba(0, 255, 255, 0.5);
+  background: #000000;
   padding: 5px;
   position: absolute;
   left: 0;
   bottom: 0;
   margin: 0;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+.iw_controls__action {
+  border-radius: 2px;
+  border: 1px solid rgba(127, 255, 255, 0.7);
+  width: 30px;
+  height: 30px;
+  float: left;
+  margin: 2px;
+  cursor: pointer;
+}
+.iw_controls__action:hover {
+  background: rgba(0, 255, 255, 0.2);
+}
+.iw_controls__action:active {
+  opacity: 0.8;
+}
+.iw_controls__action_disable {
+  opacity: 0.8;
+  border: solid 1px rgba(150, 25, 25, 0.7);
+}
+.iw_controls__action_disable:hover {
+  background: none;
+}
+.iw_controls__button {
+  width: 22px;
+  height: 28px;
+}
+.iw_controls__text {
+  font-size: 9px;
+  font-weight: bold;
+  color: #ffffff;
+  width: 100%;
+  padding-left: 2px;
 }
 .iw_mini-map {
   width: 300px;
   height: 250px;
-  border-radius: 5px 0 0 0;
+  border-radius: 4px 0 0 0;
   border-top: 1px solid rgba(127, 255, 255, 0.4);
   border-left: 1px solid rgba(127, 255, 255, 0.4);
   box-shadow: inset 0 0 12px rgba(0, 255, 255, 0.5);
@@ -1611,15 +1645,23 @@ h6,
   bottom: 0;
   margin: 0;
   background: #000000;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 .iw_flask_v {
-  height: 33px;
+  height: 35px;
   width: 18px;
   float: left;
-  margin: 3px;
+  margin: 2px;
   border-radius: 3px;
   border: 1px solid rgba(127, 255, 255, 0.7);
   position: relative;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+.iw_flask_v_size_mini {
+  height: 24px;
+  width: 2px;
 }
 .iw_flask_v_size_xs {
   height: 25px;
@@ -1729,6 +1771,8 @@ h6,
   margin: 5px;
   border-radius: 3px;
   border: 1px solid rgba(127, 255, 255, 0.7);
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 .iw_flask_h_size_xs {
   height: 5px;

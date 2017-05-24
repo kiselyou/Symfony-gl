@@ -1,13 +1,19 @@
 .iw_flask_v {
-  height: 33px;
+  height: 35px;
   width: 18px;
   float: left;
-  margin: 3px;
+  margin: 2px;
   border-radius: 3px;
   border: 1px solid @form_border_color;
   position: relative;
+  .user-select();
 
   &_size {
+
+    &_mini {
+      height: 24px;
+      width: 2px;
+    }
 
     &_xs {
       height: 25px;
