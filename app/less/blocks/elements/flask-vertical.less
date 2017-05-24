@@ -1,0 +1,81 @@
+.iw_flask_v {
+  height: 33px;
+  width: 18px;
+  float: left;
+  margin: 3px;
+  border-radius: 3px;
+  border: 1px solid @form_border_color;
+  position: relative;
+
+  &_size {
+
+    &_xs {
+      height: 25px;
+      width: 10px;
+    }
+
+    &_sm {
+      height: 33px;
+      width: 18px;
+    }
+
+    &_md {
+      height: 41px;
+      width: 26px;
+    }
+
+    &_lg {
+      height: 49px;
+      width: 34px;
+    }
+  }
+
+  &__range {
+    background: rgba(100, 255, 255, 0.2);
+    border-radius: 0 0 2px 2px;
+    height: 50%;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+
+    &_orange {
+      background: #FF9900;
+    }
+
+    &_blue {
+      background: #008AFA;
+
+    }
+
+    &_red {
+      background: #C10020;
+    }
+
+    &_silver {
+      background: #C0C0C0;
+    }
+
+    &_white {
+      background: #FFFFFF;
+    }
+
+    @count: 20;
+
+    .range-size(@i: 0) when (@i =< @count) {
+
+      @width: @i * (100 / @count);
+
+      &_size_@{width} {
+        height: unit(@width, %);
+
+        & when (@i = @count) {
+          border-radius: 2px;
+        }
+      }
+
+      .range-size(@i + 1);
+    }
+
+    .range-size();
+  }
+}
