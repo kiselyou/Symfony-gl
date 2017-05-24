@@ -15,3 +15,19 @@
 @media (min-width: 1200px) {
   .make-cols(iw_col_lg);
 }
+
+.make-cols(@name) {
+  @count: 12;
+  .build-coll(@i: 1) when (@i =< @count) {
+
+    .@{name}_@{i} {
+      @step: unit((100 / @count) * @i, %);
+      width: ~"calc(@{step} - 10px)";
+      margin: 5px;
+    }
+
+    .build-coll(@i + 1);
+  }
+
+  .build-coll();
+}

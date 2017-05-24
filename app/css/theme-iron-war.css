@@ -1618,6 +1618,7 @@ h6,
 .iw_controls__action_disable {
   opacity: 0.8;
   border: solid 1px rgba(150, 25, 25, 0.7);
+  cursor: not-allowed;
 }
 .iw_controls__action_disable:hover {
   background: none;
