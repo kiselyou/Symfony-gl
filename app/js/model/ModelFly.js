@@ -76,12 +76,12 @@
 
 			if ( ( !motion.left && !motion.right ) || motion.backward ) {
 				if ( scope._model.getInclineAngle() < 0 ) {
-					scope._model.addInclineAngle( + 0.01 );
+					scope._model.addInclineAngle( + 0.03 );
 					scope._model.modelIncline( 'z', scope._model.getInclineAngle() );
 				}
 
 				if ( scope._model.getInclineAngle() > 0 ) {
-					scope._model.addInclineAngle( - 0.01 );
+					scope._model.addInclineAngle( - 0.03 );
 					scope._model.modelIncline( 'z', scope._model.getInclineAngle() );
 				}
 			}

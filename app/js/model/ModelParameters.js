@@ -486,7 +486,7 @@ IW.ModelParameters = function () {
      */
     this.reduceInclineAngle = function () {
         var speed = this.getInclineSpeed();
-        this.incline.angle -= this.getInclineAngle() < 0 ? speed : speed * 1.2;
+        this.incline.angle -= this.getInclineAngle() < 0 ? speed : speed * 2;
         return this;
     };
 
@@ -497,7 +497,7 @@ IW.ModelParameters = function () {
      */
     this.increaseInclineAngle = function () {
         var speed = this.getInclineSpeed();
-        this.incline.angle += this.getInclineAngle() > 0 ? speed : speed * 1.2;
+        this.incline.angle += this.getInclineAngle() > 0 ? speed : speed * 2;
         return this;
     };
 
