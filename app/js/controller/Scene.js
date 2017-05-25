@@ -164,8 +164,7 @@ IW.Scene = function ( idContainer ) {
         var fps = 30;
         var delay = 1000 / fps;
 
-        setTimeout(function tick() {
-
+        setInterval(function () {
             var delta = scope.clock.getDelta();
 
             if ( event ) {
@@ -173,13 +172,15 @@ IW.Scene = function ( idContainer ) {
             }
 
             scope.orbitControl.update();
-            setTimeout( tick, delay );
 
         }, delay);
 
         this.show();
         return this;
     };
+
+
+
 
     /**
      * Set config orbit controls for play

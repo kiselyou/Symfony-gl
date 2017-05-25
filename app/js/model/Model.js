@@ -421,50 +421,9 @@ IW.Model = function ( multiLoader, scene, id ) {
                 object[ property ] = this[ property ];
             }
         }
+
         return JSON.stringify( object );
     };
-
-	/**
-     * Get string parameters of model from object
-	 *
-	 * @param {[]} properties
-	 * @return {string}
-	 */
-	this.paramsToJSON = function ( properties ) {
-		var params = {};
-		for ( var i = 0; i < properties.length; i++ ) {
-            var property = properties[ i ];
-            params[ property ] = this[ property ];
-        }
-		return JSON.stringify( params );
-	};
-
-	/**
-     * Set parameters of model from string
-	 *
-	 * @param {string} json
-	 * @return {IW.Model}
-	 */
-	this.paramsJSONToObject = function ( json ) {
-        var vector = ['position', 'positionTo', 'prev'];
-		try {
-			var properties = JSON.parse( json );
-			for ( var property in properties) {
-				if ( properties.hasOwnProperty( property ) ) {
-
-                    if ( vector.indexOf( property ) > -1 ) {
-                        this[property].copy( properties[ property ] );
-                    } else {
-                        this[ property ] = properties[ property ];
-                    }
-
-				}
-			}
-		} catch ( e ) {
-			console.warn( 'The params of model are not correct' );
-		}
-		return this;
-	};
 
     /**
      * Update information of current model

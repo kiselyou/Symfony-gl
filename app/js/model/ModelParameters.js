@@ -26,11 +26,11 @@ IW.ModelParameters = function () {
 	 * @type {{acceleration: number, deceleration: number, current: number, max: number, min: number, speedRadiusForward: number, speedRadiusBackward: number}}
 	 */
 	this.speed = {
-        acceleration: 5,    // m.s
-        deceleration: 8,    // m.s
+        acceleration: 55,    // m.s
+        deceleration: 80,    // m.s
         current: 0,         // m.s Can not be less than zero. Default 0
-        max:  450,          // m.s It is maximum speed the model
-        min: -50,	        // m.s If less than zero. The model is moving back
+        max:  1550,          // m.s It is maximum speed the model
+        min: -250,	        // m.s If less than zero. The model is moving back
         speedRadiusForward: 0.02,
         speedRadiusBackward: 0.05
     };
@@ -42,7 +42,7 @@ IW.ModelParameters = function () {
 	 */
 	this.incline = {
         angle: 0,                       // It is angle incline
-        speed: 0.5,                     // It is speed incline ( radian )
+        speed: 0.05,                     // It is speed incline ( radian )
         maxAngle: 45 / 180 * Math.PI,   // It is max angle incline ( radian )
         minSpeed: 10                    // It is min speed of model where will begin inclines
     };
@@ -203,6 +203,16 @@ IW.ModelParameters = function () {
         return this.armor.current;
     };
 
+    /**
+     * Set current armor of model
+     *
+     * @return {IW.ModelParameters}
+     */
+    this.setCurrentArmor = function (armor) {
+        this.armor.current = armor;
+        return this;
+    };
+
 	/**
      * Get max armor of model
      *
@@ -254,6 +264,16 @@ IW.ModelParameters = function () {
 	 */
 	this.getCurrentHull = function () {
         return this.hull.current;
+    };
+
+    /**
+     * Set current hull of model
+     *
+     * @return {IW.ModelParameters}
+     */
+    this.setCurrentHull = function (hull) {
+        this.hull.current = hull;
+        return this;
     };
 
 	/**

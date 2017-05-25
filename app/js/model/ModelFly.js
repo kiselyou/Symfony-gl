@@ -11,7 +11,7 @@
 		 *
 		 * @const {number}
 		 */
-		var SCALE = 100;
+		var SCALE = 1000;
 
 		/**
 		 * It is approximate position to motion
@@ -87,6 +87,8 @@
 			}
 		}
 
+		var down = false;
+
 		/**
 		 * Set parameter motion in event "keydown"
 		 *
@@ -107,6 +109,11 @@
 				case keyboard.backward.keyCode:
 					motionControl( 'backward', true );
 					break;
+			}
+
+			if (!down) {
+				down = true;
+				// scope._callback.call(this, motion);
 			}
 		}
 
@@ -131,6 +138,11 @@
 					motionControl( 'backward', false );
 					break;
 			}
+
+			if (down) {
+				down = false;
+				// scope._callback.call(this, motion);
+			}
 		}
 
 		/**
@@ -153,6 +165,7 @@
 		 * @returns {Vector3}
 		 */
 		function getPositionTo( far, angle ) {
+			angle = + angle.toFixed(9);
 			changeAngle();
 			var m = scope._model.getPosition();
 			var x = m.x + far * Math.cos( angle );
@@ -172,6 +185,7 @@
 			if ( motion[ direction ] !== status ) {
 				motion[ direction ] = status;
 				motion.flyStatus = status ? status : isFly();
+				scope._callback.call(this, motion);
 			}
 		}
 
@@ -231,29 +245,8 @@
 			this._callback = callback;
 			window.addEventListener( 'keydown', keyDown, false );
 			window.addEventListener( 'keyup', keyUp, false );
-			callToClient();
 			return this;
 		};
-
-		function callToClient() {
-
-			if ( scope._callback ) {
-
-				var fps = 6;
-				var statusCallToClient = true;
-
-				setTimeout(function tick() {
-
-					if ( motion.flyStatus || statusCallToClient ) {
-						scope._callback.call(this, motion);
-					}
-
-					setTimeout(tick, 1000 / fps);
-					statusCallToClient = motion.flyStatus;
-
-				}, 1000 / fps);
-			}
-		}
 
 		/**
 		 * Update calculate position of model in order to move model
@@ -261,6 +254,8 @@
 		 * @param {number} delta
 		 */
 		this.update = function ( delta ) {
+
+			delta = 0;
 
 			if ( !this._model.enabled ) {
 				return;

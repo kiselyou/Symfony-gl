@@ -108,26 +108,37 @@ IW.ModelShot = function ( model ) {
 	 */
 	function collisionShot( key, mesh ) {
 		scope.model.collision.update( mesh, function ( object ) {
-			scope.model.findClientModel( object.name, function ( client ) {
 
-				scope.destroyShot( key );
-				client.setDamage( mesh.damage );
+			scope.model.findClientModel(
+				object.name,
+				/**
+				 *
+                 * @param {IW.Model} client
+                 */
+				function ( client ) {
 
-				var paramToClient = {
-					weaponKey: key,
-					clientName: object.name,
-					param: client.paramsToJSON( ['armor', 'hull'] ),
-					destroy: client.isDestroyed()
-				};
+					scope.destroyShot( key );
+					client.setDamage( mesh.damage );
 
-				if ( scope._collisionCallback ) {
-					scope._collisionCallback.call( this, paramToClient );
+					var paramToClient = {
+						weaponKey: key,
+						clientName: object.name,
+						param: {
+							armor: client.getCurrentArmor(),
+							hull: client.getCurrentHull()
+						},
+						destroy: client.isDestroyed()
+					};
+
+					if ( scope._collisionCallback ) {
+						scope._collisionCallback.call( this, paramToClient );
+					}
+
+					if ( client.isDestroyed() ) {
+						scope.model.destroyModel( true, object.name );
+					}
 				}
-
-				if ( client.isDestroyed() ) {
-					scope.model.destroyModel( true, object.name );
-				}
-			} );
+			);
 		} );
 	}
 

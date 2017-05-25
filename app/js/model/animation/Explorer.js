@@ -29,7 +29,7 @@ IW.Explorer = function ( model ) {
 
         emitter = new SPE.Emitter({
             type: SPE.distributions.BOX,
-            maxAge: { value: 1.5 },
+            maxAge: { value: 1.2 },
             position: {
                 value: new THREE.Vector3(0, 0, 0)
             },
@@ -37,13 +37,13 @@ IW.Explorer = function ( model ) {
                 value: new THREE.Vector3(0, 0, -4)
             },
             color: {
-                value: [ new THREE.Color(0xFFFFFF), new THREE.Color( 'blue' ) ],
+                value: [ new THREE.Color(0xFFFFFF), new THREE.Color( 0x2E0FFF ) ],
                 spread: new THREE.Vector3(0, 0, 0)
             },
             size: {
                 value: [3, 0]
             },
-            particleCount: 80
+            particleCount: 180
         });
 
         particleGroup.addEmitter( emitter );

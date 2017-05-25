@@ -110,12 +110,12 @@ IW.Explosion = function ( model ) {
         var delay = 1000 / fps;
         var dt = clock.getDelta();
 
-        setTimeout( function tick() {
+        var idInterval = setInterval(function () {
             action.call( this, dt );
-            if ( start < time ) {
-                setTimeout( tick, delay );
+            if ( start >= time ) {
+                clearInterval(idInterval);
             }
             start += delay;
-        }, delay );
+        }, delay);
     };
 };

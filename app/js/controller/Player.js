@@ -131,7 +131,7 @@ IW.Player = function ( idScene ) {
 
         this.socket.connect(
             function ( response, resourceId ) {
-console.log(resourceId);
+                console.log(resourceId);
                 scope.model = new IW.Model( scope.multiLoader, scope.scene, resourceId );
                 scope.model.load( true );
                 scope.setPlayerID( resourceId );
@@ -164,14 +164,17 @@ console.log(resourceId);
         } );
         // Send to all information about model of new user
         scope.socket.sendToAll( SOCKET_TRADE_TO, {model: scope.model.objectToJSON(), resourceId: scope.getPlayerID() }, true );
-
         // Send info about position of user model
         scope.model.addFlyEvents( function ( moution ) {
             scope.socket.sendToAll(
                 SOCKET_MODEL_FLY,
                 {
                     modelFly: moution,
-                    modelParam: scope.model.paramsToJSON( ['position', 'positionTo', 'incline', 'angle', 'speed'] ),
+                    modelParam: {
+                        angle: scope.model.angle,
+                        position: scope.model.getPosition(),
+                        speed: scope.model.getCurrentSpeed()
+                    },
                     resourceId: scope.getPlayerID()
                 },
                 true
@@ -211,7 +214,6 @@ console.log(resourceId);
 
             // Get information about new client
             case SOCKET_TRADE_TO:
-                console.log(data);
                 // Initialisation client model to own browser
                 scope.model.addClientModel( new IW.Model( scope.multiLoader, scope.scene ).load( true, data.model ) );
                 // Send own model to browser of new client
@@ -220,7 +222,6 @@ console.log(resourceId);
 
             // Get information about old client
             case SOCKET_TRADE_FROM:
-                console.log(data);
                 // Set model of old client to own browser
                 scope.model.addClientModel( new IW.Model( scope.multiLoader, scope.scene ).load( true, data.model ) );
                 break;
@@ -234,8 +235,10 @@ console.log(resourceId);
                      * @param {IW.Model} client
                      */
                     function ( client ) {
-                        client.paramsJSONToObject( data.modelParam );
-                        client.setPositionTo( client.getPositionTo() );
+
+                        client.angle = data.modelParam.angle;
+                        client.setPosition(data.modelParam.position);
+                        client.setCurrentSpeed(data.modelParam.speed);
                         client.modelFly.setMotion( data.modelFly );
                     }
                 );
@@ -273,7 +276,11 @@ console.log(resourceId);
 
                 // Current player
                 if ( dataModel.clientName === scope.getPlayerID() ) {
-                    scope.model.paramsJSONToObject( dataModel.param );
+                    //dataModel.param
+                    scope.model
+                        .setCurrentHull(dataModel.param.hull)
+                        .setCurrentArmor(dataModel.param.armor);
+
                     if ( dataModel.destroy ) {
                         // Unsubscribe if client was killed
                         scope.model.destroyModel( true, scope.model.id );
@@ -290,7 +297,11 @@ console.log(resourceId);
                          * @param {IW.Model} client
                          */
                         function ( client ) {
-                            client.paramsJSONToObject( dataModel.param );
+
+                            client
+                                .setCurrentHull(dataModel.param.hull)
+                                .setCurrentArmor(dataModel.param.armor);
+
                             if ( dataModel.destroy ) {
                                 client.destroyModel( true, client.id );
                             }
