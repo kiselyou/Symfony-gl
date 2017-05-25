@@ -259,7 +259,7 @@ h6,
 }
 .iw {
   position: relative;
-  top: 1px;
+  top: 2px;
   display: inline-block;
   font-family: 'Font Iron';
   font-style: normal;
@@ -1668,9 +1668,9 @@ h6,
 .iw_mini-map__actions {
   border-radius: 2px;
   border: 1px solid rgba(127, 255, 255, 0.4);
-  width: 20px;
-  height: 20px;
+  padding: 2px 6px;
   cursor: pointer;
+  font-size: 14px;
 }
 .iw_mini-map__actions:hover {
   background: rgba(0, 255, 255, 0.2);
@@ -1688,11 +1688,11 @@ h6,
 }
 .iw_mini-map__actions_left {
   float: left;
-  margin-left: 2px;
+  margin-right: 2px;
 }
 .iw_mini-map__actions_right {
   float: right;
-  margin-right: 2px;
+  margin-left: 2px;
 }
 .iw_flask_v {
   height: 35px;
