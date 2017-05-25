@@ -1440,7 +1440,7 @@ h6,
 .iw_btn {
   color: rgba(0, 255, 255, 0.75);
   background: transparent;
-  border: 1px solid rgba(127, 255, 255, 0.7);
+  border: 1px solid rgba(127, 255, 255, 0.4);
   border-radius: 4px;
   padding: 8px 10px;
   cursor: pointer;
@@ -1486,7 +1486,7 @@ h6,
   border-radius: 4px;
   color: rgba(0, 255, 255, 0.75);
   background: transparent;
-  border: 1px solid rgba(127, 255, 255, 0.7);
+  border: 1px solid rgba(127, 255, 255, 0.4);
   padding: 0 10px;
   outline: none;
 }
@@ -1527,7 +1527,7 @@ h6,
   border-radius: 4px;
   color: rgba(0, 255, 255, 0.7);
   background: transparent;
-  border: 1px solid rgba(127, 255, 255, 0.7);
+  border: 1px solid rgba(127, 255, 255, 0.4);
   padding: 0 10px;
 }
 .iw_group__control {
@@ -1536,7 +1536,7 @@ h6,
   border-radius: 4px;
   color: rgba(0, 255, 255, 0.75);
   background: transparent;
-  border: 1px solid rgba(127, 255, 255, 0.7);
+  border: 1px solid rgba(127, 255, 255, 0.4);
   padding: 0 10px;
   outline: none;
 }
