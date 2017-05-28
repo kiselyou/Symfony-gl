@@ -1,22 +1,61 @@
 .iw_progress {
-  color: #F00;
+  color: #FFFFFF;
   position: absolute;
   width: 100%;
   height: 100%;
   z-index: 1000000;
+  .user-select();
 
-  &__top {
-    top: 10px;
+  &__position {
     position: relative;
+
+    &__top {
+      top: 10px;
+    }
+
+    &__top_1 {
+      top: 10%;
+    }
+
+    &__top_2 {
+      top: 20%;
+    }
+
+    &__top_3 {
+      top: 30%;
+    }
+
+    &__top_4 {
+      top: 40%;
+    }
+
+    &__center {
+      top: 45%;
+    }
+
+    &__bottom {
+      bottom: 10px;
+    }
+
+    &__bottom_1 {
+      bottom: 10%;
+    }
+
+    &__bottom_2 {
+      bottom: 20%;
+    }
+
+    &__bottom_3 {
+      bottom: 30%;
+    }
+
+    &__bottom_4 {
+      bottom: 40%;
+    }
   }
 
-  &__center {
-    top: 49%;
-    position: relative;
-  }
+  &__status {
+    margin: 5px 10px;
 
-  &__bottom {
-    bottom: 10px;
-    position: relative;
   }
 }
