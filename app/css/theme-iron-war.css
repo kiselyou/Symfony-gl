@@ -1694,6 +1694,25 @@ h6,
   float: right;
   margin-left: 2px;
 }
+.iw_progress {
+  color: #F00;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1000000;
+}
+.iw_progress__top {
+  top: 10px;
+  position: relative;
+}
+.iw_progress__center {
+  top: 49%;
+  position: relative;
+}
+.iw_progress__bottom {
+  bottom: 10px;
+  position: relative;
+}
 .iw_flask_v {
   height: 35px;
   width: 18px;
