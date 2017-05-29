@@ -56,15 +56,22 @@ IW.Templates = function () {
      *
      * @param {string} selector
      * @param {string} str
+     * @param {boolean} [toEnd]
+     * @returns {void}
      */
-    this.paste = function (selector, str) {
+    this.paste = function (selector, str, toEnd) {
         var to = document.querySelectorAll(selector);
         if (to) {
             var el = document.createElement('div');
             el.innerHTML = str;
 
             for (var b = 0; b < to.length; b++) {
-                to[b].appendChild(el);
+
+                if (toEnd) {
+                    to[b].appendChild(el);
+                } else {
+                    to[b].insertBefore(el, to[b].childNodes[0]);
+                }
             }
 
             var script = el.querySelectorAll('script');

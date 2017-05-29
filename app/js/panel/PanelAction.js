@@ -7,14 +7,6 @@
      */
     IW.PanelAction = function ( htmlId ) {
 
-        /** @const {number} */
-        var PANEL_MIN_WIDTH = 400;
-
-        var PANEL_MAX_WIDTH = 1000;
-
-        /** @const {number} */
-        var INDENT_RIGHT = 10;
-
         /**
          *
          * @type {number}
@@ -81,64 +73,70 @@
 
         /**
          *
-         * @param {Element} [element]
          * @returns {IW.PanelAction}
          */
-        this.appendActionsTo = function ( element ) {
+        this.appendActionsTo = function () {
 
-            var container = element ? element : document.body;
-            container.appendChild( templatePanel() );
+            var template = new IW.Templates();
+
+            template.load(
+                '/panel/model-progress.html',
+                function (str) {
+                    template.paste( 'body', str );
+                }
+            );
+            // container.appendChild( templatePanel() );
             return this;
         };
 
-        /**
-         *
-         * @returns {Element}
-         */
-        function templatePanelAction() {
-
-            var a = document.createElement('div');
-            a.classList.add( 'sw-block-actions' );
-
-            for ( var i = 0; i < actions.length; i++ ) {
-
-                var action = actions[ i ];
-
-                var b = document.createElement('div');
-                b.classList.add( 'sw-action' );
-
-                if ( action.active ) {
-                    b.setAttribute( 'data-active', 'sw-action-active' );
-                }
-
-                if ( action.icon != undefined ) {
-                    var c = document.createElement('div');
-                    c.classList.add('sw-action-icon');
-                    c.classList.add('glyphicon');
-                    c.classList.add('glyphicon-' + action.icon);
-                    b.appendChild( c );
-                }
-
-                if ( action.name != undefined ) {
-
-                    var d = document.createElement('div');
-                    d.classList.add('sw-action-keyword');
-                    d.innerHTML = action.name;
-                    b.appendChild(d);
-                }
-
-                a.appendChild( b );
-
-                if ( action.keyCode != undefined ) {
-                    actions[ i ].element = b;
-                    keyEvents.push( action );
-                }
-
-                addEvent( b, action.callback );
-            }
-
-            return a;
-        }
+        // /**
+        //  *
+        //  * @returns {Element}
+        //  */
+        // function templatePanelAction() {
+        //
+        //     var a = document.createElement('div');
+        //     a.classList.add( 'sw-block-actions' );
+        //
+        //     for ( var i = 0; i < actions.length; i++ ) {
+        //
+        //         var action = actions[ i ];
+        //
+        //         var b = document.createElement('div');
+        //         b.classList.add( 'sw-action' );
+        //
+        //         if ( action.active ) {
+        //             b.setAttribute( 'data-active', 'sw-action-active' );
+        //         }
+        //
+        //         if ( action.icon != undefined ) {
+        //             var c = document.createElement('div');
+        //             c.classList.add('sw-action-icon');
+        //             c.classList.add('glyphicon');
+        //             c.classList.add('glyphicon-' + action.icon);
+        //             b.appendChild( c );
+        //         }
+        //
+        //         if ( action.name != undefined ) {
+        //
+        //             var d = document.createElement('div');
+        //             d.classList.add('sw-action-keyword');
+        //             d.innerHTML = action.name;
+        //             b.appendChild(d);
+        //         }
+        //
+        //         a.appendChild( b );
+        //
+        //         if ( action.keyCode != undefined ) {
+        //             actions[ i ].element = b;
+        //             keyEvents.push( action );
+        //         }
+        //
+        //         addEvent( b, action.callback );
+        //     }
+        //
+        //     return a;
+        // }
 
         /**
          *
@@ -183,53 +181,53 @@
          */
         var progress = [];
 
-        /**
-         *
-         * @returns {Element}
-         */
-        function templateProgress() {
-
-            var a = document.createElement('div');
-            a.classList.add( 'sw-block-progress' );
-
-            for ( var i = 0; i < progress.length; i++ ) {
-
-                /**
-                 *
-                 * @type {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }}
-                 */
-                var params = progress[ i ];
-
-                var b = document.createElement('div');
-                b.classList.add( 'sw-row' );
-
-                var c = document.createElement('div');
-                c.classList.add( 'sw-status-progress' );
-
-                var p = document.createElement('div');
-
-                if ( params.color != undefined ) {
-                    p.style.background = params.color;
-                }
-
-                setProgress( p, params );
-                progress[ i ][ 'p' ] = p;
-
-                var l = document.createElement('div');
-                l.classList.add( 'sw-status-progress-label' );
-                labelProgress( l, params );
-                progress[ i ][ 'l' ] = l;
-
-                c.appendChild( p );
-                b.appendChild( c );
-                b.appendChild( l );
-                a.appendChild( b );
-
-                autoUpdate( progress[ i ] );
-            }
-
-            return a;
-        }
+        // /**
+        //  *
+        //  * @returns {Element}
+        //  */
+        // function templateProgress() {
+        //
+        //     var a = document.createElement('div');
+        //     a.classList.add( 'sw-block-progress' );
+        //
+        //     for ( var i = 0; i < progress.length; i++ ) {
+        //
+        //         /**
+        //          *
+        //          * @type {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }}
+        //          */
+        //         var params = progress[ i ];
+        //
+        //         var b = document.createElement('div');
+        //         b.classList.add( 'sw-row' );
+        //
+        //         var c = document.createElement('div');
+        //         c.classList.add( 'sw-status-progress' );
+        //
+        //         var p = document.createElement('div');
+        //
+        //         if ( params.color != undefined ) {
+        //             p.style.background = params.color;
+        //         }
+        //
+        //         setProgress( p, params );
+        //         progress[ i ][ 'p' ] = p;
+        //
+        //         var l = document.createElement('div');
+        //         l.classList.add( 'sw-status-progress-label' );
+        //         labelProgress( l, params );
+        //         progress[ i ][ 'l' ] = l;
+        //
+        //         c.appendChild( p );
+        //         b.appendChild( c );
+        //         b.appendChild( l );
+        //         a.appendChild( b );
+        //
+        //         autoUpdate( progress[ i ] );
+        //     }
+        //
+        //     return a;
+        // }
 
         /**
          *
@@ -270,9 +268,9 @@
          */
         function setProgress( element, params ) {
 
-            var max = params.max == undefined ? 100 : params.max;
-            var percent = params.number * 100 / max;
-            element.style.width = ( percent ) + '%';
+            // var max = params.max == undefined ? 100 : params.max;
+            // var percent = params.number * 100 / max;
+            // element.style.width = ( percent ) + '%';
         }
 
         /**
@@ -282,9 +280,9 @@
          * @returns {void}
          */
         function labelProgress( element, params ) {
-            var max = params.max == undefined ? 100 : params.max;
-            var unit = params.unit == undefined ? '%' : params.unit;
-            element.innerHTML = params.label + ': ' + max + ' / ' + params.number.toFixed( scope.fixing ) + ' ' + unit;
+            // var max = params.max == undefined ? 100 : params.max;
+            // var unit = params.unit == undefined ? '%' : params.unit;
+            // element.innerHTML = params.label + ': ' + max + ' / ' + params.number.toFixed( scope.fixing ) + ' ' + unit;
         }
 
         /**
@@ -376,49 +374,50 @@
          */
         function templatePanel() {
 
-            var size = getSize();
-            panel = document.createElement('div');
-            panel.id = id;
-            panel.classList.add('sw-panel-control');
-            panel.classList.add('sw-modal-skin-panel');
-            panel.style.position = 'absolute';
+            // var size = getSize();
+            // panel = document.createElement('div');
+            // panel.id = id;
+            // panel.classList.add('sw-panel-control');
+            // panel.classList.add('sw-modal-skin-panel');
+            // panel.style.position = 'absolute';
+            //
+            // panel.style.left = size.left + 'px';
+            // panel.style.bottom = size.bottom + 'px';
+            // panel.appendChild( templatePanelAction() );
+            // panel.appendChild( templateProgress() );
 
-            panel.style.left = size.left + 'px';
-            panel.style.bottom = size.bottom + 'px';
-            panel.appendChild( templatePanelAction() );
-            panel.appendChild( templateProgress() );
 
             return panel;
         }
 
-        /**
-         *
-         * @returns {{height: Number, left: number, top: number}}
-         */
-        function getSize() {
+        // /**
+        //  *
+        //  * @returns {{height: Number, left: number, top: number}}
+        //  */
+        // function getSize() {
+        //
+        //     return {
+        //         left: 0,
+        //         bottom: 0
+        //     }
+        // }
 
-            return {
-                left: 0,
-                bottom: 0
-            }
-        }
-
-        /**
-         *
-         * @returns {void}
-         */
-        function resize() {
-
-            if ( !panel ) {
-                return;
-            }
-
-            var size = getSize();
-            panel.style.left = size.left + 'px';
-            panel.style.bottom = size.bottom + 'px';
-        }
+        // /**
+        //  *
+        //  * @returns {void}
+        //  */
+        // function resize() {
+        //
+        //     if ( !panel ) {
+        //         return;
+        //     }
+        //
+        //     var size = getSize();
+        //     panel.style.left = size.left + 'px';
+        //     panel.style.bottom = size.bottom + 'px';
+        // }
 
         window.addEventListener( 'keydown', addKeyEvents, false);
-        window.addEventListener( 'resize', resize, false );
+        // window.addEventListener( 'resize', resize, false );
 
     };
