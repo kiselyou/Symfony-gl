@@ -1,15 +1,18 @@
 var IW = IW || {};
 
 /**
+ * This object work with templates in path (/progress/..html)
  *
- * @augments IW.Ajax
  * @constructor
  */
 IW.Templates = function () {
 
+    /**
+     * It is path directory of templates
+     *
+     * @type {string}
+     */
     var PATH_TO_LOAD = '/template';
-
-    this._loaded = [];
 
     /**
      *
@@ -25,7 +28,7 @@ IW.Templates = function () {
      * @returns {IW.Templates}
      */
     this.load = function (name, event) {
-        var tpl = this._loaded.find(function (item) {
+        var tpl = IW.Templates.cacheTemplates.find(function (item) {
             return item['name'] === name;
         });
 
@@ -36,7 +39,7 @@ IW.Templates = function () {
                 PATH_TO_LOAD,
                 { template: name },
                 function ( template ) {
-                    scope._loaded.push({ name: name, tpl: template });
+                    IW.Templates.cacheTemplates.push({ name: name, tpl: template });
                     event.call( this, template );
 
                 },
@@ -49,6 +52,11 @@ IW.Templates = function () {
         return this;
     };
 
+    /**
+     *
+     * @param {string} selector
+     * @param {string} str
+     */
     this.paste = function (selector, str) {
         var to = document.querySelectorAll(selector);
         if (to) {
@@ -92,3 +100,10 @@ IW.Templates = function () {
         body.removeChild(script);
     };
 };
+
+/**
+ * Cache. The templates which was uploaded earlier
+ *
+ * @type {Array}
+ */
+IW.Templates.cacheTemplates = [];
