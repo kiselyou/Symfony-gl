@@ -9,6 +9,7 @@ var IW = IW || {};
  */
 IW.Request = function (config) {
 
+    this.config = config;
     this.DIR_APP = getEnvironment(config);
     this.PATH_APP = __dirname + '/../../' + this.DIR_APP;
     this.PATH_TEMPLATES = this.PATH_APP + IW.Request.DIR_TEMPLATES;
@@ -32,6 +33,13 @@ IW.Request = function (config) {
         return IW.Request.ENVIRONMENT_PROD;
     }
 };
+
+/**
+ * It is configuration from file ("server/config/config.json" - by default)
+ *
+ * @type {{}|{encoding: string, environment: { app: boolean, dist: boolean }, port: number, host: string, routes: { templates: string } }}
+ */
+IW.Request.prototype.config = {};
 
 /**
  *

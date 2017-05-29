@@ -2,5 +2,31 @@
     <template data-include="/panel/model-info.html"></template>
     <template data-include="/panel/controls.html"></template>
     <template data-include="/panel/mini-map.html"></template>
-    <template data-include="/progress/upload.html"></template>
+    <!--<template data-include="/progress/upload.html"></template>-->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+
+            var progress = new IW.ProgressBar();
+            progress.hideLabel();
+            progress.start();
+
+            var ddd = 0;
+
+            var idInterval = setInterval(function () {
+
+                ddd++;
+
+                if (ddd === 100) {
+
+                    clearInterval(idInterval);
+                }
+
+                progress.update(ddd, 'label - ' + ddd);
+
+            }, 10);
+        });
+    </script>
+
 </div>

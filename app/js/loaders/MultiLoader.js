@@ -352,7 +352,7 @@ IW.MultiLoader = function () {
     this.load = function ( callback ) {
 
         doneLoad = callback;
-        progressBar.open();
+        progressBar.start(IW.ProgressBar.TYPE_UPLOAD);
         progressBar.setCountUpload( countUpload( this.upload ) );
         startLoad();
     };

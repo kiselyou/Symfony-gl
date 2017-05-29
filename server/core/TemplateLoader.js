@@ -6,12 +6,8 @@ var IW = require('./Request') || {};
 IW.TemplateLoader = function ( config ) {
     IW.Request.call(this, config);
 
-    /**
-     * @type {{}}
-     */
-    this.config = config;
-
     var iw = require('./Cache');
+
     /**
      *
      * @type {IW.Cache}
@@ -97,7 +93,6 @@ IW.TemplateLoader.prototype.uploadPatternError = function (error) {
             var pathIndex = this.concatPath(this.DIR_APP, '/index.html');
             var $ = cheerio.load(fs.readFileSync(pathIndex));
             $('body').html('<template data-include="/pages/404.html"></template>');
-            // content = this.includePattern($.html());
 
             var arrTemplates = [];
             var pattern = this.includePattern($.html(), arrTemplates);

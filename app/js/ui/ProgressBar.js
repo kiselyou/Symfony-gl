@@ -43,12 +43,6 @@ var IW = IW || {};
 
         /**
          *
-         * @type {boolean}
-         */
-        this.autoClose = true;
-
-        /**
-         *
          * @type {number}
          */
         this.speedProgres = 0.5;
@@ -82,46 +76,39 @@ var IW = IW || {};
          *
          * @returns {Element}
          */
-        function templateProgressBar() {
+        function templateProgressBar(string) {
+
 
             progressBar = document.createElement('div');
-            progressBar.classList.add( 'progress-block' );
-
-            var bar = document.createElement('div');
-            bar.classList.add( 'progress-galaxy' );
-
-            bar.classList.add('progress-striped');
-            bar.classList.add('active');
-
-            progressLine = document.createElement('div');
-            progressLine.classList.add( 'progress-bar-galaxy' );
-
-            progressLabel = document.createElement('div');
-            progressLabel.classList.add( 'progress-bar-label' );
+            progressBar.innerHTML = string;
+            progressLine = progressBar.querySelector('[data-progress-range]');
+            progressLabel = progressBar.querySelector('[data-progress-label]');
 
             if ( param.hideLabel ) {
-                progressLabel.setAttribute('hidden', 'hidden');
+                progressLabel.classList.add( 'iw_hidden' );
             }
 
-            bar.appendChild( progressLine );
-            progressBar.appendChild( bar );
-            progressBar.appendChild( progressLabel );
-
+            /*
             if ( param.width ) {
                 progressBar.style.width = param.width;
             }
-
+            */
             if ( param.position ) {
-                progressBar.style.top = param.position;
+                var progressPosition = progressBar.querySelector('[data-progress-position]');
+                progressPosition.classList.add( param.position );
             }
 
             if ( param.hide ) {
-                progressBar.setAttribute('hidden', 'hidden');
+                progressBar.classList.add( 'iw_hidden' );
             }
 
             return progressBar;
         }
 
+        /**
+         *
+         * @type {{position: ?string, width: null, hide: boolean, hideLabel: boolean}}
+         */
         var param = {
             position: null,
             width: null,
@@ -132,28 +119,10 @@ var IW = IW || {};
         /**
          *
          * @param {string} position
-         * @param {number} int
          * @returns {IW.ProgressBar}
          */
-        this.setPosition = function ( position, int ) {
-            if ( position == undefined ) {
-                return this;
-            }
-
-            int = int != undefined ? int : 0;
-
-            switch ( position ) {
-                case IW.ProgressBar.POSITION_T:
-                    param.position = int + 'px';
-                    break;
-                case IW.ProgressBar.POSITION_B:
-                    param.position = ( window.innerHeight - 60 - int ) + 'px';
-                    break;
-                case IW.ProgressBar.POSITION_C:
-                    param.position = ( window.innerHeight / 2 + int ) + 'px';
-                    break;
-            }
-
+        this.setPosition = function ( position ) {
+            param.position = position;
             return this;
 
         };
@@ -186,14 +155,46 @@ var IW = IW || {};
             return this;
         };
 
+        var templates = [
+            {
+                name: IW.ProgressBar.TYPE_UPLOAD,
+                path: '/progress/upload.html',
+                template: null
+            }
+        ];
+
         /**
          *
+         * @param {string|number} [type] - it is type progress bar
          * @returns {IW.ProgressBar}
          */
-        this.open = function () {
+        this.start = function (type) {
 
-            document.body.appendChild( templateProgressBar() );
-            moveProgress();
+            var template = templates.find(function (value) {
+                return value.name === type;
+            });
+
+            if (!template) {
+                template = templates.find(function (value) {
+                    return value.name === IW.ProgressBar.TYPE_DEFAULT;
+                });
+            }
+
+            if (template.template) {
+
+                document.body.appendChild( templateProgressBar( template.template ) );
+                moveProgress();
+
+            } else {
+
+                var tpl = new IW.Templates();
+                tpl.load( template.path, function ( str ) {
+                    template.template = str;
+                    document.body.appendChild( templateProgressBar( str ) );
+                    moveProgress();
+                } );
+            }
+
             return this;
         };
 
@@ -332,6 +333,20 @@ var IW = IW || {};
 
 } (window.IW || {}));
 
-IW.ProgressBar.POSITION_T = 'top';
-IW.ProgressBar.POSITION_C = 'center';
-IW.ProgressBar.POSITION_B = 'bottom';
+var prefix = 'iw_progress__position_';
+
+IW.ProgressBar.POSITION_TOP = prefix + 'top';
+IW.ProgressBar.POSITION_TOP_1 = prefix + 'top_1';
+IW.ProgressBar.POSITION_TOP_2 = prefix + 'top_2';
+IW.ProgressBar.POSITION_TOP_3 = prefix + 'top_3';
+IW.ProgressBar.POSITION_TOP_4 = prefix + 'top_4';
+IW.ProgressBar.POSITION_CENTER = prefix + 'center';
+IW.ProgressBar.POSITION_BOTTOM = prefix + 'bottom';
+IW.ProgressBar.POSITION_BOTTOM_1 = prefix + 'bottom_1';
+IW.ProgressBar.POSITION_BOTTOM_2 = prefix + 'bottom_2';
+IW.ProgressBar.POSITION_BOTTOM_3 = prefix + 'bottom_3';
+IW.ProgressBar.POSITION_BOTTOM_4 = prefix + 'bottom_4';
+
+
+IW.ProgressBar.TYPE_UPLOAD = 'upload';
+IW.ProgressBar.TYPE_DEFAULT = IW.ProgressBar.TYPE_UPLOAD;

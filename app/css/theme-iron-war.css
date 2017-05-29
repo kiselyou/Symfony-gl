@@ -1706,38 +1706,38 @@ h6,
 .iw_progress__position {
   position: relative;
 }
-.iw_progress__position__top {
+.iw_progress__position_top {
   top: 10px;
 }
-.iw_progress__position__top_1 {
+.iw_progress__position_top_1 {
   top: 10%;
 }
-.iw_progress__position__top_2 {
+.iw_progress__position_top_2 {
   top: 20%;
 }
-.iw_progress__position__top_3 {
+.iw_progress__position_top_3 {
   top: 30%;
 }
-.iw_progress__position__top_4 {
+.iw_progress__position_top_4 {
   top: 40%;
 }
-.iw_progress__position__center {
-  top: 45%;
+.iw_progress__position_center {
+  top: 50%;
 }
-.iw_progress__position__bottom {
-  bottom: 10px;
+.iw_progress__position_bottom {
+  top: calc(90%);
 }
-.iw_progress__position__bottom_1 {
-  bottom: 10%;
+.iw_progress__position_bottom_1 {
+  top: 60%;
 }
-.iw_progress__position__bottom_2 {
-  bottom: 20%;
+.iw_progress__position_bottom_2 {
+  top: 70%;
 }
-.iw_progress__position__bottom_3 {
-  bottom: 30%;
+.iw_progress__position_bottom_3 {
+  top: 80%;
 }
-.iw_progress__position__bottom_4 {
-  bottom: 40%;
+.iw_progress__position_bottom_4 {
+  top: 90%;
 }
 .iw_progress__status {
   margin: 5px 10px;

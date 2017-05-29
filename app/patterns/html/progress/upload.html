@@ -1,18 +1,8 @@
 <div class="iw_progress">
-    <div class="iw_progress__position iw_progress__position__top_4">
+    <div class="iw_progress__position iw_progress__position_center" data-progress-position="iw_progress__position_center">
         <div class="iw_flask_h">
-            <div class="iw_flask_h__range iw_flask_h__range_size_65" data-progress-range="0"></div>
+            <div class="iw_flask_h__range" data-progress-range="0"></div>
         </div>
-        <div class="iw_progress__status" data-progress-status="Uploaded:"></div>
+        <div class="iw_progress__status" data-progress-label="Uploaded:"></div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var tpl = new IW.Templates();
-        tpl.load( 'progress/upload.html', function ( str ) {
-            console.log(str);
-//            tpl.paste('#iw-main-container-body', str);
-        } );
-    });
-</script>

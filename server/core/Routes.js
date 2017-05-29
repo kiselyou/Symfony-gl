@@ -8,7 +8,6 @@ var IW = require('./TemplateLoader') || {};
 
 IW.Routes = function ( config ) {
     IW.TemplateLoader.call(this, config);
-    this.config = config;
 };
 
 /**
@@ -39,10 +38,32 @@ IW.Routes.prototype._control = function () {
         }
     }
 
+    // Setting route to load templates
+    app.all(scope.config.routes.templates, function(req, res) {
+
+        try {
+
+            var arrTemplates = [];
+
+            scope.response(
+                res,
+                {
+                    content: scope.includePattern('<template data-include="' + req.body['template'] + '"></template>', arrTemplates),
+                    status: true,
+                    error: null
+                }
+            );
+
+        } catch (error) {
+
+            scope.response( res, scope.uploadPatternError(error) );
+        }
+    });
+
     // Setting public directory
     app.use(express.static(this.DIR_APP));
 
-    // Setting page error
+    // Setting route error
     app.get('*', function(req, res) {
         scope.response(res, scope.uploadPatternError('The page was not found in GET path: "' + req.url + '"'));
     });
@@ -64,8 +85,13 @@ IW.Routes.prototype._createRoute = function (route, method, viewPath) {
                 scope.response(res, scope.uploadPattern(route, viewPath));
             });
             break;
-        default:
+        case 'GET':
             app.get(route, function (req, res) {
+                scope.response(res, scope.uploadPattern(route, viewPath));
+            });
+            break;
+        default:
+            app.all(route, function (req, res) {
                 scope.response(res, scope.uploadPattern(route, viewPath));
             });
             break;
