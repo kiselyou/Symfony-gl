@@ -158,8 +158,7 @@ var IW = IW || {};
         var templates = [
             {
                 name: IW.ProgressBar.TYPE_UPLOAD,
-                path: '/progress/upload.html',
-                template: null
+                path: '/progress/upload.html'
             }
         ];
 
@@ -180,20 +179,12 @@ var IW = IW || {};
                 });
             }
 
-            if (template.template) {
+            var tpl = new IW.Templates();
 
-                document.body.appendChild( templateProgressBar( template.template ) );
+            tpl.load( template.path, function ( str ) {
+                document.body.appendChild( templateProgressBar( str ) );
                 moveProgress();
-
-            } else {
-
-                var tpl = new IW.Templates();
-                tpl.load( template.path, function ( str ) {
-                    template.template = str;
-                    document.body.appendChild( templateProgressBar( str ) );
-                    moveProgress();
-                } );
-            }
+            } );
 
             return this;
         };
