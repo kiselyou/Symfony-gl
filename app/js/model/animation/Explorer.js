@@ -41,7 +41,7 @@ IW.Explorer = function ( model ) {
                 spread: new THREE.Vector3(0, 0, 0)
             },
             size: {
-                value: [3, 0]
+                value: [5, 0]
             },
             particleCount: 180
         });
