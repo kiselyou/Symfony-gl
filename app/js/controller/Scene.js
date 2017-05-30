@@ -194,8 +194,8 @@ IW.Scene = function ( idContainer ) {
         this.orbitControl.rotateSpeed = 2.0;
         this.orbitControl.minDistance = 20;
         this.orbitControl.maxDistance = 60;
-        this.orbitControl.maxPolarAngle = 75 * Math.PI / 180;
-        this.orbitControl.minPolarAngle = 45 * Math.PI / 180;
+        // this.orbitControl.maxPolarAngle = 75 * Math.PI / 180;
+        // this.orbitControl.minPolarAngle = 45 * Math.PI / 180;
         return this;
     };
 

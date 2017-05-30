@@ -77,66 +77,76 @@
          */
         this.appendActionsTo = function () {
 
-            var template = new IW.Templates();
+            var loader = new IW.Templates();
 
-            template.load(
+            loader.load(
                 '/panel/model-progress.html',
-                function (str) {
-                    template.paste( 'body', str );
+                function ( template ) {
+                    // loader.paste( 'body', template, false );
+                    $('body').append( templateProgress( template ) );
                 }
             );
-            // container.appendChild( templatePanel() );
+
+            loader.load(
+                '/panel/controls.html',
+                function ( template ) {
+                    // loader.paste( 'body', template, false );
+
+                    $('body').append( templatePanelAction( template ) );
+                }
+            );
+
             return this;
         };
 
-        // /**
-        //  *
-        //  * @returns {Element}
-        //  */
-        // function templatePanelAction() {
-        //
-        //     var a = document.createElement('div');
-        //     a.classList.add( 'sw-block-actions' );
-        //
-        //     for ( var i = 0; i < actions.length; i++ ) {
-        //
-        //         var action = actions[ i ];
-        //
-        //         var b = document.createElement('div');
-        //         b.classList.add( 'sw-action' );
-        //
-        //         if ( action.active ) {
-        //             b.setAttribute( 'data-active', 'sw-action-active' );
-        //         }
-        //
-        //         if ( action.icon != undefined ) {
-        //             var c = document.createElement('div');
-        //             c.classList.add('sw-action-icon');
-        //             c.classList.add('glyphicon');
-        //             c.classList.add('glyphicon-' + action.icon);
-        //             b.appendChild( c );
-        //         }
-        //
-        //         if ( action.name != undefined ) {
-        //
-        //             var d = document.createElement('div');
-        //             d.classList.add('sw-action-keyword');
-        //             d.innerHTML = action.name;
-        //             b.appendChild(d);
-        //         }
-        //
-        //         a.appendChild( b );
-        //
-        //         if ( action.keyCode != undefined ) {
-        //             actions[ i ].element = b;
-        //             keyEvents.push( action );
-        //         }
-        //
-        //         addEvent( b, action.callback );
-        //     }
-        //
-        //     return a;
-        // }
+        /**
+         *
+         * @returns {Element}
+         */
+        function templatePanelAction( template ) {
+
+            var block = $(template);
+            var blockAction = block.find('[data-template="element"]').clone();
+            blockAction.removeAttr('data-template');
+            block.html('');
+
+
+            for ( var i = 0; i < actions.length; i++ ) {
+
+                var action = actions[ i ];
+
+                var b = blockAction.clone();
+
+                if ( action.active ) {
+                    // b.setAttribute( 'data-active', 'sw-action-active' );
+                }
+
+                // if ( action.icon != undefined ) {
+                //     var c = document.createElement('div');
+                //     c.classList.add('sw-action-icon');
+                //     c.classList.add('glyphicon');
+                //     c.classList.add('glyphicon-' + action.icon);
+                //     b.appendChild( c );
+                // }
+
+                if ( action.name ) {
+
+                    var keyElement = b.find( '[data-template="element-keyword"]' );
+                    keyElement.text( action.name );
+                }
+
+                block.append( b );
+
+                if ( action.keyCode ) {
+                    actions[ i ].element = b;
+                    keyEvents.push( action );
+                }
+
+                addEvent( b, action.callback );
+            }
+
+            return block;
+        }
 
         /**
          *
@@ -164,15 +174,15 @@
          */
         function addEvent( element, callback ) {
 
-            element.addEventListener( 'click', function ( e ) {
+            $(element).on('click', function ( e ) {
 
-                if ( this.hasAttribute( 'data-active' ) ) {
-
-                    this.classList.toggle( this.getAttribute( 'data-active' ) );
-                }
+                // if ( this.hasAttribute( 'data-active' ) ) {
+                //
+                //     this.classList.toggle( this.getAttribute( 'data-active' ) );
+                // }
 
                 callback.call( this, e );
-            } );
+            });
         }
 
         /**
@@ -181,53 +191,66 @@
          */
         var progress = [];
 
-        // /**
-        //  *
-        //  * @returns {Element}
-        //  */
-        // function templateProgress() {
-        //
-        //     var a = document.createElement('div');
-        //     a.classList.add( 'sw-block-progress' );
-        //
-        //     for ( var i = 0; i < progress.length; i++ ) {
-        //
-        //         /**
-        //          *
-        //          * @type {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }}
-        //          */
-        //         var params = progress[ i ];
-        //
-        //         var b = document.createElement('div');
-        //         b.classList.add( 'sw-row' );
-        //
-        //         var c = document.createElement('div');
-        //         c.classList.add( 'sw-status-progress' );
-        //
-        //         var p = document.createElement('div');
-        //
-        //         if ( params.color != undefined ) {
-        //             p.style.background = params.color;
-        //         }
-        //
-        //         setProgress( p, params );
-        //         progress[ i ][ 'p' ] = p;
-        //
-        //         var l = document.createElement('div');
-        //         l.classList.add( 'sw-status-progress-label' );
-        //         labelProgress( l, params );
-        //         progress[ i ][ 'l' ] = l;
-        //
-        //         c.appendChild( p );
-        //         b.appendChild( c );
-        //         b.appendChild( l );
-        //         a.appendChild( b );
-        //
-        //         autoUpdate( progress[ i ] );
-        //     }
-        //
-        //     return a;
-        // }
+        /**
+         *
+         * @returns {Element}
+         */
+        function templateProgress( template ) {
+
+            var block = $(template);
+            var hull = block.find('[data-template="progress-hull"]');
+            var energy = block.find('[data-template="progress-energy"]');
+            var power = block.find('[data-template="progress-power"]');
+            var speed = block.find('[data-template="progress-speed"]');
+
+            for ( var i = 0; i < progress.length; i++ ) {
+
+                /**
+                 *
+                 * @type {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }}
+                 */
+                var params = progress[ i ];
+
+
+
+                switch (params.key) {
+                    case 1:
+                        params[ 'p' ] = energy.find('[data-template="range"]');
+                        params[ 'type' ] = 'v';
+                        break;
+                    case 2:
+                        params[ 'p' ] = power.find('[data-template="range"]');
+                        params[ 'type' ] = 'h';
+                        break;
+
+                    case 3:
+                        params[ 'p' ] = hull.find('[data-template="range"]');
+                        params[ 'type' ] = 'h';
+                        break;
+
+                    case 4:
+                        params[ 'p' ] = speed.find('[data-template="range"]');
+                        params[ 'type' ] = 'h';
+                        break;
+                }
+
+                setProgress( params );
+
+                // var l = document.createElement('div');
+                // l.classList.add( 'sw-status-progress-label' );
+                // labelProgress( l, params );
+                // progress[ i ][ 'l' ] = l;
+
+                // c.appendChild( p );
+                // b.appendChild( c );
+                // b.appendChild( l );
+                // a.appendChild( b );
+                //
+                // autoUpdate( progress[ i ] );
+            }
+
+            return block;
+        }
 
         /**
          *
@@ -236,41 +259,49 @@
          */
         function autoUpdate( params ) {
 
-            if ( params.reduction > 0 ) {
-
-                params[ 'idInterval' ] = setInterval( function () {
-
-                    var max = params.max == undefined ? 100 : params.max;
-
-                    params.number += params.reduction;
-
-                    if ( params.number >= max ) {
-                        params.number = max;
-                    }
-
-                    setProgress( params['p'], params );
-                    labelProgress( params['l'], params );
-
-                    if ( params.callback != undefined ) {
-                        params.callback.call( this, params );
-                    }
-
-
-                }, scope.speedAutoUpdate );
-            }
+            // if ( params.reduction > 0 ) {
+            //
+            //     params[ 'idInterval' ] = setInterval( function () {
+            //
+            //         var max = params.max == undefined ? 100 : params.max;
+            //
+            //         params.number += params.reduction;
+            //
+            //         if ( params.number >= max ) {
+            //             params.number = max;
+            //         }
+            //
+            //         setProgress( params['p'], params );
+            //         labelProgress( params['l'], params );
+            //
+            //         if ( params.callback != undefined ) {
+            //             params.callback.call( this, params );
+            //         }
+            //
+            //
+            //     }, scope.speedAutoUpdate );
+            // }
         }
 
         /**
          *
-         * @param {Element} element
          * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
          * @returns {void}
          */
-        function setProgress( element, params ) {
+        function setProgress( params ) {
 
-            // var max = params.max == undefined ? 100 : params.max;
-            // var percent = params.number * 100 / max;
-            // element.style.width = ( percent ) + '%';
+            var max = params.max == undefined ? 100 : params.max;
+            var percent = params.number * 100 / max;
+
+            switch ( params[ 'type' ] ) {
+                case 'v':
+                    $(params[ 'p' ]).css('height', ( percent > 100 ? 100 : percent ) + '%');
+                    break;
+
+                case 'h':
+                    $(params[ 'p' ]).css('width', ( percent > 100 ? 100 : percent ) + '%');
+                    break;
+            }
         }
 
         /**
@@ -350,8 +381,8 @@
             if ( pr != undefined ) {
 
                 pr.number = increment ? pr.number + number : number;
-                setProgress( pr['p'], pr );
-                labelProgress( pr['l'], pr );
+                setProgress( pr );
+                // labelProgress( pr['l'], pr );
             }
 
             return this;

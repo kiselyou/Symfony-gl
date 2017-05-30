@@ -56,10 +56,10 @@ IW.Templates = function () {
      *
      * @param {string} selector
      * @param {string} str
-     * @param {boolean} [toEnd]
+     * @param {boolean} [before]
      * @returns {void}
      */
-    this.paste = function (selector, str, toEnd) {
+    this.paste = function (selector, str, before) {
         var to = document.querySelectorAll(selector);
         if (to) {
             var el = document.createElement('div');
@@ -67,10 +67,12 @@ IW.Templates = function () {
 
             for (var b = 0; b < to.length; b++) {
 
-                if (toEnd) {
-                    to[b].appendChild(el);
-                } else {
-                    to[b].insertBefore(el, to[b].childNodes[0]);
+                for (var e = 0; e < el.childNodes.length; e++) {
+                    if (!before) {
+                        to[b].appendChild(el.childNodes[e]);
+                    } else {
+                        to[b].insertBefore(el.childNodes[e], to[b].childNodes[0]);
+                    }
                 }
             }
 
