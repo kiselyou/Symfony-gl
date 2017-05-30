@@ -19,7 +19,7 @@ IW.Explorer = function ( model ) {
     this.initParticles = function () {
 
         particleGroup = new SPE.Group({
-            maxParticleCount: 100,
+            maxParticleCount: 200,
             texture: {
                 value: this.model.multiLoader.getTexture( IW.Prepare.SPRITE_SMOKE )
             }
