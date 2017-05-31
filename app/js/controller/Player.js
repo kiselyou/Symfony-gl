@@ -149,7 +149,7 @@ IW.Player = function ( idScene ) {
                     scope.panels.updateArmor();
                 } );
 
-                scope.model.setHullCallback( function ( speed ) {
+                scope.model.setHullCallback( function ( hull ) {
                     scope.panels.updateHull();
                 } );
 
