@@ -159,19 +159,25 @@ IW.Scene = function ( idContainer ) {
 
         setCamera();
         setLight();
-        render();
 
         var fps = 30;
         var delay = 1000 / fps;
 
-        setInterval(function () {
-            var delta = scope.clock.getDelta();
+        var delta = 0;
+
+        setTimeout(function tick() {
 
             if ( event ) {
                 event.call( this, delta );
             }
 
             scope.orbitControl.update();
+
+            scope.renderer.render( scope.scene, scope.camera );
+
+            delta = scope.clock.getDelta();
+
+            setTimeout(tick, delay - delta);
 
         }, delay);
 

@@ -255,8 +255,6 @@
 		 */
 		this.update = function ( delta ) {
 
-			delta = 0;
-
 			if ( !this._model.enabled ) {
 				return;
 			}

@@ -55,6 +55,7 @@ IW.PanelControls = function ( model ) {
      * @returns {IW.PanelControls}
      */
     this.initPanelAction = function () {
+
         for ( var action in this.actionConfig ) {
             if ( this.actionConfig.hasOwnProperty( action ) ) {
 
@@ -66,41 +67,49 @@ IW.PanelControls = function ( model ) {
             }
         }
 
-        this.panelAction.addProgress( 1, 'energy', this.model.getMaxEnergy(), this.model.getReductionEnergy(), '#FF9900' );
-        this.panelAction.addProgress( 2, 'armor', this.model.getMaxArmor(), this.model.getReductionArmor(), '#008AFA' );
-        this.panelAction.addProgress( 3, 'hull', this.model.getMaxHull(), this.model.getReductionHull(), '#C10020' );
-        this.panelAction.addProgress( 4, 'speed', this.model.getMaxSpeed(), 0, '#FFFFFF' );
-
-        this.panelAction.addCallback( 1, function ( param ) {
-            scope.model.addEnergy( param.reduction );
-        });
-
-        // this.panelAction.addCallback( 2, function ( param ) {
-        //     scope.model.addArmor( param.reduction );
-        // });
-        //
-        // this.panelAction.addCallback( 3, function ( param ) {
-        //     scope.model.addHull( param.reduction );
-        // });
-
-        this.panelAction.appendActionsTo();
+        this.panelAction.setProgress( IW.PanelAction.ENERGY, this.model.getCurrentEnergy(), this.model.getMaxEnergy() );
+        this.panelAction.setProgress( IW.PanelAction.ARMOR, this.model.getCurrentArmor(), this.model.getMaxArmor() );
+        this.panelAction.setProgress( IW.PanelAction.HULL, this.model.getCurrentHull(), this.model.getMaxHull() );
+        this.panelAction.setProgress( IW.PanelAction.SPEED, this.model.getCurrentSpeed(), this.model.getMaxSpeed() );
+        this.panelAction.show();
 
         return this;
     };
 
     /**
-     * This method are updating panel progress
      *
-     * @return {void}
+     * @returns {IW.PanelControls}
      */
-    this.update = function () {
+    this.updateEnergy = function () {
+        this.panelAction.updateProgress( IW.PanelAction.ENERGY, this.model.getCurrentEnergy() );
+        return this;
+    };
 
-        if ( this.model.enabled ) {
-            this.panelAction.updateProgress( 1, this.model.getCurrentEnergy() );
-            this.panelAction.updateProgress( 2, this.model.getCurrentArmor() );
-            this.panelAction.updateProgress( 3, this.model.getCurrentHull() );
-            this.panelAction.updateProgress( 4, this.model.getCurrentSpeed() );
-        }
+    /**
+     *
+     * @returns {IW.PanelControls}
+     */
+    this.updateArmor = function () {
+        this.panelAction.updateProgress( IW.PanelAction.ARMOR, this.model.getCurrentArmor() );
+        return this;
+    };
+
+    /**
+     *
+     * @returns {IW.PanelControls}
+     */
+    this.updateHull = function () {
+        this.panelAction.updateProgress( IW.PanelAction.HULL, this.model.getCurrentHull() );
+        return this;
+    };
+
+    /**
+     *
+     * @returns {IW.PanelControls}
+     */
+    this.updateSpeed = function () {
+        this.panelAction.updateProgress( IW.PanelAction.SPEED, this.model.getCurrentSpeed() );
+        return this;
     };
 
     /**

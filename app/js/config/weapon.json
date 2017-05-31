@@ -12,8 +12,8 @@
             "reloadingTime": 500,
             "damage": {
                 "type": "rocket",
-                "physicalDamage": 50,
-                "criticalDamage": 5
+                "physicalDamage": 500,
+                "criticalDamage": 50
             }
         },
         "weapon_2": {

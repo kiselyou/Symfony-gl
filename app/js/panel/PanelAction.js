@@ -7,11 +7,11 @@
      */
     IW.PanelAction = function ( htmlId ) {
 
-        /**
-         *
-         * @type {number}
-         */
-        this.speedAutoUpdate = 1000;
+        // /**
+        //  *
+        //  * @type {number}
+        //  */
+        // this.speedAutoUpdate = 1000;
 
         /**
          *
@@ -19,11 +19,11 @@
          */
         this.enabled = true;
 
-        /**
-         *
-         * @type {number}
-         */
-        this.fixing = 0;
+        // /**
+        //  *
+        //  * @type {number}
+        //  */
+        // this.fixing = 0;
 
         /**
          *
@@ -75,14 +75,13 @@
          *
          * @returns {IW.PanelAction}
          */
-        this.appendActionsTo = function () {
+        this.show = function () {
 
             var loader = new IW.Templates();
 
             loader.load(
                 '/panel/model-progress.html',
                 function ( template ) {
-                    // loader.paste( 'body', template, false );
                     $('body').append( templateProgress( template ) );
                 }
             );
@@ -90,8 +89,6 @@
             loader.load(
                 '/panel/controls.html',
                 function ( template ) {
-                    // loader.paste( 'body', template, false );
-
                     $('body').append( templatePanelAction( template ) );
                 }
             );
@@ -207,11 +204,9 @@
 
                 /**
                  *
-                 * @type {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }}
+                 * @type {{key: (string|number), label: string, value: number, max: =number, reduction: =number, color: =string, unit: =string }}
                  */
                 var params = progress[ i ];
-
-
 
                 switch (params.key) {
                     case 1:
@@ -246,52 +241,52 @@
                 // b.appendChild( l );
                 // a.appendChild( b );
                 //
-                // autoUpdate( progress[ i ] );
+                // autoUpdate( params );
             }
 
             return block;
         }
 
+        // /**
+        //  *
+        //  * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
+        //  * @returns {void}
+        //  */
+        // function autoUpdate( params ) {
+        //
+        //     if ( params.reduction > 0 ) {
+        //
+        //         params[ 'idInterval' ] = setInterval( function () {
+        //
+        //             var max = params.max == undefined ? 100 : params.max;
+        //
+        //             params.number += params.reduction;
+        //
+        //             if ( params.number >= max ) {
+        //                 params.number = max;
+        //             }
+        //
+        //             setProgress( params['p'], params );
+        //             labelProgress( params['l'], params );
+        //
+        //             if ( params.callback != undefined ) {
+        //                 params.callback.call( this, params );
+        //             }
+        //
+        //
+        //         }, scope.speedAutoUpdate );
+        //     }
+        // }
+
         /**
          *
-         * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
-         * @returns {void}
-         */
-        function autoUpdate( params ) {
-
-            // if ( params.reduction > 0 ) {
-            //
-            //     params[ 'idInterval' ] = setInterval( function () {
-            //
-            //         var max = params.max == undefined ? 100 : params.max;
-            //
-            //         params.number += params.reduction;
-            //
-            //         if ( params.number >= max ) {
-            //             params.number = max;
-            //         }
-            //
-            //         setProgress( params['p'], params );
-            //         labelProgress( params['l'], params );
-            //
-            //         if ( params.callback != undefined ) {
-            //             params.callback.call( this, params );
-            //         }
-            //
-            //
-            //     }, scope.speedAutoUpdate );
-            // }
-        }
-
-        /**
-         *
-         * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
+         * @param {{key: (string|number), label: string, value: number, max: =number, reduction: =number, color: =string, unit: =string }} params
          * @returns {void}
          */
         function setProgress( params ) {
 
             var max = params.max == undefined ? 100 : params.max;
-            var percent = params.number * 100 / max;
+            var percent = params.value * 100 / max;
 
             switch ( params[ 'type' ] ) {
                 case 'v':
@@ -304,41 +299,32 @@
             }
         }
 
-        /**
-         *
-         * @param {Element} element
-         * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
-         * @returns {void}
-         */
-        function labelProgress( element, params ) {
-            // var max = params.max == undefined ? 100 : params.max;
-            // var unit = params.unit == undefined ? '%' : params.unit;
-            // element.innerHTML = params.label + ': ' + max + ' / ' + params.number.toFixed( scope.fixing ) + ' ' + unit;
-        }
+        // /**
+        //  *
+        //  * @param {Element} element
+        //  * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
+        //  * @returns {void}
+        //  */
+        // function labelProgress( element, params ) {
+        //     // var max = params.max == undefined ? 100 : params.max;
+        //     // var unit = params.unit == undefined ? '%' : params.unit;
+        //     // element.innerHTML = params.label + ': ' + max + ' / ' + params.number.toFixed( scope.fixing ) + ' ' + unit;
+        // }
 
         /**
          *
          * @param {(string|number)} key
-         * @param {string} label
-         * @param {?number} [max]
-         * @param {?number} [reduction]
-         * @param {?string} [color]
-         * @param {?string} [callback]
-         * @param {?string} [unit]
+         * @param {number} value
+         * @param {number} max
          * @returns {IW.PanelAction}
          */
-        this.addProgress = function ( key, label, max, reduction, color, callback, unit ) {
+        this.setProgress = function ( key, value, max ) {
 
             progress.push(
                 {
                     key: key,
-                    label: label,
-                    number: 0,
                     max: max,
-                    reduction: reduction,
-                    color: color,
-                    unit: unit,
-                    callback: callback
+                    value: value
                 }
             );
             return this;
@@ -347,41 +333,17 @@
         /**
          *
          * @param {(string|number)} key
-         * @param callback
+         * @param {number} value
          * @returns {IW.PanelAction}
          */
-        this.addCallback = function ( key, callback ) {
+        this.updateProgress = function ( key, value ) {
 
-            var pr = progress.find(function ( value ) {
+            var params = this.getProgress( key );
 
-                return value.key === key;
-            });
+            if ( params ) {
 
-            if ( pr != undefined ) {
-                pr.callback = callback;
-            }
-
-            return this;
-        };
-
-        /**
-         *
-         * @param {(string|number)} key
-         * @param {number} number
-         * @param {boolean} [increment]
-         * @returns {IW.PanelAction}
-         */
-        this.updateProgress = function ( key, number, increment ) {
-
-            var pr = progress.find(function ( value ) {
-
-                return value.key === key;
-            });
-
-            if ( pr != undefined ) {
-
-                pr.number = increment ? pr.number + number : number;
-                setProgress( pr );
+                params.value = value;
+                setProgress( params );
                 // labelProgress( pr['l'], pr );
             }
 
@@ -390,65 +352,21 @@
 
         /**
          *
-         * @param {(string|number)} key
+         * @param {(string|number|undefined)} key
          * @returns {*}
          */
         this.getProgress = function ( key ) {
-            return progress.find(function ( value ) {
-                return value.key === key;
+            return progress.find(function ( item ) {
+                return item.key === key;
             });
         };
-
-        /**
-         *
-         * @returns {Element}
-         */
-        function templatePanel() {
-
-            // var size = getSize();
-            // panel = document.createElement('div');
-            // panel.id = id;
-            // panel.classList.add('sw-panel-control');
-            // panel.classList.add('sw-modal-skin-panel');
-            // panel.style.position = 'absolute';
-            //
-            // panel.style.left = size.left + 'px';
-            // panel.style.bottom = size.bottom + 'px';
-            // panel.appendChild( templatePanelAction() );
-            // panel.appendChild( templateProgress() );
-
-
-            return panel;
-        }
-
-        // /**
-        //  *
-        //  * @returns {{height: Number, left: number, top: number}}
-        //  */
-        // function getSize() {
-        //
-        //     return {
-        //         left: 0,
-        //         bottom: 0
-        //     }
-        // }
-
-        // /**
-        //  *
-        //  * @returns {void}
-        //  */
-        // function resize() {
-        //
-        //     if ( !panel ) {
-        //         return;
-        //     }
-        //
-        //     var size = getSize();
-        //     panel.style.left = size.left + 'px';
-        //     panel.style.bottom = size.bottom + 'px';
-        // }
 
         window.addEventListener( 'keydown', addKeyEvents, false);
         // window.addEventListener( 'resize', resize, false );
 
     };
+
+    IW.PanelAction.ENERGY = 1;
+    IW.PanelAction.ARMOR = 2;
+    IW.PanelAction.HULL = 3;
+    IW.PanelAction.SPEED = 4;

@@ -131,7 +131,7 @@ IW.Player = function ( idScene ) {
 
         this.socket.connect(
             function ( response, resourceId ) {
-                console.log(resourceId);
+
                 scope.model = new IW.Model( scope.multiLoader, scope.scene, resourceId );
                 scope.model.load( true );
                 scope.setPlayerID( resourceId );
@@ -140,6 +140,22 @@ IW.Player = function ( idScene ) {
                 scope.panels = new IW.PanelControls( scope.model );
                 scope.panels.initPanelAction();
                 scope.panels.initPanelMap();
+
+                scope.model.setEnergyCallback( function ( energy ) {
+                    scope.panels.updateEnergy();
+                } );
+
+                scope.model.setArmorCallback( function ( armor ) {
+                    scope.panels.updateArmor();
+                } );
+
+                scope.model.setHullCallback( function ( speed ) {
+                    scope.panels.updateHull();
+                } );
+
+                scope.model.setSpeedCallback( function ( speed ) {
+                    scope.panels.updateSpeed();
+                } );
 
                 scope.labels = new IW.LabelControls( scope.model, scope.camera );
                 scope.labels.init();
@@ -276,10 +292,17 @@ IW.Player = function ( idScene ) {
 
                 // Current player
                 if ( dataModel.clientName === scope.getPlayerID() ) {
-                    //dataModel.param
+
                     scope.model
-                        .setCurrentHull(dataModel.param.hull)
-                        .setCurrentArmor(dataModel.param.armor);
+                        .setCurrentHull( dataModel.param.hull )
+                        .setCurrentArmor( dataModel.param.armor );
+
+                    // scope.panels
+                    //     .updateArmor()
+                    //     .updateHull();
+
+                    // console.log(scope);
+                    // scope.model.pa
 
                     if ( dataModel.destroy ) {
                         // Unsubscribe if client was killed
@@ -331,9 +354,9 @@ IW.Player = function ( idScene ) {
             scope.environment.position.copy( scope.model.getPosition() );
         }
 
-        if ( scope.panels ) {
-            scope.panels.update();
-        }
+        // if ( scope.panels ) {
+        //     scope.panels.update();
+        // }
 
         if ( scope.labels ) {
             scope.labels.update();

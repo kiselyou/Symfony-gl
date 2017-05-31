@@ -32,7 +32,8 @@ IW.ModelParameters = function () {
         max:  1550,          // m.s It is maximum speed the model
         min: -250,	        // m.s If less than zero. The model is moving back
         speedRadiusForward: 0.02,
-        speedRadiusBackward: 0.05
+        speedRadiusBackward: 0.05,
+        callback: null
     };
 
 	/**
@@ -56,7 +57,8 @@ IW.ModelParameters = function () {
         current: 9000,
         max: 9000,
         min: 0,
-        reduction: 5
+        reduction: 5,
+        callback: null
     };
 
 	/**
@@ -68,7 +70,8 @@ IW.ModelParameters = function () {
         current: 9000,
         max: 9000,
         min: 0,
-        reduction: 50
+        reduction: 50,
+        callback: null
     };
 
 	/**
@@ -80,7 +83,8 @@ IW.ModelParameters = function () {
         current: 9000,
         max: 9000,
         min: 0,
-        reduction: 50
+        reduction: 50,
+        callback: null
     };
 
     /**
@@ -127,6 +131,12 @@ IW.ModelParameters = function () {
 	};
 
     /**
+     *
+     * @type {IW.ModelParameters}
+     */
+    var scope = this;
+
+    /**
      * Add action of model
      *
      * @param {{}} data
@@ -171,7 +181,7 @@ IW.ModelParameters = function () {
         }
 
         this.addHull( - critical );
-
+        addEventArmor();
         return this;
     };
 
@@ -191,6 +201,7 @@ IW.ModelParameters = function () {
         } else {
             this.armor.current += int;
         }
+        addEventArmor();
         return this;
     };
 
@@ -210,8 +221,31 @@ IW.ModelParameters = function () {
      */
     this.setCurrentArmor = function (armor) {
         this.armor.current = armor;
+        addEventArmor();
         return this;
     };
+
+    /**
+     * Set callback function to current armor of model
+     *
+     * @param {function} callback
+     * @returns {IW.ModelParameters}
+     */
+    this.setArmorCallback = function ( callback ) {
+        this.armor.callback = callback;
+        return this;
+    };
+
+    /**
+     * Add event to change values of armor
+     *
+     * @returns {void}
+     */
+    function addEventArmor() {
+        if ( scope.armor.callback ) {
+            scope.armor.callback.call( this, scope.armor );
+        }
+    }
 
 	/**
      * Get max armor of model
@@ -254,6 +288,7 @@ IW.ModelParameters = function () {
         } else {
             this.hull.current += int;
         }
+        addEventHull();
         return this;
     };
 
@@ -273,8 +308,31 @@ IW.ModelParameters = function () {
      */
     this.setCurrentHull = function (hull) {
         this.hull.current = hull;
+        addEventHull();
         return this;
     };
+
+    /**
+     * Set callback function to current hull of model
+     *
+     * @param {function} callback
+     * @returns {IW.ModelParameters}
+     */
+    this.setHullCallback = function ( callback ) {
+        this.hull.callback = callback;
+        return this;
+    };
+
+    /**
+     * Add event to change values of hull
+     *
+     * @returns {void}
+     */
+    function addEventHull() {
+        if ( scope.hull.callback ) {
+            scope.hull.callback.call( this, scope.hull );
+        }
+    }
 
 	/**
      * Get max hull of model
@@ -343,6 +401,8 @@ IW.ModelParameters = function () {
         } else {
             this.speed.current = 0;
         }
+
+        addEventSpeed();
         return this;
     };
 
@@ -357,6 +417,8 @@ IW.ModelParameters = function () {
         } else if ( this.getCurrentSpeed() < this.speed.max ) {
             this.speed.current = this.speed.max;
         }
+
+        addEventSpeed();
         return this;
     };
 
@@ -371,6 +433,8 @@ IW.ModelParameters = function () {
         } else if ( this.getCurrentSpeed() < this.speed.min ) {
             this.speed.current = this.speed.min;
         }
+
+        addEventSpeed();
         return this;
     };
 
@@ -395,11 +459,35 @@ IW.ModelParameters = function () {
     /**
      * Set current speed of model
      *
-     * @returns {number}
+     * @returns {IW.ModelParameters}
      */
     this.setCurrentSpeed = function ( speed ) {
-        return this.speed.current = speed;
+        this.speed.current = speed;
+        addEventSpeed();
+        return this;
     };
+
+    /**
+     * Set callback function to current speed of model
+     *
+     * @param {function} callback
+     * @returns {IW.ModelParameters}
+     */
+    this.setSpeedCallback = function ( callback ) {
+        this.speed.callback = callback;
+        return this;
+    };
+
+    /**
+     * Add event to change values of speed
+     *
+     * @returns {void}
+     */
+    function addEventSpeed() {
+        if ( scope.speed.callback ) {
+            scope.speed.callback.call( this, scope.speed );
+        }
+    }
 
     /**
      * Get current energy of model
@@ -420,6 +508,15 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Get reduction energy of model
+     *
+     * @returns {number}
+     */
+    this.getReductionEnergy = function () {
+        return this.energy.reduction;
+    };
+
+    /**
      * Add energy of model
      *
      * @param {number} int
@@ -431,17 +528,43 @@ IW.ModelParameters = function () {
         } else {
             this.energy.current += int;
         }
+
+        addEventEnergy();
         return this;
     };
 
     /**
-     * Get reduction energy of model
+     * Set current Energy of model
      *
-     * @returns {number}
+     * @returns {IW.ModelParameters}
      */
-    this.getReductionEnergy = function () {
-        return this.energy.reduction;
+    this.setCurrentEnergy = function ( energy ) {
+        this.energy.current = energy;
+        addEventEnergy();
+        return this;
     };
+
+    /**
+     * Set callback function to current energy of model
+     *
+     * @param {function} callback
+     * @returns {IW.ModelParameters}
+     */
+    this.setEnergyCallback = function ( callback ) {
+        this.energy.callback = callback;
+        return this;
+    };
+
+    /**
+     * Add event to change values of Energy
+     *
+     * @returns {void}
+     */
+    function addEventEnergy() {
+        if ( scope.energy.callback ) {
+            scope.energy.callback.call( this, scope.energy );
+        }
+    }
 
     /**
      * Get incline speed of model
