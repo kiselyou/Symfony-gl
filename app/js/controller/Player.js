@@ -115,6 +115,10 @@ IW.Player = function ( idScene ) {
      */
     var SOCKET_TRADE_FROM = 'trade-from';
 
+    /**
+     *
+     * @returns {IW.Player}
+     */
     this.initModelPreview = function () {
         scope.model = new IW.Model( scope.multiLoader, scope.scene );
         scope.model.load( true );
@@ -297,13 +301,6 @@ IW.Player = function ( idScene ) {
                         .setCurrentHull( dataModel.param.hull )
                         .setCurrentArmor( dataModel.param.armor );
 
-                    // scope.panels
-                    //     .updateArmor()
-                    //     .updateHull();
-
-                    // console.log(scope);
-                    // scope.model.pa
-
                     if ( dataModel.destroy ) {
                         // Unsubscribe if client was killed
                         scope.model.destroyModel( true, scope.model.id );
@@ -353,10 +350,6 @@ IW.Player = function ( idScene ) {
             scope.orbitControl.target.copy( scope.model.getPosition() );
             scope.environment.position.copy( scope.model.getPosition() );
         }
-
-        // if ( scope.panels ) {
-        //     scope.panels.update();
-        // }
 
         if ( scope.labels ) {
             scope.labels.update();
