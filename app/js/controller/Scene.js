@@ -157,7 +157,6 @@ IW.Scene = function ( idContainer ) {
             scope.scene.add( environment );
         } );
 
-        testPlanets();
         setCamera();
         setLight();
 
@@ -185,31 +184,7 @@ IW.Scene = function ( idContainer ) {
         return this;
     };
 
-    
-    function testPlanets() {
 
-        var size = 2048;
-        var segments = 128;
-
-        var geometry = new THREE.SphereGeometry( size, segments, segments );
-        var material = new THREE.MeshPhongMaterial();
-
-        // material.map = THREE.ImageUtils.loadTexture('/images/textures/planets/earch/texture_earth_clouds.jpg');
-        material.map = THREE.ImageUtils.loadTexture('/images/textures/planets/earch/texture_earth_night.jpg');
-
-        // material.bumpMap = THREE.ImageUtils.loadTexture('/images/textures/planets/earch/texture_earth_surface.jpg');
-        // material.bumpScale = 005;
-
-        // material.specularMap = THREE.ImageUtils.loadTexture('/images/textures/planets/earch/texture_earth_night.jpg');
-        // material.specular = new THREE.Color('grey');
-
-
-        var earthMesh = new THREE.Mesh( geometry, material );
-        earthMesh.position.setX( 0 );
-        earthMesh.position.setY( - ( size ) );
-        earthMesh.position.setZ( size / 2 );
-        scope.scene.add( earthMesh );
-    }
     /**
      * Set config orbit controls for play
      *

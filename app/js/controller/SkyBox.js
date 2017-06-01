@@ -14,19 +14,19 @@ IW.SkyBox = function () {
      *
      * @type {number}
      */
-    this.width = 20000;
+    this.width = 100000;
 
     /**
      *
      * @type {number}
      */
-    this.height = 20000;
+    this.height = 100000;
 
     /**
      *
      * @type {number}
      */
-    this.depth = 20000;
+    this.depth = 100000;
 
     /**
      *
