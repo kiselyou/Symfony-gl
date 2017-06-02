@@ -7,23 +7,19 @@
      */
     IW.PanelAction = function ( htmlId ) {
 
-        // /**
-        //  *
-        //  * @type {number}
-        //  */
-        // this.speedAutoUpdate = 1000;
+        this.iconBaseDir = '/images/textures';
+
+        /**
+         *
+         * @type {number}
+         */
+        this.speedAutoUpdate = 1000;
 
         /**
          *
          * @type {boolean}
          */
         this.enabled = true;
-
-        // /**
-        //  *
-        //  * @type {number}
-        //  */
-        // this.fixing = 0;
 
         /**
          *
@@ -91,6 +87,8 @@
                 }
             );
 
+            autoReduction();
+
             return this;
         };
 
@@ -105,24 +103,35 @@
             blockAction.removeAttr('data-template');
             block.html('');
 
-
             for ( var i = 0; i < actions.length; i++ ) {
 
                 var action = actions[ i ];
 
                 var b = blockAction.clone();
 
-                // if ( action.icon != undefined ) {
-                //     var c = document.createElement('div');
-                //     c.classList.add('sw-action-icon');
-                //     c.classList.add('glyphicon');
-                //     c.classList.add('glyphicon-' + action.icon);
-                //     b.appendChild( c );
-                // }
+                var iconElement = b.find( '[data-template="element-icon"]' );
+
+                if ( action.icon ) {
+
+                    iconElement.removeAttr('data-template');
+                    iconElement.attr( 'src', scope.iconBaseDir + action.icon );
+
+
+                    // var c = document.createElement('div');
+                    // c.classList.add('sw-action-icon');
+                    // c.classList.add('glyphicon');
+                    // c.classList.add('glyphicon-' + action.icon);
+                    // b.appendChild( c );
+                } else {
+
+                    iconElement.remove();
+                }
 
                 if ( action.name ) {
 
                     var keyElement = b.find( '[data-template="element-keyword"]' );
+                    keyElement.removeAttr('data-template');
+                    // data-template="element-icon"
                     keyElement.text( action.name );
                 }
 
@@ -153,7 +162,7 @@
 
             for ( var i = 0; i < keyEvents.length; i++ ) {
                 if ( e.keyCode == keyEvents[ i ][ 'keyCode' ] ) {
-                    keyEvents[ i ][ 'callback' ].call( this, e, keyEvents[ i ] );
+                    keyEvents[ i ][ 'callback' ].call( this, keyEvents[ i ], e );
                 }
             }
         }
@@ -166,7 +175,7 @@
         function addEvent( element, action ) {
 
             $(element).on('click', function ( e ) {
-                action.callback.call( this, e, action );
+                action.callback.call( this, action, e );
             });
         }
 
@@ -228,43 +237,10 @@
                 // b.appendChild( c );
                 // b.appendChild( l );
                 // a.appendChild( b );
-                //
-                // autoUpdate( params );
             }
 
             return block;
         }
-
-        // /**
-        //  *
-        //  * @param {{key: (string|number), label: string, number: number, max: =number, reduction: =number, color: =string, unit: =string }} params
-        //  * @returns {void}
-        //  */
-        // function autoUpdate( params ) {
-        //
-        //     if ( params.reduction > 0 ) {
-        //
-        //         params[ 'idInterval' ] = setInterval( function () {
-        //
-        //             var max = params.max == undefined ? 100 : params.max;
-        //
-        //             params.number += params.reduction;
-        //
-        //             if ( params.number >= max ) {
-        //                 params.number = max;
-        //             }
-        //
-        //             setProgress( params['p'], params );
-        //             labelProgress( params['l'], params );
-        //
-        //             if ( params.callback != undefined ) {
-        //                 params.callback.call( this, params );
-        //             }
-        //
-        //
-        //         }, scope.speedAutoUpdate );
-        //     }
-        // }
 
         /**
          *
@@ -299,6 +275,62 @@
         //     // element.innerHTML = params.label + ': ' + max + ' / ' + params.number.toFixed( scope.fixing ) + ' ' + unit;
         // }
 
+        this.reductionProgress = function ( key, speed ) {
+
+            for ( var i = 0; i < progress.length; i++ ) {
+                if ( progress[ i ][ 'key' ] === key ) {
+                    progress[ i ][ 'reduction' ] = speed;
+                    return this;
+                }
+            }
+
+            console.warn( 'The progress was not found. Key: "' + key + '"' );
+
+            return this
+        };
+
+        /**
+         * This method will be do update of progress "speed" or "energy" oe, ... each time when spend 1 minute
+         *
+         * @returns {void}
+         */
+        function autoReduction() {
+
+            setInterval(function () {
+                if (!scope.enabled) {
+                    return;
+                }
+
+                for ( var i = 0; i < progress.length; i++ ) {
+
+                    var params = progress[ i ];
+
+                    if ( params.reduction ) {
+
+                        params.value += params.reduction;
+
+                        if ( params.value >= params.max ) {
+
+                            params.value = params.max;
+
+                        } else if ( params.value <= params.min ) {
+
+                            params.value = params.min;
+                        }
+
+                        setProgress( params );
+                        // labelProgress(params['l'], params);
+
+                        if (params.callback) {
+                            params.callback.call( this, params, null );
+                        }
+
+                    }
+                }
+
+            }, scope.speedAutoUpdate);
+        }
+
         /**
          *
          * @param {(string|number)} key
@@ -312,7 +344,8 @@
                 {
                     key: key,
                     max: max,
-                    value: value
+                    value: value,
+                    reduction: null
                 }
             );
             return this;
@@ -325,6 +358,10 @@
          * @returns {IW.PanelAction}
          */
         this.updateProgress = function ( key, value ) {
+
+            if (!scope.enabled) {
+                return this;
+            }
 
             var params = this.getProgress( key );
 

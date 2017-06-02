@@ -109,11 +109,11 @@ IW.Model = function ( multiLoader, scene, id ) {
     this.clientsModel = [];
 
     /**
-     * If is true this model is loaded and active
+     * If is false this model is not active
      *
      * @type {boolean}
      */
-    this.enabled = false;
+    this.enabled = true;
 
     /**
      *
@@ -453,7 +453,5 @@ IW.Model = function ( multiLoader, scene, id ) {
         scope.position = scope.model.position;
         // Set direction of model
         scope.lookAt( scope.positionTo );
-        // Enable this model
-        scope.enabled = true;
     }
 };

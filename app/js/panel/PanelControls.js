@@ -31,7 +31,7 @@ IW.PanelControls = function ( model ) {
      *
      * @type {{}}
      */
-    this.actionConfig = this.model.multiLoader.getFile(IW.Prepare.CONFIG_KEY_ACTION);
+    this.actionConfig = this.model.multiLoader.getFile( IW.Prepare.CONFIG_KEY_ACTION );
 
     /**
      *
@@ -71,8 +71,12 @@ IW.PanelControls = function ( model ) {
         this.panelAction.setProgress( IW.PanelAction.ARMOR, this.model.getCurrentArmor(), this.model.getMaxArmor() );
         this.panelAction.setProgress( IW.PanelAction.HULL, this.model.getCurrentHull(), this.model.getMaxHull() );
         this.panelAction.setProgress( IW.PanelAction.SPEED, this.model.getCurrentSpeed(), this.model.getMaxSpeed() );
-        this.panelAction.show();
 
+        this.panelAction.reductionProgress( IW.PanelAction.ENERGY, this.model.getReductionEnergy() );
+        this.panelAction.reductionProgress( IW.PanelAction.ARMOR, this.model.getReductionArmor() );
+        this.panelAction.reductionProgress( IW.PanelAction.HULL, this.model.getReductionHull() );
+
+        this.panelAction.show();
         return this;
     };
 
@@ -130,7 +134,7 @@ IW.PanelControls = function ( model ) {
                 }, param.name, param.icon, param.keyCode, param.active );
                 break;
             // Add action - Full Screen
-            case IW.PanelControls.ACTION_FULL_SCREEN:
+            case IW.PanelControls.ACTION_MAP_TOP:
                 scope.panelAction.addAction( function () {
 
                     new IW.FullScreen().toggle();
@@ -151,4 +155,4 @@ IW.PanelControls.ACTION_SHOT = 'shot';
  *
  * @type {string}
  */
-IW.PanelControls.ACTION_FULL_SCREEN = 'fullscreen';
+IW.PanelControls.ACTION_MAP_TOP = 'map_top';
