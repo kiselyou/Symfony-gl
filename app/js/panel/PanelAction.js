@@ -55,14 +55,12 @@
          * @param {?(string|number)} [name]
          * @param {?(string|number)} [icon]
          * @param {?number} [keyCode]
-         * @param {boolean} [active]
          */
-        this.addAction = function ( callback, name, icon, keyCode, active ) {
+        this.addAction = function ( callback, name, icon, keyCode ) {
 
             actions.push(
                 {
                     callback: callback,
-                    active: active,
                     name: name,
                     icon: icon,
                     keyCode: keyCode,
@@ -114,10 +112,6 @@
 
                 var b = blockAction.clone();
 
-                if ( action.active ) {
-                    // b.setAttribute( 'data-active', 'sw-action-active' );
-                }
-
                 // if ( action.icon != undefined ) {
                 //     var c = document.createElement('div');
                 //     c.classList.add('sw-action-icon');
@@ -139,7 +133,7 @@
                     keyEvents.push( action );
                 }
 
-                addEvent( b, action.callback );
+                addEvent( b, action );
             }
 
             return block;
@@ -159,7 +153,7 @@
 
             for ( var i = 0; i < keyEvents.length; i++ ) {
                 if ( e.keyCode == keyEvents[ i ][ 'keyCode' ] ) {
-                    keyEvents[ i ][ 'callback' ].call( this, e, keyEvents[ i ][ 'element' ] );
+                    keyEvents[ i ][ 'callback' ].call( this, e, keyEvents[ i ] );
                 }
             }
         }
@@ -167,18 +161,12 @@
         /**
          *
          * @param {Element} element
-         * @param callback
+         * @param {*} action
          */
-        function addEvent( element, callback ) {
+        function addEvent( element, action ) {
 
             $(element).on('click', function ( e ) {
-
-                // if ( this.hasAttribute( 'data-active' ) ) {
-                //
-                //     this.classList.toggle( this.getAttribute( 'data-active' ) );
-                // }
-
-                callback.call( this, e );
+                action.callback.call( this, e, action );
             });
         }
 

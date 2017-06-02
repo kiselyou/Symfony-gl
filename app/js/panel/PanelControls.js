@@ -45,7 +45,7 @@ IW.PanelControls = function ( model ) {
      * @returns {IW.PanelControls}
      */
     this.initPanelMap = function () {
-        this.panelMap.appendMapTo();
+        this.panelMap.show();
         return this;
     };
 

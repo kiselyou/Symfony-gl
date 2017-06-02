@@ -1585,6 +1585,8 @@ h6,
   width: 60px;
   height: 60px;
   position: absolute;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 .iw_label {
   width: 80px;
@@ -1632,6 +1634,13 @@ h6,
 .iw_controls__button {
   width: 22px;
   height: 28px;
+  position: relative;
+}
+.iw_controls__button_icon {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 0;
 }
 .iw_controls__text {
   font-size: 9px;
@@ -1657,13 +1666,15 @@ h6,
   -webkit-user-select: none;
 }
 .iw_mini-map__top {
-  height: 23px;
+  height: 30px;
 }
 .iw_mini-map__center {
-  height: 194px;
+  height: 180px;
+  margin-bottom: 3px;
+  border: solid 1px rgba(127, 255, 255, 0.4);
 }
 .iw_mini-map__bottom {
-  height: 23px;
+  height: 30px;
 }
 .iw_mini-map__actions {
   border-radius: 2px;
