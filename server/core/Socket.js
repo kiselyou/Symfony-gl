@@ -26,10 +26,12 @@ var IW = IW || {};
 
 /**
  *
+ * @param {*} config
  * @param {express} app
  * @constructor
  */
-IW.Socket = function ( app ) {
+IW.Socket = function ( app, config ) {
+    this.config = config;
     this.server = require('http').createServer(app);
     this.io = require('socket.io')(this.server);
 };
@@ -39,9 +41,15 @@ IW.Socket.prototype.server = null;
 
 /**
  *
+ * @type {{ port: number, host: string }}
+ */
+IW.Socket.prototype.config = {};
+
+/**
+ *
  * @param {string} namespace
  */
-IW.Socket.prototype.listen = function (namespace) {
+IW.Socket.prototype.listen = function ( namespace ) {
     var scope = this;
 
     var room = this.io.of(namespace);
@@ -85,7 +93,7 @@ IW.Socket.prototype.listen = function (namespace) {
         });
     });
 
-    this.server.listen(3000);
+    this.server.listen( this.config.port, this.config.host );
 };
 
 /**

@@ -6,7 +6,13 @@ play
     .loadSprites()
     .loadAllModels()
     .playsConfigOrbitControl()
-    .start(function (multiLoader, ajaxData) {
+    .startAjax( '/socket/info', function (multiLoader, ajaxData) {
+        console.log(
+            ajaxData.config.socket, 'asdasdas'
+        );
+
+        play.socketConnect = ajaxData.config.socket;
+
         play
             .setConnect()
             .init( play.updateModel );

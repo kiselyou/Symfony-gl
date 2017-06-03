@@ -37,7 +37,7 @@ IW.Request = function (config) {
 /**
  * It is configuration from file ("server/config/config.json" - by default)
  *
- * @type {{}|{encoding: string, environment: { app: boolean, dist: boolean }, port: number, host: string, routes: { templates: string } }}
+ * @type {{}|{encoding: string, environment: { app: boolean, dist: boolean }, server: { port: number, host: string}, socket: { port: number, host: string}, routes: { templates: string } }}
  */
 IW.Request.prototype.config = {};
 

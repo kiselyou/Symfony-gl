@@ -1,26 +1,31 @@
 {
   "index": {
-    "route": "/",
     "type": "pattern",
+    "route": "/",
     "viewPath": "/pages/preview.html",
     "method": "GET"
   },
   "user": {
-    "route": "/user",
     "type": "pattern",
+    "route": "/user",
     "viewPath": "/pages/user.html",
     "method": "GET"
   },
   "play": {
-    "route": "/play",
     "type": "pattern",
+    "route": "/play",
     "viewPath": "/pages/play.html",
     "method": "GET"
   },
   "dev": {
-    "route": "/dev",
     "type": "pattern",
+    "route": "/dev",
     "viewPath": "/pages/dev.html",
     "method": "GET"
+  },
+  "socket": {
+    "type": "ajax",
+    "route": "/socket/info",
+    "method": "POST"
   }
 }

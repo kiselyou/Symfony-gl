@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 
-var io = require('./Socket.js') || {};
+var ioSocket = require('./Socket.js') || {};
 var IW = require('./TemplateLoader') || {};
 
 IW.Routes = function ( config ) {
@@ -26,16 +26,22 @@ IW.Routes.prototype._control = function () {
     var scope = this;
     // Upload configured routes
     for (var i = 0; i < this.routes.length; i++) {
-        /**
-         *
-         * @type {{type: string, route: string, method: string, viewPath: string }}
-         */
-        var route = this.routes[i];
-        switch (route['type']) {
-            case 'pattern':
-                this._createRoute(route['route'], route['method'], route['viewPath']);
-                break;
-        }
+
+        scope.createRoute( this.routes[i] );
+
+        // /**
+        //  *
+        //  * @type {{type: string, route: string, method: string, viewPath: string }}
+        //  */
+        // var route = this.routes[i];
+        // switch (route['type']) {
+        //     case 'pattern':
+        //         this.createRoute(route['route'], route['method'], route['viewPath']);
+        //         break;
+        //
+        //     case 'ajax':
+        //
+        // }
     }
 
     // Setting route to load templates
@@ -45,7 +51,7 @@ IW.Routes.prototype._control = function () {
 
             var arrTemplates = [];
 
-            scope.response(
+            scope.responseHTML(
                 res,
                 {
                     content: scope.includePattern('<template data-include="' + req.body['template'] + '"></template>', arrTemplates),
@@ -56,46 +62,126 @@ IW.Routes.prototype._control = function () {
 
         } catch (error) {
 
-            scope.response( res, scope.uploadPatternError(error) );
+            scope.responseHTML( res, scope.uploadPatternError(error) );
         }
     });
 
     // Setting public directory
-    app.use(express.static(this.DIR_APP));
+    app.use( express.static( this.DIR_APP ) );
 
     // Setting route error
-    app.get('*', function(req, res) {
-        scope.response(res, scope.uploadPatternError('The page was not found in GET path: "' + req.url + '"'));
+    app.get( '*', function( req, res ) {
+        scope.responseHTML( res, scope.uploadPatternError( 'The page was not found in GET path: "' + req.url + '"' ) );
     });
 };
+
+// /**
+//  * Create route
+//  *
+//  * @param {string} route - It is HTTP route
+//  * @param {method} method - possible values ( 'GET' | 'POST' )
+//  * @param {string} viewPath - It is path to html pattern
+//  * @returns {void}
+//  */
+// IW.Routes.prototype.createRoute = function (route, method, viewPath) {
+//     var scope = this;
+//     switch (method) {
+//         case 'POST':
+//             console.log(route);
+//             app.post(route, function (req, res) {
+//                 scope.responseHTML(res, scope.uploadPattern(route, viewPath));
+//             });
+//             break;
+//         case 'GET':
+//             app.get(route, function (req, res) {
+//                 scope.responseHTML(res, scope.uploadPattern(route, viewPath));
+//             });
+//             break;
+//         default:
+//             app.all(route, function (req, res) {
+//                 scope.responseHTML(res, scope.uploadPattern(route, viewPath));
+//             });
+//             break;
+//     }
+// };
 
 /**
  * Create route
  *
- * @param {string} route - It is HTTP route
- * @param {method} method - possible values ( 'GET' | 'POST' )
- * @param {string} viewPath - It is path to html pattern
+ * @param {{ method: string, route: string, viewPath: string }} params
+ * @example explain:
+ *              route - It is HTTP route
+ *              method - possible values ( 'GET' | 'POST' )
+ *              viewPath - It is path to html pattern
  * @returns {void}
  */
-IW.Routes.prototype._createRoute = function (route, method, viewPath) {
+IW.Routes.prototype.createRouteTemplate = function ( params ) {
     var scope = this;
-    switch (method) {
+    switch ( params['method'] ) {
         case 'POST':
-            app.post(route, function (req, res) {
-                scope.response(res, scope.uploadPattern(route, viewPath));
-            });
+            app.post( params[ 'route' ], function ( req, res ) {
+                scope.responseHTML( res, scope.uploadPattern( params[ 'route' ], params[ 'viewPath' ] ) );
+            } );
             break;
         case 'GET':
-            app.get(route, function (req, res) {
-                scope.response(res, scope.uploadPattern(route, viewPath));
-            });
+            app.get( params[ 'route' ], function ( req, res ) {
+                scope.responseHTML( res, scope.uploadPattern( params[ 'route' ], params[ 'viewPath' ] ) );
+            } );
             break;
         default:
-            app.all(route, function (req, res) {
-                scope.response(res, scope.uploadPattern(route, viewPath));
-            });
+            app.all( params[ 'route' ], function ( req, res ) {
+                scope.responseHTML( res, scope.uploadPattern( params[ 'route' ], params[ 'viewPath' ] ) );
+            } );
             break;
     }
+};
+
+
+IW.Routes.prototype.createRouteAJAX = function ( params ) {
+    var scope = this;
+    switch ( params['method'] ) {
+        case 'POST':
+            app.post( params[ 'route' ], function ( req, res ) {
+                scope.responseAJAX( res, scope.callToController( params ) );
+            } );
+            break;
+        case 'GET':
+            app.get( params[ 'route' ], function ( req, res ) {
+                scope.responseAJAX( res, scope.callToController( params ) );
+            } );
+            break;
+        default:
+            app.all( params[ 'route' ], function ( req, res ) {
+                scope.responseAJAX( res, scope.callToController( params ) );
+            } );
+            break;
+    }
+};
+
+IW.Routes.prototype.createRoute = function ( params ) {
+
+    switch ( params[ 'type' ] ) {
+        case 'pattern':
+            this.createRouteTemplate( params );
+            break;
+        case 'ajax':
+            this.createRouteAJAX( params );
+            break;
+    }
+};
+
+/**
+ * Call to controller
+ *
+ * @param params
+ * @returns {{}}
+ */
+IW.Routes.prototype.callToController = function ( params ) {
+    return {
+        config: {
+            socket: this.config.socket.host + ':' + this.config.socket.port + '/play'
+        }
+    };
 };
 
 /**
@@ -104,24 +190,46 @@ IW.Routes.prototype._createRoute = function (route, method, viewPath) {
  * @param {{}} res
  * @param {{ status: boolean, content: string, error: string }} pattern
  */
-IW.Routes.prototype.response = function (res, pattern) {
-    if (pattern.status) {
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end(pattern.content, this.config.encoding, true);
+IW.Routes.prototype.responseHTML = function ( res, pattern ) {
+    if ( pattern.status ) {
+        res.writeHead( 200, { 'Content-Type': 'text/html' } );
+        res.end( pattern.content, this.config.encoding, true );
     } else {
-        res.writeHead(500);
-        res.end(pattern.content);
-        console.log(pattern.error);
+        res.writeHead( 500 );
+        res.end( pattern.content );
+        console.log( pattern.error );
+    }
+};
+
+/**
+ * Send response to client
+ *
+ * @param res
+ * @param {{}} params
+ */
+IW.Routes.prototype.responseAJAX = function ( res, params ) {
+
+    try {
+        var json = JSON.stringify(params);
+        res.writeHead(200, { 'Content-Type': 'application/json' } );
+        res.end( json );
+
+    } catch ( e ) {
+
+        res.writeHead( 500, { 'Content-Type': 'application/json' } );
+        res.end( JSON.stringify( { error: 'The server error: method (responseAJAX)' } ) );
+        console.log( e.message );
     }
 };
 
 /**
  *
+ * @param {{ port: number, host: string }} config
  * @returns {IW.Routes}
  */
-IW.Routes.prototype.initSocket = function () {
-    var socket = new io.Socket(app);
-    socket.listen('play');
+IW.Routes.prototype.initSocket = function ( config ) {
+    var socket = new ioSocket.Socket( app, config );
+    socket.listen( 'play' );
     return this;
 };
 
@@ -132,12 +240,12 @@ IW.Routes.prototype.initSocket = function () {
  */
 IW.Routes.prototype.init = function () {
 
-    app.use(bodyParser.urlencoded({extended: true}));
-    app.use(bodyParser.json());
+    app.use( bodyParser.urlencoded( { extended: true } ) );
+    app.use( bodyParser.json() );
 
     this._control();
 
-    app.listen(this.config.port, this.config.host);
+    app.listen( this.config.server.port, this.config.server.host );
     return this;
 };
 

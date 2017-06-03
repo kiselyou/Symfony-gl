@@ -27,7 +27,7 @@ IW.Player = function ( idScene ) {
      *
      * @type {string}
      */
-    this.socketConnect = 'http://localhost:3000/play';
+    this.socketConnect = null;
 
     /**
      *
@@ -131,7 +131,7 @@ IW.Player = function ( idScene ) {
      */
     this.setConnect = function () {
 
-        this.socket = new IW.Socket(this.socketConnect);
+        this.socket = new IW.Socket( this.socketConnect );
 
         this.socket.connect(
             function ( response, resourceId ) {

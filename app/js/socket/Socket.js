@@ -13,7 +13,7 @@ IW.Socket = function ( url ) {
 	 *
 	 * @type {io.connect}
      */
-	this.socket = io.connect(url);
+	this.socket = io.connect( url );
 
 	/**
 	 *
