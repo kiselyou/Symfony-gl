@@ -31,6 +31,15 @@ gulp.task('move', function() {
 	gulp.src('app/*.ico')
 		.pipe(gulp.dest('dist'));
 
+	gulp.src(
+		[
+		'app/js/jquery.min.js',
+		'app/js/jquery.min.map',
+		'app/js/socket.io.js',
+		'app/js/*socket.io.js.map'
+		]
+	).pipe(gulp.dest('dist/js'));
+
 	gulp.src('app/**/*.json')
 		.pipe(gulp.dest('dist'));
 
