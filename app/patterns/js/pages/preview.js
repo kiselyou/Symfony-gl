@@ -1,8 +1,13 @@
 var preview = false;
-document.getElementById('iw_show_preview').addEventListener('click', function () {
+
+$('#iw_show_preview').click( function () {
+
     if (!preview) {
+
         preview = true;
-        this.classList.add('iw_hidden');
+
+        $(this).addClass('iw_hidden');
+
         var play = new IW.Player('iw_canvas_preview');
 
         play

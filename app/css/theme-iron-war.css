@@ -1724,7 +1724,8 @@ h6,
 .iw_progress {
   color: #FFFFFF;
   position: absolute;
-  width: 100%;
+  width: 94%;
+  left: 3%;
   height: 100%;
   z-index: 1000000;
   -moz-user-select: none;
