@@ -1,12 +1,4 @@
 {
-    "map_top": [
-        {
-            "name": null,
-            "icon": "/display/fullscreen.png",
-            "keyCode": null,
-            "active": true
-        }
-    ],
     "shot": [
         {
             "name": 1,

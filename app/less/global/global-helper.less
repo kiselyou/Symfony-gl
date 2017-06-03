@@ -1,21 +1,23 @@
 @keyframes hide {
-  from {opacity: 1;}
-  to {opacity: 0;}
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 @keyframes show {
-  from {opacity: 0;}
-  to {opacity: 1;}
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .iw_hide_a {
   opacity: 0;
+  display: none;
   animation-name: hide;
   animation-duration: 1s;
 }
 
 .iw_show_a {
   opacity: 1;
+  display: block;
   animation-name: show;
   animation-duration: 1s;
 }

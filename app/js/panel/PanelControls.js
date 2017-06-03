@@ -56,15 +56,10 @@ IW.PanelControls = function ( model ) {
      */
     this.initPanelAction = function () {
 
-        for ( var action in this.actionConfig ) {
-            if ( this.actionConfig.hasOwnProperty( action ) ) {
+        var actions = this.actionConfig[ IW.PanelControls.ACTION_SHOT ];
 
-                var actions = this.actionConfig[ action ];
-
-                for (var i = 0; i < actions.length; i++) {
-                    setAction( actions[ i ], action );
-                }
-            }
+        for (var i = 0; i < actions.length; i++) {
+            setAction( actions[ i ], IW.PanelControls.ACTION_SHOT );
         }
 
         this.panelAction.setProgress( IW.PanelAction.ENERGY, this.model.getCurrentEnergy(), this.model.getMaxEnergy() );
@@ -133,14 +128,14 @@ IW.PanelControls = function ( model ) {
 
                 }, param.name, param.icon, param.keyCode, param.active );
                 break;
-            // Add action - Full Screen
-            case IW.PanelControls.ACTION_MAP_TOP:
-                scope.panelAction.addAction( function () {
-
-                    new IW.FullScreen().toggle();
-
-                }, param.name, param.icon, param.keyCode, param.active );
-                break;
+            // // Add action - Full Screen
+            // case IW.PanelControls.ACTION_MAP_TOP:
+            //     scope.panelAction.addAction( function () {
+            //
+            //         new IW.FullScreen().toggle();
+            //
+            //     }, param.name, param.icon, param.keyCode, param.active );
+            //     break;
         }
     }
 };
@@ -151,8 +146,8 @@ IW.PanelControls = function ( model ) {
  */
 IW.PanelControls.ACTION_SHOT = 'shot';
 
-/**
- *
- * @type {string}
- */
-IW.PanelControls.ACTION_MAP_TOP = 'map_top';
+// /**
+//  *
+//  * @type {string}
+//  */
+// IW.PanelControls.ACTION_MAP_TOP = 'map_top';
