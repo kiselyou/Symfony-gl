@@ -162,21 +162,34 @@ IW.Scene = function ( idContainer ) {
 
         var fps = 30;
         var delay = 1000 / fps;
-        var delta = 0;
+        // var delta = 0;
+        //
+        // setTimeout( function tick() {
+        //
+        //     if ( event ) {
+        //         event.call( this, delta );
+        //     }
+        //
+        //     scope.orbitControl.update();
+        //
+        //     scope.renderer.render( scope.scene, scope.camera );
+        //
+        //     delta = scope.clock.getDelta();
+        //
+        //     setTimeout( tick, delay - delta );
+        //
+        // }, delay );
 
-        setTimeout( function tick() {
+        setInterval( function () {
 
             if ( event ) {
-                event.call( this, delta );
+
+                event.call( this, scope.clock.getDelta() );
             }
 
             scope.orbitControl.update();
 
             scope.renderer.render( scope.scene, scope.camera );
-
-            delta = scope.clock.getDelta();
-
-            setTimeout( tick, delay - delta );
 
         }, delay );
 
