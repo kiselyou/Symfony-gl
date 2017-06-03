@@ -7,9 +7,6 @@ play
     .loadAllModels()
     .playsConfigOrbitControl()
     .startAjax( '/socket/info', function (multiLoader, ajaxData) {
-        console.log(
-            ajaxData.config.socket, 'asdasdas'
-        );
 
         play.socketConnect = ajaxData.config.socket;
 
