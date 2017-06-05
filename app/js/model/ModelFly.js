@@ -11,20 +11,13 @@
 		 *
 		 * @const {number}
 		 */
-		var SCALE = 1000;
-
-		/**
-		 * It is approximate position to motion
-		 *
-		 * @type {Vector3}
-		 */
-		var _positionTo = new THREE.Vector3();
+		var SCALE = 20;
 
 		/**
 		 *
-		 * @type {{forward: boolean, left: boolean, right: boolean, backward: boolean, flyStatus: boolean}}
+		 * @type {{forward: boolean, left: boolean, right: boolean, backward: boolean, flyStatus: boolean, stop: boolean}}
 		 */
-		var motion = { forward: false, left: false, right: false, backward: false, flyStatus: false };
+		var motion = { forward: false, left: false, right: false, backward: false, flyStatus: false, stop: false };
 
 		/**
 		 *
@@ -57,7 +50,7 @@
 		 *
 		 * @returns {void}
 		 */
-		function calculateIncline() {
+		function calcIncline() {
 			if ( scope._model.getCurrentSpeed() > scope._model.getInclineMinSpeed() ) {
 				if ( motion.left ) {
 					if ( scope._model.getInclineAngle() > - scope._model.getInclineMaxAngle() ) {
@@ -109,6 +102,9 @@
 				case keyboard.backward.keyCode:
 					motionControl( 'backward', true );
 					break;
+				case keyboard.stop.keyCode:
+					motionControl( 'stop', true );
+					break;
 			}
 
 			if (!down) {
@@ -137,6 +133,9 @@
 				case keyboard.backward.keyCode:
 					motionControl( 'backward', false );
 					break;
+				case keyboard.stop.keyCode:
+					motionControl( 'stop', false );
+					break;
 			}
 
 			if (down) {
@@ -162,17 +161,17 @@
 		/**
 		 * Get position motion to
 		 *
-		 * @returns {Vector3}
+		 * @returns {{ x: number, y: number, z: number }}
 		 */
-		function getPositionTo( far, angle ) {
+		function calcPositionTo( far, angle, delta ) {
 			angle = + angle.toFixed(9);
-			changeAngle();
+			changeAngle( delta );
 			var m = scope._model.getPosition();
-			var x = m.x + far * Math.cos( angle );
-			var z = m.z + far * Math.sin( angle );
-			_positionTo.setX( x );
-			_positionTo.setZ( z );
-			return _positionTo;
+			return {
+				x: m.x + ( far * Math.cos( angle ) ),
+				y: 0,
+				z: m.z + ( far * Math.sin( angle ) )
+			};
 		}
 
 		/**
@@ -194,20 +193,20 @@
 		 *
 		 * @return {void}
          */
-		function changeAngle() {
+		function changeAngle( delta ) {
 			if ( scope._model.getCurrentSpeed() > 0 ) {
 				if ( motion.left ) {
-					scope._model.angle -= scope._model.getSpeedRadiusForward();
+					scope._model.angle -= scope._model.getSpeedRadiusForward() * delta;
 				} else if ( motion.right ) {
-					scope._model.angle += scope._model.getSpeedRadiusForward();
+					scope._model.angle += scope._model.getSpeedRadiusForward() * delta;
 				}
 			}
 
 			if ( scope._model.getCurrentSpeed() < 0 ) {
 				if ( motion.left ) {
-					scope._model.angle += scope._model.getSpeedRadiusBackward();
+					scope._model.angle += scope._model.getSpeedRadiusBackward() * delta;
 				} else if ( motion.right ) {
-					scope._model.angle -= scope._model.getSpeedRadiusBackward();
+					scope._model.angle -= scope._model.getSpeedRadiusBackward() * delta;
 				}
 			}
 		}
@@ -255,6 +254,9 @@
 		 */
 		this.update = function ( delta ) {
 
+			// console.log( delta );
+			// delta = 0;
+
 			if ( !this._model.enabled ) {
 				return;
 			}
@@ -268,7 +270,7 @@
                 //
 				// } );
 
-				var positionTo = getPositionTo( scope._model.far, scope._model.angle );
+				var positionTo = calcPositionTo( scope._model.far, scope._model.angle, delta );
 				this._model.setPositionTo( positionTo );
 
 				if ( motion.forward ) {
@@ -278,21 +280,21 @@
 				}
 
 				// Auto stop
-				if ( !motion.forward && !motion.backward && !motion.left && !motion.right ) {
+				if ( motion.stop ) {
 					this._model.reduceCurrentSpeedAuto();
 				}
 
-				var _positionModel = this._model.getPosition();
-				var a = positionTo.x - _positionModel.x;
-				var b = positionTo.z - _positionModel.z;
-				var len = Math.sqrt( a * a + b * b ) * SCALE;
+				var positionModel = this._model.getPosition();
+				var a = ( positionTo.x - positionModel.x );
+				var b = ( positionTo.z - positionModel.z );
+				var len = ( Math.sqrt( a * a + b * b ) ) * SCALE;
 
-				var x = a / len * ( _speedModel + delta );
-				var z = b / len * ( _speedModel + delta );
+				var x = a / len * ( _speedModel );
+				var z = b / len * ( _speedModel );
 
-				this._model.addPosition( { x: x, y: 0, z: z } );
+				this._model.addPosition( { x: x * delta, y: 0, z: z * delta } );
 			}
 
-			calculateIncline();
+			calcIncline();
 		};
 	};

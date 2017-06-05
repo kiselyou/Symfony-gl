@@ -26,13 +26,13 @@ IW.ModelParameters = function () {
 	 * @type {{acceleration: number, deceleration: number, current: number, max: number, min: number, speedRadiusForward: number, speedRadiusBackward: number}}
 	 */
 	this.speed = {
-        acceleration: 55,    // m.s
-        deceleration: 80,    // m.s
+        acceleration: 15,    // m.s
+        deceleration: 30,    // m.s
         current: 0,         // m.s Can not be less than zero. Default 0
-        max:  1550,          // m.s It is maximum speed the model
+        max:  750,          // m.s It is maximum speed the model
         min: -250,	        // m.s If less than zero. The model is moving back
-        speedRadiusForward: 0.02,
-        speedRadiusBackward: 0.05,
+        speedRadiusForward: 2,
+        speedRadiusBackward: 5,
         callback: null
     };
 
@@ -107,7 +107,7 @@ IW.ModelParameters = function () {
 	/**
      * It is configuration keyboard for current model
      *
-	 * @type {{fly: {forward: {keyName: string, keyCode: number}, left: {keyName: string, keyCode: number}, right: {keyName: string, keyCode: number}, backward: {keyName: string, keyCode: number}}}}
+	 * @type {{fly: {forward: {keyName: string, keyCode: number}, left: {keyName: string, keyCode: number}, right: {keyName: string, keyCode: number}, backward: {keyName: string, keyCode: number}, stop: {keyName: string, keyCode: number}}}}
 	 */
 	this.keyboard = {
 		fly: {
@@ -126,7 +126,11 @@ IW.ModelParameters = function () {
 			backward: {
 				keyName: 'S',
 				keyCode: 83
-			}
+			},
+            stop: {
+                keyName: 'SPACE',
+                keyCode: 32
+            }
 		}
 	};
 

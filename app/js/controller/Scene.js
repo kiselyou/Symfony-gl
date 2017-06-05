@@ -77,7 +77,7 @@ IW.Scene = function ( idContainer ) {
      * @returns {number}
      */
     this.getAspect = function() {
-        return  this.getWidth() / this.getHeight();
+        return this.getWidth() / this.getHeight();
     };
 
     /**
@@ -133,6 +133,16 @@ IW.Scene = function ( idContainer ) {
     };
 
     /**
+     *
+     * @type {?animation}
+     */
+    this.event = null;
+
+    var stats = new Stats();
+    stats.showPanel( 0 );
+    document.body.appendChild(stats.dom);
+
+    /**
      * Call in request animation frame
      *
      * @param {number} delta
@@ -146,6 +156,9 @@ IW.Scene = function ( idContainer ) {
      * @returns {IW.Scene}
      */
     this.init = function ( event ) {
+
+        scope.event = event;
+
         this.hide();
         this.renderer.setSize( this.getWidth(), this.getHeight() );
         this.renderer.setClearColor(0x000000);
@@ -159,44 +172,11 @@ IW.Scene = function ( idContainer ) {
 
         setCamera();
         setLight();
-
-        var fps = 30;
-        var delay = 1000 / fps;
-        // var delta = 0;
-        //
-        // setTimeout( function tick() {
-        //
-        //     if ( event ) {
-        //         event.call( this, delta );
-        //     }
-        //
-        //     scope.orbitControl.update();
-        //
-        //     scope.renderer.render( scope.scene, scope.camera );
-        //
-        //     delta = scope.clock.getDelta();
-        //
-        //     setTimeout( tick, delay - delta );
-        //
-        // }, delay );
-
-        setInterval( function () {
-
-            if ( event ) {
-
-                event.call( this, scope.clock.getDelta() );
-            }
-
-            scope.orbitControl.update();
-
-            scope.renderer.render( scope.scene, scope.camera );
-
-        }, delay );
+        render();
 
         this.show();
         return this;
     };
-
 
     /**
      * Set config orbit controls for play
@@ -210,8 +190,10 @@ IW.Scene = function ( idContainer ) {
         this.orbitControl.rotateSpeed = 2.0;
         this.orbitControl.minDistance = 20;
         this.orbitControl.maxDistance = 60;
+
         // this.orbitControl.maxPolarAngle = 75 * Math.PI / 180;
         // this.orbitControl.minPolarAngle = 45 * Math.PI / 180;
+
         return this;
     };
 
@@ -236,8 +218,21 @@ IW.Scene = function ( idContainer ) {
      * @returns {void}
      */
     function render() {
-        requestAnimationFrame( render );
+
+        var delta = scope.clock.getDelta();
+
+        stats.begin();
+
+        scope.orbitControl.update();
         scope.renderer.render( scope.scene, scope.camera );
+
+        if ( scope.event ) {
+            scope.event.call( this, delta );
+        }
+
+        stats.end();
+
+        requestAnimationFrame( render );
     }
 
     /**
@@ -270,6 +265,31 @@ IW.Scene = function ( idContainer ) {
         light.position.y = 250;
         light.position.z = -500;
         scope.scene.add( light );
+
+
+
+        var pointLight = new THREE.PointLight( 0xff0000, 1, 5000 );
+        pointLight.position.set( 2, 5, 1 );
+
+        // pointLight.position.multiplyScalar( 10 );
+        scope.scene.add( pointLight );
+
+        var sphereSize = 1;
+        var pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
+        scope.scene.add( pointLightHelper );
+
+
+        var pointLight2 = new THREE.PointLight( 0x00ffff, 1, 8000 );
+        pointLight2.position.set( -12, 4.6, 2.4 );
+
+        // pointLight2.position.multiplyScalar( 10 );
+        scope.scene.add( pointLight2 );
+
+        var sphereSize2 = 1;
+        var pointLightHelper2 = new THREE.PointLightHelper( pointLight2, sphereSize2 );
+        scope.scene.add( pointLightHelper2 );
+
+        scope.scene.add( new THREE.AmbientLight( 0x050505 ) );
     }
 
     /**
@@ -280,6 +300,9 @@ IW.Scene = function ( idContainer ) {
     function windowResize() {
         scope.camera.aspect = scope.getAspect();
         scope.camera.updateProjectionMatrix();
+
+        // scope.personControl.handleResize();
+
         scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
     }
 
