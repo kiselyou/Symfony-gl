@@ -191,6 +191,18 @@ IW.Scene = function ( idContainer ) {
         this.orbitControl.minDistance = 20;
         this.orbitControl.maxDistance = 60;
 
+        this.orbitControl.state = {
+            polar: {
+                min: this.orbitControl.minPolarAngle,
+                max: this.orbitControl.maxPolarAngle
+            },
+
+            azimuthal: {
+                min: this.orbitControl.minAzimuthAngle,
+                max: this.orbitControl.maxAzimuthAngle
+            }
+        };
+
         // this.orbitControl.maxPolarAngle = 75 * Math.PI / 180;
         // this.orbitControl.minPolarAngle = 45 * Math.PI / 180;
 
@@ -300,8 +312,6 @@ IW.Scene = function ( idContainer ) {
     function windowResize() {
         scope.camera.aspect = scope.getAspect();
         scope.camera.updateProjectionMatrix();
-
-        // scope.personControl.handleResize();
 
         scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
     }

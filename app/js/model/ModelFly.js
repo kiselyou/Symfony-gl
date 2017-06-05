@@ -149,14 +149,14 @@
 		 *
 		 * @returns {boolean}
 		 */
-		function isFly() {
+		this.isFly = function () {
 			for ( var key in motion ) {
 				if ( 'flyStatus' !== key && motion.hasOwnProperty( key ) && motion[ key ] ) {
 					return true;
 				}
 			}
 			return false;
-		}
+		};
 
 		/**
 		 * Get position motion to
@@ -183,8 +183,8 @@
 		function motionControl( direction, status ) {
 			if ( motion[ direction ] !== status ) {
 				motion[ direction ] = status;
-				motion.flyStatus = status ? status : isFly();
-				scope._callback.call(this, motion);
+				motion.flyStatus = status ? status : scope.isFly();
+				scope._callback.call( this, motion );
 			}
 		}
 
@@ -253,9 +253,6 @@
 		 * @param {number} delta
 		 */
 		this.update = function ( delta ) {
-
-			// console.log( delta );
-			// delta = 0;
 
 			if ( !this._model.enabled ) {
 				return;

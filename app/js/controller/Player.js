@@ -186,6 +186,22 @@ IW.Player = function ( idScene ) {
         scope.socket.sendToAll( SOCKET_TRADE_TO, {model: scope.model.objectToJSON(), resourceId: scope.getPlayerID() }, true );
         // Send info about position of user model
         scope.model.addFlyEvents( function ( moution ) {
+
+            if ( moution.flyStatus || scope.model.getCurrentSpeed() !== 0 ) {
+
+                scope.orbitControl.minPolarAngle = scope.orbitControl.getPolarAngle();
+                scope.orbitControl.maxPolarAngle = scope.orbitControl.getPolarAngle();
+                // scope.orbitControl.minAzimuthAngle = scope.orbitControl.getAzimuthalAngle();
+                // scope.orbitControl.maxAzimuthAngle = scope.orbitControl.getAzimuthalAngle();
+
+            } else {
+
+                scope.orbitControl.minPolarAngle = scope.orbitControl.state.polar.min;
+                scope.orbitControl.maxPolarAngle = scope.orbitControl.state.polar.max;
+                // scope.orbitControl.minAzimuthAngle = scope.orbitControl.state.azimuthal.min;
+                // scope.orbitControl.maxAzimuthAngle = scope.orbitControl.state.azimuthal.max;
+            }
+
             scope.socket.sendToAll(
                 SOCKET_MODEL_FLY,
                 {
@@ -347,6 +363,7 @@ IW.Player = function ( idScene ) {
     this.updateModel = function ( delta ) {
         if ( scope.model ) {
             scope.model.update( delta );
+
             scope.orbitControl.target.copy( scope.model.getPosition() );
             scope.environment.position.copy( scope.model.getPosition() );
         }
