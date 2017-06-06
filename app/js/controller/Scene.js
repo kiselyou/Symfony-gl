@@ -136,7 +136,7 @@ IW.Scene = function ( idContainer ) {
      *
      * @type {?animation}
      */
-    this.event = null;
+    this.renderEvent = null;
 
     var stats = new Stats();
     stats.showPanel( 0 );
@@ -157,7 +157,7 @@ IW.Scene = function ( idContainer ) {
      */
     this.init = function ( event ) {
 
-        scope.event = event;
+        scope.renderEvent = event;
 
         this.hide();
         this.renderer.setSize( this.getWidth(), this.getHeight() );
@@ -174,9 +174,51 @@ IW.Scene = function ( idContainer ) {
         setLight();
         render();
 
+
+        this.planet();
+
         this.show();
         return this;
     };
+
+    var earthMesh = null;
+    var cloudMesh = null;
+
+    this.planet = function () {
+        var material=new THREE.MeshPhongMaterial();
+        var r = 35000;
+        var geometry =new THREE.SphereGeometry(r, 64, 64);
+
+        material.map = THREE.ImageUtils.loadTexture('images/textures/planets/texture_earth_surface.jpg');
+
+        material.bumpMap = THREE.ImageUtils.loadTexture('images/textures/planets/texture_earth_night.jpg');
+        material.bumpScale = 0.5;
+        //
+        // material.specularMap = THREE.ImageUtils.loadTexture('images/textures/planets/texture_earth_clouds.jpg');
+        // material.specular = new THREE.Color('grey');
+
+
+
+        earthMesh = new THREE.Mesh(geometry, material);
+
+        earthMesh.position.set(r + 100, - ( r + 1000 ), r + 100);
+
+        this.scene.add(earthMesh);
+
+
+        var geometry2   = new THREE.SphereGeometry(r + 1, 64, 64);
+        var material2  = new THREE.MeshPhongMaterial({
+            map     : new THREE.Texture(THREE.ImageUtils.loadTexture('images/textures/planets/texture_earth_clouds.jpg')),
+            side        : THREE.DoubleSide,
+            opacity     : 0.8,
+            transparent : true,
+            depthWrite  : false,
+        });
+
+        cloudMesh = new THREE.Mesh(geometry2, material2);
+        earthMesh.add(cloudMesh);
+    };
+
 
     /**
      * Set config orbit controls for play
@@ -238,8 +280,13 @@ IW.Scene = function ( idContainer ) {
         scope.orbitControl.update();
         scope.renderer.render( scope.scene, scope.camera );
 
-        if ( scope.event ) {
-            scope.event.call( this, delta );
+        if ( scope.renderEvent ) {
+            scope.renderEvent.call( this, delta );
+        }
+
+        if (earthMesh) {
+            earthMesh.rotation.y += 1 / 256 * delta;
+            cloudMesh.rotation.y += 1 / 128 * delta;
         }
 
         stats.end();
@@ -254,7 +301,7 @@ IW.Scene = function ( idContainer ) {
      */
     function setCamera() {
         scope.camera.position.set( 0, 20, -40 );
-        scope.camera.fov = 60;
+        scope.camera.fov = 70;
         scope.camera.near = 0.1;
         scope.camera.far = 100000;
         scope.camera.aspect = scope.getAspect();
