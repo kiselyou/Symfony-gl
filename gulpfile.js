@@ -33,10 +33,11 @@ gulp.task('move', function() {
 
 	gulp.src(
 		[
-		'app/js/jquery.min.js',
-		'app/js/jquery.min.map',
-		'app/js/socket.io.js',
-		'app/js/*socket.io.js.map'
+			'app/js/jquery.min.js',
+			'app/js/jquery.min.map',
+			'app/js/socket.io.js',
+			'app/js/socket.io.js.map',
+			'app/js/stats.min.js'
 		]
 	).pipe(gulp.dest('dist/js'));
 

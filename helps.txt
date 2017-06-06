@@ -1,0 +1,4 @@
+# Определение компонента, использующего порт 80
+# sudo netstat -tulpn | grep --color :80
+
+# Server ssh root@195.110.59.186
