@@ -186,7 +186,7 @@ IW.Scene = function ( idContainer ) {
 
     this.planet = function () {
         var material=new THREE.MeshPhongMaterial();
-        var r = 35000;
+        var r = 15000;
         var geometry =new THREE.SphereGeometry(r, 64, 64);
 
         material.map = THREE.ImageUtils.loadTexture('images/textures/planets/texture_earth_surface.jpg');
@@ -201,7 +201,7 @@ IW.Scene = function ( idContainer ) {
 
         earthMesh = new THREE.Mesh(geometry, material);
 
-        earthMesh.position.set(r + 100, - ( r + 1000 ), r + 100);
+        earthMesh.position.set(r + 15000, - ( r + 15000 ), r + 5000);
 
         this.scene.add(earthMesh);
 
