@@ -191,13 +191,6 @@ IW.Scene = function ( idContainer ) {
 
         material.map = this.multiLoader.getTexture('earth_map');
 
-        material.bumpMap = this.multiLoader.getTexture('earth_bump');
-        material.bumpScale = 0.1;
-
-        material.specularMap = this.multiLoader.getTexture('earth_specular');
-        material.specular = new THREE.Color('grey');
-
-
         earthMesh = new THREE.Mesh(geometry, material);
 
         earthMesh.position.set(100, - ( r + 1000 ), r);
