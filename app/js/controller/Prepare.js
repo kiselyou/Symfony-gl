@@ -32,7 +32,11 @@ IW.Prepare = function () {
         names: {
             aim: 'textures/aim/aim.png',
             smoke: 'sprites/smokeparticle.png',
-            explosion: 'sprites/sprite-explosion2.png'
+            explosion: 'sprites/sprite-explosion2.png',
+            earth_map: 'textures/planets/earth-map.png',
+            earth_bump: 'textures/planets/earth-bump.jpg',
+            earth_specular: 'textures/planets/earth-specular.png',
+            earth_clouds: 'textures/planets/earth-clouds.jpg',
         }
     };
 
@@ -92,7 +96,7 @@ IW.Prepare = function () {
      */
     this.loadSkyBox = function () {
         for ( var i = 0; i < this.skyBox.names.length; i++ ) {
-            var path = this.basePath + IW.Prepare.DIR_SKYBOX + '/' + this.skyBox.room + '/' + this.skyBox.names[ i ] + this.skyBox.extension;
+            var path = this.basePath + IW.Prepare.DIR_TEXTURES + '/skybox/' + this.skyBox.room + '/' + this.skyBox.names[ i ] + this.skyBox.extension;
             this.multiLoader.addLoadTexture( this.skyBox.names[ i ], IW.Prepare.LBL_LOAD_SKYBOX, path );
         }
         return this;
@@ -208,7 +212,7 @@ IW.Prepare = function () {
 };
 
 IW.Prepare.DIR_SPRITES = '/images/';
-IW.Prepare.DIR_SKYBOX = '/images/textures/skybox';
+IW.Prepare.DIR_TEXTURES = '/images/textures';
 IW.Prepare.DIR_CONFIG = '/js/config';
 IW.Prepare.DIR_MODELS = '/models';
 

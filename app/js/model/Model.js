@@ -237,10 +237,11 @@ IW.Model = function ( multiLoader, scene, id ) {
      * Loads model and set necessary parameters
      *
      * @param {boolean} addToScene - If true model will be added to scene
-     * @param {string} [json] - It is JSON data model
+     * @param {?string} [json] - It is JSON data model
+     * @param {function} [event]
      * @returns {IW.Model}
      */
-    this.load = function ( addToScene, json ) {
+    this.load = function ( addToScene, json, event ) {
         if ( json ) {
             this.jsonToObject( json );
             this.model = this.multiLoader.getObject( this.name );
@@ -258,6 +259,10 @@ IW.Model = function ( multiLoader, scene, id ) {
             this.model[ 'name' ] = this.id;
 
             this.animation.startAnimation( this.name );
+
+            if ( event ) {
+                event.call( this, this.model );
+            }
 
             if ( addToScene ) {
                 this.scene.add( this.model );

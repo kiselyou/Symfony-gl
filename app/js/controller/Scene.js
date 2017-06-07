@@ -189,34 +189,36 @@ IW.Scene = function ( idContainer ) {
         var r = 15000;
         var geometry =new THREE.SphereGeometry(r, 64, 64);
 
-        material.map = THREE.ImageUtils.loadTexture('images/textures/planets/texture_earth_surface.jpg');
+        material.map = this.multiLoader.getTexture('earth_map');
 
-        material.bumpMap = THREE.ImageUtils.loadTexture('images/textures/planets/texture_earth_night.jpg');
-        material.bumpScale = 0.5;
-        //
-        // material.specularMap = THREE.ImageUtils.loadTexture('images/textures/planets/texture_earth_clouds.jpg');
-        // material.specular = new THREE.Color('grey');
+        material.bumpMap = this.multiLoader.getTexture('earth_bump');
+        material.bumpScale = 0.1;
 
+        material.specularMap = this.multiLoader.getTexture('earth_specular');
+        material.specular = new THREE.Color('grey');
 
 
         earthMesh = new THREE.Mesh(geometry, material);
 
-        earthMesh.position.set(r + 15000, - ( r + 15000 ), r + 5000);
+        earthMesh.position.set(100, - ( r + 1000 ), r);
 
         this.scene.add(earthMesh);
 
 
-        var geometry2   = new THREE.SphereGeometry(r + 1, 64, 64);
-        var material2  = new THREE.MeshPhongMaterial({
-            map     : new THREE.Texture(THREE.ImageUtils.loadTexture('images/textures/planets/texture_earth_clouds.jpg')),
-            side        : THREE.DoubleSide,
-            opacity     : 0.8,
-            transparent : true,
-            depthWrite  : false,
-        });
+        var geometry2   = new THREE.SphereGeometry(r + 50, 64, 64);
+
+        var material2  = new THREE.MeshPhongMaterial(
+            {
+                map     : this.multiLoader.getTexture('earth_clouds'),
+                side        : THREE.DoubleSide,
+                opacity     : 0.2,
+                transparent : true,
+                depthWrite  : false,
+            }
+        );
 
         cloudMesh = new THREE.Mesh(geometry2, material2);
-        earthMesh.add(cloudMesh);
+        earthMesh.add(cloudMesh)
     };
 
 
@@ -232,18 +234,6 @@ IW.Scene = function ( idContainer ) {
         this.orbitControl.rotateSpeed = 2.0;
         this.orbitControl.minDistance = 20;
         this.orbitControl.maxDistance = 60;
-
-        this.orbitControl.state = {
-            polar: {
-                min: this.orbitControl.minPolarAngle,
-                max: this.orbitControl.maxPolarAngle
-            },
-
-            azimuthal: {
-                min: this.orbitControl.minAzimuthAngle,
-                max: this.orbitControl.maxAzimuthAngle
-            }
-        };
 
         // this.orbitControl.maxPolarAngle = 75 * Math.PI / 180;
         // this.orbitControl.minPolarAngle = 45 * Math.PI / 180;
@@ -301,7 +291,7 @@ IW.Scene = function ( idContainer ) {
      */
     function setCamera() {
         scope.camera.position.set( 0, 20, -40 );
-        scope.camera.fov = 70;
+        scope.camera.fov = 60;
         scope.camera.near = 0.1;
         scope.camera.far = 100000;
         scope.camera.aspect = scope.getAspect();

@@ -26,8 +26,8 @@ IW.ModelParameters = function () {
 	 * @type {{acceleration: number, deceleration: number, current: number, max: number, min: number, speedRadiusForward: number, speedRadiusBackward: number}}
 	 */
 	this.speed = {
-        acceleration: 15,    // m.s
-        deceleration: 30,    // m.s
+        acceleration: 5,    // m.s
+        deceleration: 10,    // m.s
         current: 0,         // m.s Can not be less than zero. Default 0
         max:  750,          // m.s It is maximum speed the model
         min: -250,	        // m.s If less than zero. The model is moving back

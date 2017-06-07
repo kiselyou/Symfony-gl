@@ -137,7 +137,10 @@ IW.Player = function ( idScene ) {
             function ( response, resourceId ) {
 
                 scope.model = new IW.Model( scope.multiLoader, scope.scene, resourceId );
-                scope.model.load( true );
+                scope.model.load( true, null, function () {
+                    scope.model.getModel().add( scope.camera );
+                } );
+
                 scope.setPlayerID( resourceId );
                 scope.giveBack( response, resourceId );
 
@@ -163,6 +166,7 @@ IW.Player = function ( idScene ) {
 
                 scope.labels = new IW.LabelControls( scope.model, scope.camera );
                 scope.labels.init();
+
             },
             function ( event, response ) {
                 scope.receive( event, response );
@@ -186,21 +190,6 @@ IW.Player = function ( idScene ) {
         scope.socket.sendToAll( SOCKET_TRADE_TO, {model: scope.model.objectToJSON(), resourceId: scope.getPlayerID() }, true );
         // Send info about position of user model
         scope.model.addFlyEvents( function ( moution ) {
-
-            if ( moution.flyStatus || scope.model.getCurrentSpeed() !== 0 ) {
-
-                scope.orbitControl.minPolarAngle = scope.orbitControl.getPolarAngle();
-                scope.orbitControl.maxPolarAngle = scope.orbitControl.getPolarAngle();
-                // scope.orbitControl.minAzimuthAngle = scope.orbitControl.getAzimuthalAngle();
-                // scope.orbitControl.maxAzimuthAngle = scope.orbitControl.getAzimuthalAngle();
-
-            } else {
-
-                scope.orbitControl.minPolarAngle = scope.orbitControl.state.polar.min;
-                scope.orbitControl.maxPolarAngle = scope.orbitControl.state.polar.max;
-                // scope.orbitControl.minAzimuthAngle = scope.orbitControl.state.azimuthal.min;
-                // scope.orbitControl.maxAzimuthAngle = scope.orbitControl.state.azimuthal.max;
-            }
 
             scope.socket.sendToAll(
                 SOCKET_MODEL_FLY,
@@ -363,8 +352,6 @@ IW.Player = function ( idScene ) {
     this.updateModel = function ( delta ) {
         if ( scope.model ) {
             scope.model.update( delta );
-
-            scope.orbitControl.target.copy( scope.model.getPosition() );
             scope.environment.position.copy( scope.model.getPosition() );
         }
 
