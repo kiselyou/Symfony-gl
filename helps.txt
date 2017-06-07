@@ -2,3 +2,5 @@
 # sudo netstat -tulpn | grep --color :80
 
 # Server ssh root@195.110.59.186
+
+# Start server forever ./forever/development.json
