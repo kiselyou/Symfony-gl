@@ -210,6 +210,11 @@ IW.Scene = function ( idContainer ) {
             }
         );
 
+
+
+
+
+
         cloudMesh = new THREE.Mesh(geometry2, material2);
         earthMesh.add(cloudMesh)
     };
@@ -226,7 +231,7 @@ IW.Scene = function ( idContainer ) {
         this.orbitControl.enableKeys = false;
         this.orbitControl.rotateSpeed = 2.0;
         this.orbitControl.minDistance = 20;
-        this.orbitControl.maxDistance = 60;
+        this.orbitControl.maxDistance = 160;
 
         // this.orbitControl.maxPolarAngle = 75 * Math.PI / 180;
         // this.orbitControl.minPolarAngle = 45 * Math.PI / 180;
@@ -283,8 +288,8 @@ IW.Scene = function ( idContainer ) {
      * @returns {void}
      */
     function setCamera() {
-        scope.camera.position.set( 0, 20, -40 );
-        scope.camera.fov = 60;
+        scope.camera.position.set( 0, 80, -160 );
+        scope.camera.fov = 35;
         scope.camera.near = 0.1;
         scope.camera.far = 100000;
         scope.camera.aspect = scope.getAspect();

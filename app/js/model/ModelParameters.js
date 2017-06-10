@@ -29,7 +29,7 @@ IW.ModelParameters = function () {
         acceleration: 5,    // m.s
         deceleration: 10,    // m.s
         current: 0,         // m.s Can not be less than zero. Default 0
-        max:  750,          // m.s It is maximum speed the model
+        max:  2750,          // m.s It is maximum speed the model
         min: -250,	        // m.s If less than zero. The model is moving back
         speedRadiusForward: 1.2,
         speedRadiusBackward: 1.2,

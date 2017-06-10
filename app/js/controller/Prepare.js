@@ -33,7 +33,7 @@ IW.Prepare = function () {
             aim: 'textures/aim/aim.png',
             smoke: 'sprites/smokeparticle.png',
             explosion: 'sprites/sprite-explosion2.png',
-            earth_map: 'textures/planets/earth-map.jpg',
+            earth_map: 'textures/planets/melted-ice-surface-darker-current-shoresoutline-texture-4096x2048.jpg',
             earth_clouds: 'textures/planets/earth-clouds.jpg',
         }
     };
