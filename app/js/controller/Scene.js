@@ -1,3 +1,59 @@
+var THREEx = THREEx || {};
+
+/**
+ * from http://stemkoski.blogspot.fr/2013/07/shaders-in-threejs-glow-and-halo.html
+ * @return {[type]} [description]
+ */
+THREEx.createAtmosphereMaterial  = function(){
+    var vertexShader  = [
+        'varying vec3 vNormal;',
+        'void main(){',
+        '  // compute intensity',
+        '  vNormal    = normalize( normalMatrix * normal );',
+        '  // set gl_Position',
+        '  gl_Position  = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
+        '}',
+    ].join('\n');
+    var fragmentShader  = [
+        'uniform float coeficient;',
+        'uniform float power;',
+        'uniform vec3  glowColor;',
+
+        'varying vec3  vNormal;',
+
+        'void main(){',
+        '  float intensity  = pow( coeficient - dot(vNormal, vec3(0.0, 0.0, 1.0)), power );',
+        '  gl_FragColor  = vec4( glowColor * intensity, 1.0 );',
+        '}',
+    ].join('\n');
+
+    // create custom material from the shader code above
+    // that is within specially labeled script tags
+    var material  = new THREE.ShaderMaterial({
+        uniforms: {
+            coeficient: {
+                type: 'f',
+                value: 1.0
+            },
+            power: {
+                type: 'f',
+                value: 2
+            },
+            glowColor: {
+                type: 'c',
+                value: new THREE.Color(0xffffff)
+            },
+        },
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader,
+        side: THREE.FrontSide,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        depthWrite: false
+    });
+    return material;
+};
+
 var IW = IW || {};
 
 /**
@@ -186,20 +242,27 @@ IW.Scene = function ( idContainer ) {
 
     this.planet = function () {
         var material=new THREE.MeshPhongMaterial();
-        var r = 15000;
+        var r = 25000;
+        var scalar = 1.02;
         var geometry =new THREE.SphereGeometry(r, 64, 64);
 
         material.map = this.multiLoader.getTexture('earth_map');
+        // material.bumpMap = this.multiLoader.getTexture('earth_bump');
+        // material.bumpScale = 0.05;
+        //
+        // material.specularMap = this.multiLoader.getTexture('earth_specular'); // shininess on oceans
+        // // material.specular = 0x00b3ff;
+        // material.side = THREE.DoubleSide;
 
         earthMesh = new THREE.Mesh(geometry, material);
 
         earthMesh.position.set(100, - ( r + 5000 ), r);
-
+        // earthMesh.receiveShadow = true;
+        // earthMesh.castShadow = true;
         this.scene.add(earthMesh);
 
 
-        var geometry2   = new THREE.SphereGeometry(r + 50, 64, 64);
-
+        var geometry2   = new THREE.SphereGeometry(r, 64, 64);
         var material2  = new THREE.MeshPhongMaterial(
             {
                 map     : this.multiLoader.getTexture('earth_clouds'),
@@ -210,13 +273,21 @@ IW.Scene = function ( idContainer ) {
             }
         );
 
+        cloudMesh = new THREE.Mesh( geometry2, material2 );
+        cloudMesh.scale.multiplyScalar( scalar );
+        earthMesh.add( cloudMesh );
 
 
 
-
-
-        cloudMesh = new THREE.Mesh(geometry2, material2);
-        earthMesh.add(cloudMesh)
+        // var earthGlowMaterial = THREEx.createAtmosphereMaterial();
+        // earthGlowMaterial.uniforms.glowColor.value.set(0x00b3ff);
+        // earthGlowMaterial.uniforms.coeficient.value = 0.8;
+        // earthGlowMaterial.uniforms.power.value = 2;
+        //
+        // var earthGlow = new THREE.Mesh( geometry, earthGlowMaterial );
+        // earthGlow.scale.multiplyScalar( scalar );
+        // earthGlow.position = earthMesh.position;
+        // earthMesh.add( earthGlow );
     };
 
 
@@ -288,8 +359,8 @@ IW.Scene = function ( idContainer ) {
      * @returns {void}
      */
     function setCamera() {
-        scope.camera.position.set( 0, 80, -160 );
-        scope.camera.fov = 45;
+        scope.camera.position.set( 0, 40, -80 );
+        scope.camera.fov = 55;
         scope.camera.near = 0.1;
         scope.camera.far = 100000;
         scope.camera.aspect = scope.getAspect();
@@ -315,28 +386,28 @@ IW.Scene = function ( idContainer ) {
 
 
 
-        var pointLight = new THREE.PointLight( 0xff0000, 1, 5000 );
-        pointLight.position.set( 2, 5, 1 );
+        // var pointLight = new THREE.PointLight( 0xff0000, 1, 5000 );
+        // pointLight.position.set( 2, 5, 1 );
+        //
+        // // pointLight.position.multiplyScalar( 10 );
+        // scope.scene.add( pointLight );
+        //
+        // var sphereSize = 1;
+        // var pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
+        // scope.scene.add( pointLightHelper );
+        //
+        //
+        // var pointLight2 = new THREE.PointLight( 0x00ffff, 1, 8000 );
+        // pointLight2.position.set( -12, 4.6, 2.4 );
+        //
+        // // pointLight2.position.multiplyScalar( 10 );
+        // scope.scene.add( pointLight2 );
+        //
+        // var sphereSize2 = 1;
+        // var pointLightHelper2 = new THREE.PointLightHelper( pointLight2, sphereSize2 );
+        // scope.scene.add( pointLightHelper2 );
 
-        // pointLight.position.multiplyScalar( 10 );
-        scope.scene.add( pointLight );
-
-        var sphereSize = 1;
-        var pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
-        scope.scene.add( pointLightHelper );
-
-
-        var pointLight2 = new THREE.PointLight( 0x00ffff, 1, 8000 );
-        pointLight2.position.set( -12, 4.6, 2.4 );
-
-        // pointLight2.position.multiplyScalar( 10 );
-        scope.scene.add( pointLight2 );
-
-        var sphereSize2 = 1;
-        var pointLightHelper2 = new THREE.PointLightHelper( pointLight2, sphereSize2 );
-        scope.scene.add( pointLightHelper2 );
-
-        scope.scene.add( new THREE.AmbientLight( 0x050505 ) );
+        // scope.scene.add( new THREE.AmbientLight( 0x050505 ) );
     }
 
     /**

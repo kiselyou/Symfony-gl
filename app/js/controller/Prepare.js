@@ -35,6 +35,8 @@ IW.Prepare = function () {
             explosion: 'sprites/sprite-explosion2.png',
             earth_map: 'textures/planets/earth-map.jpg',
             earth_clouds: 'textures/planets/earth-clouds.jpg',
+            earth_bump: 'textures/planets/earth-bump.jpg',
+            earth_specular: 'textures/planets/earth-specular.png',
         }
     };
 
