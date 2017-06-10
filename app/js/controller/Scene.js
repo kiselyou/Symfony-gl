@@ -193,7 +193,7 @@ IW.Scene = function ( idContainer ) {
 
         earthMesh = new THREE.Mesh(geometry, material);
 
-        earthMesh.position.set(100, - ( r + 1000 ), r);
+        earthMesh.position.set(100, - ( r + 5000 ), r);
 
         this.scene.add(earthMesh);
 
@@ -289,7 +289,7 @@ IW.Scene = function ( idContainer ) {
      */
     function setCamera() {
         scope.camera.position.set( 0, 80, -160 );
-        scope.camera.fov = 35;
+        scope.camera.fov = 45;
         scope.camera.near = 0.1;
         scope.camera.far = 100000;
         scope.camera.aspect = scope.getAspect();
