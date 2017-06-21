@@ -33,10 +33,8 @@ IW.Prepare = function () {
             aim: 'textures/aim/aim.png',
             smoke: 'sprites/smokeparticle.png',
             explosion: 'sprites/sprite-explosion2.png',
-            earth_map: 'textures/planets/1.jpg',
-            earth_clouds: 'textures/planets/earth_clouds_2048.png',
-            earth_bump: 'textures/planets/earth-bump.jpg',
-            earth_specular: 'textures/planets/earth-specular.png',
+            earth_map: 'textures/planets/earth_map.jpg',
+            earth_clouds: 'textures/planets/earth_clouds.jpg'
         }
     };
 

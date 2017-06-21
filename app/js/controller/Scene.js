@@ -242,23 +242,18 @@ IW.Scene = function ( idContainer ) {
 
     this.planet = function () {
         var material=new THREE.MeshPhongMaterial();
-        var r = 5000;
+        var r = 1000;
         var scalar = 1.005;
         var geometry =new THREE.SphereGeometry(r, 64, 64);
 
         material.map = this.multiLoader.getTexture('earth_map');
-        // material.bumpMap = this.multiLoader.getTexture('earth_bump');
-        // material.bumpScale = 0.05;
-        //
-        // material.specularMap = this.multiLoader.getTexture('earth_specular'); // shininess on oceans
-        // // material.specular = 0x00b3ff;
-        // material.side = THREE.DoubleSide;
 
         earthMesh = new THREE.Mesh(geometry, material);
+        earthMesh.rotation.y = Math.PI / 2;
 
-        earthMesh.position.set(100, - ( r + 1000 ), r);
-        // earthMesh.receiveShadow = true;
-        // earthMesh.castShadow = true;
+        earthMesh.position.set(100, - ( r + 200 ), r);
+        earthMesh.receiveShadow = true;
+        earthMesh.castShadow = true;
         this.scene.add(earthMesh);
 
 
@@ -267,7 +262,7 @@ IW.Scene = function ( idContainer ) {
             {
                 map     : this.multiLoader.getTexture('earth_clouds'),
                 side        : THREE.DoubleSide,
-                opacity     : 1,
+                opacity     : 0.5,
                 transparent : true,
                 depthWrite  : false,
             }
@@ -279,15 +274,15 @@ IW.Scene = function ( idContainer ) {
 
 
 
-        // var earthGlowMaterial = THREEx.createAtmosphereMaterial();
-        // earthGlowMaterial.uniforms.glowColor.value.set(0x00b3ff);
-        // earthGlowMaterial.uniforms.coeficient.value = 0.5;
-        // earthGlowMaterial.uniforms.power.value = 1;
-        //
-        // var earthGlow = new THREE.Mesh( geometry, earthGlowMaterial );
-        // earthGlow.scale.multiplyScalar( scalar );
-        // earthGlow.position = earthMesh.position;
-        // earthMesh.add( earthGlow );
+        var earthGlowMaterial = THREEx.createAtmosphereMaterial();
+        earthGlowMaterial.uniforms.glowColor.value.set(0x00b3ff);
+        earthGlowMaterial.uniforms.coeficient.value = 1;
+        earthGlowMaterial.uniforms.power.value = 5;
+
+        var earthGlow = new THREE.Mesh( geometry, earthGlowMaterial );
+        earthGlow.scale.multiplyScalar( scalar );
+        earthGlow.position = earthMesh.position;
+        earthMesh.add( earthGlow );
     };
 
 
@@ -378,11 +373,11 @@ IW.Scene = function ( idContainer ) {
         light.position.set( 0, 1000, 0 );
         scope.scene.add( light );
 
-        light = new THREE.DirectionalLight( 0xaabbff, 0.5 );
-        light.position.x = 300;
-        light.position.y = 250;
-        light.position.z = -500;
-        scope.scene.add( light );
+        // light = new THREE.DirectionalLight( 0xaabbff, 0.5 );
+        // light.position.x = 15000;
+        // light.position.y = 250;
+        // light.position.z = -500;
+        // scope.scene.add( light );
 
 
 

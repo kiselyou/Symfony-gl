@@ -138,7 +138,7 @@ IW.Player = function ( idScene ) {
 
                 scope.model = new IW.Model( scope.multiLoader, scope.scene, resourceId );
                 scope.model.load( true, null, function () {
-                    scope.model.getModel().add( scope.camera );
+                    //scope.model.getModel().add( scope.camera );
                 } );
 
                 scope.setPlayerID( resourceId );
@@ -353,6 +353,8 @@ IW.Player = function ( idScene ) {
         if ( scope.model ) {
             scope.model.update( delta );
             scope.environment.position.copy( scope.model.getPosition() );
+            scope.orbitControl.target.copy( scope.model.getPosition() );
+
         }
 
         if ( scope.labels ) {
