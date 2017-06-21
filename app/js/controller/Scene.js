@@ -242,8 +242,8 @@ IW.Scene = function ( idContainer ) {
 
     this.planet = function () {
         var material=new THREE.MeshPhongMaterial();
-        var r = 25000;
-        var scalar = 1.02;
+        var r = 5000;
+        var scalar = 1.005;
         var geometry =new THREE.SphereGeometry(r, 64, 64);
 
         material.map = this.multiLoader.getTexture('earth_map');
@@ -256,7 +256,7 @@ IW.Scene = function ( idContainer ) {
 
         earthMesh = new THREE.Mesh(geometry, material);
 
-        earthMesh.position.set(100, - ( r + 5000 ), r);
+        earthMesh.position.set(100, - ( r + 1000 ), r);
         // earthMesh.receiveShadow = true;
         // earthMesh.castShadow = true;
         this.scene.add(earthMesh);
@@ -267,7 +267,7 @@ IW.Scene = function ( idContainer ) {
             {
                 map     : this.multiLoader.getTexture('earth_clouds'),
                 side        : THREE.DoubleSide,
-                opacity     : 0.2,
+                opacity     : 1,
                 transparent : true,
                 depthWrite  : false,
             }
@@ -281,8 +281,8 @@ IW.Scene = function ( idContainer ) {
 
         // var earthGlowMaterial = THREEx.createAtmosphereMaterial();
         // earthGlowMaterial.uniforms.glowColor.value.set(0x00b3ff);
-        // earthGlowMaterial.uniforms.coeficient.value = 0.8;
-        // earthGlowMaterial.uniforms.power.value = 2;
+        // earthGlowMaterial.uniforms.coeficient.value = 0.5;
+        // earthGlowMaterial.uniforms.power.value = 1;
         //
         // var earthGlow = new THREE.Mesh( geometry, earthGlowMaterial );
         // earthGlow.scale.multiplyScalar( scalar );
