@@ -278,7 +278,9 @@ IW.Model = function ( multiLoader, scene, id ) {
      * @return {IW.Model}
      */
     this.addFlyEvents = function ( callback ) {
-        this.modelFly.setEventKeyboard( callback );
+        this.modelFly
+            .setEventKeyboard( callback )
+            .setAim( this.scene );
         return this;
     };
 

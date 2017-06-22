@@ -161,8 +161,11 @@
 		/**
 		 * Get position motion to
 		 *
+		 * @param {number} far
+		 * @param {number} angle
+		 * @param {number} delta
 		 * @returns {{ x: number, y: number, z: number }}
-		 */
+         */
 		function calcPositionTo( far, angle, delta ) {
 			angle = + angle.toFixed(9);
 			changeAngle( delta );
@@ -179,6 +182,7 @@
 		 *
 		 * @param {string} direction - Possible values ( 'backward' | 'forward' | 'left' | 'right' )
 		 * @param {boolean} status - it is value which need to set
+		 * @returns {void}
 		 */
 		function motionControl( direction, status ) {
 			if ( motion[ direction ] !== status ) {
@@ -191,6 +195,7 @@
 		/**
 		 * Change angle before calculate position motion to
 		 *
+		 * @param {number} delta
 		 * @return {void}
          */
 		function changeAngle( delta ) {
@@ -214,7 +219,7 @@
 		/**
 		 * Sets parameter of motion
 		 *
-		 * @param {{}.<motion>} param
+		 * @param {{}} param
 		 * @return {IW.ModelFly}
 		 */
 		this.setMotion = function ( param ) {
@@ -225,6 +230,72 @@
 			}
 			return this;
 		};
+
+		this.aimPlane = null;
+
+		/**
+		 *
+		 * @param {Scene} scene
+		 * @returns {IW.ModelFly}
+         */
+		this.setAim = function ( scene ) {
+
+			var x = 0, y = 0;
+
+			var heartShape = new THREE.Shape();
+
+			heartShape.moveTo( x, y );
+
+			heartShape.bezierCurveTo( x - 5000, y + 1500, x + 5000, y + 1500, x, y );
+
+			var geometry = new THREE.ShapeGeometry( heartShape, 3 );
+
+			var material = new THREE.MeshBasicMaterial( {
+				color: 0xffffff,
+				side: THREE.DoubleSide,
+				opacity     : 0.1,
+				transparent : true,
+			} );
+			this.aimPlane = new THREE.Mesh( geometry, material );
+			this.aimPlane.rotation.x = Math.PI / 2;
+			this.aimPlane.position.y = 0;
+
+			var model = scope._model.getModel();
+			model.add( this.aimPlane );
+			
+			window.addEventListener( 'mousemove', onMouseMove, false );
+
+			return this;
+		};
+
+		this.raycaster = new THREE.Raycaster();
+		this.mouse = new THREE.Vector2();
+
+		function onMouseMove( event ) {
+
+			if (!scope.aimPlane) {
+				return;
+			}
+
+			// calculate mouse position in normalized device coordinates
+			// (-1 to +1) for both components
+			scope.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+			scope.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+		}
+
+		function aimssssssssss() {
+			// update the picking ray with the camera and mouse position
+			raycaster.setFromCamera( scope.mouse, camera );
+
+			// calculate objects intersecting the picking ray
+			var intersects = raycaster.intersectObjects( scene.children );
+
+			for ( var i = 0; i < intersects.length; i++ ) {
+
+				intersects[ i ].object.material.color.set( 0xff0000 );
+
+			}
+		}
 
 		/**
 		 * Gets parameter of motion

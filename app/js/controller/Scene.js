@@ -1,59 +1,3 @@
-var THREEx = THREEx || {};
-
-/**
- * from http://stemkoski.blogspot.fr/2013/07/shaders-in-threejs-glow-and-halo.html
- * @return {[type]} [description]
- */
-THREEx.createAtmosphereMaterial  = function(){
-    var vertexShader  = [
-        'varying vec3 vNormal;',
-        'void main(){',
-        '  // compute intensity',
-        '  vNormal    = normalize( normalMatrix * normal );',
-        '  // set gl_Position',
-        '  gl_Position  = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-        '}',
-    ].join('\n');
-    var fragmentShader  = [
-        'uniform float coeficient;',
-        'uniform float power;',
-        'uniform vec3  glowColor;',
-
-        'varying vec3  vNormal;',
-
-        'void main(){',
-        '  float intensity  = pow( coeficient - dot(vNormal, vec3(0.0, 0.0, 1.0)), power );',
-        '  gl_FragColor  = vec4( glowColor * intensity, 1.0 );',
-        '}',
-    ].join('\n');
-
-    // create custom material from the shader code above
-    // that is within specially labeled script tags
-    var material  = new THREE.ShaderMaterial({
-        uniforms: {
-            coeficient: {
-                type: 'f',
-                value: 1.0
-            },
-            power: {
-                type: 'f',
-                value: 2
-            },
-            glowColor: {
-                type: 'c',
-                value: new THREE.Color(0xffffff)
-            },
-        },
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader,
-        side: THREE.FrontSide,
-        blending: THREE.AdditiveBlending,
-        transparent: true,
-        depthWrite: false
-    });
-    return material;
-};
-
 var IW = IW || {};
 
 /**
@@ -221,68 +165,14 @@ IW.Scene = function ( idContainer ) {
         this.container.appendChild( this.renderer.domElement );
         this.renderer.gammaInput = true;
         this.renderer.gammaOutput = true;
-
-        this.buildEnvironment( function ( environment ) {
-            scope.scene.add( environment );
-        } );
+        this.buildEnvironment( scope.scene );
 
         setCamera();
         setLight();
         render();
 
-
-        this.planet();
-
         this.show();
         return this;
-    };
-
-    var earthMesh = null;
-    var cloudMesh = null;
-
-    this.planet = function () {
-        var material=new THREE.MeshPhongMaterial();
-        var r = 1000;
-        var scalar = 1.005;
-        var geometry =new THREE.SphereGeometry(r, 64, 64);
-
-        material.map = this.multiLoader.getTexture('earth_map');
-
-        earthMesh = new THREE.Mesh(geometry, material);
-        earthMesh.rotation.y = Math.PI / 2;
-
-        earthMesh.position.set(100, - ( r + 200 ), r);
-        earthMesh.receiveShadow = true;
-        earthMesh.castShadow = true;
-        this.scene.add(earthMesh);
-
-
-        var geometry2   = new THREE.SphereGeometry(r, 64, 64);
-        var material2  = new THREE.MeshPhongMaterial(
-            {
-                map     : this.multiLoader.getTexture('earth_clouds'),
-                side        : THREE.DoubleSide,
-                opacity     : 0.5,
-                transparent : true,
-                depthWrite  : false,
-            }
-        );
-
-        cloudMesh = new THREE.Mesh( geometry2, material2 );
-        cloudMesh.scale.multiplyScalar( scalar );
-        earthMesh.add( cloudMesh );
-
-
-
-        var earthGlowMaterial = THREEx.createAtmosphereMaterial();
-        earthGlowMaterial.uniforms.glowColor.value.set(0x00b3ff);
-        earthGlowMaterial.uniforms.coeficient.value = 1;
-        earthGlowMaterial.uniforms.power.value = 5;
-
-        var earthGlow = new THREE.Mesh( geometry, earthGlowMaterial );
-        earthGlow.scale.multiplyScalar( scalar );
-        earthGlow.position = earthMesh.position;
-        earthMesh.add( earthGlow );
     };
 
 
@@ -336,11 +226,6 @@ IW.Scene = function ( idContainer ) {
 
         if ( scope.renderEvent ) {
             scope.renderEvent.call( this, delta );
-        }
-
-        if (earthMesh) {
-            earthMesh.rotation.y += 1 / 256 * delta;
-            cloudMesh.rotation.y += 1 / 128 * delta;
         }
 
         stats.end();

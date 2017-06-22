@@ -138,7 +138,7 @@ IW.Player = function ( idScene ) {
 
                 scope.model = new IW.Model( scope.multiLoader, scope.scene, resourceId );
                 scope.model.load( true, null, function () {
-                    //scope.model.getModel().add( scope.camera );
+                    // scope.model.getModel().add( scope.camera );
                 } );
 
                 scope.setPlayerID( resourceId );
@@ -164,8 +164,9 @@ IW.Player = function ( idScene ) {
                     scope.panels.updateSpeed();
                 } );
 
-                scope.labels = new IW.LabelControls( scope.model, scope.camera );
-                scope.labels.init();
+
+                // scope.labels = new IW.LabelControls( scope.model, scope.camera );
+                // scope.labels.init();
 
             },
             function ( event, response ) {
@@ -309,7 +310,7 @@ IW.Player = function ( idScene ) {
                     if ( dataModel.destroy ) {
                         // Unsubscribe if client was killed
                         scope.model.destroyModel( true, scope.model.id );
-                        scope.labels.removeLabels();
+                        //scope.labels.removeLabels();
                         scope.socket.unsubscribe();
                     }
                 // Any players except current player
@@ -351,14 +352,16 @@ IW.Player = function ( idScene ) {
      */
     this.updateModel = function ( delta ) {
         if ( scope.model ) {
+
             scope.model.update( delta );
-            scope.environment.position.copy( scope.model.getPosition() );
             scope.orbitControl.target.copy( scope.model.getPosition() );
 
+            scope.setPositionEnvironment( scope.model.getPosition() );
+            scope.updateEnvironment( delta );
         }
 
-        if ( scope.labels ) {
-            scope.labels.update();
-        }
+        // if ( scope.labels ) {
+        //     scope.labels.update();
+        // }
     }
 };
