@@ -231,72 +231,6 @@
 			return this;
 		};
 
-		this.aimPlane = null;
-
-		/**
-		 *
-		 * @param {Scene} scene
-		 * @returns {IW.ModelFly}
-         */
-		this.setAim = function ( scene ) {
-
-			var x = 0, y = 0;
-
-			var heartShape = new THREE.Shape();
-
-			heartShape.moveTo( x, y );
-
-			heartShape.bezierCurveTo( x - 5000, y + 1500, x + 5000, y + 1500, x, y );
-
-			var geometry = new THREE.ShapeGeometry( heartShape, 3 );
-
-			var material = new THREE.MeshBasicMaterial( {
-				color: 0xffffff,
-				side: THREE.DoubleSide,
-				opacity     : 0.1,
-				transparent : true,
-			} );
-			this.aimPlane = new THREE.Mesh( geometry, material );
-			this.aimPlane.rotation.x = Math.PI / 2;
-			this.aimPlane.position.y = 0;
-
-			var model = scope._model.getModel();
-			model.add( this.aimPlane );
-			
-			window.addEventListener( 'mousemove', onMouseMove, false );
-
-			return this;
-		};
-
-		this.raycaster = new THREE.Raycaster();
-		this.mouse = new THREE.Vector2();
-
-		function onMouseMove( event ) {
-
-			if (!scope.aimPlane) {
-				return;
-			}
-
-			// calculate mouse position in normalized device coordinates
-			// (-1 to +1) for both components
-			scope.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-			scope.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-		}
-
-		function aimssssssssss() {
-			// update the picking ray with the camera and mouse position
-			raycaster.setFromCamera( scope.mouse, camera );
-
-			// calculate objects intersecting the picking ray
-			var intersects = raycaster.intersectObjects( scene.children );
-
-			for ( var i = 0; i < intersects.length; i++ ) {
-
-				intersects[ i ].object.material.color.set( 0xff0000 );
-
-			}
-		}
-
 		/**
 		 * Gets parameter of motion
 		 *
@@ -318,6 +252,82 @@
 			return this;
 		};
 
+		var aimControls = {
+			raycaster: new THREE.Raycaster(),
+			mouse: new THREE.Vector2(),
+			aimIntersect: [],
+			camera: null,
+		};
+
+		/**
+		 *
+		 * @param {Camera} camera
+		 * @returns {IW.ModelFly}
+		 */
+		this.setAim = function ( camera ) {
+
+			aimControls.camera = camera;
+			var x = 0, y = 0;
+
+			var heartShape = new THREE.Shape();
+
+			heartShape.moveTo( x, y );
+
+			heartShape.bezierCurveTo( x - 5000, y + 1500, x + 5000, y + 1500, x, y );
+
+			var geometry = new THREE.ShapeGeometry( heartShape, 3 );
+
+			var material = new THREE.MeshBasicMaterial( {
+				color: 0x9fffff,
+				side: THREE.DoubleSide,
+				opacity     : 0.1,
+				transparent : true,
+			} );
+			var plane = new THREE.Mesh( geometry, material );
+			plane.rotation.x = Math.PI / 2;
+			plane.position.y = 0;
+
+			var model = scope._model.getModel();
+			model.add( plane );
+			aimControls.aimIntersect.push( plane );
+
+
+			window.addEventListener( 'mousemove', onMouseMove, false );
+
+			return this;
+		};
+
+		function onMouseMove( event ) {
+
+			if (!aimControls.camera) {
+				return;
+			}
+
+			// calculate mouse position in normalized device coordinates
+			// (-1 to +1) for both components
+			aimControls.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+			aimControls.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+		}
+
+		function updateAim() {
+
+			if (!aimControls.camera) {
+				return;
+			}
+
+			// update the picking ray with the camera and mouse position
+			aimControls.raycaster.setFromCamera( aimControls.mouse, aimControls.camera );
+
+			// calculate objects intersecting the picking ray
+			var intersects = aimControls.raycaster.intersectObjects( aimControls.aimIntersect );
+
+			if ( intersects.length > 0 ) {
+				$('canvas').css('cursor', 'url(images/textures/aim/aim.png) 4 12, crosshair');
+			} else {
+				$('canvas').css('cursor', 'default');
+			}
+		}
+
 		/**
 		 * Update calculate position of model in order to move model
 		 *
@@ -328,6 +338,8 @@
 			if ( !this._model.enabled ) {
 				return;
 			}
+
+			updateAim();
 
 			var _speedModel = this._model.getCurrentSpeed();
 

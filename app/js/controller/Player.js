@@ -190,22 +190,42 @@ IW.Player = function ( idScene ) {
         // Send to all information about model of new user
         scope.socket.sendToAll( SOCKET_TRADE_TO, {model: scope.model.objectToJSON(), resourceId: scope.getPlayerID() }, true );
         // Send info about position of user model
-        scope.model.addFlyEvents( function ( moution ) {
 
-            scope.socket.sendToAll(
-                SOCKET_MODEL_FLY,
-                {
-                    modelFly: moution,
-                    modelParam: {
-                        angle: scope.model.angle,
-                        position: scope.model.getPosition(),
-                        speed: scope.model.getCurrentSpeed()
+        scope.model.modelFly
+            .setEventKeyboard( function ( moution ) {
+
+                scope.socket.sendToAll(
+                    SOCKET_MODEL_FLY,
+                    {
+                        modelFly: moution,
+                        modelParam: {
+                            angle: scope.model.angle,
+                            position: scope.model.getPosition(),
+                            speed: scope.model.getCurrentSpeed()
+                        },
+                        resourceId: scope.getPlayerID()
                     },
-                    resourceId: scope.getPlayerID()
-                },
-                true
-            );
-        } );
+                    true
+                );
+            } )
+            .setAim( this.camera );
+
+        // scope.model.addFlyEvents( function ( moution ) {
+        //
+        //     scope.socket.sendToAll(
+        //         SOCKET_MODEL_FLY,
+        //         {
+        //             modelFly: moution,
+        //             modelParam: {
+        //                 angle: scope.model.angle,
+        //                 position: scope.model.getPosition(),
+        //                 speed: scope.model.getCurrentSpeed()
+        //             },
+        //             resourceId: scope.getPlayerID()
+        //         },
+        //         true
+        //     );
+        // } );
 
         // Send to all information about shot of user model
         scope.model.modelShot.setShotCallback( function ( weaponType ) {

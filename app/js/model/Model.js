@@ -271,18 +271,18 @@ IW.Model = function ( multiLoader, scene, id ) {
         return this;
     };
 
-    /**
-     * This method adds fly control to this model
-     *
-     * @param {function} [callback]
-     * @return {IW.Model}
-     */
-    this.addFlyEvents = function ( callback ) {
-        this.modelFly
-            .setEventKeyboard( callback )
-            .setAim( this.scene );
-        return this;
-    };
+    // /**
+    //  * This method adds fly control to this model
+    //  *
+    //  * @param {function} [callback]
+    //  * @return {IW.Model}
+    //  */
+    // this.addFlyEvents = function ( callback ) {
+    //     this.modelFly
+    //         .setEventKeyboard( callback )
+    //         .setAim( this.scene );
+    //     return this;
+    // };
 
     /**
      * WARNING: This method are not using yet
