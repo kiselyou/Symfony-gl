@@ -31,6 +31,22 @@
                 "physicalDamage": 1500,
                 "criticalDamage": 50
             }
+        },
+        "weapon_11": {
+            "type": "ROCKET_LAUNCHER",
+            "model": "iw-rocket",
+            "active": true,
+            "radius": 15000,
+            "speed": 3000,
+            "intervalTime": 20,
+            "charges": 5,
+            "energy": 20,
+            "reloadingTime": 50,
+            "damage": {
+                "type": "rocket",
+                "physicalDamage": 10,
+                "criticalDamage": 5
+            }
         }
     }
 }

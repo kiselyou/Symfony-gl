@@ -180,7 +180,7 @@
 		/**
 		 * This method are controlling motion parameters
 		 *
-		 * @param {string} direction - Possible values ( 'backward' | 'forward' | 'left' | 'right' )
+		 * @param {string} direction - Possible values ( 'backward' | 'forward' | 'left' | 'right' | 'stop' )
 		 * @param {boolean} status - it is value which need to set
 		 * @returns {void}
 		 */
@@ -255,18 +255,24 @@
 		var aimControls = {
 			raycaster: new THREE.Raycaster(),
 			mouse: new THREE.Vector2(),
-			aimIntersect: [],
+			position: new THREE.Vector3(),
+			callback: null,
+			click: false,
+			intersect: [],
 			camera: null,
 		};
 
 		/**
 		 *
 		 * @param {Camera} camera
+		 * @param {function} callback
 		 * @returns {IW.ModelFly}
 		 */
-		this.setAim = function ( camera ) {
+		this.setAim = function ( camera, callback ) {
 
 			aimControls.camera = camera;
+			aimControls.callback = callback;
+
 			var x = 0, y = 0;
 
 			var heartShape = new THREE.Shape();
@@ -278,9 +284,9 @@
 			var geometry = new THREE.ShapeGeometry( heartShape, 3 );
 
 			var material = new THREE.MeshBasicMaterial( {
-				color: 0x9fffff,
+				color: 0xffffff,
 				side: THREE.DoubleSide,
-				opacity     : 0.1,
+				opacity     : 0.05,
 				transparent : true,
 			} );
 			var plane = new THREE.Mesh( geometry, material );
@@ -289,13 +295,19 @@
 
 			var model = scope._model.getModel();
 			model.add( plane );
-			aimControls.aimIntersect.push( plane );
-
+			aimControls.intersect.push( plane );
 
 			window.addEventListener( 'mousemove', onMouseMove, false );
+			document.body.addEventListener( 'click', onClick, false );
 
 			return this;
 		};
+		
+		function onClick() {
+			if (aimControls.click && aimControls.callback) {
+				aimControls.callback.call( this, aimControls.position );
+			}
+		}
 
 		function onMouseMove( event ) {
 
@@ -319,11 +331,14 @@
 			aimControls.raycaster.setFromCamera( aimControls.mouse, aimControls.camera );
 
 			// calculate objects intersecting the picking ray
-			var intersects = aimControls.raycaster.intersectObjects( aimControls.aimIntersect );
+			var intersects = aimControls.raycaster.intersectObjects( aimControls.intersect );
 
 			if ( intersects.length > 0 ) {
-				$('canvas').css('cursor', 'url(images/textures/aim/aim.png) 4 12, crosshair');
+				aimControls.click = true;
+				aimControls.position.copy( intersects[0].point );
+				$('canvas').css('cursor', 'url(images/textures/aim/aim.png) 16 16, crosshair');
 			} else {
+				aimControls.click = false;
 				$('canvas').css('cursor', 'default');
 			}
 		}

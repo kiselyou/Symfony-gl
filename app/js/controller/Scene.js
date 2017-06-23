@@ -189,6 +189,18 @@ IW.Scene = function ( idContainer ) {
         this.orbitControl.minDistance = 20;
         this.orbitControl.maxDistance = 160;
 
+        this.orbitControl.state = {
+            polar: {
+                min: this.orbitControl.minPolarAngle,
+                max: this.orbitControl.maxPolarAngle
+            },
+
+            azimuthal: {
+                min: this.orbitControl.minAzimuthAngle,
+                max: this.orbitControl.maxAzimuthAngle
+            }
+        };
+
         // this.orbitControl.maxPolarAngle = 75 * Math.PI / 180;
         // this.orbitControl.minPolarAngle = 45 * Math.PI / 180;
 

@@ -194,6 +194,21 @@ IW.Player = function ( idScene ) {
         scope.model.modelFly
             .setEventKeyboard( function ( moution ) {
 
+                if ( moution.flyStatus || scope.model.getCurrentSpeed() !== 0 ) {
+
+                    scope.orbitControl.minPolarAngle = scope.orbitControl.getPolarAngle();
+                    scope.orbitControl.maxPolarAngle = scope.orbitControl.getPolarAngle();
+                    // scope.orbitControl.minAzimuthAngle = scope.orbitControl.getAzimuthalAngle();
+                    // scope.orbitControl.maxAzimuthAngle = scope.orbitControl.getAzimuthalAngle();
+
+                } else {
+
+                    scope.orbitControl.minPolarAngle = scope.orbitControl.state.polar.min;
+                    scope.orbitControl.maxPolarAngle = scope.orbitControl.state.polar.max;
+                    // scope.orbitControl.minAzimuthAngle = scope.orbitControl.state.azimuthal.min;
+                    // scope.orbitControl.maxAzimuthAngle = scope.orbitControl.state.azimuthal.max;
+                }
+
                 scope.socket.sendToAll(
                     SOCKET_MODEL_FLY,
                     {
@@ -208,7 +223,10 @@ IW.Player = function ( idScene ) {
                     true
                 );
             } )
-            .setAim( this.camera );
+            .setAim( this.camera, function ( v ) {
+                console.log( v );
+                scope.model.modelShot.shot( 'weapon_11', v );
+            } );
 
         // scope.model.addFlyEvents( function ( moution ) {
         //
@@ -374,7 +392,9 @@ IW.Player = function ( idScene ) {
         if ( scope.model ) {
 
             scope.model.update( delta );
+
             scope.orbitControl.target.copy( scope.model.getPosition() );
+
 
             scope.setPositionEnvironment( scope.model.getPosition() );
             scope.updateEnvironment( delta );

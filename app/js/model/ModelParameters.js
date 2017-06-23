@@ -26,11 +26,12 @@ IW.ModelParameters = function () {
 	 * @type {{acceleration: number, deceleration: number, current: number, max: number, min: number, speedRadiusForward: number, speedRadiusBackward: number}}
 	 */
 	this.speed = {
-        acceleration: 5,    // m.s
-        deceleration: 25,    // m.s
-        current: 0,         // m.s Can not be less than zero. Default 0
-        max:  2750,          // m.s It is maximum speed the model
-        min: -250,	        // m.s If less than zero. The model is moving back
+        acceleration: 50,      // m.s
+        accelerationBack: 70,  // m.s
+        deceleration: 125,     // m.s
+        current: 0,            // m.s Can not be less than zero. Default 0
+        max:  2750,            // m.s It is maximum speed the model
+        min: -250,	           // m.s If less than zero. The model is moving back
         speedRadiusForward: 1.2,
         speedRadiusBackward: 1.2,
         callback: null
@@ -411,6 +412,22 @@ IW.ModelParameters = function () {
     };
 
     /**
+     * Reduce current speed of model
+     *
+     * @returns {IW.ModelParameters}
+     */
+    this.reduceCurrentSpeed = function () {
+        if (this.getCurrentSpeed() > this.speed.min) {
+            this.speed.current -= this.getCurrentSpeed() < 0 ? this.speed.accelerationBack / 2 : this.speed.accelerationBack;
+        } else if ( this.getCurrentSpeed() < this.speed.min ) {
+            this.speed.current = this.speed.min;
+        }
+
+        addEventSpeed();
+        return this;
+    };
+
+    /**
      * Increase current speed of model
      *
      * @returns {IW.ModelParameters}
@@ -420,22 +437,6 @@ IW.ModelParameters = function () {
             this.speed.current += this.speed.acceleration;
         } else if ( this.getCurrentSpeed() < this.speed.max ) {
             this.speed.current = this.speed.max;
-        }
-
-        addEventSpeed();
-        return this;
-    };
-
-    /**
-     * Reduce current speed of model
-     *
-     * @returns {IW.ModelParameters}
-     */
-    this.reduceCurrentSpeed = function () {
-        if (this.getCurrentSpeed() > this.speed.min) {
-            this.speed.current -= this.getCurrentSpeed() < 0 ? this.speed.deceleration / 10 : this.speed.deceleration;
-        } else if ( this.getCurrentSpeed() < this.speed.min ) {
-            this.speed.current = this.speed.min;
         }
 
         addEventSpeed();

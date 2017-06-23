@@ -75,9 +75,12 @@ IW.ModelShot = function ( model ) {
             if (!scope.model.getPosition()) {
                 return;
             }
-            var p = scope.model.getPosition();
-            var x = p.x + config.radius * Math.cos( scope.model.angle );
-            var z = p.z + config.radius * Math.sin( scope.model.angle );
+
+			var p = scope.model.getPosition();
+			var angle = config.position ? scope.model.getAngle( p, config.position ) : scope.model.angle;
+
+			var x = p.x + config.radius * Math.cos( angle );
+			var z = p.z + config.radius * Math.sin( angle );
 
             var mesh = scope.model.multiLoader.getObject( config.model );
 
@@ -197,9 +200,10 @@ IW.ModelShot = function ( model ) {
 	 * This method is creating shot, setting parameters and adding it to scene
 	 *
 	 * @param {string|number} type
+	 * @param {THREE.Vector3} [position]
 	 * @returns {void}
 	 */
-	this.shot = function ( type ) {
+	this.shot = function ( type, position ) {
 
 		if ( !this.weaponConfig || !this.weaponConfig.hasOwnProperty( 'weapon' ) ) {
 			console.warn( 'Config "weapon" is not correct' );
@@ -216,6 +220,10 @@ IW.ModelShot = function ( model ) {
 		}
 
 		var config = this.weaponConfig.weapon[ type ];
+
+		if (position) {
+			config['position'] = new THREE.Vector3().copy(position);
+		}
 
 		if ( ( this.model.getCurrentEnergy() >= config.energy ) && config.active ) {
 			config.active = false;
