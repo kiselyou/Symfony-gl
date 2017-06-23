@@ -215,14 +215,14 @@ IW.ModelShot = function ( model ) {
 			return;
 		}
 
-		if ( this._shotCallback ) {
-			this._shotCallback.call( this, type );
-		}
-
 		var config = this.weaponConfig.weapon[ type ];
 
 		if (position) {
 			config['position'] = new THREE.Vector3().copy(position);
+		}
+
+		if ( this._shotCallback ) {
+			this._shotCallback.call( this, type, position );
 		}
 
 		if ( ( this.model.getCurrentEnergy() >= config.energy ) && config.active ) {

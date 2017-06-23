@@ -286,7 +286,7 @@
 			var material = new THREE.MeshBasicMaterial( {
 				color: 0xffffff,
 				side: THREE.DoubleSide,
-				opacity     : 0.05,
+				opacity     : 0.03,
 				transparent : true,
 			} );
 			var plane = new THREE.Mesh( geometry, material );

@@ -223,31 +223,14 @@ IW.Player = function ( idScene ) {
                     true
                 );
             } )
+            // Set Aim and add event when user clicked in the space of aim
             .setAim( this.camera, function ( v ) {
-                console.log( v );
                 scope.model.modelShot.shot( 'weapon_11', v );
             } );
 
-        // scope.model.addFlyEvents( function ( moution ) {
-        //
-        //     scope.socket.sendToAll(
-        //         SOCKET_MODEL_FLY,
-        //         {
-        //             modelFly: moution,
-        //             modelParam: {
-        //                 angle: scope.model.angle,
-        //                 position: scope.model.getPosition(),
-        //                 speed: scope.model.getCurrentSpeed()
-        //             },
-        //             resourceId: scope.getPlayerID()
-        //         },
-        //         true
-        //     );
-        // } );
-
         // Send to all information about shot of user model
-        scope.model.modelShot.setShotCallback( function ( weaponType ) {
-            scope.socket.sendToAll( SOCKET_MODEL_SHOT, { weaponType: weaponType, resourceId: scope.getPlayerID() }, true );
+        scope.model.modelShot.setShotCallback( function ( weaponType, position ) {
+            scope.socket.sendToAll( SOCKET_MODEL_SHOT, { weaponType: weaponType, resourceId: scope.getPlayerID(), position: position }, true );
         } );
 
         // Send info about shot collision
@@ -318,7 +301,7 @@ IW.Player = function ( idScene ) {
                      * @param {IW.Model} client
                      */
                     function ( client ) {
-                        client.modelShot.shot( data.weaponType );
+                        client.modelShot.shot( data.weaponType, data.position );
                     }
                 );
                 break;
