@@ -13,6 +13,7 @@ $('#iw_show_preview').click( function () {
         play
             .prod(false)
             .loadSkyBox()
+            .loadSprites()
             .loadModel(IW.Prepare.MODEL_EXPLORER, IW.Prepare.CATEGORY_SHIPS)
             .previewConfigOrbitControl()
             .start(function (multiLoader, ajaxData) {
