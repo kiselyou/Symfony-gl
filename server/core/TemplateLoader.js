@@ -43,17 +43,19 @@ IW.TemplateLoader.prototype.uploadPattern = function (route, viewPath) {
         var view = this.ch.get(route, viewPath);
 
         if (view) {
+
             content = view;
+
         } else {
-            var pathIndex = this.concatPath(this.DIR_APP, '/index.html');
+
+            var pathIndex = this.joinPath(this.DIR_APP, '/index.html');
             var indexHTML = fs.readFileSync(pathIndex);
             var $ = cheerio.load(indexHTML);
             $('body').prepend('<template data-include="' + viewPath + '"></template>');
 
             // Include additional templates
             var arrTemplates = [];
-            var pattern = this.includePattern($.html(), arrTemplates);
-            content = this.filter(pattern, arrTemplates);
+            content = this.includePattern($.html(), arrTemplates);
 
             // Add template to cache
             this.ch.add(route, viewPath, content);
@@ -78,28 +80,25 @@ IW.TemplateLoader.prototype.uploadPattern = function (route, viewPath) {
  * @returns {{content: string, status: boolean, error: * }}
  */
 IW.TemplateLoader.prototype.uploadPatternError = function (error) {
-    // Error load page - need write log to file
-    console.log(error);
 
     try {
 
         var content = '';
-        var view = this.ch.get('/404.html', '/pages/404.html');
+        var view = this.ch.get('/404.html', '/404.html');
 
         if (view) {
             content = view;
         } else {
 
-            var pathIndex = this.concatPath(this.DIR_APP, '/index.html');
+            var pathIndex = this.joinPath(this.DIR_APP, '/index.html');
             var $ = cheerio.load(fs.readFileSync(pathIndex));
-            $('body').html('<template data-include="/pages/404.html"></template>');
+            $('body').html('<template data-include="/404.html"></template>');
 
             var arrTemplates = [];
-            var pattern = this.includePattern($.html(), arrTemplates);
-            content = this.filter(pattern, arrTemplates);
+            content = this.includePattern($.html(), arrTemplates);
 
             // Add template to cache
-            this.ch.add('/404.html', '/pages/404.html', content);
+            this.ch.add('/404.html', '/404.html', content);
         }
 
         // Upload page error
@@ -142,7 +141,7 @@ IW.TemplateLoader.prototype.includePattern = function (content, arrTemplates) {
     $('[data-include]').each(function() {
 
         var nameTemplate = $(this).attr('data-include');
-        var path = scope.concatPath(scope.PATH_TEMPLATES_HTML, nameTemplate);
+        var path = scope.joinPath(scope.PATH_TEMPLATES, nameTemplate);
 
         if (fs.existsSync(path)) {
 
@@ -152,6 +151,7 @@ IW.TemplateLoader.prototype.includePattern = function (content, arrTemplates) {
             scope.fillArray(arrTemplates, nameTemplate);
 
         } else {
+
             console.log('Include: Template was not found in path ' + path);
         }
     });
@@ -172,12 +172,12 @@ IW.TemplateLoader.prototype.extendPattern = function ($, arrTemplates) {
 
     $('[data-extend]').each(function () {
 
-        var blockName = $(this).attr('data-block');
+        var blockName = $(this).attr('data-container');
         var nameTemplate = $(this).attr('data-extend');
-        var path = scope.concatPath(scope.PATH_TEMPLATES_HTML, nameTemplate);
+        var path = scope.joinPath(scope.PATH_TEMPLATES, nameTemplate);
 
-        if (!blockName) {
-            console.log('Extend: The block was not found '  + blockName);
+        if (!blockName || !nameTemplate) {
+            console.log('Extend: You mast set attribute "data-container=\"name-container\"" in the template "' + nameTemplate + '"');
             return false;
         }
 
@@ -212,32 +212,32 @@ IW.TemplateLoader.prototype.fillArray = function (arr, value) {
     }
 };
 
-/**
- * This method is uploading additional scripts
- *
- * @param {string} pattern - It is uploaded pattern which has body element
- * @param {Array} arrTemplates - It is list included templates for which need find and upload scripts
- * @return {string}
- */
-IW.TemplateLoader.prototype.filter = function (pattern, arrTemplates) {
-
-    var $ = cheerio.load(pattern);
-
-    for (var i = 0; i < arrTemplates.length; i++) {
-
-        var nameTemplateScript = arrTemplates[i].replace(/(\.html)$/, '.js');
-
-        if (fs.existsSync(this.concatPath(this.PATH_TEMPLATES_JS, nameTemplateScript))) {
-
-            var path = this.concatPath(this.concatPath(IW.Request.DIR_TEMPLATES, IW.Request.TEMPLATE_JS), nameTemplateScript);
-            $('body:last-child').append('<script type="application/javascript" src="' + path.replace(/^(\/)/, '') + '"></script>');
-        }
-    }
-
-    this.moveScripts($);
-
-    return $.html();
-};
+// /**
+//  * This method is uploading additional scripts
+//  *
+//  * @param {string} pattern - It is uploaded pattern which has body element
+//  * @param {Array} arrTemplates - It is list included templates for which need find and upload scripts
+//  * @return {string}
+//  */
+// IW.TemplateLoader.prototype.filter = function (pattern, arrTemplates) {
+//
+//     var $ = cheerio.load(pattern);
+//
+//     for (var i = 0; i < arrTemplates.length; i++) {
+//
+//         var nameTemplateScript = arrTemplates[i].replace(/(\.html)$/, '.js');
+//
+//         if (fs.existsSync(this.joinPath(this.PATH_TEMPLATES_JS, nameTemplateScript))) {
+//
+//             var path = this.joinPath(this.joinPath(IW.Request.DIR_TEMPLATES, IW.Request.TEMPLATE_JS), nameTemplateScript);
+//             $('body:last-child').append('<script type="application/javascript" src="' + path.replace(/^(\/)/, '') + '"></script>');
+//         }
+//     }
+//
+//     this.moveScripts($);
+//
+//     return $.html();
+// };
 
 /**
  * Move scripts to end body of main template

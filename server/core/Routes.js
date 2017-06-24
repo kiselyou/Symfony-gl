@@ -1,4 +1,3 @@
-
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
@@ -23,6 +22,7 @@ IW.Routes.prototype.constructor = IW.Routes;
  * @returns {Array}
  */
 IW.Routes.prototype._control = function () {
+
     var scope = this;
     // Upload configured routes
     for (var i = 0; i < this.routes.length; i++) {
@@ -45,7 +45,7 @@ IW.Routes.prototype._control = function () {
     }
 
     // Setting route to load templates
-    app.all(scope.config.routes.templates, function(req, res) {
+    app.all('/template', function(req, res) {
 
         try {
 
@@ -66,13 +66,15 @@ IW.Routes.prototype._control = function () {
         }
     });
 
-    // Setting public directory
-    app.use( express.static( this.DIR_APP ) );
+    app.use('/app/', express.static(this.joinPath(__dirname, '/../../' + this.DIR_APP)));
 
     // Setting route error
     app.get( '*', function( req, res ) {
-        scope.responseHTML( res, scope.uploadPatternError( 'The page was not found in GET path: "' + req.url + '"' ) );
+        // console.log(req.url);
+        // console.log(req.baseUrl);
+        scope.responseHTML( res, scope.uploadPatternError( 'The page "' + req.url + '" was not found') );
     });
+
 };
 
 // /**
@@ -191,6 +193,7 @@ IW.Routes.prototype.callToController = function ( params ) {
  * @param {{ status: boolean, content: string, error: string }} pattern
  */
 IW.Routes.prototype.responseHTML = function ( res, pattern ) {
+    // console.log(pattern);
     if ( pattern.status ) {
         res.writeHead( 200, { 'Content-Type': 'text/html' } );
         res.end( pattern.content, this.config.encoding, true );

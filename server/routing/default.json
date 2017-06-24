@@ -2,7 +2,7 @@
   "index": {
     "type": "pattern",
     "route": "/",
-    "viewPath": "/pages/preview.html",
+    "viewPath": "/controller/main.html",
     "method": "GET"
   },
   "user": {

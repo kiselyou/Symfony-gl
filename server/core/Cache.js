@@ -132,6 +132,7 @@ IW.Cache.prototype.add = function (route, viewPath, view) {
  */
 IW.Cache.prototype.get = function (route, viewPath) {
     var pattern = this.findView(route, viewPath);
+
     if (!pattern) {
         return null;
     }

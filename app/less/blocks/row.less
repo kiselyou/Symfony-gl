@@ -4,19 +4,29 @@
   width: 100%;
 
   &_xs {
-    padding: 10px 0
+    padding: 5px;
+    width: ~"calc(100% - 10px)";
   }
 
-  &_sm {
-    padding: 15px 0;
+  @media (min-width: 768px) {
+    &_sm {
+      padding: 10px;
+      width: ~"calc(100% - 20px)";
+    }
   }
 
-  &_md {
-    padding: 20px 0;
+  @media (min-width: 992px) {
+    &_md {
+      padding: 15px;
+      width: ~"calc(100% - 30px)";
+    }
   }
 
-  &_lg {
-    padding: 25px 0;
+  @media (min-width: 1200px) {
+    &_lg {
+      padding: 20px;
+      width: ~"calc(100% - 40px)";
+    }
   }
 
   &_border {

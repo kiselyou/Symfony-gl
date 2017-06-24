@@ -1,3 +1,4 @@
+var path = require('path');
 var fs = require('fs');
 
 var IW = IW || {};
@@ -13,8 +14,6 @@ IW.Request = function (config) {
     this.DIR_APP = getEnvironment(config);
     this.PATH_APP = __dirname + '/../../' + this.DIR_APP;
     this.PATH_TEMPLATES = this.PATH_APP + IW.Request.DIR_TEMPLATES;
-    this.PATH_TEMPLATES_JS = this.PATH_TEMPLATES + IW.Request.TEMPLATE_JS;
-    this.PATH_TEMPLATES_HTML = this.PATH_TEMPLATES + IW.Request.TEMPLATE_HTML;
     this.PATH_ROUTES = __dirname + IW.Request.DIR_ROUTES;
     this._loadRoutes();
 
@@ -75,7 +74,7 @@ IW.Request.prototype._loadRoutes = function () {
         var filedRoute = fs.readdirSync(this.PATH_ROUTES);
 
         for ( var r = 0; r < filedRoute.length; r++ ) {
-            var path = this.concatPath(this.PATH_ROUTES, filedRoute[ r ]);
+            var path = this.joinPath(this.PATH_ROUTES, filedRoute[ r ]);
             var data = require(path);
             for (var key in data) {
                 if (data.hasOwnProperty(key)) {
@@ -103,16 +102,14 @@ IW.Request.prototype.getRoutes = function () {
  * @param {string} str - possible value ( '/path/to/file' )
  * @returns {string}
  */
-IW.Request.prototype.concatPath = function (dir, str) {
-    return dir.replace(/(\/)$/, '') + '/' + str.replace(/^(\/)/, '');
+IW.Request.prototype.joinPath = function (dir, str) {
+    return path.join(dir, str);
 };
 
 IW.Request.ENVIRONMENT_PROD = 'dist';
 IW.Request.ENVIRONMENT_DEV = 'app';
 
-IW.Request.TEMPLATE_JS = '/js';
-IW.Request.TEMPLATE_HTML = '/html';
-IW.Request.DIR_TEMPLATES = '/patterns';
+IW.Request.DIR_TEMPLATES = '/view';
 IW.Request.DIR_ROUTES = '/../routing';
 
 module.exports = IW;
