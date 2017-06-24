@@ -336,7 +336,7 @@
 			if ( intersects.length > 0 ) {
 				aimControls.click = true;
 				aimControls.position.copy( intersects[0].point );
-				$('canvas').css('cursor', 'url(images/textures/aim/aim.png) 16 16, crosshair');
+				$('canvas').css('cursor', 'url(/app/images/textures/aim/aim.png) 16 16, crosshair');
 			} else {
 				aimControls.click = false;
 				$('canvas').css('cursor', 'default');

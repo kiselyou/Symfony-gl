@@ -1,9 +1,16 @@
     var IW = IW || {};
     /**
      *
+     * @param {string} containerID
      * @constructor
      */
-    IW.PanelMap = function () {
+    IW.PanelMap = function (containerID) {
+
+        /**
+         *
+         * @type {string}
+         */
+        this.id = containerID;
 
         /**
          * The template of map
@@ -20,6 +27,12 @@
         var menu = null;
 
         /**
+         *
+         * @type {IW.PanelMap}
+         */
+        var scope = this;
+
+        /**
          * This method is including templates and preparing them and append to the dom tree
          *
          * @returns {IW.PanelMap}
@@ -29,16 +42,16 @@
             var loader = new IW.Templates();
 
             loader.load(
-                '/panel/mini-map.html',
+                '/templates/panel/mini-map.html',
                 function ( template ) {
-                    $('body').append( prepareTemplateMap( template ) );
+                    $('#' + scope.id).append( prepareTemplateMap( template ) );
                 }
             );
 
             loader.load(
-                '/nav/play-menu.html',
+                '/templates/nav/play-menu.html',
                 function ( template ) {
-                    $('body').append( prepareTemplateMenu( template ) );
+                    $('#' + scope.id).append( prepareTemplateMenu( template ) );
                 }
             );
 

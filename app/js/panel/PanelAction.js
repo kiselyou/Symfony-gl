@@ -2,12 +2,12 @@
 
     /**
      *
-     * @param {string} [htmlId]
+     * @param {string} containerID
      * @constructor
      */
-    IW.PanelAction = function ( htmlId ) {
+    IW.PanelAction = function ( containerID ) {
 
-        this.iconBaseDir = '/images/textures';
+        this.iconBaseDir = '/app/images/textures';
 
         /**
          *
@@ -25,7 +25,7 @@
          *
          * @type {string}
          */
-        var id = htmlId ? 'sw-panel-control' : htmlId;
+        this.id = containerID;
 
         /**
          *
@@ -74,16 +74,16 @@
             var loader = new IW.Templates();
 
             loader.load(
-                '/panel/model-progress.html',
+                '/templates/panel/model-progress.html',
                 function ( template ) {
-                    $('body').append( templateProgress( template ) );
+                    $('#' + scope.id).append( templateProgress( template ) );
                 }
             );
 
             loader.load(
-                '/panel/controls.html',
+                '/templates/panel/controls.html',
                 function ( template ) {
-                    $('body').append( templatePanelAction( template ) );
+                    $('#' + scope.id).append( templatePanelAction( template ) );
                 }
             );
 

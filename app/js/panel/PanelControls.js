@@ -7,6 +7,16 @@ var IW = IW || {};
  */
 IW.PanelControls = function ( model ) {
 
+    /**
+     *
+     * @type {string}
+     */
+    this.id = 'iw_elements_play';
+
+    /**
+     *
+     * @type {boolean}
+     */
     this.active = false;
 
     /**
@@ -19,13 +29,13 @@ IW.PanelControls = function ( model ) {
      *
      * @type {IW.PanelAction}
      */
-    this.panelAction = new IW.PanelAction();
+    this.panelAction = new IW.PanelAction(this.id);
 
     /**
      *
      * @type {IW.PanelMap}
      */
-    this.panelMap = new IW.PanelMap();
+    this.panelMap = new IW.PanelMap(this.id);
 
     /**
      *
