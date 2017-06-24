@@ -3,6 +3,10 @@
   src: url('../fonts/iw-halflings-regular.eot');
   src: url('../fonts/iw-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/iw-halflings-regular.woff2') format('woff2'), url('../fonts/iw-halflings-regular.woff') format('woff'), url('../fonts/iw-halflings-regular.ttf') format('truetype'), url('../fonts/iw-halflings-regular.svg#iw_halflingsregular') format('svg');
 }
+@font-face {
+  font-family: 'Audiowide';
+  src: url('../fonts/Audiowide/Audiowide-Regular.ttf') format('truetype');
+}
 @keyframes hide {
   from {
     opacity: 1;
@@ -211,8 +215,8 @@ canvas {
   position: relative;
   background-size: cover;
   color: rgba(0, 255, 255, 0.6);
-  font-size: 12px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-family: 'Audiowide';
   line-height: 1.42857143;
 }
 body {
@@ -231,9 +235,6 @@ a:focus {
 a:focus {
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
-}
-label {
-  font-weight: bold;
 }
 h1,
 .h1 {
@@ -1389,7 +1390,6 @@ h6,
   padding: 15px;
 }
 .iw_modal__head {
-  font-weight: bold;
   border-bottom: 1px solid rgba(127, 255, 255, 0.4);
   overflow: hidden;
   margin: 10px;

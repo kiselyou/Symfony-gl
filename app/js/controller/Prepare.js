@@ -209,10 +209,10 @@ IW.Prepare = function () {
     };
 };
 
-IW.Prepare.DIR_SPRITES = '/images/';
-IW.Prepare.DIR_TEXTURES = '/images/textures';
-IW.Prepare.DIR_CONFIG = '/js/config';
-IW.Prepare.DIR_MODELS = '/models';
+IW.Prepare.DIR_SPRITES = '/app/images/';
+IW.Prepare.DIR_TEXTURES = '/app/images/textures';
+IW.Prepare.DIR_CONFIG = '/app/js/config';
+IW.Prepare.DIR_MODELS = '/app/models';
 
 IW.Prepare.LBL_LOAD_SKYBOX = 'Environment';
 IW.Prepare.LBL_LOAD_MODELS = 'Models';

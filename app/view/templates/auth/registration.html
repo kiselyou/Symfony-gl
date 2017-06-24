@@ -1,0 +1,117 @@
+<div class="iw_modal iw_modal_size_sm iw_modal_skin_dark">
+
+    <div class="iw_modal__control">
+        <div class="iw_block_right">
+            <span data-iw-action="iw-modal-close" class="iw_btn iw_btn_skin_link">
+                <i class="iw iw-remove iw_text_md"></i>
+            </span>
+        </div>
+    </div>
+
+    <div class="iw_modal__head">
+
+        <div class="iw_block_left">
+            <span>Registration</span>
+        </div>
+
+        <div class="iw_block_right">
+            <span data-iw-action="iw-show-login" class="iw_btn iw_btn_skin_link">
+                Login
+            </span>
+        </div>
+
+    </div>
+
+    <div class="iw_modal__body">
+        <form class="bs-example bs-example-form" id="form_reg" role="form" action="" method="POST">
+
+            <div class="iw_row">
+                <div class="iw_col_xs_12 iw_col_sm_12 iw_col_md_6 iw_col_lg_6">
+                    <div class="iw_group">
+                        <label for="r_username"> Username </label>
+                        <span class="iw_star">*</span>
+                        <div class="iw_group">
+                            <span class="iw_group__addon">
+                                <i class="iw iw-user"></i>
+                            </span>
+
+                            <input type="text" class="iw_group__control" required name="username" id="r_username" placeholder="Username" autocomplete="off">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="iw_col_xs_12 iw_col_sm_12 iw_col_md_6 iw_col_lg_6">
+                    <div class="iw_group">
+                        <label for="r_email"> Email </label>
+                        <span class="iw_star">*</span>
+                        <div class="iw_group">
+                            <span class="iw_group__addon">
+                                <i class="iw iw-envelope"></i>
+                            </span>
+                            <input type="text" class="iw_group__control" required name="email" id="r_email" placeholder="Email" autocomplete="off">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="iw_row">
+                <div class="iw_col_xs_12 iw_col_sm_12 iw_col_md_6 iw_col_lg_6">
+
+                    <div class="iw_group">
+                        <label for="r_password"> Password </label>
+                        <span class="iw_star">*</span>
+                        <div class="iw_group">
+                            <span class="iw_group__addon">
+                                <i class="iw iw-lock"></i>
+                            </span>
+                            <input type="password" class="iw_group__control" required name="password" id="r_password" placeholder="********" autocomplete="off">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="iw_col_xs_12 iw_col_sm_12 iw_col_md_6 iw_col_lg_6">
+
+                    <div class="iw_group">
+                        <label for="r_confirm_password"> Confirm Password </label>
+                        <span class="iw_star">*</span>
+                        <div class="iw_group">
+                            <span class="iw_group__addon">
+                                <i class="iw iw-lock"></i>
+                            </span>
+                            <input type="password" class="iw_group__control" required name="confirm_password" id="r_confirm_password" placeholder="********" autocomplete="off">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="iw_row">
+                <div class="iw_col_xs_12 iw_col_sm_12 iw_col_md_12 iw_col_lg_12">
+                    <div class="iw_block_right">
+                        <button type="button" class="iw_btn" id="_send_form">
+                            <i class="iw iw-log-in"></i>
+                            Apply
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="iw_row">
+                <div class="iw_col_xs_12 iw_col_sm_12 iw_col_md_12 iw_col_lg_12">
+
+                    <ul class="iw_error" id="reg_error">
+                        <!--{% for error in errors %}-->
+                        <!--<li><i class="glyphicon glyphicon-exclamation-sign"></i> {{ error.propertyPath|capitalize }}: {{ error.message }}</li>-->
+                        <!--{% endfor %}-->
+                    </ul>
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script src="/app/view/templates/auth/registration.js"></script>

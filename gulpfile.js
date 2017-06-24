@@ -92,4 +92,3 @@ gulp.task('watch', function() {
 gulp.task('build', function (done) {
 	runSequence('clean:dist', 'useref', 'move', 'images', 'clean:app', done);
 });
-

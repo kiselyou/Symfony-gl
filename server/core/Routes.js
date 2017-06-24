@@ -51,10 +51,12 @@ IW.Routes.prototype._control = function () {
 
             var arrTemplates = [];
 
+            console.log(req.body['path']);
+
             scope.responseHTML(
                 res,
                 {
-                    content: scope.includePattern('<template data-include="' + req.body['template'] + '"></template>', arrTemplates),
+                    content: scope.includePattern('<template data-include="' + req.body['path'] + '"></template>', arrTemplates),
                     status: true,
                     error: null
                 }

@@ -213,7 +213,7 @@ IW.Scene = function ( idContainer ) {
      * @returns {IW.Scene}
      */
     this.previewConfigOrbitControl = function () {
-        this.orbitControl.autoRotateSpeed = 0.3;
+        this.orbitControl.autoRotateSpeed = 0.05;
         this.orbitControl.autoRotate = true;
         this.orbitControl.enableKeys = false;
         this.orbitControl.enablePan = false;

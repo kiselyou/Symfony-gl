@@ -78,21 +78,20 @@ var IW = IW || {};
          */
         function templateProgressBar(string) {
 
-
             progressBar = document.createElement('div');
             progressBar.innerHTML = string;
             progressLine = progressBar.querySelector('[data-progress-range]');
             progressLabel = progressBar.querySelector('[data-progress-label]');
 
+            if (!progressLine || !progressLabel) {
+                console.warn('Template for "IW.ProgressBar" is not correct');
+                return progressBar;
+            }
+
             if ( param.hideLabel ) {
                 progressLabel.classList.add( 'iw_hidden' );
             }
 
-            /*
-            if ( param.width ) {
-                progressBar.style.width = param.width;
-            }
-            */
             if ( param.position ) {
                 var progressPosition = progressBar.querySelector('[data-progress-position]');
                 progressPosition.classList.add( param.position );
@@ -158,7 +157,7 @@ var IW = IW || {};
         var templates = [
             {
                 name: IW.ProgressBar.TYPE_UPLOAD,
-                path: '/progress/upload.html'
+                path: '/templates/progress/upload.html'
             }
         ];
 
