@@ -1,8 +1,8 @@
 {
 	"encoding": "utf-8",
 	"environment": {
-		"app": false,
-		"dist": true
+		"app": true,
+		"dist": false
 	},
 	"server": {
 		"port": 80,
