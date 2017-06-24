@@ -172,7 +172,7 @@ IW.TemplateLoader.prototype.extendPattern = function ($, arrTemplates) {
 
     $('[data-extend]').each(function () {
 
-        var blockName = $(this).attr('data-container');
+        var blockName = $(this).attr('data-extend-container');
         var nameTemplate = $(this).attr('data-extend');
         var path = scope.joinPath(scope.PATH_TEMPLATES, nameTemplate);
 
@@ -184,7 +184,7 @@ IW.TemplateLoader.prototype.extendPattern = function ($, arrTemplates) {
         if (fs.existsSync(path)) {
 
             var $$ = cheerio.load(fs.readFileSync(path, {encoding: scope.config.encoding}));
-            $$('[data-block="' + blockName + '"]').replaceWith($(this).children());
+            $$('[data-extend-container="' + blockName + '"]').replaceWith($(this).children());
             $(this).replaceWith(scope.includePattern($$.html(), arrTemplates));
 
             scope.fillArray(arrTemplates, nameTemplate);

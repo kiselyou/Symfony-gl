@@ -1,5 +1,14 @@
-<template data-extend="/container/default/index.html" data-container="default">
+<template data-extend="/container/default/index.html" data-extend-container="default">
+
+    <div class="iw_modal iw_modal_size_sm iw_modal_skin_hidden" id="iw_block_navigation">
+        <div class="iw_btn iw_btn_block iw_btn_block_half" id="iw_show_sign_in">Sign In</div>
+        <div class="iw_btn iw_btn_block iw_btn_block_half" id="iw_show_registration">Registration</div>
+        <a class="iw_btn iw_btn_block iw_btn_block_half" href="/home">Space station</a>
+        <div class="iw_btn iw_btn_block iw_btn_block_half" id="iw_show_preview">Preview</div>
+    </div>
 
     <div id="iw_canvas_preview" class="iw_position_a"></div>
+
+    <script src="/app/view/controller/main/navigation.js"></script>
 
 </template>
