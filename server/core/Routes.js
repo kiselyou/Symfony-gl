@@ -51,8 +51,6 @@ IW.Routes.prototype._control = function () {
 
             var arrTemplates = [];
 
-            console.log(req.body['path']);
-
             scope.responseHTML(
                 res,
                 {

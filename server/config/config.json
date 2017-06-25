@@ -11,5 +11,22 @@
 	"socket": {
 		"port": 3000,
 		"host": "127.0.0.1"
+	},
+	"security": {
+		"access_control": [
+			{"path": "/"},
+			{"path": "/sw", "role": "ROLE_SW"},
+			{"path": "/sw-user", "role": "ROLE_SW_USER"},
+			{"path": "/sw-admin", "role": "ROLE_SW_ADMIN"}
+		],
+		"role_hierarchy": {
+			"ROLE_ANONYMOUSLY": [],
+			"ROLE_SW": ["ROLE_ANONYMOUSLY"],
+			"ROLE_SW_USER": ["ROLE_SW"],
+			"ROLE_SW_ADMIN": ["ROLE_SW_USER"]
+		}
+	},
+	"authorization": {
+
 	}
 }
