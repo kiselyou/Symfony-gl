@@ -76,14 +76,14 @@
             loader.load(
                 '/templates/panel/model-progress.html',
                 function ( template ) {
-                    $('#' + scope.id).append( templateProgress( template ) );
+                    $('#' + scope.id).prepend( templateProgress( template ) );
                 }
             );
 
             loader.load(
                 '/templates/panel/controls.html',
                 function ( template ) {
-                    $('#' + scope.id).append( templatePanelAction( template ) );
+                    $('#' + scope.id).prepend( templatePanelAction( template ) );
                 }
             );
 
