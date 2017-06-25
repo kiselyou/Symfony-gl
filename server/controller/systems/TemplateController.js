@@ -2,7 +2,7 @@ const IW = require('./../../core/TemplateLoader.js');
 
 class TemplateController {
 
-    constructor(config) {
+    constructor(db, config) {
         this.loader = new IW.TemplateLoader(config);
         this._server = config;
     }

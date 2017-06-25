@@ -1,13 +1,17 @@
+
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var Security = require('./Security');
-var ioSocket = require('./Socket.js') || {};
-var IW = require('./TemplateLoader') || {};
+var ioSocket = require('./Socket.js');
+var IW = require('./TemplateLoader');
+var DB = require('./DB');
 
 IW.Routes = function ( config ) {
     IW.TemplateLoader.call(this, config);
     this.security = new Security(config);
+    this.db = new DB(config['db']);
+    this.db.open();
 };
 
 /**
@@ -28,29 +32,6 @@ IW.Routes.prototype._control = function () {
     for (var i = 0; i < this.routes.length; i++) {
         scope.createRoute( this.routes[i] );
     }
-
-    // // Setting route to load templates
-    // app.all('/template', function(req, res) {
-    //
-    //     try {
-    //
-    //         var arrTemplates = [];
-    //
-    //         scope.response(
-    //             req,
-    //             res,
-    //             {
-    //                 content: scope.includePattern('<template data-include="' + req.body['path'] + '"></template>', arrTemplates),
-    //                 status: true,
-    //                 error: null
-    //             }
-    //         );
-    //
-    //     } catch (error) {
-    //
-    //         scope.response( req, res, scope.prepareTemplateError(error) );
-    //     }
-    // });
 
     app.use('/app/', express.static(this.joinPath(__dirname, '/../../' + this.DIR_APP)));
 
@@ -125,11 +106,11 @@ IW.Routes.prototype.callToController = function (req, res, params) {
 
     try {
         var Controller = require(this.joinPath(__dirname, pathController));
-        var object = new Controller(this.config);
+        var object = new Controller(this.db.connection, this.config);
         object[method](req, res);
     } catch (e) {
         res.writeHead(200, {'Content-Type': 'application/json'});
-        res.end('Route configuration is not correct. Method "' + method + '" dose not exist in the controller "' + path + '" Error:' + e.message);
+        res.end('Error:' + e.message + ' in route: "' + path + '" method "' + method + '"');
     }
 };
 

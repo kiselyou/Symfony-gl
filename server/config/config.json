@@ -12,6 +12,15 @@
 		"port": 3000,
 		"host": "127.0.0.1"
 	},
+	"db": {
+		"mysql": {
+			"host": "127.0.0.1",
+			"port": null,
+			"user": "superadmin",
+			"password": "root",
+			"database": "iw"
+		}
+	},
 	"security": {
 		"access_control": [
 			{"path": "/"},

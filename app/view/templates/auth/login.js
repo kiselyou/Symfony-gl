@@ -24,7 +24,10 @@ validation.addRile(password, {
 
 validation.setCallbackSuccess(function (element) {
     if (element == btn) {
-        //            document.getElementById('form_login').submit();
+        var data = $('#form_login').serializeArray();
+        new IW.Ajax().post('/iw/login', data, function (res) {
+            console.log(res);
+        });
     }
 });
 

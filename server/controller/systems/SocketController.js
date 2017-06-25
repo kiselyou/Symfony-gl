@@ -1,6 +1,6 @@
 class SocketController {
 
-    constructor(config) {
+    constructor(db, config) {
         this._server = config;
     }
 

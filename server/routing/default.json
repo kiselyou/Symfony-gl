@@ -28,5 +28,23 @@
     "route": "/socket/info",
     "method": "POST",
     "controller": "systems:SocketController:configuration"
+  },
+
+  "login": {
+    "route": "/iw/login",
+    "method": "POST",
+    "controller": "systems:SecurityController:login"
+  },
+
+  "logout": {
+    "route": "/iw/logout",
+    "method": "POST",
+    "controller": "systems:SecurityController:logout"
+  },
+
+  "registration": {
+    "route": "/iw/registration",
+    "method": "POST",
+    "controller": "systems:SecurityController:registration"
   }
 }
