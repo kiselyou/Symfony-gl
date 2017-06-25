@@ -192,7 +192,7 @@ IW.Prepare = function () {
             url,
             null,
             function ( data ) {
-
+                console.log(data);
                 try {
                     scope.ajaxData = JSON.parse( data );
                     scope.start( done );

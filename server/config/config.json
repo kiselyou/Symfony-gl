@@ -15,15 +15,15 @@
 	"security": {
 		"access_control": [
 			{"path": "/"},
-			{"path": "/sw", "role": "ROLE_SW"},
-			{"path": "/sw-user", "role": "ROLE_SW_USER"},
-			{"path": "/sw-admin", "role": "ROLE_SW_ADMIN"}
+			{"path": "/home", "role": "ROLE_IW"},
+			{"path": "/play", "role": "ROLE_IW_USER"},
+			{"path": "/home/admin", "role": "ROLE_IW_ADMIN"}
 		],
 		"role_hierarchy": {
 			"ROLE_ANONYMOUSLY": [],
-			"ROLE_SW": ["ROLE_ANONYMOUSLY"],
-			"ROLE_SW_USER": ["ROLE_SW"],
-			"ROLE_SW_ADMIN": ["ROLE_SW_USER"]
+			"ROLE_IW": ["ROLE_ANONYMOUSLY"],
+			"ROLE_IW_USER": ["ROLE_IW"],
+			"ROLE_IW_ADMIN": ["ROLE_IW_USER"]
 		}
 	},
 	"authorization": {

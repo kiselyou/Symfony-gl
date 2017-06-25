@@ -1,31 +1,32 @@
 {
   "index": {
-    "type": "pattern",
     "route": "/",
     "viewPath": "/controller/main/index.html",
     "method": "GET"
   },
   "user": {
-    "type": "pattern",
     "route": "/home",
     "viewPath": "/controller/home/user.html",
     "method": "GET"
   },
   "play": {
-    "type": "pattern",
     "route": "/play",
     "viewPath": "/pages/play.html",
     "method": "GET"
   },
   "dev": {
-    "type": "pattern",
     "route": "/dev",
     "viewPath": "/pages/dev.html",
     "method": "GET"
   },
+  "templates": {
+    "route": "/template",
+    "method": "POST",
+    "controller": "systems:TemplateController:render"
+  },
   "socket": {
-    "type": "ajax",
     "route": "/socket/info",
-    "method": "POST"
+    "method": "POST",
+    "controller": "systems:SocketController:configuration"
   }
 }

@@ -22,7 +22,7 @@ IW.Security.prototype.config = {};
  * @returns {*[]}
  */
 IW.Security.prototype.getPathsControl = function () {
-    return this.config.access_control;
+    return this.config.security.access_control;
 };
 
 /**
@@ -31,7 +31,7 @@ IW.Security.prototype.getPathsControl = function () {
  * @returns {{}}
  */
 IW.Security.prototype.getRoleHierarchy = function () {
-    return this.config.role_hierarchy;
+    return this.config.security.role_hierarchy;
 };
 
 /**
@@ -74,4 +74,4 @@ IW.Security.prototype.hasRole = function (roleParent, roleChildren) {
  *
  * @module Security
  */
-module.exports = IW;
+module.exports = IW.Security;

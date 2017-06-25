@@ -34,7 +34,7 @@ IW.TemplateLoader.prototype.ch = null;
  * @param {string} viewPath - It is path to html pattern
  * @returns {{content: string, status: boolean, error: * }}
  */
-IW.TemplateLoader.prototype.uploadPattern = function (route, viewPath) {
+IW.TemplateLoader.prototype.prepareTemplate = function (route, viewPath) {
 
     var content = '';
 
@@ -69,7 +69,7 @@ IW.TemplateLoader.prototype.uploadPattern = function (route, viewPath) {
 
     } catch (error) {
 
-        return this.uploadPatternError(error);
+        return this.prepareTemplateError(error);
     }
 };
 
@@ -79,7 +79,7 @@ IW.TemplateLoader.prototype.uploadPattern = function (route, viewPath) {
  * @param {(string|{code: number})} error
  * @returns {{content: string, status: boolean, error: * }}
  */
-IW.TemplateLoader.prototype.uploadPatternError = function (error) {
+IW.TemplateLoader.prototype.prepareTemplateError = function (error) {
 
     try {
 
@@ -121,6 +121,10 @@ IW.TemplateLoader.prototype.uploadPatternError = function (error) {
     }
 };
 
+IW.TemplateLoader.prototype.createPattern = function (path) {
+    return '<template data-include="' + path + '"></template>';
+};
+
 /**
  * Include additional templates
  *
@@ -152,7 +156,7 @@ IW.TemplateLoader.prototype.includePattern = function (content, arrTemplates) {
 
         } else {
 
-            console.log('Include: Template was not found in path ' + path);
+            console.log('Include: Template was not found in the path "' + path + '"');
         }
     });
 

@@ -1,12 +1,13 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-
+var Security = require('./Security');
 var ioSocket = require('./Socket.js') || {};
 var IW = require('./TemplateLoader') || {};
 
 IW.Routes = function ( config ) {
     IW.TemplateLoader.call(this, config);
+    this.security = new Security(config);
 };
 
 /**
@@ -22,207 +23,126 @@ IW.Routes.prototype.constructor = IW.Routes;
  * @returns {Array}
  */
 IW.Routes.prototype._control = function () {
-
     var scope = this;
     // Upload configured routes
     for (var i = 0; i < this.routes.length; i++) {
-
         scope.createRoute( this.routes[i] );
-
-        // /**
-        //  *
-        //  * @type {{type: string, route: string, method: string, viewPath: string }}
-        //  */
-        // var route = this.routes[i];
-        // switch (route['type']) {
-        //     case 'pattern':
-        //         this.createRoute(route['route'], route['method'], route['viewPath']);
-        //         break;
-        //
-        //     case 'ajax':
-        //
-        // }
     }
 
-    // Setting route to load templates
-    app.all('/template', function(req, res) {
-
-        try {
-
-            var arrTemplates = [];
-
-            scope.responseHTML(
-                res,
-                {
-                    content: scope.includePattern('<template data-include="' + req.body['path'] + '"></template>', arrTemplates),
-                    status: true,
-                    error: null
-                }
-            );
-
-        } catch (error) {
-
-            scope.responseHTML( res, scope.uploadPatternError(error) );
-        }
-    });
+    // // Setting route to load templates
+    // app.all('/template', function(req, res) {
+    //
+    //     try {
+    //
+    //         var arrTemplates = [];
+    //
+    //         scope.response(
+    //             req,
+    //             res,
+    //             {
+    //                 content: scope.includePattern('<template data-include="' + req.body['path'] + '"></template>', arrTemplates),
+    //                 status: true,
+    //                 error: null
+    //             }
+    //         );
+    //
+    //     } catch (error) {
+    //
+    //         scope.response( req, res, scope.prepareTemplateError(error) );
+    //     }
+    // });
 
     app.use('/app/', express.static(this.joinPath(__dirname, '/../../' + this.DIR_APP)));
 
     // Setting route error
     app.get( '*', function( req, res ) {
-        // console.log(req.url);
-        // console.log(req.baseUrl);
-        scope.responseHTML( res, scope.uploadPatternError( 'The page "' + req.url + '" was not found') );
+        scope.response( req, res, scope.prepareTemplateError( 'The page "' + req.url + '" was not found') );
     });
 
 };
 
-// /**
-//  * Create route
-//  *
-//  * @param {string} route - It is HTTP route
-//  * @param {method} method - possible values ( 'GET' | 'POST' )
-//  * @param {string} viewPath - It is path to html pattern
-//  * @returns {void}
-//  */
-// IW.Routes.prototype.createRoute = function (route, method, viewPath) {
-//     var scope = this;
-//     switch (method) {
-//         case 'POST':
-//             console.log(route);
-//             app.post(route, function (req, res) {
-//                 scope.responseHTML(res, scope.uploadPattern(route, viewPath));
-//             });
-//             break;
-//         case 'GET':
-//             app.get(route, function (req, res) {
-//                 scope.responseHTML(res, scope.uploadPattern(route, viewPath));
-//             });
-//             break;
-//         default:
-//             app.all(route, function (req, res) {
-//                 scope.responseHTML(res, scope.uploadPattern(route, viewPath));
-//             });
-//             break;
-//     }
-// };
-
-/**
- * Create route
- *
- * @param {{ method: string, route: string, viewPath: string }} params
- * @example explain:
- *              route - It is HTTP route
- *              method - possible values ( 'GET' | 'POST' )
- *              viewPath - It is path to html pattern
- * @returns {void}
- */
-IW.Routes.prototype.createRouteTemplate = function ( params ) {
-    var scope = this;
-    switch ( params['method'] ) {
-        case 'POST':
-            app.post( params[ 'route' ], function ( req, res ) {
-                scope.responseHTML( res, scope.uploadPattern( params[ 'route' ], params[ 'viewPath' ] ) );
-            } );
-            break;
-        case 'GET':
-            app.get( params[ 'route' ], function ( req, res ) {
-                scope.responseHTML( res, scope.uploadPattern( params[ 'route' ], params[ 'viewPath' ] ) );
-            } );
-            break;
-        default:
-            app.all( params[ 'route' ], function ( req, res ) {
-                scope.responseHTML( res, scope.uploadPattern( params[ 'route' ], params[ 'viewPath' ] ) );
-            } );
-            break;
-    }
-};
-
-
-IW.Routes.prototype.createRouteAJAX = function ( params ) {
-    var scope = this;
-    switch ( params['method'] ) {
-        case 'POST':
-            app.post( params[ 'route' ], function ( req, res ) {
-                scope.responseAJAX( res, scope.callToController( params ) );
-            } );
-            break;
-        case 'GET':
-            app.get( params[ 'route' ], function ( req, res ) {
-                scope.responseAJAX( res, scope.callToController( params ) );
-            } );
-            break;
-        default:
-            app.all( params[ 'route' ], function ( req, res ) {
-                scope.responseAJAX( res, scope.callToController( params ) );
-            } );
-            break;
-    }
-};
+var USER_ROLE_TEST = 'ROLE_IW';
 
 IW.Routes.prototype.createRoute = function ( params ) {
 
-    switch ( params[ 'type' ] ) {
-        case 'pattern':
-            this.createRouteTemplate( params );
+    var scope = this;
+
+    switch ( params['method'] ) {
+        case 'POST':
+            app.post( params[ 'route' ], function ( req, res ) {
+                scope.sendResponse(req, res, params);
+            });
             break;
-        case 'ajax':
-            this.createRouteAJAX( params );
+        case 'GET':
+            app.get( params[ 'route' ], function ( req, res ) {
+                scope.sendResponse(req, res, params);
+            });
             break;
+        default:
+            app.all( params[ 'route' ], function ( req, res ) {
+                scope.sendResponse(req, res, params);
+            });
+            break;
+    }
+};
+
+IW.Routes.prototype.sendResponse = function ( req, res, params ) {
+    if (this.security.isGranted(req.url, USER_ROLE_TEST)) {
+        if (params.hasOwnProperty('viewPath')) {
+            // Upload template and send it like response
+            this.response(req, res, this.prepareTemplate(params['route'], params['viewPath']));
+        } else {
+            // Call to controller and send his response
+            this.callToController(req, res, params);
+        }
+    } else {
+        this.response(req, res, this.prepareTemplateError('Permission Denied the page "' + req.url + '"') );
     }
 };
 
 /**
  * Call to controller
  *
+ * @param {{}} req
+ * @param {{}} res
  * @param params
- * @returns {{}}
+ * @returns {void}
  */
-IW.Routes.prototype.callToController = function ( params ) {
-    return {
-        config: {
-            socket: this.config.socket.host + ':' + this.config.socket.port + '/play'
-        }
-    };
+IW.Routes.prototype.callToController = function (req, res, params) {
+
+    // 0 - module, 1 - name of controller 2 - method
+    var data = params['controller'].split(':');
+
+    if (data.length !== 3) {
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end('Route configuration is not correct');
+        return;
+    }
+
+    var path = data[0] + '/' + data[1] + '.js';
+    var pathController = this.joinPath('./../controller/', path);
+    var method = data[2];
+
+    try {
+        var Controller = require(this.joinPath(__dirname, pathController));
+        var object = new Controller(this.config);
+        object[method](req, res);
+    } catch (e) {
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end('Route configuration is not correct. Method "' + method + '" dose not exist in the controller "' + path + '" Error:' + e.message);
+    }
 };
 
 /**
  * Send response to client
  *
+ * @param {{}} req
  * @param {{}} res
  * @param {{ status: boolean, content: string, error: string }} pattern
  */
-IW.Routes.prototype.responseHTML = function ( res, pattern ) {
-    // console.log(pattern);
-    if ( pattern.status ) {
-        res.writeHead( 200, { 'Content-Type': 'text/html' } );
-        res.end( pattern.content, this.config.encoding, true );
-    } else {
-        res.writeHead( 500 );
-        res.end( pattern.content );
-        console.log( pattern.error );
-    }
-};
-
-/**
- * Send response to client
- *
- * @param res
- * @param {{}} params
- */
-IW.Routes.prototype.responseAJAX = function ( res, params ) {
-
-    try {
-        var json = JSON.stringify(params);
-        res.writeHead(200, { 'Content-Type': 'application/json' } );
-        res.end( json );
-
-    } catch ( e ) {
-
-        res.writeHead( 500, { 'Content-Type': 'application/json' } );
-        res.end( JSON.stringify( { error: 'The server error: method (responseAJAX)' } ) );
-        console.log( e.message );
-    }
+IW.Routes.prototype.response = function ( req, res, pattern ) {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.end(pattern.content, this.config.encoding, true);
 };
 
 /**
