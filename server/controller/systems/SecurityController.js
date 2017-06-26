@@ -34,6 +34,11 @@ class SecurityController extends Authorization {
      */
     login(req, res) {
 
+        if (this.getSessionUser(req)) {
+            SecurityController._send(res, {status: false, msg: 'User is authenticated'});
+            return;
+        }
+
         let username = this.getField(req, 'username');
         let password = this.getField(req, 'password');
 
@@ -60,15 +65,12 @@ class SecurityController extends Authorization {
                 }
 
                 scope.comparePassword(password, row['password'], function(err, match) {
-                    let msg = null;
                     if (match) {
-                        this.createSessionUser(req, row);
-                        msg = 'User was successfully authenticated';
+                        scope.createSessionUser(req, row);
+                        SecurityController._send(res, {status: true, msg: 'User was successfully authenticated', id: row['id'], goTo: '/home'});
                     } else {
-                        msg = 'Incorrect password';
+                        SecurityController._send(res, {status: false, msg: 'Incorrect password'});
                     }
-
-                    SecurityController._send(res, {status: true, msg: msg});
                 });
 
             }
@@ -83,8 +85,7 @@ class SecurityController extends Authorization {
 
     registration(req, res) {
 
-        var scope = this;
-
+        let scope = this;
         if (this.getSessionUser(req)) {
             SecurityController._send(res, {status: false, msg: 'User is authenticated'});
             return;

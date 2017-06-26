@@ -42,11 +42,10 @@ validation.setCallbackSuccess(function (element) {
     if (element == btn) {
         var data = $('#form_reg').serializeArray();
         new IW.Ajax().post('/iw/registration', data, function (res) {
-
             try {
                 var data = JSON.parse(res);
                 if (data.status) {
-                    window.location.hash = data.goTo;
+                    window.location.href = data.goTo;
                 } else {
                     $('#reg_error').append('<li>' + data.msg + '</li>')
                 }

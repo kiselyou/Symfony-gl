@@ -10,14 +10,14 @@ validation.findParent('.iw_group');
 validation.addRile(username, {
     required: true,
     max: 25,
-    min: 6,
+    min: 4,
     label: 'Username'
 });
 
 validation.addRile(password, {
     required: true,
     max: 25,
-    min: 6,
+    min: 4,
     isSame: username,
     label: 'Password'
 });
@@ -26,7 +26,17 @@ validation.setCallbackSuccess(function (element) {
     if (element == btn) {
         var data = $('#form_login').serializeArray();
         new IW.Ajax().post('/iw/login', data, function (res) {
-            console.log(res);
+            try {
+                var data = JSON.parse(res);
+                if (data.status) {
+                    window.location.href = data.goTo;
+                } else {
+                    $('#login_error').append('<li>' + data.msg + '</li>')
+                }
+            } catch (e) {
+                console.log(e);
+                alert('We\'re sorry a server error occurred. Please Try again');
+            }
         });
     }
 });

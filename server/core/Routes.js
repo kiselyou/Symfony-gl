@@ -92,7 +92,7 @@ IW.Routes.prototype.sendResponse = function ( req, res, params ) {
  * @returns {void}
  */
 IW.Routes.prototype.callToController = function (req, res, params) {
-
+console.log(req.session);
     // 0 - module, 1 - name of controller 2 - method
     var data = params['controller'].split(':');
 
@@ -146,14 +146,15 @@ IW.Routes.prototype.initSocket = function ( config ) {
  */
 IW.Routes.prototype.init = function () {
 
+    app.use(session({
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: true,
+        cookie: { maxAge: 60000 }
+    }));
+
     app.use( bodyParser.urlencoded( { extended: true } ) );
     app.use( bodyParser.json() );
-
-    app.use(session({
-        secret: 'RmejVyeMXofeCLk1NOEfge60aEQOjhOZIwFlI0VOmIRZRp2Dur',
-        resave: false,
-        saveUninitialized: true
-    }));
 
     this._control();
 
