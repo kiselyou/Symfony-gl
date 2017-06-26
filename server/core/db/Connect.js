@@ -2,7 +2,7 @@
 const mysql = require('mysql');
 const mysqlUtilities = require('mysql-utilities');
 
-class DB {
+class Connect {
     /**
      *
      * @param {{ mysql: { host: string, port: (number|null), user: string, password: string, database: string } }} config
@@ -31,7 +31,7 @@ class DB {
         switch (type) {
             case 'mysql':
             default:
-                this._connect(this._config['mysql']);
+                this._db(this._config['mysql']);
                 break;
         }
         return this.connection;
@@ -41,7 +41,7 @@ class DB {
      *
      * @private
      */
-    _connect(param) {
+    _db(param) {
         this.connection = mysql.createConnection(param);
         this.connection.connect();
         mysqlUtilities.upgrade(this.connection);
@@ -50,7 +50,7 @@ class DB {
 
     /**
      *
-     * @returns {DB}
+     * @returns {Connect}
      */
     close() {
         this.connection.end();
@@ -58,4 +58,4 @@ class DB {
     }
 }
 
-module.exports = DB;
+module.exports = Connect;

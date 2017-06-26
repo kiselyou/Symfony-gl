@@ -6,13 +6,13 @@ validation.addEventCheckAll('keyup', 'input');
 validation.findParent('.iw_group');
 
 btn.addEventListener('click', function () {
-    console.log(1);
+    // console.log(1);
 });
 
 validation.addRile('username', {
     required: true,
     max: 25,
-    min: 6,
+    min: 4,
     label: 'Username'
 });
 
@@ -26,7 +26,7 @@ validation.addRile('email', {
 validation.addRile('password', {
     required: true,
     max: 25,
-    min: 6,
+    min: 4,
     isMatch: 'username',
     label: 'Password'
 });
@@ -40,7 +40,21 @@ validation.addRile('confirm_password', {
 
 validation.setCallbackSuccess(function (element) {
     if (element == btn) {
-        //            document.getElementById('form_reg').submit();
+        var data = $('#form_reg').serializeArray();
+        new IW.Ajax().post('/iw/registration', data, function (res) {
+
+            try {
+                var data = JSON.parse(res);
+                if (data.status) {
+                    window.location.hash = data.goTo;
+                } else {
+                    $('#reg_error').append('<li>' + data.msg + '</li>')
+                }
+            } catch (e) {
+                console.log(e);
+                alert('We\'re sorry a server error occurred. Please Try again');
+            }
+        });
     }
 });
 

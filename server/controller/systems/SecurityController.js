@@ -21,6 +21,12 @@ class SecurityController extends Authorization {
         res.end(JSON.stringify(obj));
     }
 
+    getField(req, fieldName) {
+        return req.body.find(function (value) {
+            return value.name === fieldName;
+        }).value;
+    }
+
     /**
      *
      * @param req
@@ -28,13 +34,8 @@ class SecurityController extends Authorization {
      */
     login(req, res) {
 
-        let username = req.body.find(function (value) {
-            return value.name === 'username';
-        }).value;
-
-        let password = req.body.find(function (value) {
-            return value.name === 'password';
-        }).value;
+        let username = this.getField(req, 'username');
+        let password = this.getField(req, 'password');
 
         let sql = `
             SELECT id, username, password, email 
@@ -54,7 +55,7 @@ class SecurityController extends Authorization {
                 }
 
                 if (!row) {
-                    SecurityController._send(res, {status: true, msg: 'User not found'});
+                    SecurityController._send(res, {status: false, msg: 'User not found'});
                     return;
                 }
 
@@ -82,68 +83,91 @@ class SecurityController extends Authorization {
 
     registration(req, res) {
 
-        // var inst = this;
-        // if (req.session.user !== undefined) {
-        //     inst._sendResponse(res, 'Server error! User is authenticated', null, 201);
-        //     return false;
-        // }
-        // if (req.body.sw_password != req.body.sw_repeat_password) {
-        //     inst._sendResponse(res, 'Password not correct', null, 201);
-        // }
-        // inst.User.findByEmail(req.body.sw_email, function (error, row) {
-        //     if (error) {
-        //         inst._sendResponse(res, 'Server error!', null, 500);
-        //         return false;
-        //     } else {
-        //         if (row) {
-        //             inst._sendResponse(res, 'User with address "' + req.body.sw_email + '" already exists', null, 201);
-        //             return false;
-        //         }
-        //     }
-        //
-        //     var auth = new inst.Authorization();
-        //     auth.cryptPassword(req.body.sw_password, function(err, hash) {
-        //         if (err) {
-        //             inst._sendResponse(res, 'Server error! Cannot crypt', null, 500);
-        //             return false;
-        //         }
-        //
-        //         var fields = {
-        //             username: req.body.sw_username,
-        //             email: req.body.sw_email,
-        //             password: hash,
-        //             role: inst._config.role_registration
-        //         };
-        //
-        //         inst.User.createRecord(fields, function (err, id) {
-        //             if (err) {
-        //                 inst._sendResponse(res, 'Server error! Cannot create user', null, 500);
-        //                 return false;
-        //             }
-        //
-        //             inst.User.findByEmail(req.body.sw_email, function (err, row) {
-        //                 if (err) {
-        //                     inst._sendResponse(res, 'Server error! Error find user', null, 500);
-        //                     return false;
-        //                 }
-        //
-        //                 if (!row) {
-        //                     inst._sendResponse(res, 'Server error! User not found', null, 201);
-        //                     return false;
-        //                 }
-        //
-        //                 auth._createSessionUser(req, row);
-        //                 inst._sendResponse(res, 'User successfully created', id, 200);
-        //                 return true;
-        //                 // res.writeHead(302, {'Location': '/'});
-        //                 // res.end();
-        //             });
-        //         });
-        //     });
-        // });
+        var scope = this;
 
+        if (this.getSessionUser(req)) {
+            SecurityController._send(res, {status: false, msg: 'User is authenticated'});
+            return;
+        }
 
-        SecurityController._send(res, {});
+        let email = this.getField(req, 'email');
+        let username = this.getField(req, 'username');
+        let password = this.getField(req, 'password');
+        let confirmPassword = this.getField(req, 'confirm_password');
+
+        if (password != confirmPassword) {
+            SecurityController._send(res, {status: false, msg: 'Password is not correct'});
+        }
+
+        let sql = `
+            SELECT 1 
+              FROM iw_users 
+             WHERE ( email = ? )
+               AND deleted = 0
+        `;
+
+        this._db.queryRow(sql, [email], function (error, row) {
+            if (error) {
+                SecurityController._send(res, {status: false, msg: 'Server error'}, 500);
+                return;
+            }
+
+            if (row) {
+                SecurityController._send(res, {status: false, msg: 'User with email address "' + email + '" already exists'});
+                return;
+            }
+
+            scope.cryptPassword(password, function(error, passwordHash) {
+                if (error) {
+                    SecurityController._send(res, {status: false, msg: 'Server error! Cannot crypt password'}, 500);
+                    return;
+                }
+
+                var userData = {
+                    email: email,
+                    username: username,
+                    password: passwordHash,
+                    is_active: 1,
+                    deleted: 0
+                };
+
+                scope._db.insert('iw_users', userData, function(error, userID) {
+                    if (error) {
+                        SecurityController._send(res, {status: false, msg: 'Server error! Cannot create user'}, 500);
+                        return;
+                    }
+
+                    let sql = `
+                        SELECT id,
+                               role,
+                               name
+                          FROM iw_roles
+                         WHERE by_default = 1
+                           AND deleted = 0
+                    `;
+
+                    scope._db.queryRow(sql, [], function (error, role) {
+
+                        let fields = {
+                            user_id: userID,
+                            role_id: role['id']
+                        };
+
+                        scope._db.insert('iw_users_roles', fields, function(error, relationID) {
+
+                            if (error) {
+                                SecurityController._send(res, {status: false, msg: 'Server error! Cannot create relationship'}, 500);
+                                return;
+                            }
+
+                            userData['role'] = role;
+                            scope.createSessionUser(req, userData);
+                            SecurityController._send(res, {status: true, msg: 'User successfully created', id: userID, goTo: '/home'});
+                        });
+                    });
+                });
+            });
+        });
     }
 }
 

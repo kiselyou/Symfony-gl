@@ -1,16 +1,18 @@
 
 var express = require('express');
+var session = require('express-session');
 var app = express();
 var bodyParser = require('body-parser');
 var Security = require('./Security');
 var ioSocket = require('./Socket.js');
 var IW = require('./TemplateLoader');
-var DB = require('./DB');
+var Connect = require('./db/Connect');
+
 
 IW.Routes = function ( config ) {
     IW.TemplateLoader.call(this, config);
     this.security = new Security(config);
-    this.db = new DB(config['db']);
+    this.db = new Connect(config['db']);
     this.db.open();
 };
 
@@ -146,6 +148,12 @@ IW.Routes.prototype.init = function () {
 
     app.use( bodyParser.urlencoded( { extended: true } ) );
     app.use( bodyParser.json() );
+
+    app.use(session({
+        secret: 'RmejVyeMXofeCLk1NOEfge60aEQOjhOZIwFlI0VOmIRZRp2Dur',
+        resave: false,
+        saveUninitialized: true
+    }));
 
     this._control();
 
