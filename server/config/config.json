@@ -15,10 +15,10 @@
 	"db": {
 		"mysql": {
 			"host": "127.0.0.1",
-			"port": null,
-			"user": "superadmin",
-			"password": "root",
-			"database": "iw"
+			"port": 4000,
+			"user": "iron_war",
+			"password": "V6KvjmEcnFmbwdnu",
+			"database": "iron_war"
 		}
 	},
 	"security": {

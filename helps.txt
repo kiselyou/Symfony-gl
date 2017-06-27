@@ -3,4 +3,4 @@
 
 # Server ssh root@195.110.59.186
 
-# Start server forever ./forever/development.json
+# Start server forever start ./forever/development.json
