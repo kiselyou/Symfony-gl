@@ -1,4 +1,5 @@
-const bcrypt = require('bcrypt');
+
+const passwordHash = require('password-hash');
 const KEY_SESSION = 'security';
 
 class Authorization {
@@ -54,38 +55,22 @@ class Authorization {
 
     /**
      *
-     * @param password
-     * @param {requestCallback} requestCallback
-     * @callback requestCallback - The callback that handles the response.
+     * @param {string} password
+     * @returns {string}
      */
-    cryptPassword(password, requestCallback) {
-        bcrypt.genSalt(this._roundsSalt, function(err, salt) {
-            if (err) {
-                return requestCallback(err, null);
-            }
-
-            bcrypt.hash(password, salt, function(err, hash) {
-                return requestCallback(err, hash);
-            });
-
-        });
+    hashPassword(password) {
+        return passwordHash.generate(password);
     };
 
     /**
      *
      * @param {string} password
-     * @param {string} hashPassword
-     * @param {requestCallback} requestCallback
-     * @callback requestCallback
+     * @param {string} hashedPassword
+     * @returns {void}
      */
-    comparePassword(password, hashPassword, requestCallback) {
-        bcrypt.compare(password, hashPassword, function(err, isPasswordMatch) {
-            if (err) {
-                return requestCallback(err, null);
-            }
-            return requestCallback(null, isPasswordMatch);
-        });
-    };
+    comparePassword(password, hashedPassword) {
+        return passwordHash.verify(password, hashedPassword);
+    }
 }
 
 /**

@@ -84,8 +84,8 @@ class SecurityController extends Authorization {
                     return;
                 }
 
-                scope.comparePassword(password, row['password'], function(err, match) {
-                    if (match) {
+                // scope.comparePassword(password, row['password'], function(err, match) {
+                    if (scope.comparePassword(password, row['password'])) {
 
                         let sql = `
                             SELECT id,
@@ -108,7 +108,7 @@ class SecurityController extends Authorization {
                     } else {
                         SecurityController._send(res, {status: false, msg: 'Incorrect password'});
                     }
-                });
+                // });
 
             }
         );
@@ -154,16 +154,16 @@ class SecurityController extends Authorization {
                 return;
             }
 
-            scope.cryptPassword(password, function(error, passwordHash) {
-                if (error) {
-                    SecurityController._send(res, {status: false, msg: 'Server error! Cannot crypt password'}, 500);
-                    return;
-                }
+            // scope.cryptPassword(password, function(error, passwordHash) {
+            //     if (error) {
+            //         SecurityController._send(res, {status: false, msg: 'Server error! Cannot crypt password'}, 500);
+            //         return;
+            //     }
 
                 var userData = {
                     email: email,
                     username: username,
-                    password: passwordHash,
+                    password: scope.hashPassword(password),
                     is_active: 1,
                     deleted: 0
                 };
@@ -202,7 +202,7 @@ class SecurityController extends Authorization {
                         });
                     });
                 });
-            });
+            // });
         });
     }
 }
