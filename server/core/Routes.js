@@ -73,7 +73,7 @@ IW.Routes.prototype.createRoute = function ( params ) {
 };
 
 IW.Routes.prototype.sendResponse = function ( req, res, params ) {
-    console.log(this.auth.getSessionRole(req));
+
     if (this.security.isGranted(req.url, this.auth.getSessionRole(req))) {
         if (params.hasOwnProperty('viewPath')) {
             // Upload template and send it like response
