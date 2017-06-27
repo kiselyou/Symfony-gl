@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const KEY_SESSION = 'user';
+const KEY_SESSION = 'security';
 
 class Authorization {
 
@@ -7,14 +7,22 @@ class Authorization {
         this._roundsSalt = 10;
     }
 
+    static getSessionData(req, value) {
+        if (req.session) {
+            return req.session.hasOwnProperty(KEY_SESSION) ? req.session[KEY_SESSION][value] : null;
+        }
+        return null;
+    }
+
     /**
      *
      * @param {{}} req
-     * @param {{}} userData
+     * @param {{}} user
+     * @param {string} userRole
      * @returns void
      */
-    createSessionUser(req, userData) {
-        req.session[KEY_SESSION] = userData;
+    createSessionUser(req, user, userRole) {
+        req.session[KEY_SESSION] = {user: user, role: userRole};
     };
 
     /**
@@ -23,8 +31,17 @@ class Authorization {
      * @returns {{}|null}
      */
     getSessionUser(req) {
-        return req.session.hasOwnProperty(KEY_SESSION) ? req.session[KEY_SESSION] : null;
+        return Authorization.getSessionData(req, 'user');
     };
+
+    /**
+     *
+     * @param req
+     * @returns {{}|null}
+     */
+    getSessionRole(req) {
+        return Authorization.getSessionData(req, 'role');
+    }
 
     /**
      *

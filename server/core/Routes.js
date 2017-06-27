@@ -3,6 +3,7 @@ var express = require('express');
 var session = require('express-session');
 var app = express();
 var bodyParser = require('body-parser');
+var Authorization = require('./Authorization.js');
 var Security = require('./Security');
 var ioSocket = require('./Socket.js');
 var IW = require('./TemplateLoader');
@@ -14,6 +15,8 @@ IW.Routes = function ( config ) {
     this.security = new Security(config);
     this.db = new Connect(config['db']);
     this.db.open();
+
+    this.auth = new Authorization();
 };
 
 /**
@@ -70,7 +73,8 @@ IW.Routes.prototype.createRoute = function ( params ) {
 };
 
 IW.Routes.prototype.sendResponse = function ( req, res, params ) {
-    if (this.security.isGranted(req.url, USER_ROLE_TEST)) {
+    console.log(this.auth.getSessionRole(req));
+    if (this.security.isGranted(req.url, this.auth.getSessionRole(req))) {
         if (params.hasOwnProperty('viewPath')) {
             // Upload template and send it like response
             this.response(req, res, this.prepareTemplate(params['route'], params['viewPath']));
@@ -92,7 +96,7 @@ IW.Routes.prototype.sendResponse = function ( req, res, params ) {
  * @returns {void}
  */
 IW.Routes.prototype.callToController = function (req, res, params) {
-console.log(req.session);
+
     // 0 - module, 1 - name of controller 2 - method
     var data = params['controller'].split(':');
 
@@ -149,8 +153,7 @@ IW.Routes.prototype.init = function () {
     app.use(session({
         secret: 'keyboard cat',
         resave: false,
-        saveUninitialized: true,
-        cookie: { maxAge: 60000 }
+        saveUninitialized: true
     }));
 
     app.use( bodyParser.urlencoded( { extended: true } ) );

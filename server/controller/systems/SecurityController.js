@@ -2,6 +2,11 @@ const Authorization = require('./../../core/Authorization.js');
 
 class SecurityController extends Authorization {
 
+    /**
+     *
+     * @param db
+     * @param config
+     */
     constructor(db, config) {
         super();
         this._db = db;
@@ -21,10 +26,25 @@ class SecurityController extends Authorization {
         res.end(JSON.stringify(obj));
     }
 
+    /**
+     *
+     * @param req
+     * @param fieldName
+     * @returns {*}
+     */
     getField(req, fieldName) {
         return req.body.find(function (value) {
             return value.name === fieldName;
         }).value;
+    }
+
+    /**
+     *
+     * @param req
+     * @param res
+     */
+    authenticated(req, res) {
+        SecurityController._send(res, {user: this.getSessionUser(req)});
     }
 
     /**
@@ -45,14 +65,14 @@ class SecurityController extends Authorization {
         let sql = `
             SELECT id, username, password, email 
               FROM iw_users 
-             WHERE ( email = ? OR username = ? )
+             WHERE email = ?
                AND is_active = 1
                AND deleted = 0
         `;
 
         let scope = this;
         this._db.queryRow(sql,
-            [username, username],
+            [username],
             function (err, row) {
                 if (err) {
                     SecurityController._send(res, {status: false, msg: 'Server error'}, 500);
@@ -66,8 +86,25 @@ class SecurityController extends Authorization {
 
                 scope.comparePassword(password, row['password'], function(err, match) {
                     if (match) {
-                        scope.createSessionUser(req, row);
-                        SecurityController._send(res, {status: true, msg: 'User was successfully authenticated', id: row['id'], goTo: '/home'});
+
+                        let sql = `
+                            SELECT id,
+                                   role,
+                                   name
+                              FROM iw_roles
+                             WHERE by_default = 1
+                               AND deleted = 0
+                        `;
+
+                        scope._db.queryRow(sql, [], function (error, role) {
+                            if (error) {
+                                SecurityController._send(res, {status: false, msg: 'Server error'}, 500);
+                                return;
+                            }
+                            scope.createSessionUser(req, row['id'], role['role']);
+                            SecurityController._send(res, {status: true, msg: 'User was successfully authenticated', id: row['id'], goTo: '/home'});
+                        });
+
                     } else {
                         SecurityController._send(res, {status: false, msg: 'Incorrect password'});
                     }
@@ -79,8 +116,7 @@ class SecurityController extends Authorization {
 
     logout(req, res) {
         this.destroySessionUser(req);
-        req.writeHead(302, {'Location': '/login'});
-        req.end();
+        SecurityController._send(res, {user: this.getSessionUser(req)});
     }
 
     registration(req, res) {
@@ -161,8 +197,7 @@ class SecurityController extends Authorization {
                                 return;
                             }
 
-                            userData['role'] = role;
-                            scope.createSessionUser(req, userData);
+                            scope.createSessionUser(req, userID, role['role']);
                             SecurityController._send(res, {status: true, msg: 'User successfully created', id: userID, goTo: '/home'});
                         });
                     });

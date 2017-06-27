@@ -42,6 +42,12 @@
     "controller": "systems:SecurityController:logout"
   },
 
+  "authenticated": {
+    "route": "/iw/authenticated",
+    "method": "POST",
+    "controller": "systems:SecurityController:authenticated"
+  },
+
   "registration": {
     "route": "/iw/registration",
     "method": "POST",
