@@ -185,6 +185,10 @@ class SecurityController extends Authorization {
 
                     scope._db.queryRow(sql, [], function (error, role) {
 
+                        if (error || !role) {
+                            SecurityController._send(res, {status: false, msg: 'Server error! Cannot create user'}, 500);
+                        }
+
                         let fields = {
                             user_id: userID,
                             role_id: role['id']
