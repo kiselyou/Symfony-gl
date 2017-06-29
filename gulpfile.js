@@ -10,6 +10,22 @@ var del = require('del');
 var cache = require('gulp-cache');
 var runSequence = require('run-sequence');
 var path = require('path');
+var ftp = require('vinyl-ftp');
+
+gulp.task('deploy', function() {
+	var conn = ftp.create( {
+		host:     'mywebsite.tld',
+		user:     'me',
+		password: 'mypass',
+		parallel: 10,
+		log: gutil.log
+	} );
+
+	var globs =['dist/**/*'];                                   // переменная для пути
+
+	return gulp.src(globs, {base: 'dist/', buffer: false })     //
+		.pipe(conn.dest('/var/www/iron-war/'));                         // перемещение
+});
 
 gulp.task('useref', function(){
   	return gulp.src('app/*.html')
