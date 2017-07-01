@@ -1,7 +1,7 @@
 const fs = require('fs');
 const cheerio = require('cheerio');
 const Cache = require('./Cache');
-const Error = require('./Error');
+const Error = require('./../Error');
 
 const HTML_404 = '/404.html';
 const HTML_INDEX = '/index.html';
@@ -219,7 +219,7 @@ class View {
      * @returns {string}
      */
     getPathTemplate(dir, file) {
-        return this.conf.routes.joinPath(__dirname, this.conf.routes.joinPath('./../../' + dir, file));
+        return this.conf.routes.joinPath(__dirname, this.conf.routes.joinPath('./../../../' + dir, file));
     }
 }
 

@@ -1,9 +1,9 @@
 
 const Configuration = require('./Configuration');
+const Security = require('./security/Security');
 const Connect = require('./db/Connect');
-const Security = require('./Security');
+const View = require('./view/View');
 const Routes = require('./Routes');
-const View = require('./View');
 const Error = require('./Error');
 
 class Components extends Configuration {

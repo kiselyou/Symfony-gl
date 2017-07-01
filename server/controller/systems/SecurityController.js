@@ -1,4 +1,4 @@
-const Authorization = require('./../../core/Authorization.js');
+const Authorization = require('./../../core/security/Authorization.js');
 
 class SecurityController extends Authorization {
 
