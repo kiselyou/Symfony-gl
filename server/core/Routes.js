@@ -3,20 +3,20 @@ var express = require('express');
 var session = require('express-session');
 var app = express();
 var bodyParser = require('body-parser');
-// var Authorization = require('./Authorization.js');
+var Authorization = require('./Authorization.js');
 var Security = require('./Security');
 var ioSocket = require('./Socket.js');
 var IW = require('./TemplateLoader');
-// var Connect = require('./db/Connect');
+var Connect = require('./db/Connect');
 
 
 IW.Routes = function ( config ) {
     IW.TemplateLoader.call(this, config);
     this.security = new Security(config);
-    // this.db = new Connect(config['db']);
-    // this.db.open();
+    this.db = new Connect(config['db']);
+    this.db.open();
 
-    // this.auth = new Authorization();
+    this.auth = new Authorization();
 };
 
 /**
@@ -74,7 +74,7 @@ IW.Routes.prototype.createRoute = function ( params ) {
 
 IW.Routes.prototype.sendResponse = function ( req, res, params ) {
 
-    // if (this.security.isGranted(req.url, this.auth.getSessionRole(req))) {
+    if (this.security.isGranted(req.url, this.auth.getSessionRole(req))) {
         if (params.hasOwnProperty('viewPath')) {
             // Upload template and send it like response
             this.response(req, res, this.prepareTemplate(params['route'], params['viewPath']));
@@ -82,9 +82,9 @@ IW.Routes.prototype.sendResponse = function ( req, res, params ) {
             // Call to controller and send his response
             this.callToController(req, res, params);
         }
-    // } else {
-    //     this.response(req, res, this.prepareTemplateError('Permission Denied the page "' + req.url + '"') );
-    // }
+    } else {
+        this.response(req, res, this.prepareTemplateError('Permission Denied the page "' + req.url + '"') );
+    }
 };
 
 /**
@@ -111,9 +111,9 @@ IW.Routes.prototype.callToController = function (req, res, params) {
     var method = data[2];
 
     try {
-        // var Controller = require(this.joinPath(__dirname, pathController));
-        // var object = new Controller(this.db.connection, this.config);
-        // object[method](req, res);
+        var Controller = require(this.joinPath(__dirname, pathController));
+        var object = new Controller(this.db.connection, this.config);
+        object[method](req, res);
     } catch (e) {
         res.writeHead(200, {'Content-Type': 'application/json'});
         res.end('Error:' + e.message + ' in route: "' + path + '" method "' + method + '"');
