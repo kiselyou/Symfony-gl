@@ -3,14 +3,14 @@ const Authorization = require('./../../core/Authorization.js');
 class SecurityController extends Authorization {
 
     /**
-     *
-     * @param db
-     * @param config
+     * @constructor
+     * @param {Server} server
+     * @param {Connect} db
      */
-    constructor(db, config) {
+    constructor(server, db) {
         super();
         this._db = db;
-        this._server = config;
+        this._server = server;
     }
 
     /**

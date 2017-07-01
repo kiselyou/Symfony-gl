@@ -1,13 +1,6 @@
-'use strict';
-require('array.prototype.find').shim();
+const Server = require('./server/core/Server');
+let core = new Server();
 
-/**
- * @type {{ encoding: string, server: *, socket: * routes: * }}
- */
-var config = require(__dirname + '/server/config/config.json');
-var IW = require('./server/core/Routes');
-var route = new IW.Routes( config );
-
-route
-    .initSocket( config.socket )
-    .init();
+core
+    .init()
+    .initSocket();

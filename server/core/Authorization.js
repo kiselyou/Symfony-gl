@@ -29,7 +29,7 @@ class Authorization {
     /**
      *
      * @param req
-     * @returns {{}|null}
+     * @returns {?{}}
      */
     getSessionUser(req) {
         return Authorization.getSessionData(req, 'user');
@@ -38,7 +38,7 @@ class Authorization {
     /**
      *
      * @param req
-     * @returns {{}|null}
+     * @returns {?string}
      */
     getSessionRole(req) {
         return Authorization.getSessionData(req, 'role');

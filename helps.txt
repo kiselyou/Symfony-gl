@@ -1,8 +1,8 @@
 # Определение компонента, использующего порт 80
-# sudo netstat -tulpn | grep --color :80
+# Find busy port: sudo netstat -tulpn | grep --color :80
 
-# Server ssh root@195.110.59.186
+# Server: ssh root@195.110.59.186
 
-# Start server forever start ./forever/development.json
+# Start server: forever start ./forever/development.json
 
-# mysql --host=localhost --user=myname --password=mypass
+# Connect db: mysql --host=localhost --user=myname --password=mypass

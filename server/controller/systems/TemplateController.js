@@ -1,10 +1,9 @@
-const IW = require('./../../core/TemplateLoader.js');
 
 class TemplateController {
 
-    constructor(db, config) {
-        this.loader = new IW.TemplateLoader(config);
-        this._server = config;
+    constructor(config) {
+        this.loader = config.view;
+        this._config = config;
     }
 
     render(req, res) {
@@ -17,8 +16,8 @@ class TemplateController {
             content = this.loader.prepareTemplateError(error)
         }
 
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end(content, this._server.encoding, true);
+        res.writeHead(200, this._config.contentType(2));
+        res.end(content, this._config.encoding, true);
 
     }
 }

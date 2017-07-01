@@ -1,7 +1,11 @@
 class SocketController {
 
-    constructor(db, config) {
-        this._server = config;
+    /**
+     * @constructor
+     * @param {Server} server
+     */
+    constructor(server) {
+        this._server = server;
     }
 
     configuration(req, res) {

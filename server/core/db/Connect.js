@@ -5,12 +5,12 @@ const mysqlUtilities = require('mysql-utilities');
 class Connect {
     /**
      *
-     * @param {{ mysql: { host: string, port: (number|null), user: string, password: string, database: string } }} config
+     * @param {Components} config
      */
     constructor(config) {
         /**
          *
-         * @type {{ mysql: { host: string, port: (number|null), user: string, password: string, database: string } }}
+         * @type {Components}
          * @private
          */
         this._config = config;
@@ -31,7 +31,7 @@ class Connect {
         switch (type) {
             case 'mysql':
             default:
-                this._db(this._config['mysql']);
+                this._db(this._config.mySQL);
                 break;
         }
         return this.connection;

@@ -1,5 +1,3 @@
-// sudo forever start ./forever/development.json
-// sudo forever stop
 {
   "uid": "galaxy",
   "append": true,

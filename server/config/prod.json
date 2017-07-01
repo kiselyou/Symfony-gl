@@ -1,0 +1,36 @@
+{
+  "server": {
+    "port": 80,
+    "host": "iron-war.com"
+  },
+  "socket": {
+    "port": 3000,
+    "host": "iron-war.com"
+  },
+  "db": {
+    "mysql": {
+      "host": "localhost",
+      "port": 3306,
+      "user": "iron-war",
+      "password": "V6KvjmEcnFmbwdnu",
+      "database": "iron_war"
+    }
+  },
+  "security": {
+    "access_control": [
+      {"path": "/"},
+      {"path": "/home", "role": "ROLE_IW_USER"},
+      {"path": "/play", "role": "ROLE_IW_USER"},
+      {"path": "/home/admin", "role": "ROLE_IW_ADMIN"}
+    ],
+    "role_hierarchy": {
+      "ROLE_ANONYMOUSLY": [],
+      "ROLE_IW": ["ROLE_ANONYMOUSLY"],
+      "ROLE_IW_USER": ["ROLE_IW"],
+      "ROLE_IW_ADMIN": ["ROLE_IW_USER"]
+    }
+  },
+  "authorization": {
+
+  }
+}

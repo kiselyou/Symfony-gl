@@ -22,92 +22,78 @@
 // // sending to individual socketid
 // socket.broadcast.to(socketid).emit('message', 'for your eyes only');
 
-var IW = IW || {};
+const EVENT_CONNECTED = 'connected';
+const EVENT_SENDER = 'sender';
+const EVENT_EXCEPT_SENDER = 'except-sender';
+const EVENT_SPECIFIC = 'specific';
+const EVENT_ALL = 'all';
+const EVENT_DISCONNECT = 'disconnect';
+const EVENT_DISCONNECTED = 'disconnected';
+const EVENT_REMOVE = 'remove';
+const EVENT_REMOVED = 'removed';
 
-/**
- *
- * @param {*} config
- * @param {express} app
- * @constructor
- */
-IW.Socket = function ( app, config ) {
-    this.config = config;
-    this.server = require('http').createServer(app);
-    this.io = require('socket.io')(this.server);
-};
+class Socket {
+    /**
+     *
+     * @type {{ port: number, host: string }}
+     */
+    constructor(app, config) {
+        /**
+         *
+         * @param {express} app
+         * @type {{ port: number, host: string }}
+         */
+        this.config = config;
+        this.server = require('http').createServer(app);
+        this.io = require('socket.io')(this.server);
+    }
 
-IW.Socket.prototype.io = null;
-IW.Socket.prototype.server = null;
+    listen(namespace) {
+        var scope = this;
 
-/**
- *
- * @type {{ port: number, host: string }}
- */
-IW.Socket.prototype.config = {};
+        var room = this.io.of(namespace);
 
-/**
- *
- * @param {string} namespace
- */
-IW.Socket.prototype.listen = function ( namespace ) {
-    var scope = this;
+        room.on('connection', function(socket){
 
-    var room = this.io.of(namespace);
+            // Подписался
+            var params = { clientID: socket.id };
+            socket.emit(EVENT_CONNECTED, params);
 
-    room.on('connection', function(socket){
+            // Слушаем запросы клиента
 
-        // Подписался
-        var params = { clientID: socket.id };
-        socket.emit(IW.Socket.EVENT_CONNECTED, params);
+            // Отправить ответ только себе
+            socket.on(EVENT_SENDER, function (data) {
+                socket.emit(EVENT_SENDER, data);
+            });
 
-        // Слушаем запросы клиента
+            // Отправить всем кроме себя
+            socket.on(EVENT_EXCEPT_SENDER, function (data) {
+                // Отправляем сообщени всем кроме себя
+                socket.broadcast.emit(EVENT_EXCEPT_SENDER, data);
 
-        // Отправить ответ только себе
-        socket.on(IW.Socket.EVENT_SENDER, function (data) {
-            socket.emit(IW.Socket.EVENT_SENDER, data);
+            });
+
+            // Отправить конкретному пользователю сообщение
+            socket.on(EVENT_SPECIFIC, function (data) {
+                socket.broadcast.to(data.receiverID).emit(EVENT_SPECIFIC, data);
+            });
+
+            socket.on(EVENT_ALL, function (data) {
+                room.emit(EVENT_ALL, data);
+            });
+
+            socket.on(EVENT_DISCONNECT, function () {
+                // room.emit('disconnected', { clientID: socket.id });
+                socket.broadcast.emit(EVENT_DISCONNECTED, { clientID: socket.id });
+            });
+
+            socket.on(EVENT_REMOVE, function () {
+                socket.broadcast.emit(EVENT_REMOVED, { clientID: socket.id });
+            });
         });
 
-        // Отправить всем кроме себя
-        socket.on(IW.Socket.EVENT_EXCEPT_SENDER, function (data) {
-            // Отправляем сообщени всем кроме себя
-            socket.broadcast.emit(IW.Socket.EVENT_EXCEPT_SENDER, data);
+        this.server.listen(this.config.port, this.config.host);
+    }
+}
 
-        });
-
-        // Отправить конкретному пользователю сообщение
-        socket.on(IW.Socket.EVENT_SPECIFIC, function (data) {
-            socket.broadcast.to(data.receiverID).emit(IW.Socket.EVENT_SPECIFIC, data);
-        });
-
-        socket.on(IW.Socket.EVENT_ALL, function (data) {
-            room.emit(IW.Socket.EVENT_ALL, data);
-        });
-
-        socket.on(IW.Socket.EVENT_DISCONNECT, function () {
-            // room.emit('disconnected', { clientID: socket.id });
-            socket.broadcast.emit(IW.Socket.EVENT_DISCONNECTED, { clientID: socket.id });
-        });
-
-        socket.on(IW.Socket.EVENT_REMOVE, function () {
-            socket.broadcast.emit(IW.Socket.EVENT_REMOVED, { clientID: socket.id });
-        });
-    });
-
-    this.server.listen( this.config.port, this.config.host );
-};
-
-/**
- *
- * @type {string}
- */
-IW.Socket.EVENT_CONNECTED = 'connected';
-IW.Socket.EVENT_SENDER = 'sender';
-IW.Socket.EVENT_EXCEPT_SENDER = 'except-sender';
-IW.Socket.EVENT_SPECIFIC = 'specific';
-IW.Socket.EVENT_ALL = 'all';
-IW.Socket.EVENT_DISCONNECT = 'disconnect';
-IW.Socket.EVENT_DISCONNECTED = 'disconnected';
-IW.Socket.EVENT_REMOVE = 'remove';
-IW.Socket.EVENT_REMOVED = 'removed';
-
-module.exports = IW;
+module.exports = Socket;
