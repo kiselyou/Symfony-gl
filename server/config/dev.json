@@ -19,7 +19,7 @@
   "security": {
     "access_control": [
       {"path": "/"},
-      {"path": "/home", "role": "ROLE_IW_USER"},
+      {"path": "/home"},
       {"path": "/play", "role": "ROLE_IW_USER"},
       {"path": "/home/admin", "role": "ROLE_IW_ADMIN"}
     ],

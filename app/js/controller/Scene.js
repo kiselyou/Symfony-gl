@@ -27,10 +27,19 @@ IW.Scene = function ( idContainer ) {
      *
      * @type {WebGLRenderer}
      */
-    this.renderer = new THREE.WebGLRenderer( { antialias: true } );
+    this.renderer = new THREE.WebGLRenderer( { alpha: true, antialias: true } );
     // this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     // this.renderer.autoClear = false;
+    this.renderer.setClearColor( 0x242a34 );
     this.renderer.setPixelRatio( window.devicePixelRatio );
+
+
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.renderReverseSided = false;
+
+    this.renderer.autoClear = false;
+    this.renderer.gammaInput = true;
+    this.renderer.gammaOutput = true;
 
     /**
      *
@@ -252,7 +261,7 @@ IW.Scene = function ( idContainer ) {
      */
     function setCamera() {
         scope.camera.position.set( 0, 40, -80 );
-        scope.camera.fov = 55;
+        scope.camera.fov = 65;
         scope.camera.near = 0.1;
         scope.camera.far = 100000;
         scope.camera.aspect = scope.getAspect();
@@ -269,6 +278,15 @@ IW.Scene = function ( idContainer ) {
         var light = new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 1 );
         light.position.set( 0, 1000, 0 );
         scope.scene.add( light );
+
+
+
+        scope.scene.add(new THREE.AmbientLight(0x333333));
+
+        var light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5000, 5000, 1000);
+        scope.scene.add(light);
+
 
         // light = new THREE.DirectionalLight( 0xaabbff, 0.5 );
         // light.position.x = 15000;
