@@ -64,9 +64,9 @@ class View {
                     let indexHTML = fs.readFileSync(pathIndexHTML);
                     let ch = cheerio.load(indexHTML);
                     ch('body').prepend(pattern);
-                    template = this.includePattern(ch.html(), []);
+                    template = this.includePattern(ch.html());
                 } else {
-                    template = this.includePattern(pattern, []);
+                    template = this.includePattern(pattern);
                 }
 
                 this.ch.add(route, viewPath, template);
@@ -104,9 +104,9 @@ class View {
                     let pathIndex = this.getPathTemplate(this.conf.pathEnvironment, HTML_INDEX);
                     let ch = cheerio.load(fs.readFileSync(pathIndex));
                     ch('body').html(pattern);
-                    template = this.includePattern(ch.html(), []);
+                    template = this.includePattern(ch.html());
                 } else {
-                    template = this.includePattern(pattern, []);
+                    template = this.includePattern(pattern);
                 }
 
                 this.ch.add(HTML_404 + prefix, HTML_404 + prefix, template);
@@ -125,14 +125,13 @@ class View {
      * Include additional templates
      *
      * @param {string} content
-     * @param {Array} [arrTemplates]
      * @returns {*}
      */
-    includePattern(content, arrTemplates) {
+    includePattern(content) {
 
         let scope = this;
         let ch = cheerio.load(content);
-        let str = this.extendPattern(ch, arrTemplates);
+        let str = this.extendPattern(ch);
 
         if (str) {
             return str;
@@ -146,13 +145,8 @@ class View {
             if (fs.existsSync(path)) {
 
                 ch(this).replaceWith(
-                    scope.includePattern(
-                        fs.readFileSync(path, {encoding: scope.conf.encoding}),
-                        arrTemplates
-                    )
+                    scope.includePattern(fs.readFileSync(path, {encoding: scope.conf.encoding}))
                 );
-
-                scope.fillArray(arrTemplates, nameTemplate);
 
             } else {
                 new Error(null).warning('Template was not found in the path "' + path + '".', 'View', 'includePattern');
@@ -166,10 +160,9 @@ class View {
      * Extend template
      *
      * @param {cheerio} ch - It is template
-     * @param {Array} [arrTemplates]
      * @returns {boolean|string}
      */
-    extendPattern(ch, arrTemplates) {
+    extendPattern(ch) {
 
         let scope = this;
         ch('[data-extend]').each(function () {
@@ -188,10 +181,7 @@ class View {
 
                 let $$ = cheerio.load(fs.readFileSync(path, {encoding: scope.conf.encoding}));
                 $$('[data-extend-container="' + blockName + '"]').replaceWith(ch(this).children());
-                ch(this).replaceWith(scope.includePattern($$.html(), arrTemplates));
-
-                scope.fillArray(arrTemplates, nameTemplate);
-
+                ch(this).replaceWith(scope.includePattern($$.html()));
                 return ch.html();
 
             } else {
@@ -201,18 +191,6 @@ class View {
         });
 
         return false;
-    };
-
-    /**
-     *
-     * @param {Array} arr
-     * @param {string} value
-     * @returns {void}
-     */
-    fillArray(arr, value) {
-        if (typeof arr === 'object' && arr.indexOf(value) === -1) {
-            arr.push(value);
-        }
     };
 
     /**
