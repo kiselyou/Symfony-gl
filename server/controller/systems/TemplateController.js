@@ -6,18 +6,19 @@ class TemplateController {
         this._config = config;
     }
 
-    render(req, res) {
+    render(req, res, params) {
 
-        let content = null;
+        let template = null;
 
         try {
-            content = this.loader.includePattern(this.loader.createPattern(req.body['path']), []);
+            template = this.loader.prepareTemplate(params['route'], req.body['path']);
         } catch (error) {
-            content = this.loader.prepareTemplateError(error)
+            this.err.exception(error).alert('Cannot upload template', 'TemplateController', 'render');
+            template = this.loader.prepareTemplateError();
         }
 
         res.writeHead(200, this._config.contentType(2));
-        res.end(content, this._config.encoding, true);
+        res.end(template, this._config.encoding, true);
 
     }
 }

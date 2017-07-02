@@ -29,10 +29,10 @@ class View {
 
     /**
      *
-     * @param path
+     * @param {string} path
      * @returns {string}
      */
-    createPattern(path) {
+    static createPattern(path) {
         return '<template data-include="' + path + '"></template>';
     };
 
@@ -40,11 +40,12 @@ class View {
      *
      * @param {string} route - Ith is HTTP path
      * @param {string} viewPath - It is path to html pattern
-     * @returns {{content: string, status: boolean, error: * }}
+     * @param {boolean} [full]
+     * @returns {string}
      */
-    prepareTemplate(route, viewPath) {
+    prepareTemplate(route, viewPath, full) {
 
-        let content = '';
+        let template = '';
 
         try {
 
@@ -52,71 +53,71 @@ class View {
 
             if (view) {
 
-                content = view;
+                template = view;
 
             } else {
 
-                let pathIndex = this.getPathTemplate(this.conf.pathEnvironment, HTML_INDEX);
-                let indexHTML = fs.readFileSync(pathIndex);
-                let $ = cheerio.load(indexHTML);
-                $('body').prepend(this.createPattern(viewPath));
+                let pattern = View.createPattern(viewPath);
 
-                // Include additional templates
-                content = this.includePattern($.html(), []);
+                if (full) {
+                    let pathIndexHTML = this.getPathTemplate(this.conf.pathEnvironment, HTML_INDEX);
+                    let indexHTML = fs.readFileSync(pathIndexHTML);
+                    let ch = cheerio.load(indexHTML);
+                    ch('body').prepend(pattern);
+                    template = this.includePattern(ch.html(), []);
+                } else {
+                    template = this.includePattern(pattern, []);
+                }
 
-                // Add template to cache
-                this.ch.add(route, viewPath, content);
+                this.ch.add(route, viewPath, template);
             }
 
-            return {
-                content: content,
-                status: true,
-                error: null
-            };
+            return template;
 
-        } catch (error) {
-            return this.prepareTemplateError(error);
+        } catch (e) {
+            new Error(e).alert('Cannot prepare template.', 'View', 'prepareTemplate');
+            return this.prepareTemplateError(true);
         }
     };
 
     /**
      * Upload pattern error
      *
-     * @param {(string|{code: number})} error
-     * @returns {{content: string, status: boolean, error: * }}
+     * @param {boolean} [full]
+     * @returns {string}
      */
-    prepareTemplateError(error) {
-
+    prepareTemplateError(full) {
         try {
-
-            let content = '',
-                view = this.ch.get(HTML_404, HTML_404);
+            let prefix = full ? '_full' : '_simple';
+            let template = '',
+                view = this.ch.get(HTML_404 + prefix, HTML_404 + prefix);
 
             if (view) {
-                content = view;
+
+                template = view;
+
             } else {
 
-                let pathIndex = this.getPathTemplate(this.conf.pathEnvironment, HTML_INDEX);
-                let ch = cheerio.load(fs.readFileSync(pathIndex));
-                ch('body').html(this.createPattern(HTML_404));
-                content = this.includePattern(ch.html(), []);
-                this.ch.add(HTML_404, HTML_404, content);
+                let pattern = View.createPattern(HTML_404);
+
+                if (full) {
+                    let pathIndex = this.getPathTemplate(this.conf.pathEnvironment, HTML_INDEX);
+                    let ch = cheerio.load(fs.readFileSync(pathIndex));
+                    ch('body').html(pattern);
+                    template = this.includePattern(ch.html(), []);
+                } else {
+                    template = this.includePattern(pattern, []);
+                }
+
+                this.ch.add(HTML_404 + prefix, HTML_404 + prefix, template);
+
             }
 
-            return {
-                content: content,
-                status: false,
-                error: error
-            };
+            return template;
 
-        } catch ( e ) {
-            let msg = 'Sorry, check with the site admin for error:' + e.code + '. View.prepareTemplateError()';
-            new Error(e).message(msg);
-            return {
-                content: msg,
-                status: false,
-                error: error
-            };
+        } catch (e) {
+
+            return new Error(e).alert('Cannot prepare template.', 'View', 'prepareTemplateError').get();
         }
     };
 
@@ -154,7 +155,7 @@ class View {
                 scope.fillArray(arrTemplates, nameTemplate);
 
             } else {
-                new Error(null).message('Include: Template was not found in the path "' + path + '". View.includePattern()');
+                new Error(null).warning('Template was not found in the path "' + path + '".', 'View', 'includePattern');
             }
         });
 
@@ -164,7 +165,7 @@ class View {
     /**
      * Extend template
      *
-     * @param {cheerio} ch the template
+     * @param {cheerio} ch - It is template
      * @param {Array} [arrTemplates]
      * @returns {boolean|string}
      */
@@ -178,8 +179,9 @@ class View {
             let path = scope.getPathTemplate(scope.conf.pathTemplates, nameTemplate);
 
             if (!blockName || !nameTemplate) {
-                new Error(null).message('Extend: You mast set attribute "data-container=\"name-container\"" in the template "' + nameTemplate + '". View.extendPattern()');
-                return false;
+                return new Error(null)
+                    .warning('You mast set attribute "data-container=\"name-container\"" in the template "' + nameTemplate + '".', 'View', 'extendPattern')
+                    .get();
             }
 
             if (fs.existsSync(path)) {
@@ -193,7 +195,8 @@ class View {
                 return ch.html();
 
             } else {
-                new Error(null).message('Extend: Template was not found in path: "' + path + '". View.extendPattern()');
+                new Error(null)
+                    .warning('Template was not found in path: "' + path + '".', 'View', 'extendPattern');
             }
         });
 

@@ -222,7 +222,7 @@ canvas {
   -webkit-user-select: none;
 }
 body {
-  background: #000000 url('../images/textures/background/main.png');
+  background: #000000 url('../images/textures/background/index.jpg');
 }
 a {
   color: rgba(0, 255, 255, 0.6);

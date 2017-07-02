@@ -26,8 +26,8 @@ class Server extends Components {
                 scope.createRoute(routes[i]);
             }
             app.get('*', function(req, res) {
-                let template = scope.view.prepareTemplateError('The page "' + req.url + '" was not found. Server.routeControls()');
-                scope.response(req, res, template.content);
+                new Error(null).warning('The page "' + req.url + '" was not found.', 'Server', 'routeControls');
+                scope.response(req, res, scope.view.prepareTemplateError(true));
             });
         });
 
@@ -69,21 +69,17 @@ class Server extends Components {
      * @returns {Server}
      */
     sendResponse(req, res, params) {
-        let template = null;
         if (this.secur.isGranted(req.url, this.secur.getSessionRole(req))) {
             if (params.hasOwnProperty('viewPath')) {
-                template = this.view.prepareTemplate(params['route'], params['viewPath']);
+                this.response(req, res, this.view.prepareTemplate(params['route'], params['viewPath'], true));
             } else {
                 this.callToController(req, res, params);
                 return this;
             }
         } else {
-            template = this.view.prepareTemplateError('Permission Denied. Page: "' + req.url + '". Server.sendResponse()');
-        }
-        if (template) {
-            this.response(req, res, template['content']);
-        } else {
-            new Error(null).message('Something wrong. Server.sendResponse()');
+
+            new Error(null).permission('Permission Denied. Page: "' + req.url + '".', 'Server', 'sendResponse');
+            this.response(req, res, this.view.prepareTemplateError(true));
         }
         return this;
     };
@@ -101,25 +97,31 @@ class Server extends Components {
         let data = params['controller'].split(':');
 
         if (data.length !== 3) {
-            let msg = 'Route configuration is not correct. Server.callToController()';
-            new Error(null).message(msg);
             res.writeHead(200, this.contentType(2));
-            res.end(msg);
+            res.end(
+                new Error(null)
+                    .warning('Route configuration is not correct', 'Server', 'callToController')
+                    .get()
+            );
             return this;
         }
+
         let method = data[2];
         let file = data[0] + '/' + data[1] + '.js';
         let path = this.routes.joinPath(this.routes.joinPath(__dirname, '/../../' + this.pathController), file);
+
         try {
             let Controller = require(path);
             let object = new Controller(this, this.db.connection);
-            object[method](req, res);
+            object[method](req, res, params);
 
         } catch (e) {
-            let msg = 'Error:' + e.message + ' in route: "' + file + '" method "' + method + '". Server.callToController()';
-            new Error(e).message(msg);
             res.writeHead(200, this.contentType(2));
-            res.end(msg);
+            res.end(
+                new Error(e)
+                    .alert('Route - "' + file + '". Method - "' + method + '".', 'Server', 'callToController')
+                    .get()
+            );
         }
         return this;
     };
@@ -130,7 +132,7 @@ class Server extends Components {
      *
      * @param {{}} req
      * @param {{}} res
-     * @param {{ status: boolean, content: string, error: string }} str
+     * @param {string} str
      * @returns {Server}
      */
     response(req, res, str) {
