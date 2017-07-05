@@ -93,8 +93,8 @@ IW.SkyBox = function () {
     this.earth = function ( position ) {
 
         var material = new THREE.MeshPhongMaterial();
-        var r = 4096;
-        var scalar = 1.002;
+        var r = 4000;
+        var scalar = 1.003;
         var geometry =new THREE.SphereGeometry(r, 64, 64);
 
         material.map = this.multiLoader.getTexture('earth_map');
@@ -108,7 +108,7 @@ IW.SkyBox = function () {
         earthMesh = new THREE.Mesh(geometry, material);
         earthMesh.material.needsUpdate = true;
 
-        earthMesh.position.set(3000, - ( r ), 3000);
+        earthMesh.position.set(5000, - ( r ), 5000);
 
         earthMesh.receiveShadow = true;
         earthMesh.castShadow = true;
