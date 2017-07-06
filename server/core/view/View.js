@@ -144,14 +144,14 @@ class View {
             return str;
         }
 
-        ch('[data-include]').each(() => {
+        ch('[data-include]').each((key, element) => {
 
-            let nameTemplate = ch(this).attr('data-include');
+            let nameTemplate = ch(element).attr('data-include');
             let path = scope.getPathTemplate(scope.conf.pathTemplates, nameTemplate);
 
             if (fs.existsSync(path)) {
 
-                ch(this).replaceWith(
+                ch(element).replaceWith(
                     scope.includePattern(fs.readFileSync(path, {encoding: scope.conf.encoding}))
                 );
 
@@ -172,10 +172,10 @@ class View {
     extendPattern(ch) {
 
         let scope = this;
-        ch('[data-extend]').each(() => {
+        ch('[data-extend]').each((key, element) => {
 
-            let blockName = ch(this).attr('data-extend-container');
-            let nameTemplate = ch(this).attr('data-extend');
+            let blockName = ch(element).attr('data-extend-container');
+            let nameTemplate = ch(element).attr('data-extend');
             let path = scope.getPathTemplate(scope.conf.pathTemplates, nameTemplate);
 
             if (!blockName || !nameTemplate) {
@@ -187,8 +187,8 @@ class View {
             if (fs.existsSync(path)) {
 
                 let $$ = cheerio.load(fs.readFileSync(path, {encoding: scope.conf.encoding}));
-                $$('[data-extend-container="' + blockName + '"]').replaceWith(ch(this).children());
-                ch(this).replaceWith(scope.includePattern($$.html()));
+                $$('[data-extend-container="' + blockName + '"]').replaceWith(ch(element).children());
+                ch(element).replaceWith(scope.includePattern($$.html()));
                 return ch.html();
 
             } else {

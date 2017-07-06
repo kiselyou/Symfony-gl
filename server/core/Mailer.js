@@ -26,14 +26,14 @@ class Mailer {
          * @returns {{from: ?{}, to: null, subject: null, text: null, html: null}}
          * @private
          */
-        this._options = Mailer.defaultOptions();
+        this._options = this.defaultOptions;
     }
 
     /**
      *
      * @returns {{from: ?{}, to: null, subject: null, text: null, html: null}}
      */
-    static defaultOptions() {
+    defaultOptions() {
         return {
             from: this._config.mailerSender,
             to: null,
@@ -121,7 +121,7 @@ class Mailer {
             this._receivers = [];
         }
         if (options) {
-            this._options = Mailer.defaultOptions();
+            this._options = this.defaultOptions;
         }
         return this;
     }

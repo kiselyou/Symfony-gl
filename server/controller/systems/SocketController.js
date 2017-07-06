@@ -13,7 +13,7 @@ class SocketController {
         let json = JSON.stringify(
             {
                 config: {
-                    socket: this._server.socket.host + ':' + this._server.socket.port + '/play'
+                    socket: this._server.conf.socket.host + ':' + this._server.conf.socket.port + '/play'
                 }
             }
         );

@@ -1,9 +1,9 @@
 
 class TemplateController {
 
-    constructor(config) {
-        this.loader = config.view;
-        this._config = config;
+    constructor(server) {
+        this.loader = server.view;
+        this.server = server;
     }
 
     render(req, res, params) {
@@ -17,8 +17,8 @@ class TemplateController {
             template = this.loader.prepareTemplateError();
         }
 
-        res.writeHead(200, this._config.contentType(2));
-        res.end(template, this._config.encoding, true);
+        res.writeHead(200, this.server.conf.contentType(2));
+        res.end(template, this.server.conf.encoding, true);
 
     }
 }

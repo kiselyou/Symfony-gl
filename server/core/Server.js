@@ -97,7 +97,7 @@ class Server extends Components {
         let data = params['controller'].split(':');
 
         if (data.length !== 3) {
-            res.writeHead(200, this.contentType(2));
+            res.writeHead(200, this.conf.contentType(2));
             res.end(
                 new Error(null)
                     .warning('Route configuration is not correct', 'Server', 'callToController')
@@ -116,7 +116,7 @@ class Server extends Components {
             object[method](req, res, params);
 
         } catch (e) {
-            res.writeHead(200, this.contentType(2));
+            res.writeHead(200, this.conf.contentType(2));
             res.end(
                 new Error(e)
                     .alert('Route - "' + file + '". Method - "' + method + '".', 'Server', 'callToController')
@@ -136,7 +136,7 @@ class Server extends Components {
      * @returns {Server}
      */
     response(req, res, str) {
-        res.writeHead(200, this.contentType());
+        res.writeHead(200, this.conf.contentType());
         res.end(str, this.conf.encoding, true);
         return this;
     };
