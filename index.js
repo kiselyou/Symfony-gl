@@ -1,6 +1,12 @@
 const Server = require('./server/core/Server');
-let core = new Server();
 
-core
-    .init()
-    .initSocket();
+try {
+    let core = new Server();
+
+    core
+        .init()
+        .initSocket();
+
+} catch (e) {
+    console.log(e);
+}
