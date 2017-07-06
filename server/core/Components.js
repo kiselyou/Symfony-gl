@@ -1,15 +1,21 @@
 
-const Configuration = require('./Configuration');
+const Conf = require('./Conf');
 const Security = require('./security/Security');
 const Connect = require('./db/Connect');
+const Mailer = require('./Mailer');
 const View = require('./view/View');
 const Routes = require('./Routes');
 const Error = require('./Error');
 
-class Components extends Configuration {
+class Components {
 
     constructor() {
-        super();
+
+        /**
+         *
+         * @type {Conf}
+         */
+        this.conf = new Conf();
 
         /**
          *
@@ -21,25 +27,31 @@ class Components extends Configuration {
          *
          * @type {Routes}
          */
-        this.routes = new Routes(this);
+        this.routes = new Routes(this.conf);
 
         /**
          *
          * @type {View}
          */
-        this.view = new View(this);
+        this.view = new View(this.conf, this.routes);
 
         /**
          *
          * @type {Security}
          */
-        this.secur = new Security(this);
+        this.secur = new Security(this.conf);
 
         /**
          *
          * @type {Connect}
          */
-        this.db = new Connect(this);
+        this.db = new Connect(this.conf);
+
+        /**
+         *
+         * @type {Mailer}
+         */
+        this.mailer = new Mailer(this.conf);
     }
 }
 

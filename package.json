@@ -15,6 +15,7 @@
     "jquery": "^3.2.1",
     "mysql": "^2.13.0",
     "mysql-utilities": "^1.0.10",
+    "nodemailer": "^4.0.1",
     "password-hash": "^1.2.2",
     "socket.io": "^1.7.4"
   },

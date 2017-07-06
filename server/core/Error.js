@@ -5,6 +5,7 @@ const TITLE_PERMISSION = 'PERMISSION DENIED:';
 class Error {
     constructor(exception) {
 
+
         this._exception = exception;
 
         this.log = [];
@@ -27,8 +28,8 @@ class Error {
     /**
      *
      * @param {string} msg
-     * @param {string} [className]
-     * @param {string} [methodName]
+     * @param {?string} [className]
+     * @param {?string} [methodName]
      * @returns {Error}
      */
     alert(msg, className = null, methodName = null) {
@@ -40,8 +41,8 @@ class Error {
     /**
      *
      * @param {string} msg
-     * @param {string} [className]
-     * @param {string} [methodName]
+     * @param {?string} [className]
+     * @param {?string} [methodName]
      * @returns {Error}
      */
     warning(msg, className = null, methodName = null) {
@@ -53,8 +54,8 @@ class Error {
     /**
      *
      * @param {string} msg
-     * @param {string} [className]
-     * @param {string} [methodName]
+     * @param {?string} [className]
+     * @param {?string} [methodName]
      * @returns {Error}
      */
     permission(msg, className = null, methodName = null) {

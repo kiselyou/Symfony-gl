@@ -6,13 +6,13 @@ class Routes {
 
     /**
      *
-     * @param {Components} config
+     * @param {Conf} config
      */
     constructor(config) {
 
         /**
          *
-         * @type {Components}
+         * @type {Conf}
          */
         this.conf = config;
 
@@ -38,9 +38,9 @@ class Routes {
         let scope = this;
         let path = this.joinPath(__dirname, '/../../' + this.conf.pathRoutes);
 
-        fs.readdir(path, function (err, files) {
+        fs.readdir(path, (err, files) => {
             if (err) {
-                new Error(err).message('Route.load()');
+                new Error(err).alert('Cannot upload file of routes', 'Routes', 'load');
                 return;
             }
 

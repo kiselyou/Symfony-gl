@@ -21,7 +21,7 @@ const DIR_PROD = '/dist';
  */
 const ENVIRONMENT_PROD = 'prod';
 
-class Configuration {
+class Conf {
 
     constructor() {
         /**
@@ -78,6 +78,32 @@ class Configuration {
      */
     get socket() {
         return this._readConfig('socket');
+    }
+
+    /**
+     *
+     * @returns {?{}}
+     */
+    get mailer() {
+        return this._readConfig('mailer');
+    }
+
+    /**
+     *
+     * @returns {?{}}
+     */
+    get mailerTransporter() {
+        let mailer = this.mailer();
+        return mailer && mailer.hasOwnProperty('transporter') ? mailer['transporter'] : null;
+    }
+
+    /**
+     *
+     * @returns {?{}}
+     */
+    get mailerSender() {
+        let mailer = this.mailer();
+        return mailer && mailer.hasOwnProperty('sender') ? mailer['sender'] : null;
     }
 
     /**
@@ -198,7 +224,7 @@ class Configuration {
 
 /**
  *
- * @module Configuration
+ * @module Conf
  */
-module.exports = Configuration;
+module.exports = Conf;
 

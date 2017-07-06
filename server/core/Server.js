@@ -20,12 +20,12 @@ class Server extends Components {
      */
     routeControls() {
         let scope = this;
-        this.routes.load(function (routes) {
-            app.use('/app/', express.static(scope.routes.joinPath(__dirname, '/../../' + scope.pathEnvironment)));
+        this.routes.load((routes) => {
+            app.use('/app/', express.static(scope.routes.joinPath(__dirname, '/../../' + scope.conf.pathEnvironment)));
             for (let i = 0; i < routes.length; i++) {
                 scope.createRoute(routes[i]);
             }
-            app.get('*', function(req, res) {
+            app.get('*', (req, res) => {
                 new Error(null).warning('The page "' + req.url + '" was not found.', 'Server', 'routeControls');
                 scope.response(req, res, scope.view.prepareTemplateError(true));
             });
@@ -43,17 +43,17 @@ class Server extends Components {
         let scope = this;
         switch (params['method']) {
             case 'POST':
-                app.post(params['route'], function(req, res) {
+                app.post(params['route'], (req, res) => {
                     scope.sendResponse(req, res, params);
                 });
                 break;
             case 'GET':
-                app.get(params['route'], function(req, res) {
+                app.get(params['route'], (req, res) => {
                     scope.sendResponse(req, res, params);
                 });
                 break;
             default:
-                app.all(params['route'], function(req, res) {
+                app.all(params['route'], (req, res) => {
                     scope.sendResponse(req, res, params);
                 });
                 break;
@@ -108,7 +108,7 @@ class Server extends Components {
 
         let method = data[2];
         let file = data[0] + '/' + data[1] + '.js';
-        let path = this.routes.joinPath(this.routes.joinPath(__dirname, '/../../' + this.pathController), file);
+        let path = this.routes.joinPath(this.routes.joinPath(__dirname, '/../../' + this.conf.pathController), file);
 
         try {
             let Controller = require(path);
@@ -137,7 +137,7 @@ class Server extends Components {
      */
     response(req, res, str) {
         res.writeHead(200, this.contentType());
-        res.end(str, this.encoding, true);
+        res.end(str, this.conf.encoding, true);
         return this;
     };
 
@@ -154,7 +154,7 @@ class Server extends Components {
         app.use(bodyParser.urlencoded({ extended: true }));
         app.use(bodyParser.json());
         this.routeControls();
-        app.listen(this.server.port, this.server.host);
+        app.listen(this.conf.server.port, this.conf.server.host);
         return this;
     }
 
@@ -163,7 +163,7 @@ class Server extends Components {
      * @returns {Server}
      */
     initSocket() {
-        let socket = new Socket(app, this.socket);
+        let socket = new Socket(app, this.conf.socket);
         socket.listen('play');
         return this;
     };

@@ -30,6 +30,15 @@
       "ROLE_IW_ADMIN": ["ROLE_IW_USER"]
     }
   },
+  "mailer": {
+    "host": "127.0.0.1",
+    "port": 465,
+    "secure": true,
+    "auth": {
+      "user": "username@example.com",
+      "pass": "userpass"
+    }
+  },
   "authorization": {
 
   }

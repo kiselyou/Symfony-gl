@@ -74,7 +74,7 @@ class Cache {
      * @returns {?{route: string, patterns: Array}}
      */
     findRoute(route) {
-        return this.routes.find(function (item) {
+        return this.routes.find((item) => {
             return item.route === route;
         });
     };
@@ -90,7 +90,7 @@ class Cache {
         if (!itemRoute) {
             return null;
         }
-        return itemRoute.patterns.find(function (item) {
+        return itemRoute.patterns.find((item) => {
             return item.path === viewPath;
         });
     };

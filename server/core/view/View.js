@@ -10,15 +10,22 @@ class View {
 
     /**
      *
-     * @param {Components} config
+     * @param {Conf} config
+     * @param {Routes} routes
      */
-    constructor(config) {
+    constructor(config, routes) {
 
         /**
          *
-         * @type {Components}
+         * @type {Conf}
          */
         this.conf = config;
+
+        /**
+         *
+         * @type {Routes}
+         */
+        this.routes = routes;
 
         /**
          *
@@ -137,7 +144,7 @@ class View {
             return str;
         }
 
-        ch('[data-include]').each(function() {
+        ch('[data-include]').each(() => {
 
             let nameTemplate = ch(this).attr('data-include');
             let path = scope.getPathTemplate(scope.conf.pathTemplates, nameTemplate);
@@ -165,7 +172,7 @@ class View {
     extendPattern(ch) {
 
         let scope = this;
-        ch('[data-extend]').each(function () {
+        ch('[data-extend]').each(() => {
 
             let blockName = ch(this).attr('data-extend-container');
             let nameTemplate = ch(this).attr('data-extend');
@@ -200,7 +207,7 @@ class View {
      * @returns {string}
      */
     getPathTemplate(dir, file) {
-        return this.conf.routes.joinPath(__dirname, this.conf.routes.joinPath('./../../../' + dir, file));
+        return this.routes.joinPath(__dirname, this.routes.joinPath('./../../../' + dir, file));
     }
 }
 

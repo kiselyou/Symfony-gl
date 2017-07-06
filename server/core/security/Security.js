@@ -3,13 +3,13 @@ const Authorization = require('./Authorization.js');
 class Security extends Authorization {
     /**
      *
-     * @type {Components}
+     * @type {Conf}
      */
     constructor(config) {
         super(config);
         /**
          *
-         * @type {Components}
+         * @type {Conf}
          */
         this.conf = config;
     }
