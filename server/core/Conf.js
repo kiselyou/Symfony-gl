@@ -35,8 +35,7 @@ class Conf {
      * @returns {[]}
      */
     get accessControl() {
-        let data = this.security;
-        return data && data.hasOwnProperty('access_control') ? data['access_control'] : [];
+        return this.security && this.security.hasOwnProperty('access_control') ? this.security['access_control'] : [];
     }
 
     /**
@@ -44,8 +43,7 @@ class Conf {
      * @returns {?{}}
      */
     get roleHierarchy() {
-        let data = this.security;
-        return data && data.hasOwnProperty('role_hierarchy') ? data['role_hierarchy'] : null;
+        return this.security && this.security.hasOwnProperty('role_hierarchy') ? this.security['role_hierarchy'] : null;
     }
 
     /**
@@ -93,8 +91,7 @@ class Conf {
      * @returns {?{}}
      */
     get mailerTransporter() {
-        let mailer = this.mailer();
-        return mailer && mailer.hasOwnProperty('transporter') ? mailer['transporter'] : null;
+        return this.mailer && this.mailer.hasOwnProperty('transporter') ? this.mailer['transporter'] : null;
     }
 
     /**
@@ -102,8 +99,7 @@ class Conf {
      * @returns {?{}}
      */
     get mailerSender() {
-        let mailer = this.mailer();
-        return mailer && mailer.hasOwnProperty('sender') ? mailer['sender'] : null;
+        return this.mailer && this.mailer.hasOwnProperty('sender') ? this.mailer['sender'] : null;
     }
 
     /**

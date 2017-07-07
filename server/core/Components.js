@@ -1,4 +1,4 @@
-
+const uuidv4 = require('uuid/v4');
 const Conf = require('./Conf');
 const Security = require('./security/Security');
 const Connect = require('./db/Connect');
@@ -52,6 +52,12 @@ class Components {
          * @type {Mailer}
          */
         this.mailer = new Mailer(this.conf);
+
+        /**
+         *
+         * @type {function}
+         */
+        this.uuid = uuidv4;
     }
 }
 

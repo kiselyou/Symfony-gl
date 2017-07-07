@@ -66,12 +66,14 @@ class Mailer {
      * @param {string} subject
      * @param {?string} [text]
      * @param {?string} [html]
+     * @returns {Mailer}
      */
     message(email, subject, text = null, html = null) {
         this._options.to = typeof(email) === 'object' ? email.join() : email;
         this._options.subject = subject;
         this._options.text = text;
         this._options.html = html;
+        return this;
     }
 
     /**
