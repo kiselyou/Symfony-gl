@@ -18,6 +18,18 @@ class Controller {
         this.db = this.server.db.connection;
     }
 
+    /**
+     *
+     * @param req
+     * @param fieldName
+     * @returns {*}
+     */
+    post(req, fieldName) {
+        return req.body.find((value) => {
+            return value.name === fieldName;
+        }).value;
+    }
+
     viewResponse(res, str, status = 200) {
         res.writeHead(status, this.server.conf.contentType());
         res.end(str, this.server.conf.encoding, true);

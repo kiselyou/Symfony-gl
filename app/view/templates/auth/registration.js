@@ -42,12 +42,13 @@ validation.setCallbackSuccess(function (element) {
     if (element == btn) {
         var data = $('#form_reg').serializeArray();
         new IW.Ajax().post('/iw/registration', data, function (res) {
+            var success = $('#reg_success');
             try {
                 var data = JSON.parse(res);
                 if (data.status) {
-                    window.location.href = data.goTo;
+                    success.append('<li>' + data.msg + '</li>');
                 } else {
-                    $('#reg_error').append('<li>' + data.msg + '</li>')
+                    $('#reg_error').append('<li>' + data.msg + '</li>');
                 }
             } catch (e) {
                 console.log(e);
