@@ -1,6 +1,7 @@
 const uuidv4 = require('uuid/v4');
 const Conf = require('./Conf');
 const Security = require('./security/Security');
+const Authorization = require('./security/Authorization.js');
 const Connect = require('./db/Connect');
 const Mailer = require('./Mailer');
 const View = require('./view/View');
@@ -31,9 +32,17 @@ class Components {
 
         /**
          *
+         * @type {Authorization}
+         */
+        this.auth = new Authorization(this.conf);
+
+        /**
+         *
          * @type {View}
          */
         this.view = new View(this.conf, this.routes);
+
+
 
         /**
          *

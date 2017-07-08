@@ -1,16 +1,19 @@
-const Authorization = require('./../../core/security/Authorization.js');
 
-class SecurityController extends Authorization {
+const Controller = require('./../../core/Controller');
+const IWUsers = require('./../../entity/security/IWUsers');
+const IWRoles = require('./../../entity/security/IWRoles');
+
+class SecurityController extends Controller {
 
     /**
      * @constructor
      * @param {Server} server
-     * @param {Connect} db
      */
-    constructor(server, db) {
-        super();
-        this._db = db;
-        this._server = server;
+    constructor(server) {
+        super(server);
+
+        this.user = new IWUsers(this.db);
+        this.role = new IWRoles(this.db);
     }
 
     /**
@@ -44,7 +47,7 @@ class SecurityController extends Authorization {
      * @param res
      */
     authenticated(req, res) {
-        SecurityController._send(res, {user: this.getSessionUser(req)});
+        SecurityController._send(res, {user: this.server.auth.getSessionUser(req)});
     }
 
     /**
@@ -54,62 +57,72 @@ class SecurityController extends Authorization {
      */
     login(req, res) {
 
-        if (this.getSessionUser(req)) {
+        if (this.server.auth.getSessionUser(req)) {
             SecurityController._send(res, {status: false, msg: 'User is authenticated'});
             return;
         }
 
-        let username = this.getField(req, 'username');
-        let password = this.getField(req, 'password');
-
-        this._auth(req, res, username, password);
+        this._authorisation(
+            (msgError, status) => {
+                this.jsonResponse(res, {status: false, msg: msgError}, status);
+            },
+            (user, role, msg) => {
+                let userID = user['id'];
+                this.server.auth.createSessionUser(req, userID, role['role']);
+                this.jsonResponse(res, {status: true, msg: msg, id: userID, goTo: '/home'});
+            },
+            this.getField(req, 'username'),
+            this.getField(req, 'password')
+        );
     }
 
     activation(req, res) {
 
-        let sql = `
-            SELECT email
-              FROM iw_users
-             WHERE uuid = ?
-               AND deleted = 0
-        `;
-
-        this._db.queryRow(sql, [req.query.key], (error, user) => {
-
-            if (error) {
+        this.user.findByOne(
+            (error) => {
                 res.redirect('/');
-            }
-
-            if (user) {
-
-                let updateSql = `
-                    UPDATE iw_users 
-                       SET uuid = ?, 
-                           is_active = ? 
-                     WHERE uuid = ?
-                `;
-
-                this._db.query(updateSql, [null, 1, req.query.key], (error, results) => {
-                    if (error) {
-                        res.redirect('/');
-                    } else {
-                        this._auth(req, res, user.email, null, true);
-                    }
-                });
-            }
-        });
+            },
+            (user) => {
+                if (user) {
+                    this.user.update(
+                        (error) => {
+                            res.redirect('/');
+                        },
+                        (rows) => {
+                            this._authorisation(
+                                (msgError, status) => {
+                                    res.redirect('/');
+                                },
+                                (user, role, msg) => {
+                                    this.server.auth.createSessionUser(req, user['id'], role['role']);
+                                    res.redirect('/home');
+                                },
+                                user.username,
+                                null,
+                                true
+                            );
+                        },
+                        {uuid: null, is_active: 1},
+                        {uuid: req.query.key}
+                    );
+                } else {
+                    res.redirect('/');
+                }
+            },
+            {uuid: req.query.key, deleted: 0}
+        );
     }
 
     logout(req, res) {
-        this.destroySessionUser(req);
-        SecurityController._send(res, {user: this.getSessionUser(req)});
+        this.server.auth.destroySessionUser(req);
+        this.jsonResponse(res, {user: this.server.auth.getSessionUser(req)});
     }
 
     registration(req, res) {
 
         let scope = this;
-        if (this.getSessionUser(req)) {
-            SecurityController._send(res, {status: false, msg: 'User is authenticated'});
+        if (this.server.auth.getSessionUser(req)) {
+            this.jsonResponse(res, {status: false, msg: 'User is authenticated'});
             return;
         }
 
@@ -119,134 +132,173 @@ class SecurityController extends Authorization {
         let confirmPassword = this.getField(req, 'confirm_password');
 
         if (password != confirmPassword) {
-            SecurityController._send(res, {status: false, msg: 'Password is not correct'});
+            this.jsonResponse(res, {status: false, msg: 'Password is not correct'});
         }
 
-        let sql = `
-            SELECT 1 
-              FROM iw_users 
-             WHERE ( email = ? )
-               AND deleted = 0
-        `;
-
-        this._db.queryRow(sql, [email], function (error, row) {
-            if (error) {
-                SecurityController._send(res, {status: false, msg: 'Server error'}, 500);
-                return;
-            }
-
-            if (row) {
-                SecurityController._send(res, {status: false, msg: 'User with email address "' + email + '" already exists'});
-                return;
-            }
+        this.user.findByOne(
+            (err) => {
+                this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
+            },
+            (user) => {
+                if (user) {
+                    this.jsonResponse(res, {status: false, msg: 'Username "' + username + '" already exists'});
+                    return false;
+                }
 
                 var userData = {
                     email: email,
                     username: username,
                     password: scope.hashPassword(password),
-                    uuid: scope._server.uuid(),
+                    uuid: scope.server.uuid(),
                     is_active: 0,
                     deleted: 0
                 };
 
-                scope._db.insert('iw_users', userData, function(error, userID) {
-                    if (error) {
-                        SecurityController._send(res, {status: false, msg: 'Server error! Cannot create user'}, 500);
-                        return;
+                this.user.insert(
+                    (err) => {
+                        this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
+                    },
+                    (userID) => {
+
+                        this.role.findByOne(
+                            (err) => {
+                                this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
+                            },
+                            (role) => {
+                                if (role) {
+                                    this.jsonResponse(res, {status: false, msg: 'Cannot create user'});
+                                }
+
+                                let fields = {
+                                    user_id: userID,
+                                    role_id: role['id']
+                                };
+
+                                this.db.insert('iw_users_roles', fields, (err, relationID) => {
+                                    if (err) {
+                                        this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
+                                        return;
+                                    }
+
+                                    this._sendMail(userData.email, req.headers.host, userData.uuid, (e, inf) => {
+                                        console.log(e, inf);
+                                    });
+
+                                    this.server.auth.createSessionUser(req, userID, role['role']);
+                                    this.jsonResponse(res, {status: true, msg: 'User successfully created', id: userID, goTo: '/home'});
+                                });
+                            },
+                            {by_default: 1, deleted: 0}
+                        );
                     }
-
-                    let sql = `
-                        SELECT id,
-                               role,
-                               name
-                          FROM iw_roles
-                         WHERE by_default = 1
-                           AND deleted = 0
-                    `;
-
-                    scope._db.queryRow(sql, [], function (error, role) {
-
-                        if (error || !role) {
-                            SecurityController._send(res, {status: false, msg: 'Server error! Cannot create user'}, 500);
-                        }
-
-                        let fields = {
-                            user_id: userID,
-                            role_id: role['id']
-                        };
-
-                        scope._db.insert('iw_users_roles', fields, function(error, relationID) {
-
-                            if (error) {
-                                SecurityController._send(res, {status: false, msg: 'Server error! Cannot create relationship'}, 500);
-                                return;
-                            }
-
-                            scope._sendMail(userData.email, req.headers.host, userData.uuid, (e, inf) => {
-                                    console.log(e, inf);
-                            });
-
-                            scope.createSessionUser(req, userID, role['role']);
-                            SecurityController._send(res, {status: true, msg: 'User successfully created', id: userID, goTo: '/home'});
-                        });
-                    });
-                });
-        });
+                );
+            },
+            {username: username, deleted: 0}
+        );
+        //
+        // let sql = `
+        //     SELECT 1
+        //       FROM iw_users
+        //      WHERE ( email = ? )
+        //        AND deleted = 0
+        // `;
+        //
+        // this.db.queryRow(sql, [email], function (error, row) {
+        //     if (error) {
+        //         SecurityController._send(res, {status: false, msg: 'Server error'}, 500);
+        //         return;
+        //     }
+        //
+        //     if (row) {
+        //         SecurityController._send(res, {status: false, msg: 'User with email address "' + email + '" already exists'});
+        //         return;
+        //     }
+        //
+        //         var userData = {
+        //             email: email,
+        //             username: username,
+        //             password: scope.hashPassword(password),
+        //             uuid: scope.server.uuid(),
+        //             is_active: 0,
+        //             deleted: 0
+        //         };
+        //
+        //         scope.db.insert('iw_users', userData, function(error, userID) {
+        //             if (error) {
+        //                 SecurityController._send(res, {status: false, msg: 'Server error! Cannot create user'}, 500);
+        //                 return;
+        //             }
+        //
+        //             let sql = `
+        //                 SELECT id,
+        //                        role,
+        //                        name
+        //                   FROM iw_roles
+        //                  WHERE by_default = 1
+        //                    AND deleted = 0
+        //             `;
+        //
+        //             scope.db.queryRow(sql, [], function (error, role) {
+        //
+        //                 if (error || !role) {
+        //                     SecurityController._send(res, {status: false, msg: 'Server error! Cannot create user'}, 500);
+        //                 }
+        //
+        //                 let fields = {
+        //                     user_id: userID,
+        //                     role_id: role['id']
+        //                 };
+        //
+        //                 scope.db.insert('iw_users_roles', fields, function(error, relationID) {
+        //
+        //                     if (error) {
+        //                         SecurityController._send(res, {status: false, msg: 'Server error! Cannot create relationship'}, 500);
+        //                         return;
+        //                     }
+        //
+        //                     scope._sendMail(userData.email, req.headers.host, userData.uuid, (e, inf) => {
+        //                             console.log(e, inf);
+        //                     });
+        //
+        //                     scope.server.auth.createSessionUser(req, userID, role['role']);
+        //                     SecurityController._send(res, {status: true, msg: 'User successfully created', id: userID, goTo: '/home'});
+        //                 });
+        //             });
+        //         });
+        // });
     }
 
-    _auth(req, res, username, password, notCompare = false) {
-        let sql = `
-            SELECT id, 
-                   username, 
-                   password, 
-                   email 
-              FROM iw_users 
-             WHERE email = ?
-               AND is_active = 1
-               AND deleted = 0
-        `;
+    _authorisation(onError, onSuccess, username, password, notCompare = false) {
 
-        this._db.queryRow(sql,
-            [username],
-            (err, row) => {
-                if (err) {
-                    SecurityController._send(res, {status: false, msg: 'Server error'}, 500);
+        this.user.findByOne(
+            (error) => {
+                onError('Server error', 500);
+            },
+            (user) => {
+                if (!user) {
+                    onError('User not found', 200);
+                }
+
+                if (!notCompare && user['is_active'] === 0) {
+                    onError('The profile was not activated', 200);
                     return;
                 }
 
-                if (!row) {
-                    SecurityController._send(res, {status: false, msg: 'User not found'});
-                    return;
-                }
-
-                if (this.comparePassword(password, row['password']) || notCompare) {
-
-                    let sql = `
-                        SELECT id,
-                               role,
-                               name
-                          FROM iw_roles
-                         WHERE by_default = 1
-                           AND deleted = 0
-                    `;
-
-                    this._db.queryRow(sql, [], (error, role) => {
-                        if (error) {
-                            SecurityController._send(res, {status: false, msg: 'Server error'}, 500);
-                            return;
-                        }
-
-                        this.createSessionUser(req, row['id'], role['role']);
-
-                        // SecurityController._send(res, {status: true, msg: 'User was successfully authenticated', id: row['id'], goTo: '/home'});
-                        res.redirect('/home');
-                    });
-
+                if (this.server.auth.comparePassword(password, user['password']) || notCompare) {
+                    this.role.findByOne(
+                        (error) => {
+                            onError('Server error', 500);
+                        },
+                        (role) => {
+                            onSuccess(user, role, 'User was successfully authenticated');
+                        },
+                        {by_default: 1, deleted: 0}
+                    );
                 } else {
-                    SecurityController._send(res, {status: false, msg: 'Incorrect password'});
+                    onError('Incorrect password', 200);
                 }
-
-            }
+            },
+            {username: username, deleted: 0}
         );
     }
 
@@ -265,7 +317,7 @@ class SecurityController extends Authorization {
             <a href="http://` + host + `/iw/activation?key=` + uuid + `">to click the link</a>
         `;
 
-        this._server.mailer
+        this.server.mailer
             .message(email, 'Registration IronWar', null, msg)
             .send(callback);
     }

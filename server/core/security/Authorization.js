@@ -5,7 +5,7 @@ const KEY_SESSION = 'security';
 class Authorization {
 
     constructor() {
-        this._roundsSalt = 10;
+
     }
 
     static getSessionData(req, value) {
