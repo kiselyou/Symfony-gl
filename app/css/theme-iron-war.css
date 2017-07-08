@@ -228,7 +228,7 @@ canvas {
   -webkit-user-select: none;
 }
 body {
-  background: #000000 url('../images/textures/background/index.jpg');
+  background: #000000 url('../images/textures/background/stars-background.jpg');
 }
 a {
   color: rgba(0, 255, 255, 0.6);

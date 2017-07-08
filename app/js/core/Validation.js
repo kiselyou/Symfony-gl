@@ -39,7 +39,7 @@ var IW = IW || {};
          * @param {string} name
          * @param {{ required: ?[boolean], max: ?[number], min: ?[number], type: ?[string], isNotSame: ?[string], isSame: ?[string], label: ?[string] }} rule
          */
-        this.addRile = function (name, rule) {
+        this.addRule = function (name, rule) {
             _rules.push({
                 name: name,
                 rule: rule

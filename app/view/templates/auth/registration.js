@@ -9,21 +9,21 @@ btn.addEventListener('click', function () {
     // console.log(1);
 });
 
-validation.addRile('username', {
+validation.addRule('username', {
     required: true,
     max: 25,
     min: 4,
     label: 'Username'
 });
 
-validation.addRile('email', {
+validation.addRule('email', {
     required: true,
     max: 60,
     min: 5,
     label: 'Email'
 });
 
-validation.addRile('password', {
+validation.addRule('password', {
     required: true,
     max: 25,
     min: 4,
@@ -31,7 +31,7 @@ validation.addRile('password', {
     label: 'Password'
 });
 
-validation.addRile('confirm_password', {
+validation.addRule('confirm_password', {
     required: true,
     isMatch: 'username',
     isNotSame: 'password',

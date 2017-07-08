@@ -7,14 +7,14 @@ validation.addEventCheckAll('click', btn);
 validation.addEventCheckAll('keyup', 'input');
 validation.findParent('.iw_group');
 
-validation.addRile(username, {
+validation.addRule(username, {
     required: true,
     max: 25,
     min: 4,
     label: 'Username'
 });
 
-validation.addRile(password, {
+validation.addRule(password, {
     required: true,
     max: 25,
     min: 4,
