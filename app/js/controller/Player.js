@@ -136,6 +136,9 @@ IW.Player = function ( idScene ) {
         this.socket.connect(
             function ( response, resourceId ) {
 
+                var testPodium = scope.multiLoader.getObject( 'test' );
+                scope.scene.add(testPodium);
+
                 scope.model = new IW.Model( scope.multiLoader, scope.scene, resourceId );
                 scope.model.load( true, null, function () {
                     // scope.model.getModel().add( scope.camera );

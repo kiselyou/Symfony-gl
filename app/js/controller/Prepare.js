@@ -71,7 +71,8 @@ IW.Prepare = function () {
      */
     this.models = {
         ships: ['explorer'],
-        rockets: ['iw-rocket']
+        rockets: ['iw-rocket'],
+        podium: ['test']
     };
 
     /**
