@@ -197,7 +197,7 @@ IW.Prepare = function () {
      */
     this.startAjax = function ( url, done ) {
         var ajax = new IW.Ajax();
-        ajax.post(
+        ajax.get(
             url,
             null,
             function ( data ) {

@@ -13,7 +13,7 @@ $( document ).ready(function() {
                 .loadSprites()
                 .loadAllModels()
                 .playsConfigOrbitControl()
-                .startAjax('/socket/info', function (multiLoader, ajaxData) {
+                .startAjax('/socket/info/socket_play', function (multiLoader, ajaxData) {
 
                     player.socketConnect = ajaxData.config.socket;
 

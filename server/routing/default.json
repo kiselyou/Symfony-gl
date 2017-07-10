@@ -25,8 +25,8 @@
     "controller": "systems:TemplateController:render"
   },
   "socket": {
-    "route": "/socket/info",
-    "method": "POST",
+    "route": "/socket/info/:route",
+    "method": "GET",
     "controller": "systems:SocketController:configuration"
   },
 
@@ -58,5 +58,15 @@
     "route": "/iw/registration",
     "method": "POST",
     "controller": "systems:SecurityController:registration"
+  },
+
+  "socket_play": {
+    "route": "/iw/play",
+    "method": "SOCKET"
+  },
+
+  "socket_lock": {
+    "route": "/iw/lock",
+    "method": "SOCKET"
   }
 }

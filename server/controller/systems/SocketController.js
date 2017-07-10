@@ -1,19 +1,23 @@
-class SocketController {
+const Controller = require('./../../core/Controller');
+
+class SocketController extends Controller {
 
     /**
      * @constructor
      * @param {Server} server
      */
     constructor(server) {
+        super(server);
         this._server = server;
     }
 
     configuration(req, res) {
+        let route = this.getRoute(this.get(req, 'route'), 'route');
 
         let json = JSON.stringify(
             {
                 config: {
-                    socket: this._server.conf.socket.host + ':' + this._server.conf.socket.port + '/play'
+                    socket: this._server.conf.socket.host + ':' + this._server.conf.socket.port + route
                 }
             }
         );

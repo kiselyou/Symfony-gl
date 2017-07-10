@@ -22,6 +22,9 @@
 // // sending to individual socketid
 // socket.broadcast.to(socketid).emit('message', 'for your eyes only');
 
+const http = require('http');
+const io = require('socket.io');
+
 const EVENT_CONNECTED = 'connected';
 const EVENT_SENDER = 'sender';
 const EVENT_EXCEPT_SENDER = 'except-sender';
@@ -37,19 +40,24 @@ class Socket {
      *
      * @type {{ port: number, host: string }}
      */
-    constructor(app, config) {
+    constructor(app, components) {
         /**
          *
          * @param {express} app
          * @type {{ port: number, host: string }}
          */
-        this.config = config;
-        this.server = require('http').createServer(app);
-        this.io = require('socket.io')(this.server);
+        this.components = components;
+        this.socketServer = http.createServer(app);
+        this.io = io(this.socketServer);
+
+        console.log(this.components.auth);
     }
 
+    /**
+     *
+     * @param {string} namespace
+     */
     listen(namespace) {
-        var scope = this;
 
         var room = this.io.of(namespace);
 
@@ -92,7 +100,7 @@ class Socket {
             });
         });
 
-        this.server.listen(this.config.port, this.config.host);
+        this.socketServer.listen(this.components.conf.socket.port, this.components.conf.socket.host);
     }
 }
 

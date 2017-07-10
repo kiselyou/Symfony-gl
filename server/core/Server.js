@@ -12,6 +12,8 @@ class Server extends Components {
     constructor() {
         super();
         this.db.open();
+
+        this._socket = new Socket(app, this);
     }
 
     /**
@@ -40,21 +42,23 @@ class Server extends Components {
      * @returns {Server}
      */
     createRoute(params) {
-        let scope = this;
         switch (params['method']) {
             case 'POST':
                 app.post(params['route'], (req, res) => {
-                    scope.sendResponse(req, res, params);
+                    this.sendResponse(req, res, params);
                 });
                 break;
             case 'GET':
                 app.get(params['route'], (req, res) => {
-                    scope.sendResponse(req, res, params);
+                    this.sendResponse(req, res, params);
                 });
+                break;
+            case 'SOCKET':
+                this._socket.listen(params['route']);
                 break;
             default:
                 app.all(params['route'], (req, res) => {
-                    scope.sendResponse(req, res, params);
+                    this.sendResponse(req, res, params);
                 });
                 break;
         }
@@ -163,10 +167,20 @@ class Server extends Components {
      * @returns {Server}
      */
     initSocket() {
-        let socket = new Socket(app, this.conf.socket);
-        socket.listen('play');
-        return this;
+        // let socket = new Socket(app, this.conf.socket);
+        // socket.listen('play');
+        // return this;
     };
+
+    // /**
+    //  *
+    //  * @returns {Server}
+    //  */
+    // initSocketLock() {
+    //     let socket = new Socket(app, this.conf.socket);
+    //     socket.listen('play');
+    //     return this;
+    // };
 }
 
 module.exports = Server;

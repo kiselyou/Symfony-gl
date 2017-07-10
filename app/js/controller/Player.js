@@ -134,7 +134,7 @@ IW.Player = function ( idScene ) {
         this.socket = new IW.Socket( this.socketConnect );
 
         this.socket.connect(
-            function ( response, resourceId ) {
+            function (response, resourceId) {
 
                 var testPodium = scope.multiLoader.getObject( 'test' );
                 scope.scene.add(testPodium);
@@ -172,8 +172,8 @@ IW.Player = function ( idScene ) {
                 // scope.labels.init();
 
             },
-            function ( event, response ) {
-                scope.receive( event, response );
+            function (event, response) {
+                scope.receive(event, response);
             }
         );
 

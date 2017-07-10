@@ -62,5 +62,33 @@
     <script type="application/javascript" src="/app/js/controller/Scene.js"></script>
     <!-- endbuild -->
 
+    <script type="application/javascript">
+
+
+        let ajax = new IW.Ajax();
+        ajax.get('/socket/info/socket_lock', {}, (data) => {
+            try {
+                let res = JSON.parse(data);
+                if (res.hasOwnProperty('config')) {
+                    let socket = new IW.Socket(res['config']['socket']);
+                    socket.connect(
+                        (response, id) => {
+                            console.log(response, id, '+++');
+                        },
+                        (event, response) => {
+                            console.log(event, response, 'asdasd');
+                        }
+                    );
+                }
+            } catch (e) {
+                console.log(e);
+            }
+
+        }, () => {
+            console.warn('Error +++');
+        });
+
+    </script>
+
 </body>
 </html>

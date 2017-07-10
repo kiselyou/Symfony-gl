@@ -4,8 +4,7 @@ try {
     let core = new Server();
 
     core
-        .init()
-        .initSocket();
+        .init();
 
 } catch (e) {
     console.log(e);

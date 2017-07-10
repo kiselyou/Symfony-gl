@@ -18,6 +18,18 @@ class Controller {
         this.db = this.server.db.connection;
     }
 
+    get(req, key) {
+        return req.params.hasOwnProperty(key) ? req.params[key] : null;
+    }
+
+    getRoute(name, key = null) {
+        let routeData = this._server.routes.get(name);
+        if (typeof key === 'string') {
+            return routeData && routeData.hasOwnProperty(key) ? routeData[key] : null;
+        }
+        return routeData;
+    }
+
     /**
      *
      * @param req

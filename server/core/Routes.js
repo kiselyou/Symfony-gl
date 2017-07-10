@@ -71,6 +71,17 @@ class Routes {
 
     /**
      *
+     * @param {string} name
+     * @returns {*}
+     */
+    get(name) {
+        return this.routes.find((stack) => {
+            return name === stack['name'];
+        });
+    }
+
+    /**
+     *
      * @param {string} dir - possible value ( '/var/www/project/' )
      * @param {string} str - possible value ( '/path/to/file' )
      * @returns {string}
