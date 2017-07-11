@@ -9,7 +9,7 @@ class Authorization {
     }
 
     static getSessionData(req, value) {
-        if (req.session) {
+        if (req && req.session) {
             return req.session.hasOwnProperty(KEY_SESSION) ? req.session[KEY_SESSION][value] : null;
         }
         return null;

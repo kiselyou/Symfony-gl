@@ -73,12 +73,20 @@
                     let socket = new IW.Socket(res['config']['socket']);
                     socket.connect(
                         (response, id) => {
+
+                            socket.loginUser(2202);
                             console.log(response, id, '+++');
                         },
                         (event, response) => {
+
+
                             console.log(event, response, 'asdasd');
                         }
                     );
+
+                    socket.disconnected(() => {
+                        console.log(arguments, '++---');
+                    });
                 }
             } catch (e) {
                 console.log(e);

@@ -25,32 +25,112 @@
 const http = require('http');
 const io = require('socket.io');
 
-const EVENT_CONNECTED = 'connected';
-const EVENT_SENDER = 'sender';
-const EVENT_EXCEPT_SENDER = 'except-sender';
-const EVENT_SPECIFIC = 'specific';
-const EVENT_ALL = 'all';
-const EVENT_DISCONNECT = 'disconnect';
-const EVENT_DISCONNECTED = 'disconnected';
-const EVENT_REMOVE = 'remove';
-const EVENT_REMOVED = 'removed';
-
 class Socket {
     /**
      *
-     * @type {{ port: number, host: string }}
+     * @param {express} app
+     * @param {Server} components
+     * @constructor
      */
     constructor(app, components) {
         /**
          *
-         * @param {express} app
-         * @type {{ port: number, host: string }}
+         * @type {Server}
          */
         this.components = components;
+
         this.socketServer = http.createServer(app);
         this.io = io(this.socketServer);
+        this.users = {};
 
-        console.log(this.components.auth);
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    static get EVENT_LOGIN() {
+        return 'login';
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    static get EVENT_CHECK_USER() {
+        return 'check_user';
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    static get EVENT_REMOVED() {
+        return 'removed';
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    static get EVENT_REMOVE() {
+        return 'remove';
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    static get EVENT_CONNECTED() {
+        return 'connected';
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    static get EVENT_SENDER() {
+        return 'sender';
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    static get EVENT_EXCEPT_SENDER() {
+        return 'except-sender';
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    static get EVENT_SPECIFIC() {
+        return 'specific';
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    static get EVENT_ALL() {
+        return 'all';
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    static get EVENT_DISCONNECT() {
+        return 'disconnect';
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    static get EVENT_DISCONNECTED() {
+        return 'disconnected';
     }
 
     /**
@@ -61,42 +141,61 @@ class Socket {
 
         var room = this.io.of(namespace);
 
-        room.on('connection', function(socket){
+        room.on('connection', (socket) => {
+
+            console.log(this.components.auth.getSessionUser());
 
             // Подписался
             var params = { clientID: socket.id };
-            socket.emit(EVENT_CONNECTED, params);
+            socket.emit(Socket.EVENT_CONNECTED, params);
 
             // Слушаем запросы клиента
 
             // Отправить ответ только себе
-            socket.on(EVENT_SENDER, function (data) {
-                socket.emit(EVENT_SENDER, data);
+            socket.on(Socket.EVENT_SENDER, (data) => {
+                socket.emit(Socket.EVENT_SENDER, data);
             });
 
             // Отправить всем кроме себя
-            socket.on(EVENT_EXCEPT_SENDER, function (data) {
+            socket.on(Socket.EVENT_EXCEPT_SENDER, (data) => {
                 // Отправляем сообщени всем кроме себя
-                socket.broadcast.emit(EVENT_EXCEPT_SENDER, data);
+                socket.broadcast.emit(Socket.EVENT_EXCEPT_SENDER, data);
 
             });
 
             // Отправить конкретному пользователю сообщение
-            socket.on(EVENT_SPECIFIC, function (data) {
-                socket.broadcast.to(data.receiverID).emit(EVENT_SPECIFIC, data);
+            socket.on(Socket.EVENT_SPECIFIC, (data) => {
+                socket.broadcast.to(data.receiverID).emit(Socket.EVENT_SPECIFIC, data);
             });
 
-            socket.on(EVENT_ALL, function (data) {
-                room.emit(EVENT_ALL, data);
+            socket.on(Socket.EVENT_ALL, (data) => {
+                room.emit(Socket.EVENT_ALL, data);
             });
 
-            socket.on(EVENT_DISCONNECT, function () {
+            socket.on(Socket.EVENT_DISCONNECT, () => {
                 // room.emit('disconnected', { clientID: socket.id });
-                socket.broadcast.emit(EVENT_DISCONNECTED, { clientID: socket.id });
+                socket.broadcast.emit(Socket.EVENT_DISCONNECTED, { clientID: socket.id });
             });
 
-            socket.on(EVENT_REMOVE, function () {
-                socket.broadcast.emit(EVENT_REMOVED, { clientID: socket.id });
+            socket.on(Socket.EVENT_REMOVE, () => {
+                socket.broadcast.emit(Socket.EVENT_REMOVED, { clientID: socket.id });
+            });
+
+            socket.on(Socket.EVENT_LOGIN, (data) => {
+                if (data['status'] = !this.users.hasOwnProperty(data.userId)) {
+                    this.users[data.userId] = socket.id;
+                }
+                room.emit(Socket.EVENT_ALL, data);
+            });
+
+            socket.on(Socket.EVENT_CHECK_USER, (data) => {
+                console.log('a user ' + data.userId + ' connected');
+                //saving userId to array with socket ID
+                if (this.users.hasOwnProperty(socket.id)) {
+                    // User already exist
+                }
+
+                this.users[data.userId] = socket.id;
             });
         });
 

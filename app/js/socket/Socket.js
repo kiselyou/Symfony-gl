@@ -96,6 +96,14 @@ IW.Socket = function ( url ) {
 	};
 
 	/**
+	 *
+     */
+	this.loginUser = function(id) {
+		this.socket.emit(IW.Socket.EVENT_LOGIN, {userID: id});
+		return this;
+	};
+
+	/**
 	 * Set socket connect
 	 *
 	 * @param {function} connectCallback
@@ -222,3 +230,9 @@ IW.Socket.EVENT_REMOVE = 'remove';
  * @type {string}
  */
 IW.Socket.EVENT_REMOVED = 'removed';
+
+/**
+ *
+ * @type {string}
+ */
+IW.Socket.EVENT_LOGIN = 'login';
