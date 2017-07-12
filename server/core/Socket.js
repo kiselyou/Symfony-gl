@@ -57,8 +57,8 @@ class Socket {
      *
      * @returns {string}
      */
-    static get EVENT_CHECK_USER() {
-        return 'check_user';
+    static get EVENT_LOCK() {
+        return 'event_lock';
     }
 
     /**
@@ -181,21 +181,8 @@ class Socket {
                 socket.broadcast.emit(Socket.EVENT_REMOVED, { clientID: socket.id });
             });
 
-            socket.on(Socket.EVENT_LOGIN, (data) => {
-                if (data['status'] = !this.users.hasOwnProperty(data.userId)) {
-                    this.users[data.userId] = socket.id;
-                }
-                room.emit(Socket.EVENT_ALL, data);
-            });
-
-            socket.on(Socket.EVENT_CHECK_USER, (data) => {
-                console.log('a user ' + data.userId + ' connected');
-                //saving userId to array with socket ID
-                if (this.users.hasOwnProperty(socket.id)) {
-                    // User already exist
-                }
-
-                this.users[data.userId] = socket.id;
+            socket.on(Socket.EVENT_LOCK, (data) => {
+                socket.broadcast.to(data.receiverID).emit(Socket.EVENT_LOCK, data);
             });
         });
 

@@ -17,6 +17,7 @@ class SocketController extends Controller {
         let json = JSON.stringify(
             {
                 config: {
+                    userID: this._server.auth.getSessionUser(req),
                     socket: this._server.conf.socket.host + ':' + this._server.conf.socket.port + route
                 }
             }

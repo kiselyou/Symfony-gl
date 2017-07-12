@@ -95,13 +95,13 @@ IW.Socket = function ( url ) {
 		}
 	};
 
-	/**
-	 *
-     */
-	this.loginUser = function(id) {
-		this.socket.emit(IW.Socket.EVENT_LOGIN, {userID: id});
-		return this;
-	};
+	// /**
+	//  *
+     // */
+	// this.loginUser = function(id) {
+	// 	this.socket.emit(IW.Socket.EVENT_LOGIN, {userID: id});
+	// 	return this;
+	// };
 
 	/**
 	 * Set socket connect
@@ -231,8 +231,8 @@ IW.Socket.EVENT_REMOVE = 'remove';
  */
 IW.Socket.EVENT_REMOVED = 'removed';
 
-/**
- *
- * @type {string}
- */
-IW.Socket.EVENT_LOGIN = 'login';
+// /**
+//  *
+//  * @type {string}
+//  */
+// IW.Socket.EVENT_LOGIN = 'login';

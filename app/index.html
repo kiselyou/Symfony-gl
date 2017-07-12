@@ -69,23 +69,30 @@
         ajax.get('/socket/info/socket_lock', {}, (data) => {
             try {
                 let res = JSON.parse(data);
+
                 if (res.hasOwnProperty('config')) {
-                    let socket = new IW.Socket(res['config']['socket']);
-                    socket.connect(
-                        (response, id) => {
+                    let lock = true;
+                    let conf = res['config'];
+                    let socket = io.connect(conf['socket']);
 
-                            socket.loginUser(2202);
-                            console.log(response, id, '+++');
-                        },
-                        (event, response) => {
+                    // connect
+                    socket.on('connected', (data) => {
+                        socket.emit('except-sender', {userID: conf.userID, senderID: data.clientID});
+                    });
 
-
-                            console.log(event, response, 'asdasd');
+                    // listen
+                    socket.on('except-sender', (data) => {
+                        if (data.userID && data.userID === conf.userID && lock) {
+                            socket.emit('event_lock', {receiverID: data.senderID});
                         }
-                    );
+                    });
 
-                    socket.disconnected(() => {
-                        console.log(arguments, '++---');
+                    socket.on('event_lock', (data) => {
+                        lock = false;
+                        let tmp = new IW.Templates();
+                        tmp.load('/controller/lock/lock.html', (html) => {
+                            $('body').html(html);
+                        });
                     });
                 }
             } catch (e) {
