@@ -71,9 +71,9 @@
                 let res = JSON.parse(data);
 
                 if (res.hasOwnProperty('config')) {
-                    let lock = true;
-                    let conf = res['config'];
-                    let socket = io.connect(conf['socket']);
+                    let lock = true,
+                        conf = res['config'],
+                        socket = io.connect(conf['socket']);
 
                     // connect
                     socket.on('connected', (data) => {
@@ -91,7 +91,7 @@
                         lock = false;
                         let tmp = new IW.Templates();
                         tmp.load('/controller/lock/lock.html', (html) => {
-                            $('body').html(html);
+                            tmp.paste('body', html, 3);
                         });
                     });
                 }

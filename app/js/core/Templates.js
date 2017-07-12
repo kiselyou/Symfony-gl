@@ -8,17 +8,11 @@ var IW = IW || {};
 IW.Templates = function () {
 
     /**
-     * It is path directory of templates
+     * It is path to controller of templates
      *
      * @type {string}
      */
-    var PATH_TO_LOAD = '/template';
-
-    /**
-     *
-     * @type {IW.Templates}
-     */
-    var scope = this;
+    var CONTROLLER_PATH = '/template';
 
     /**
      * Load template
@@ -33,13 +27,10 @@ IW.Templates = function () {
         });
 
         if (tpl) {
-
             event.call( this, tpl.tpl );
-
         } else {
-
             new IW.Ajax().post(
-                PATH_TO_LOAD,
+                CONTROLLER_PATH,
                 { path: path },
                 function ( template ) {
                     IW.Templates.cacheTemplates.push({ path: path, tpl: template });
@@ -47,7 +38,6 @@ IW.Templates = function () {
 
                 },
                 function () {
-
                     console.warn('Error');
                 }
             );
@@ -59,11 +49,10 @@ IW.Templates = function () {
      *
      * @param {(string|jQuery|HTMLElement)} anchor
      * @param {(string|jQuery|HTMLElement)} content
-     * @param {number} [position] possible values 0 - append, 1 - before, 2 - after
+     * @param {number} [position] possible values 0 - append, 1 - before, 2 - after, 3 - paste like html instead
      * @returns {void}
      */
     this.paste = function (anchor, content, position) {
-        // console.log($(html).html());
         switch (position) {
             case 1:
                 $(anchor).before(content);
@@ -71,59 +60,14 @@ IW.Templates = function () {
             case 2:
                 $(anchor).after(content);
                 break;
+            case 3:
+                $(anchor).html(content);
+                break;
             default:
                 $(anchor).append(content);
                 break;
         }
-
-        // var to = document.querySelectorAll(selector);
-        // if (to) {
-        //     var el = document.createElement('div');
-        //     el.innerHTML = str;
-        //
-        //     for (var b = 0; b < to.length; b++) {
-        //
-        //         for (var e = 0; e < el.childNodes.length; e++) {
-        //             if (!before) {
-        //                 to[b].appendChild(el.childNodes[e]);
-        //             } else {
-        //                 to[b].insertBefore(el.childNodes[e], to[b].childNodes[0]);
-        //             }
-        //         }
-        //     }
-        //
-        //     var script = el.querySelectorAll('script');
-        //     for (var i = 0; i < script.length; i++) {
-        //         this._evalScript(script[i]);
-        //         script[i].remove();
-        //     }
-        // }
     };
-
-    // /**
-    //  *
-    //  * @param {Element|HTMLElement} el
-    //  * @return {void}
-    //  * @private
-    //  */
-    // this._evalScript = function (el) {
-    //     var data = (el.text || el.textContent || el.innerHTML || '' ),
-    //         body = document.getElementsByTagName('body')[0] || document.documentElement,
-    //         script = document.createElement('script');
-    //
-    //     script.type = 'text/javascript';
-    //
-    //     try {
-    //         // doesn't work on ie...
-    //         script.appendChild(document.createTextNode(data));
-    //     } catch(e) {
-    //         // IE has funky script nodes
-    //         script.text = data;
-    //     }
-    //
-    //     body.appendChild(script);
-    //     body.removeChild(script);
-    // };
 };
 
 /**

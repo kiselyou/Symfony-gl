@@ -44,7 +44,7 @@ class SecurityController extends Controller {
     login(req, res) {
 
         if (this.server.auth.getSessionUser(req)) {
-            this.jsonResponse(res, {status: false, msg: 'User is authenticated'});
+            this.jsonResponse(res, {status: false, msg: 'User has already authenticated'});
             return;
         }
 
