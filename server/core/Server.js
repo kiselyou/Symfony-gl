@@ -161,26 +161,6 @@ class Server extends Components {
         app.listen(this.conf.server.port, this.conf.server.host);
         return this;
     }
-
-    /**
-     *
-     * @returns {Server}
-     */
-    initSocket() {
-        // let socket = new Socket(app, this.conf.socket);
-        // socket.listen('play');
-        // return this;
-    };
-
-    // /**
-    //  *
-    //  * @returns {Server}
-    //  */
-    // initSocketLock() {
-    //     let socket = new Socket(app, this.conf.socket);
-    //     socket.listen('play');
-    //     return this;
-    // };
 }
 
 module.exports = Server;
