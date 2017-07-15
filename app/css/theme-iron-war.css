@@ -229,6 +229,7 @@ canvas {
 }
 body {
   background: #000000 url('../images/textures/background/stars-background.jpg');
+  background-size: contain;
 }
 a {
   color: rgba(0, 255, 255, 0.6);

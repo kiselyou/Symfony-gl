@@ -261,9 +261,9 @@ IW.Scene = function ( idContainer ) {
      */
     function setCamera() {
         scope.camera.position.set( 0, 40, -80 );
-        scope.camera.fov = 65;
+        scope.camera.fov = 45;
         scope.camera.near = 0.1;
-        scope.camera.far = 100000;
+        scope.camera.far = 20000;
         scope.camera.aspect = scope.getAspect();
         scope.camera.lookAt( scope.scene.position );
         scope.camera.updateProjectionMatrix();

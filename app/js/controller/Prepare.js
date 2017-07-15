@@ -32,17 +32,7 @@ IW.Prepare = function () {
         names: {
             aim: 'textures/aim/aim.png',
             smoke: 'sprites/smokeparticle.png',
-            explosion: 'sprites/sprite-explosion2.png',
-            earth_map: 'textures/planets/rrr/2_no_clouds_4k.jpg',
-            earth_clouds: 'textures/planets/rrr/fair_clouds_4k.png',
-            earth_bumpmap: 'textures/planets/rrr/elev_bump_4k.jpg',
-            earth_specularmap: 'textures/planets/rrr/water_4k.png',
-            // skyBoxCube: 'textures/planets/rrr/galaxy_starfield.png'
-
-            // earth_map: 'textures/planets/earth_map.jpg',
-            // earth_clouds: 'textures/planets/earth_clouds.jpg',
-            // earth_bumpmap: 'textures/planets/earth_bumpmap.jpg',
-            skyBoxCube: 'textures/skybox/starfield.png'
+            explosion: 'sprites/sprite-explosion2.png'
         }
     };
 
@@ -53,7 +43,7 @@ IW.Prepare = function () {
     this.skyBox = {
         room: 'A',
         names: [ 'px', 'nx', 'py', 'ny', 'pz', 'nz' ],
-        extension: '.png'
+        extension: '.jpg'
     };
 
     /**
@@ -102,10 +92,10 @@ IW.Prepare = function () {
      * @returns {IW.Prepare}
      */
     this.loadSkyBox = function () {
-        // for ( var i = 0; i < this.skyBox.names.length; i++ ) {
-        //     var path = this.basePath + IW.Prepare.DIR_TEXTURES + '/skybox/' + this.skyBox.room + '/' + this.skyBox.names[ i ] + this.skyBox.extension;
-        //     this.multiLoader.addLoadTexture( this.skyBox.names[ i ], IW.Prepare.LBL_LOAD_SKYBOX, path );
-        // }
+        for ( var i = 0; i < this.skyBox.names.length; i++ ) {
+            var path = this.basePath + IW.Prepare.DIR_TEXTURES + '/skybox/' + this.skyBox.room + '/' + this.skyBox.names[ i ] + this.skyBox.extension;
+            this.multiLoader.addLoadTexture( this.skyBox.names[ i ], IW.Prepare.LBL_LOAD_SKYBOX, path );
+        }
         return this;
     };
 
@@ -201,7 +191,6 @@ IW.Prepare = function () {
             url,
             null,
             function ( data ) {
-                console.log(data);
                 try {
                     scope.ajaxData = JSON.parse( data );
                     scope.start( done );
