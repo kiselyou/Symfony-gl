@@ -71,14 +71,13 @@ class View {
                     let indexHTML = fs.readFileSync(pathIndexHTML);
                     let ch = cheerio.load(indexHTML);
                     ch('body').prepend(pattern);
-                    template = this.includePattern(ch.html());
+                    template = this.include(ch.html());
                 } else {
-                    template = this.includePattern(pattern);
+                    template = this.include(pattern);
                 }
 
                 this.ch.add(route, viewPath, template);
             }
-
             return template;
 
         } catch (e) {
@@ -111,9 +110,9 @@ class View {
                     let pathIndex = this.getPathTemplate(this.conf.pathEnvironment, HTML_INDEX);
                     let ch = cheerio.load(fs.readFileSync(pathIndex));
                     ch('body').html(pattern);
-                    template = this.includePattern(ch.html());
+                    template = this.include(ch.html());
                 } else {
-                    template = this.includePattern(pattern);
+                    template = this.include(pattern);
                 }
 
                 this.ch.add(HTML_404 + prefix, HTML_404 + prefix, template);
@@ -134,70 +133,68 @@ class View {
      * @param {string} content
      * @returns {*}
      */
-    includePattern(content) {
+    include(content) {
 
-        let scope = this;
-        let ch = cheerio.load(content);
-        let str = this.extendPattern(ch);
+        let template = cheerio.load(content);
+        let str = this.extend(template);
 
         if (str) {
             return str;
         }
 
-        ch('[data-include]').each((key, element) => {
+        template('[data-include]').each((key, element) => {
 
-            let nameTemplate = ch(element).attr('data-include');
-            let path = scope.getPathTemplate(scope.conf.pathTemplates, nameTemplate);
+            let nameTemplate = template(element).attr('data-include');
+            let path = this.getPathTemplate(this.conf.pathTemplates, nameTemplate);
 
             if (fs.existsSync(path)) {
 
-                ch(element).replaceWith(
-                    scope.includePattern(fs.readFileSync(path, {encoding: scope.conf.encoding}))
+                template(element).replaceWith(
+                    this.include(fs.readFileSync(path, {encoding: this.conf.encoding}))
                 );
 
             } else {
-                new Error(null).warning('Template was not found in the path "' + path + '".', 'View', 'includePattern');
+                new Error(null).warning('Template was not found in the path "' + path + '".', 'View', 'include');
             }
         });
 
-        return ch.html();
+        return template.html();
     };
 
     /**
      * Extend template
      *
-     * @param {cheerio} ch - It is template
-     * @returns {boolean|string}
+     * @param {cheerio} template - It is template
+     * @returns {?string}
      */
-    extendPattern(ch) {
+    extend(template) {
+        template('[data-extend]').each((key, element) => {
 
-        let scope = this;
-        ch('[data-extend]').each((key, element) => {
-
-            let blockName = ch(element).attr('data-extend-container');
-            let nameTemplate = ch(element).attr('data-extend');
-            let path = scope.getPathTemplate(scope.conf.pathTemplates, nameTemplate);
+            let el = template(element);
+            let blockName = el.attr('data-extend-container');
+            let nameTemplate = el.attr('data-extend');
+            let path = this.getPathTemplate(this.conf.pathTemplates, nameTemplate);
 
             if (!blockName || !nameTemplate) {
                 return new Error(null)
-                    .warning('You mast set attribute "data-container=\"name-container\"" in the template "' + nameTemplate + '".', 'View', 'extendPattern')
+                    .warning('You mast set attribute "data-container=\"name-container\"" in the template "' + nameTemplate + '".', 'View', 'extend')
                     .get();
             }
 
             if (fs.existsSync(path)) {
 
-                let $$ = cheerio.load(fs.readFileSync(path, {encoding: scope.conf.encoding}));
-                $$('[data-extend-container="' + blockName + '"]').replaceWith(ch(element).children());
-                ch(element).replaceWith(scope.includePattern($$.html()));
-                return ch.html();
+                let extendTemplate = cheerio.load(fs.readFileSync(path, {encoding: this.conf.encoding}));
+                extendTemplate('[data-extend-container="' + blockName + '"]').replaceWith(el.contents().children());
+                let includeTemplate = this.include(extendTemplate.html());
+                return el.replaceWith(includeTemplate).html();
 
             } else {
                 new Error(null)
-                    .warning('Template was not found in path: "' + path + '".', 'View', 'extendPattern');
+                    .warning('Template was not found in path: "' + path + '".', 'View', 'extend');
             }
         });
 
-        return false;
+        return null;
     };
 
     /**

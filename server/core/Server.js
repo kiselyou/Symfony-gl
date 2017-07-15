@@ -21,15 +21,14 @@ class Server extends Components {
      * @returns {Server}
      */
     routeControls() {
-        let scope = this;
         this.routes.load((routes) => {
-            app.use('/app/', express.static(scope.routes.joinPath(__dirname, '/../../' + scope.conf.pathEnvironment)));
-            for (let i = 0; i < routes.length; i++) {
-                scope.createRoute(routes[i]);
+            app.use('/app/', express.static(this.routes.joinPath(__dirname, '/../../' + this.conf.pathEnvironment)));
+            for (let route of routes) {
+                this.createRoute(route);
             }
             app.get('*', (req, res) => {
                 new Error(null).warning('The page "' + req.url + '" was not found.', 'Server', 'routeControls');
-                scope.response(req, res, scope.view.prepareTemplateError(true));
+                this.response(req, res, this.view.prepareTemplateError(true));
             });
         });
 
@@ -75,7 +74,8 @@ class Server extends Components {
     sendResponse(req, res, params) {
         if (this.secur.isGranted(req.url, this.secur.getSessionRole(req))) {
             if (params.hasOwnProperty('viewPath')) {
-                this.response(req, res, this.view.prepareTemplate(params['route'], params['viewPath'], true));
+                let page =  this.view.prepareTemplate(params['route'], params['viewPath'], true);
+                this.response(req, res, page);
             } else {
                 this.callToController(req, res, params);
                 return this;

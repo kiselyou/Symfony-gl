@@ -11,23 +11,29 @@ var cache = require('gulp-cache');
 var runSequence = require('run-sequence');
 var path = require('path');
 
+
+
+
+
+
+
+// var sourcemaps = require('gulp-sourcemaps');
+// var transpile  = require('gulp-es6-module-transpiler');
 //
-// var ftp = require('vinyl-ftp');
-//
-// gulp.task('deploy', function() {
-// 	var conn = ftp.create( {
-// 		host:     'mywebsite.tld',
-// 		user:     'me',
-// 		password: 'mypass',
-// 		parallel: 10,
-// 		log: gutil.log
-// 	} );
-//
-// 	var globs =['dist/**/*'];                                   // переменная для пути
-//
-// 	return gulp.src(globs, {base: 'dist/', buffer: false })     //
-// 		.pipe(conn.dest('/var/www/iron-war/'));                         // перемещение
+// gulp.task('test', function() {
+// 	return gulp.src('app/es6/**/*.js')
+// 		.pipe(sourcemaps.init())
+// 		.pipe(transpile({
+// 			formatter: 'bundle'
+// 		}))
+// 		.pipe(sourcemaps.write('app/es6build/'))
+// 		.pipe(gulp.dest('app/es6build/'));
 // });
+
+
+
+
+
 
 gulp.task('useref', function(){
   	return gulp.src('app/*.html')

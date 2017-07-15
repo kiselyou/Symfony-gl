@@ -143,7 +143,7 @@ class Socket {
 
         room.on('connection', (socket) => {
 
-            console.log(this.components.auth.getSessionUser());
+            //console.log(this.components.auth.getSessionUser());
 
             // Подписался
             var params = { clientID: socket.id };
