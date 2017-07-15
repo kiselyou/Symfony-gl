@@ -33,12 +33,12 @@
   "mailer": {
     "sender": "",
     "transporter": {
-      "host": "127.0.0.1",
+      "host": "smtp.gmail.com",
       "port": 465,
       "secure": true,
       "auth": {
-        "user": "username@example.com",
-        "pass": "userpass"
+        "user": "v.a.kiselyov@gmail.com",
+        "pass": "1xvx116561120"
       }
     }
   },
