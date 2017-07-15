@@ -159,6 +159,7 @@ class SecurityController extends Controller {
 
                 this.user.insert(
                     (err) => {
+                        console.log(err);
                         this.jsonResponse(res, {status: false, msg: 'Server error 2'}, 500);
                     },
                     (userID) => {
