@@ -138,9 +138,12 @@ class SecurityController extends Controller {
             this.jsonResponse(res, {status: false, msg: 'Password is not correct'});
         }
 
+        this.error('asdasd');
+
         this.user.findByOne(
             (err) => {
-                this.jsonResponse(res, {status: false, msg: 'Server error 1'}, 500);
+                this.error(err);
+                this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
             },
             (user) => {
                 if (user) {
@@ -159,14 +162,15 @@ class SecurityController extends Controller {
 
                 this.user.insert(
                     (err) => {
-                        console.log(err);
-                        this.jsonResponse(res, {status: false, msg: 'Server error 2', error: err}, 500);
+                        this.error(err);
+                        this.jsonResponse(res, {status: false, msg: 'Server error', error: err}, 500);
                     },
                     (userID) => {
 
                         this.role.findByOne(
                             (err) => {
-                                this.jsonResponse(res, {status: false, msg: 'Server error 3'}, 500);
+                                this.error(err);
+                                this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
                             },
                             (role) => {
                                 if (!role) {
@@ -180,7 +184,8 @@ class SecurityController extends Controller {
 
                                 this.db.insert('iw_users_roles', fields, (err, relationID) => {
                                     if (err) {
-                                        this.jsonResponse(res, {status: false, msg: 'Server error 4'}, 500);
+                                        this.error(err);
+                                        this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
                                         return;
                                     }
 

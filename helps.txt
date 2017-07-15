@@ -8,3 +8,4 @@
 # Connect db: mysql --host=localhost --user=myname --password=mypass
 #             mysql --host=localhost --user=root -p iron_war
 #             mysql --host=localhost --user=root -p iron_war < dump/Dump20170715.sql/iron_war_iw_users_roles.sql
+#             mysqldump --host=localhost --user=root -p iron_war > dump/dump.sql

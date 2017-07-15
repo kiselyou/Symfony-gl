@@ -18,10 +18,35 @@ class Controller {
         this.db = this.server.db.connection;
     }
 
+    /**
+     *
+     * @param exception
+     * @param msg
+     * @param className
+     * @param methodName
+     * @returns {Controller}
+     */
+    error(exception, msg = null, className = null, methodName = null) {
+        this.server.err.exception(exception).alert(msg, className, methodName);
+        return this;
+    }
+
+    /**
+     *
+     * @param req
+     * @param key
+     * @returns {null}
+     */
     get(req, key) {
         return req.params.hasOwnProperty(key) ? req.params[key] : null;
     }
 
+    /**
+     *
+     * @param name
+     * @param key
+     * @returns {*}
+     */
     getRoute(name, key = null) {
         let routeData = this._server.routes.get(name);
         if (typeof key === 'string') {
@@ -42,6 +67,12 @@ class Controller {
         }).value;
     }
 
+    /**
+     *
+     * @param res
+     * @param str
+     * @param status
+     */
     viewResponse(res, str, status = 200) {
         res.writeHead(status, this.server.conf.contentType());
         res.end(str, this.server.conf.encoding, true);

@@ -105,8 +105,7 @@ class Mailer {
                 new Error(error).warning('Cannot send message', 'Mailer', 'send');
             }
 
-            callback.call(this, info, error);
-            // console.log('Message %s sent: %s', info.messageId, info.response);
+            callback.(info, error);
         });
 
         return this;

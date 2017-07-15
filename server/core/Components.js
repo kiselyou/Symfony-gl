@@ -42,8 +42,6 @@ class Components {
          */
         this.view = new View(this.conf, this.routes);
 
-
-
         /**
          *
          * @type {Security}

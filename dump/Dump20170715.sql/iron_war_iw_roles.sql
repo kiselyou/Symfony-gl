@@ -31,8 +31,7 @@ CREATE TABLE `iw_roles` (
   `by_default` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1 - Роль по умолчанию, 0 - Все остальные роли',
   `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_E8DE9A457698A6A` (`role`),
   UNIQUE KEY `UNIQ_E8DE9A45E237E06` (`name`),
@@ -47,7 +46,7 @@ CREATE TABLE `iw_roles` (
 
 LOCK TABLES `iw_roles` WRITE;
 /*!40000 ALTER TABLE `iw_roles` DISABLE KEYS */;
-INSERT INTO `iw_roles` VALUES (1,NULL,'ROLE_IW_USER',1,'ROLE_USER',0,'2017-04-15 00:30:30','2017-04-15 00:30:30');
+INSERT INTO `iw_roles` VALUES (1,NULL,'ROLE_IW_USER',1,'ROLE_USER',0,'2017-04-14 21:30:30');
 /*!40000 ALTER TABLE `iw_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -60,4 +59,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-15 15:30:44
+-- Dump completed on 2017-07-15 18:26:05
