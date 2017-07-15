@@ -2,7 +2,6 @@
 class TemplateController {
 
     constructor(server) {
-        this.loader = server.view;
         this.server = server;
     }
 
@@ -11,10 +10,10 @@ class TemplateController {
         let template = null;
 
         try {
-            template = this.loader.prepareTemplate(params['route'], req.body['path']);
+            template = this.server.view.load(params['route'], req.body['path']);
         } catch (error) {
             this.err.exception(error).alert('Cannot upload template', 'TemplateController', 'render');
-            template = this.loader.prepareTemplateError();
+            template = this.server.view.loadError();
         }
 
         res.writeHead(200, this.server.conf.contentType(2));

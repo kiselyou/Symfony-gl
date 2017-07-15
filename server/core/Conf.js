@@ -1,7 +1,7 @@
 /**
  * @type {{}}
  */
-let config = require('../../server/config/config.json');
+const config = require('../../server/config/config.json');
 
 /**
  *
@@ -174,10 +174,10 @@ class Conf {
     /**
      *
      * @param {number} [type] 1 - text/html, 2 - application/json
-     * @returns {*}
+     * @returns {{}}
      */
     contentType(type = 1) {
-        let obj = null;
+        let obj = {};
         switch (type) {
             case 2:
                 obj = {'Content-Type': 'application/json'};

@@ -28,7 +28,7 @@ class Server extends Components {
             }
             app.get('*', (req, res) => {
                 new Error(null).warning('The page "' + req.url + '" was not found.', 'Server', 'routeControls');
-                this.response(req, res, this.view.prepareTemplateError(true));
+                this.response(req, res, this.view.loadError(true));
             });
         });
 
@@ -74,7 +74,7 @@ class Server extends Components {
     sendResponse(req, res, params) {
         if (this.secur.isGranted(req.url, this.secur.getSessionRole(req))) {
             if (params.hasOwnProperty('viewPath')) {
-                let page =  this.view.prepareTemplate(params['route'], params['viewPath'], true);
+                let page =  this.view.load(params['route'], params['viewPath'], true);
                 this.response(req, res, page);
             } else {
                 this.callToController(req, res, params);
@@ -83,7 +83,7 @@ class Server extends Components {
         } else {
 
             new Error(null).permission('Permission Denied. Page: "' + req.url + '".', 'Server', 'sendResponse');
-            this.response(req, res, this.view.prepareTemplateError(true));
+            this.response(req, res, this.view.loadError(true));
         }
         return this;
     };

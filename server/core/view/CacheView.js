@@ -1,5 +1,5 @@
 
-class Cache {
+class CacheView {
     /**
      *
      * @param {boolean} [disable]
@@ -16,21 +16,21 @@ class Cache {
          *
          * @type {Array}
          */
-        this.routes = [];
+        this._data = [];
     }
 
     /**
      *
-     * @returns {Cache}
+     * @returns {CacheView}
      */
     clear() {
-        this.routes = [];
+        this._data = [];
         return this;
     };
 
     /**
      *
-     * @returns {Cache}
+     * @returns {CacheView}
      */
     disable() {
         this._disable = true;
@@ -39,7 +39,7 @@ class Cache {
 
     /**
      *
-     * @returns {Cache}
+     * @returns {CacheView}
      */
     enable() {
         this._disable = false;
@@ -53,18 +53,18 @@ class Cache {
      * @returns {void}
      * @private
      */
-    setRoute(route, patter) {
+    setData(route, patter) {
         if (this.disable) {
             return;
         }
-        let itemRoute = this.findRoute(route);
+        let itemRoute = this.findData(route);
         if (itemRoute) {
             let itemView = this.findView(route, patter.path);
             if (!itemView) {
                 itemRoute.patterns.push(patter);
             }
         } else {
-            this.routes.push({route: route, patterns: [patter]});
+            this._data.push({route: route, patterns: [patter]});
         }
     };
 
@@ -73,8 +73,8 @@ class Cache {
      * @param {string} route
      * @returns {?{route: string, patterns: Array}}
      */
-    findRoute(route) {
-        return this.routes.find((item) => {
+    findData(route) {
+        return this._data.find((item) => {
             return item.route === route;
         });
     };
@@ -86,7 +86,7 @@ class Cache {
      * @returns {?{path: string, view: string}}
      */
     findView(route, viewPath) {
-        var itemRoute = this.findRoute(route);
+        var itemRoute = this.findData(route);
         if (!itemRoute) {
             return null;
         }
@@ -103,7 +103,7 @@ class Cache {
      * @returns {void}
      */
     add(route, viewPath, view) {
-        this.setRoute(route, {path: viewPath, view: view});
+        this.setData(route, {path: viewPath, view: view});
     };
 
     /**
@@ -120,6 +120,6 @@ class Cache {
 
 /**
  *
- * @module Cache
+ * @module CacheView
  */
-module.exports = Cache;
+module.exports = CacheView;
