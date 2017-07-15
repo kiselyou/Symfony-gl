@@ -138,8 +138,6 @@ class SecurityController extends Controller {
             this.jsonResponse(res, {status: false, msg: 'Password is not correct'});
         }
 
-        this.error('asdasd');
-
         this.user.findByOne(
             (err) => {
                 this.error(err);
