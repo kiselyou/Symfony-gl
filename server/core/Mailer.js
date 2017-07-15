@@ -105,7 +105,7 @@ class Mailer {
                 new Error(error).warning('Cannot send message', 'Mailer', 'send');
             }
 
-            callback.(info, error);
+            callback(info, error);
         });
 
         return this;
