@@ -41,13 +41,13 @@ validation.addRule('confirm_password', {
 validation.setCallbackSuccess(function (element) {
     if (element == btn) {
         var data = $('#form_reg').serializeArray();
+
         new IW.Ajax().post('/iw/registration', data,
             function (res) {
-                var success = $('#reg_success');
                 try {
                     var data = JSON.parse(res);
                     if (data.status) {
-                        success.append('<li>' + data.msg + '</li>');
+                        $('#reg_success').append('<li>' + data.msg + '</li>');
                     } else {
                         $('#reg_error').append('<li>' + data.msg + '</li>');
                     }
@@ -57,6 +57,7 @@ validation.setCallbackSuccess(function (element) {
                 }
             },
             function (err) {
+                $('#reg_error').append('<li>' + data.msg + '</li>');
                 console.log(err);
             });
     }

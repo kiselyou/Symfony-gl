@@ -140,7 +140,7 @@ class SecurityController extends Controller {
 
         this.user.findByOne(
             (err) => {
-                this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
+                this.jsonResponse(res, {status: false, msg: 'Server error 1'}, 500);
             },
             (user) => {
                 if (user) {
@@ -159,13 +159,13 @@ class SecurityController extends Controller {
 
                 this.user.insert(
                     (err) => {
-                        this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
+                        this.jsonResponse(res, {status: false, msg: 'Server error 2'}, 500);
                     },
                     (userID) => {
 
                         this.role.findByOne(
                             (err) => {
-                                this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
+                                this.jsonResponse(res, {status: false, msg: 'Server error 3'}, 500);
                             },
                             (role) => {
                                 if (!role) {
@@ -179,7 +179,7 @@ class SecurityController extends Controller {
 
                                 this.db.insert('iw_users_roles', fields, (err, relationID) => {
                                     if (err) {
-                                        this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
+                                        this.jsonResponse(res, {status: false, msg: 'Server error 4'}, 500);
                                         return;
                                     }
 
