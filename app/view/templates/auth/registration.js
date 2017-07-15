@@ -41,21 +41,24 @@ validation.addRule('confirm_password', {
 validation.setCallbackSuccess(function (element) {
     if (element == btn) {
         var data = $('#form_reg').serializeArray();
-        new IW.Ajax().post('/iw/registration', data, function (res) {
-            var success = $('#reg_success');
-            console.log(res);
-            try {
-                var data = JSON.parse(res);
-                if (data.status) {
-                    success.append('<li>' + data.msg + '</li>');
-                } else {
-                    $('#reg_error').append('<li>' + data.msg + '</li>');
+        new IW.Ajax().post('/iw/registration', data,
+            function (res) {
+                var success = $('#reg_success');
+                try {
+                    var data = JSON.parse(res);
+                    if (data.status) {
+                        success.append('<li>' + data.msg + '</li>');
+                    } else {
+                        $('#reg_error').append('<li>' + data.msg + '</li>');
+                    }
+                } catch (e) {
+                    console.log(e);
+                    alert('We\'re sorry a server error occurred. Please Try again');
                 }
-            } catch (e) {
-                console.log(e);
-                alert('We\'re sorry a server error occurred. Please Try again');
-            }
-        });
+            },
+            function (err) {
+                console.log(err);
+            });
     }
 });
 
