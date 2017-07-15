@@ -223,6 +223,7 @@ class SecurityController extends Controller {
             (user) => {
                 if (!user) {
                     onError('User not found', 200);
+                    return;
                 }
 
                 if (!notCompare && user['is_active'] === 0) {
