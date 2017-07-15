@@ -145,7 +145,7 @@ class SecurityController extends Controller {
             (user) => {
                 if (user) {
                     this.jsonResponse(res, {status: false, msg: 'Username "' + username + '" already exists'});
-                    return false;
+                    return;
                 }
 
                 var userData = {
@@ -186,7 +186,6 @@ class SecurityController extends Controller {
                                     this._sendMail(userData.email, req.headers.host, userData.uuid, (err, inf) => {
                                         if (err) {
                                             this.jsonResponse(res, {status: false, msg: 'Cannot Send mail'}, 500);
-                                            return false
                                         }
                                     });
 

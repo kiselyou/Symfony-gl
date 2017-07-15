@@ -43,6 +43,7 @@ validation.setCallbackSuccess(function (element) {
         var data = $('#form_reg').serializeArray();
         new IW.Ajax().post('/iw/registration', data, function (res) {
             var success = $('#reg_success');
+            console.log(res);
             try {
                 var data = JSON.parse(res);
                 if (data.status) {
