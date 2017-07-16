@@ -13,6 +13,16 @@ class Application {
          */
         this.ajax = new Ajax();
 
+        this.ajax.post('/template', {s: 0, ddd: 32412312, fff: {s: 13}})
+            .then(
+                (sss) => {
+                    console.log(sss, '++');
+                },
+                (a, b) => {
+                    console.log(a, b, '---');
+                }
+            );
+
         /**
          *
          * @type {Lock}

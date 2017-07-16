@@ -1,3 +1,4 @@
+// import ejs from 'ejs';
 
 class View {
     constructor() {

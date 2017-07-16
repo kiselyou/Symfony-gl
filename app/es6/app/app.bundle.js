@@ -1,8 +1,9 @@
-
-import ejs from 'ejs';
+import $ from 'jquery';
 import Components from './core/Components';
 
 new Components();
+
+console.log($('body'));
 
 
     // let people = ['geddy', 'neil', 'alex'],
