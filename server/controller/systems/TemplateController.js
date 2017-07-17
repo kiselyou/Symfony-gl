@@ -6,13 +6,21 @@ class TemplateController {
     }
 
     render(req, res, params) {
-console.log(req.body);
+console.log(req.body, req.params, 'TemplateController', req.headers['content-type']);
         let template = null;
-if (params.hasOwnProperty('route')) {
-    res.writeHead(200, this.server.conf.contentType(2));
-    res.end('sadsdasd', this.server.conf.encoding, true);
-    return;
-}
+
+
+        if (params.hasOwnProperty('route')) {
+
+
+            res.writeHead(200, this.server.conf.contentType(2));
+            res.end(JSON.stringify({body: req.body, params: req.params, msg: '--++--'}), this.server.conf.encoding, true);
+
+
+            return;
+        }
+
+
         try {
             template = this.server.view.load(params['route'], req.body['path']);
         } catch (error) {

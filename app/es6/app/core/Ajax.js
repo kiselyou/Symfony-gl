@@ -23,11 +23,12 @@ class Ajax {
         return new Promise((resolve, reject) => {
             this._execute(
                 (xhr) => {
-                    xhr.open(AJAX_POST, url);
-                    // xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+                    // xhr.setRequestHeader('Content-Type', 'application/json charset=utf-8');
+                    // xhr.setRequestHeader('Content-Type', 'multipart/form-data charset=utf-8');
                     let data = Ajax._getFormData(param);
-                    console.log(data);
+                    // console.log(data);
+                    // console.log(data, 'formData11');
+                    xhr.open(AJAX_POST, url);
                     xhr.send(data);
                 },
                 resolve,
@@ -44,15 +45,13 @@ class Ajax {
      * @private
      */
     static _getFormData(param) {
-        console.log(!param instanceof FormData);
-        if (!param instanceof FormData) {
+        if (!(param instanceof FormData)) {
             var formData = new FormData();
             for (let key in param) {
                 if (param.hasOwnProperty(key)) {
                     formData.append(key, param[key]);
                 }
             }
-            console.log(formData);
             return formData;
         }
         return param;

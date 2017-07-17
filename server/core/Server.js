@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const formidable = require("express-formidable");
 const app = express();
 
 const Error = require('./Error');
@@ -150,13 +151,16 @@ class Server extends Components {
      * @returns {Server}
      */
     init() {
+
         app.use(session({
             secret: 'keyboard cat',
             resave: false,
             saveUninitialized: true
         }));
+
         app.use(bodyParser.urlencoded({ extended: true }));
-        app.use(bodyParser.json());
+        app.use(formidable());
+        // app.use(bodyParser.json());
         this.routeControls();
         app.listen(this.conf.server.port, this.conf.server.host);
         return this;

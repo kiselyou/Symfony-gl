@@ -39,6 +39,10 @@ gulp.task('es6', function () {
 	});
 });
 
+gulp.task('es6-watch', function() {
+	gulp.watch('./app/es6/**/*.js', ['es6']);
+});
+
 
 
 
