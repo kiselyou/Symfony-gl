@@ -6,7 +6,7 @@ class TemplateController {
     }
 
     render(req, res, params) {
-console.log(req.body, req.params, 'TemplateController', req.headers['content-type']);
+console.log(req.body, req.params, req.fields, 'TemplateController', req.headers['content-type']);
         let template = null;
 
 
@@ -14,7 +14,7 @@ console.log(req.body, req.params, 'TemplateController', req.headers['content-typ
 
 
             res.writeHead(200, this.server.conf.contentType(2));
-            res.end(JSON.stringify({body: req.body, params: req.params, msg: '--++--'}), this.server.conf.encoding, true);
+            res.end(JSON.stringify({body: req.body, params: req.params, fields: req.fields, msg: '--++--'}), this.server.conf.encoding, true);
 
 
             return;

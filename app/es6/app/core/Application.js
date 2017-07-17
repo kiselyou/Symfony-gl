@@ -13,10 +13,10 @@ class Application {
          */
         this.ajax = new Ajax();
 
-        this.ajax.post('/template', {s: 0, ddd: 32412312, fff: {s: 13}})
+        this.ajax.post('/template', {s: 0, ddd: 32412312, fff: {s: 13}, dddddd: [1, 2, 3]})
             .then(
                 (sss) => {
-                    console.log(sss, '++');
+                    console.log(JSON.parse(sss), '++');
                 },
                 (a, b) => {
                     console.log(a, b, '---');

@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const formidable = require("express-formidable");
+const multiparty = require('multiparty');
 const app = express();
 
 const Error = require('./Error');
@@ -45,7 +45,16 @@ class Server extends Components {
         switch (params['method']) {
             case 'POST':
                 app.post(params['route'], (req, res) => {
-                    this.sendResponse(req, res, params);
+
+                    var form = new multiparty.Form();
+                    form.parse(req, (err, fields, files) => {
+                        if (err) {
+                            new Error(null).warning('Multipart form data error.', 'Server', 'createRoute:POST');
+                        }
+                        req['fields'] = fields;
+                        req['files'] = files;
+                        this.sendResponse(req, res, params);
+                    });
                 });
                 break;
             case 'GET':
@@ -159,8 +168,8 @@ class Server extends Components {
         }));
 
         app.use(bodyParser.urlencoded({ extended: true }));
-        app.use(formidable());
-        // app.use(bodyParser.json());
+        // app.use(formidable());
+        app.use(bodyParser.json());
         this.routeControls();
         app.listen(this.conf.server.port, this.conf.server.host);
         return this;
