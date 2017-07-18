@@ -1,7 +1,8 @@
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const multiparty = require('multiparty');
+const multer = require('multer');
+const upload = multer();
 const app = express();
 
 const Error = require('./Error');
@@ -15,6 +16,10 @@ class Server extends Components {
         this.db.open();
 
         this._socket = new Socket(app, this);
+
+        this.req = {};
+
+        this.res = {};
     }
 
     /**
@@ -28,8 +33,10 @@ class Server extends Components {
                 this.createRoute(route);
             }
             app.get('*', (req, res) => {
-                new Error(null).warning('The page "' + req.url + '" was not found.', 'Server', 'routeControls');
-                this.response(req, res, this.view.loadError(true));
+                this.req = req;
+                this.res = res;
+                new Error(null).warning('The page "' + this.req.url + '" was not found.', 'Server', 'routeControls');
+                this.response(this.view.loadError(true));
             });
         });
 
@@ -44,22 +51,17 @@ class Server extends Components {
     createRoute(params) {
         switch (params['method']) {
             case 'POST':
-                app.post(params['route'], (req, res) => {
-
-                    var form = new multiparty.Form();
-                    form.parse(req, (err, fields, files) => {
-                        if (err) {
-                            new Error(null).warning('Multipart form data error.', 'Server', 'createRoute:POST');
-                        }
-                        req['fields'] = fields;
-                        req['files'] = files;
-                        this.sendResponse(req, res, params);
-                    });
+                app.post(params['route'], upload.array(), (req, res) => {
+                    this.req = req;
+                    this.res = res;
+                    this.sendResponse(params);
                 });
                 break;
             case 'GET':
                 app.get(params['route'], (req, res) => {
-                    this.sendResponse(req, res, params);
+                    this.req = req;
+                    this.res = res;
+                    this.sendResponse(params);
                 });
                 break;
             case 'SOCKET':
@@ -67,7 +69,9 @@ class Server extends Components {
                 break;
             default:
                 app.all(params['route'], (req, res) => {
-                    this.sendResponse(req, res, params);
+                    this.req = req;
+                    this.res = res;
+                    this.sendResponse(params);
                 });
                 break;
         }
@@ -76,24 +80,22 @@ class Server extends Components {
 
     /**
      *
-     * @param req
-     * @param res
      * @param {{method: string, route: string, viewPath: string}} params
      * @returns {Server}
      */
-    sendResponse(req, res, params) {
-        if (this.secur.isGranted(req.url, this.secur.getSessionRole(req))) {
+    sendResponse(params) {
+        if (this.secur.isGranted(this.req.url, this.secur.getSessionRole(this.req))) {
             if (params.hasOwnProperty('viewPath')) {
                 let page =  this.view.load(params['route'], params['viewPath'], true);
-                this.response(req, res, page);
+                this.response(page);
             } else {
-                this.callToController(req, res, params);
+                this.callToController(params);
                 return this;
             }
         } else {
 
-            new Error(null).permission('Permission Denied. Page: "' + req.url + '".', 'Server', 'sendResponse');
-            this.response(req, res, this.view.loadError(true));
+            new Error(null).permission('Permission Denied. Page: "' + this.req.url + '".', 'Server', 'sendResponse');
+            this.response(this.view.loadError(true));
         }
         return this;
     };
@@ -101,18 +103,16 @@ class Server extends Components {
     /**
      * Call to controller
      *
-     * @param {{}} req
-     * @param {{}} res
      * @param {{method: string, route: string, viewPath: string, controller: string}} params
      * @returns {Server}
      */
-    callToController(req, res, params) {
+    callToController(params) {
         // 0 - module, 1 - name of controller 2 - method
         let data = params['controller'].split(':');
 
         if (data.length !== 3) {
-            res.writeHead(200, this.conf.contentType(2));
-            res.end(
+            this.res.writeHead(200, this.conf.contentType(2));
+            this.res.end(
                 new Error(null)
                     .warning('Route configuration is not correct', 'Server', 'callToController')
                     .get()
@@ -127,11 +127,11 @@ class Server extends Components {
         try {
             let Controller = require(path);
             let object = new Controller(this, this.db.connection);
-            object[method](req, res, params);
+            object[method](this.req, this.res, params);
 
         } catch (e) {
-            res.writeHead(200, this.conf.contentType(2));
-            res.end(
+            this.res.writeHead(200, this.conf.contentType(2));
+            this.res.end(
                 new Error(e)
                     .alert('Route - "' + file + '". Method - "' + method + '".', 'Server', 'callToController')
                     .get()
@@ -144,14 +144,12 @@ class Server extends Components {
      *
      * Send response to client
      *
-     * @param {{}} req
-     * @param {{}} res
      * @param {string} str
      * @returns {Server}
      */
-    response(req, res, str) {
-        res.writeHead(200, this.conf.contentType());
-        res.end(str, this.conf.encoding, true);
+    response(str) {
+        this.res.writeHead(200, this.conf.contentType());
+        this.res.end(str, this.conf.encoding, true);
         return this;
     };
 
@@ -167,8 +165,7 @@ class Server extends Components {
             saveUninitialized: true
         }));
 
-        app.use(bodyParser.urlencoded({ extended: true }));
-        // app.use(formidable());
+        app.use(bodyParser.urlencoded({extended: false}));
         app.use(bodyParser.json());
         this.routeControls();
         app.listen(this.conf.server.port, this.conf.server.host);

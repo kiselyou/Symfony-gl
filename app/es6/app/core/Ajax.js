@@ -1,3 +1,5 @@
+import qs from 'qs';
+
 /**
  *
  * @type {string}
@@ -26,8 +28,6 @@ class Ajax {
                     // xhr.setRequestHeader('Content-Type', 'application/json charset=utf-8');
                     // xhr.setRequestHeader('Content-Type', 'multipart/form-data charset=utf-8');
                     let data = Ajax._getFormData(param);
-                    // console.log(data);
-                    // console.log(data, 'formData11');
                     xhr.open(AJAX_POST, url);
                     xhr.send(data);
                 },
@@ -49,7 +49,11 @@ class Ajax {
             var formData = new FormData();
             for (let key in param) {
                 if (param.hasOwnProperty(key)) {
-                    formData.append(key, param[key]);
+                    if (typeof param[key] === 'object') {
+                        formData.append(key, qs.stringify(param[key], {encode: false}));
+                    } else {
+                        formData.append(key, param[key]);
+                    }
                 }
             }
             return formData;
@@ -61,9 +65,12 @@ class Ajax {
      * Send GET data
      *
      * @param {string} url
+     * @param {{}|[]} [params]
      * @returns {Promise}
      */
-    get(url) {
+    get(url, params = null) {
+        url += params ? qs.stringify(params, {addQueryPrefix: (url.indexOf('?') === -1)}) : '';
+        console.log(url, 'ajax');
         return new Promise((resolve, reject) => {
             this._execute(
                 (xhr) => {

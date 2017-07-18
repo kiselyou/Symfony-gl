@@ -1,25 +1,14 @@
+const Controller = require('./../../core/Controller');
 
-class TemplateController {
+class TemplateController extends Controller {
 
     constructor(server) {
+        super(server);
         this.server = server;
     }
 
     render(req, res, params) {
-console.log(req.body, req.params, req.fields, 'TemplateController', req.headers['content-type']);
         let template = null;
-
-
-        if (params.hasOwnProperty('route')) {
-
-
-            res.writeHead(200, this.server.conf.contentType(2));
-            res.end(JSON.stringify({body: req.body, params: req.params, fields: req.fields, msg: '--++--'}), this.server.conf.encoding, true);
-
-
-            return;
-        }
-
 
         try {
             template = this.server.view.load(params['route'], req.body['path']);

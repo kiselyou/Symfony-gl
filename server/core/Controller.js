@@ -11,6 +11,9 @@ class Controller {
          */
         this.server = server;
 
+        this.req = this.server.req;
+        this.res = this.server.res;
+
         /**
          *
          * @type {Connection}
@@ -33,16 +36,6 @@ class Controller {
 
     /**
      *
-     * @param req
-     * @param key
-     * @returns {null}
-     */
-    get(req, key) {
-        return req.params.hasOwnProperty(key) ? req.params[key] : null;
-    }
-
-    /**
-     *
      * @param name
      * @param key
      * @returns {*}
@@ -57,6 +50,34 @@ class Controller {
 
     /**
      *
+     * @returns {{}}
+     */
+    getPostData() {
+        return this.req.body;
+    }
+
+    /**
+     *
+     * @returns {{}}
+     */
+    getData() {
+        let data = {};
+        for (let key in this.req.params) {
+            if (this.req.params.hasOwnProperty(key)) {
+                data[key] = this.req.params[key];
+            }
+        }
+        for (let key in this.req.query) {
+            if (this.req.query.hasOwnProperty(key)) {
+                data[key] = this.req.query[key];
+            }
+        }
+        return data;
+    }
+
+    /**
+     * @deprecated
+     *
      * @param req
      * @param fieldName
      * @returns {*}
@@ -65,6 +86,17 @@ class Controller {
         return req.body.find((value) => {
             return value.name === fieldName;
         }).value;
+    }
+
+    /**
+     * @deprecated
+     *
+     * @param req
+     * @param key
+     * @returns {null}
+     */
+    get(req, key) {
+        return req.params.hasOwnProperty(key) ? req.params[key] : null;
     }
 
     /**
