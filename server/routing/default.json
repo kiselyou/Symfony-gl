@@ -24,6 +24,13 @@
     "method": "POST",
     "controller": "systems:TemplateController:render"
   },
+
+  "ejs": {
+    "route": "/ejs",
+    "method": "POST",
+    "controller": "systems:TemplateController:ejs"
+  },
+
   "socket": {
     "route": "/socket/info/:route",
     "method": "GET",

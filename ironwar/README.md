@@ -1,0 +1,95 @@
+##### Structure of directories and files
+
+* ejs
+    * pages
+        * main.ejs
+    * layout
+        * header.ejs
+        * footer.ejs
+        * navbar.ejs
+        * logo.ejs
+    * components
+        * authorization
+            * login.ejs
+            * registration.ejs
+        * informer
+            * success.ejs
+            * warning.ejs
+            * error.ejs
+            * info.ejs
+        * menu
+            * horizontal.ejs
+            * vertical.ejs
+        * window
+            * desktop.ejs
+            * alert.ejs
+            * warning.ejs
+            * confirm.ejs
+        * ...
+    * error
+        * 404.ejs
+        * 423.ejs
+    * index.ejs
+    * iron-war.ico
+* prod
+    * js
+        * bundle.client.js
+        * bundle.server.js
+    * css
+        * bundle.css
+    * obj
+        * ...
+    * fonts
+        * ...
+* src
+    * img
+        * ...
+    * css
+        * ...
+    * obj
+        * ...
+    * fonts
+        * ...
+    * less
+        * global
+            * ...
+        * mixins
+            * ...
+        * blocks
+            * pages
+                * ...
+            * layout
+                * ...
+            * components
+                * ...
+            * error
+                * ...
+        * bundle.less
+        * variables.less
+* config
+    * config.json
+    * database.json
+    * mailer.json
+    * security.json
+* routing
+    * default.json
+* server
+    * core  
+        * security
+            * ...
+        * Server.js
+        * ...
+* controller
+    * systems
+        * SecurityController.js
+        * SocketController.js
+        * EJSController.js
+        * ...
+    * ...
+* client
+    system
+        * ...
+    components
+        * ...
+* index.js
+* ...

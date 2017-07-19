@@ -1,0 +1,14 @@
+{
+  "mailer": {
+    "sender": "",
+    "transporter": {
+      "host": "smtp.gmail.com",
+      "port": 465,
+      "secure": true,
+      "auth": {
+        "user": "game.iron.war@gmail.com",
+        "pass": "1xvx116561120"
+      }
+    }
+  }
+}

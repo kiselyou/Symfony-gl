@@ -19,7 +19,11 @@ class TemplateController extends Controller {
 
         res.writeHead(200, this.server.conf.contentType(2));
         res.end(template, this.server.conf.encoding, true);
+    }
 
+    ejs() {
+
+        this.viewResponse('');
     }
 }
 

@@ -1,0 +1,25 @@
+{
+  "name": "ironwar",
+  "version": "1.0.0",
+  "description": "* ejs     * pages         * main.ejs     * layout         * header.ejs         * footer.ejs         * navbar.ejs         * logo.ejs     * components         * auth             * login.ejs             * registration.ejs         * message             * success.ejs             * warning.ejs             * error.ejs             * info.ejs         * menu             * horizontal.ejs             * vertical.ejs         * window             * desktop.ejs             * dialog-box.ejs             * message                 * alert.ejs                 * warning.ejs                 * confirm.ejs         * ...     * error         * 404.ejs         * 423.ejs     * index.ejs     * iron-war.ico * prod     * js         * bundle.client.js         * bundle.server.js     * css         * bundle.css     * obj         * ...     * fonts         * ... * app     * img         * ...     * css         * ...     * obj         * ...     * fonts         * ...     * less         * global             * ...         * mixins             * ...         * blocks             * pages                 * ...             * layout                 * ...             * components                 * auth                     * ...                     * ...                 * message                     * ...                 * menu                     * ...                 * window                     * ...                     * message                         * ...             * error                 * ...         * bundle.less         * variables.less * config     * config.json     * prod.json     * dev.json * routing     * default.json * server     * core           * security             * ...         * Server.js         * ... * controller     * systems         * SecurityController.js         * SocketController.js         * EJSController.js         * ...     * ... * client     system         * ...     components         * ... * index.js * ...",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiselyou/galaxy.git"
+  },
+  "keywords": [
+    "iron"
+  ],
+  "author": "Kiseliou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kiselyou/galaxy/issues"
+  },
+  "homepage": "https://github.com/kiselyou/galaxy#readme",
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}

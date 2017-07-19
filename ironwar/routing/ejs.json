@@ -1,0 +1,7 @@
+{
+  "ejs": {
+    "route": "/ejs",
+    "method": "POST",
+    "controller": "systems:EJSController:render"
+  }
+}

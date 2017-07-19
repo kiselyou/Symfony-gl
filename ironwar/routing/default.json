@@ -1,0 +1,7 @@
+{
+  "index": {
+    "route": "/",
+    "viewPath": "/controller/main/index.html",
+    "method": "GET"
+  }
+}
