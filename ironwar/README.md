@@ -33,10 +33,9 @@
     * iron-war.ico
 * prod
     * js
-        * bundle.client.js
-        * bundle.server.js
+        * client.bundle.js
     * css
-        * bundle.css
+        * client.bundle.css
     * obj
         * ...
     * fonts
