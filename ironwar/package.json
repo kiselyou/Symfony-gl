@@ -2,9 +2,11 @@
   "name": "ironwar",
   "version": "1.0.0",
   "description": "* ejs     * pages         * main.ejs     * layout         * header.ejs         * footer.ejs         * navbar.ejs         * logo.ejs     * components         * auth             * login.ejs             * registration.ejs         * message             * success.ejs             * warning.ejs             * error.ejs             * info.ejs         * menu             * horizontal.ejs             * vertical.ejs         * window             * desktop.ejs             * dialog-box.ejs             * message                 * alert.ejs                 * warning.ejs                 * confirm.ejs         * ...     * error         * 404.ejs         * 423.ejs     * index.ejs     * iron-war.ico * prod     * js         * bundle.client.js         * bundle.server.js     * css         * bundle.css     * obj         * ...     * fonts         * ... * app     * img         * ...     * css         * ...     * obj         * ...     * fonts         * ...     * less         * global             * ...         * mixins             * ...         * blocks             * pages                 * ...             * layout                 * ...             * components                 * auth                     * ...                     * ...                 * message                     * ...                 * menu                     * ...                 * window                     * ...                     * message                         * ...             * error                 * ...         * bundle.less         * variables.less * config     * config.json     * prod.json     * dev.json * routing     * default.json * server     * core           * security             * ...         * Server.js         * ... * controller     * systems         * SecurityController.js         * SocketController.js         * EJSController.js         * ...     * ... * client     system         * ...     components         * ... * index.js * ...",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon vendor/index.js --exec babel-node",
+    "build": "babel vendor -d prod",
+    "serve": "node prod/index.js"
   },
   "repository": {
     "type": "git",
@@ -20,20 +22,28 @@
   },
   "homepage": "https://github.com/kiselyou/galaxy#readme",
   "dependencies": {
+    "body-parser": "^1.17.2",
+    "ejs": "^2.5.6",
     "express": "^4.15.3",
     "express-session": "^1.15.3",
-    "body-parser": "^1.17.2",
     "multer": "^1.3.0"
   },
   "devDependencies": {
-    "glob": "^7.1.2",
-    "gulp": "^3.9.1",
-    "gulp-less": "^3.3.2",
-    "gulp-uglify": "^3.0.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "^2.6.0",
+    "babel-cli": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
     "babelify": "^7.3.0",
     "browserify": "^14.4.0",
+    "glob": "^7.1.2",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-less": "^3.3.2",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-uglify": "^3.0.0",
+    "nodemon": "^1.11.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   }
