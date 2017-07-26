@@ -12,7 +12,7 @@ class Security extends Authorization {
          *
          * @type {Conf}
          */
-        this._conf = server.getConfig();
+        this._conf = server.config;
     }
 
     /**

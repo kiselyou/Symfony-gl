@@ -6,6 +6,11 @@ class Components {
         this._req = {};
         this._res = {};
 
+        /**
+         *
+         * @type {Conf}
+         * @private
+         */
         this._conf = new Conf();
     }
 
@@ -29,7 +34,7 @@ class Components {
      *
      * @returns {Conf}
      */
-    getConfig() {
+    get config() {
         return this._conf;
     }
 

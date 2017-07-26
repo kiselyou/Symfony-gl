@@ -5,16 +5,16 @@ import express_ejs_extend from 'express-ejs-extend';
 import bodyParser from 'body-parser';
 import multer from 'multer';
 
-import path from 'path';
+import Socket from './Socket';
 import Routes from './Routes';
+import Components from './Components';
+import Security from './security/Security';
 import Collection from '../controllers/Collection';
 
-
-import Socket from './Socket';
-import Security from './security/Security';
-import Components from './Components';
-import Authorization from './security/Authorization';
-
+/**
+ *
+ * @type {string}
+ */
 const PATH_404 = 'error/404';
 
 class Server extends Components {
@@ -173,7 +173,6 @@ class Server extends Components {
     };
 
     /**
-     *
      * Send json to client
      *
      * @param {{}|[]} data
@@ -197,7 +196,7 @@ class Server extends Components {
         this._app.use(bodyParser.urlencoded({extended: false}));
         this._app.use(bodyParser.json());
         this._createRoutes();
-        this._app.listen(this._conf.server.port, this._conf.server.host);
+        this._app.listen(this.config.server.port, this.config.server.host);
         return this;
     }
 }
