@@ -16,22 +16,10 @@ import source from 'vinyl-source-stream';
 
 
 // Compiling server side
-gulp.task('compile-server', function () {
-    return gulp.src(['server.js', 'server/**/*.js'])
-        .pipe(gulpSourcemaps.init())
-        .pipe(gulpBabel())
-        .pipe(gulpConcat('./server.min.js'))
-        // .pipe(gulpUglify())
-        .pipe(gulpSourcemaps.write('.'))
-        .pipe(gulp.dest('./'));
-
-    // glob("server.js", function (er, files) {
-    //     return browserify({entries: files, extensions: ['.js'], debug: true})
-    //         .transform(babelify, {sourceMaps: true})
-    //         .bundle()
-    //         .pipe(source('server.bundle.js'))
-    //         .pipe(gulp.dest("./"));
-    // });
+gulp.task('move-server-dependencies', function () {
+    gulp
+        .src('dev_server/**/*.json')
+        .pipe(gulp.dest('app_server'));
 });
 
 // Recompiling if was changed server

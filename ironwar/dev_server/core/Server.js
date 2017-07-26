@@ -1,32 +1,36 @@
 
 import express from 'express';
 import session from 'express-session';
+import express_ejs_extend from 'express-ejs-extend';
 import bodyParser from 'body-parser';
 import multer from 'multer';
 
 import path from 'path';
 import Routes from './Routes';
 import Collection from '../controllers/Collection';
-import Conf from './Conf';
+
 
 import Socket from './Socket';
 import Security from './security/Security';
+import Components from './Components';
 import Authorization from './security/Authorization';
 
 const PATH_404 = 'error/404';
-const PATH_423 = 'error/423';
 
-
-class Server {
+class Server extends Components {
     constructor() {
+        super();
 
+        /**
+         * @type {express}
+         * @private
+         */
         this._app = express();
 
-        this.conf = new Conf();
-
-        this._req = null;
-        this._res = null;
-
+        /**
+         * @type {multer}
+         * @private
+         */
         this._upload = multer();
 
         /**
@@ -48,19 +52,21 @@ class Server {
          * @type {Socket}
          * @private
          */
-        this._socket = new Socket(this._app, this);
+        this._socket = new Socket(this);
 
         /**
          *
          * @type {Security}
          */
-        this._security = new Security(this.conf);
+        this._security = new Security(this);
+    }
 
-        /**
-         *
-         * @type {Authorization}
-         */
-        this.auth = new Authorization();
+    /**
+     *
+     * @returns {*}
+     */
+    getApp() {
+        return this._app;
     }
 
     /**
@@ -116,14 +122,14 @@ class Server {
      * @returns {void}
      */
     sendResponse(params) {
-        if (this._security.isGranted(this._req.url, this._security.getSessionRole(this._req))) {
+        if (this._security.isGranted(this._req.url, this._security.getUserRole())) {
             if (params.hasOwnProperty('viewPath')) {
                 this.responseView(params['viewPath']);
             } else {
                 this.responseController(params);
             }
         } else {
-            this.responseView(PATH_423);
+            this.responseView(PATH_404, {code: 423, msg: 'Permission denied!'});
         }
     }
 
@@ -138,7 +144,7 @@ class Server {
         let data = params['controller'].split(':');
 
         if (data.length !== 2) {
-            this.responseView(PATH_404, {msg: 'Route configuration is not correct'});
+            this.responseView(PATH_404, {code: 404, msg: 'Route configuration is not correct'});
             return this;
         }
 
@@ -147,7 +153,7 @@ class Server {
             let controller = data[0];
             this._collection[controller][method](this.req, this.res, params);
         } catch (e) {
-            this.responseView(PATH_404, {msg: 'Route configuration is not correct'});
+            this.responseView(PATH_404, {code: 404, msg: 'Route configuration is not correct'});
         }
         return this;
     };
@@ -184,12 +190,14 @@ class Server {
      * @returns {Server}
      */
     init() {
+        this._app.engine('ejs', express_ejs_extend);
         this._app.set('view engine', 'ejs');
+
         this._app.use(session({secret: 'keyboard cat', resave: false, saveUninitialized: true}));
         this._app.use(bodyParser.urlencoded({extended: false}));
         this._app.use(bodyParser.json());
         this._createRoutes();
-        this._app.listen(this.conf.server.port, this.conf.server.host);
+        this._app.listen(this._conf.server.port, this._conf.server.host);
         return this;
     }
 }

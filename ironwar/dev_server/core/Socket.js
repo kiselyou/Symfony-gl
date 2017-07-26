@@ -28,18 +28,17 @@ import io from 'socket.io';
 class Socket {
     /**
      *
-     * @param {express} app
-     * @param {Server} components
+     * @param {Server} server
      * @constructor
      */
-    constructor(app, components) {
+    constructor(server) {
         /**
          *
          * @type {Server}
          */
-        this.components = components;
+        this._server = server;
 
-        this.socketServer = http.createServer(app);
+        this.socketServer = http.createServer(this._server.getApp());
         this.io = io(this.socketServer);
         this.users = {};
 
@@ -145,7 +144,7 @@ class Socket {
 
         room.on('connection', (socket) => {
 
-            //console.log(this.components.auth.getSessionUser());
+            //console.log(this._server.auth.getSessionUser());
 
             // Подписался
             var params = { clientID: socket.id };

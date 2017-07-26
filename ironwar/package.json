@@ -1,12 +1,12 @@
 {
   "name": "ironwar",
   "version": "1.0.0",
-  "description": "* ejs     * pages         * main.ejs     * layout         * header.ejs         * footer.ejs         * navbar.ejs         * logo.ejs     * components         * auth             * login.ejs             * registration.ejs         * message             * success.ejs             * warning.ejs             * error.ejs             * info.ejs         * menu             * horizontal.ejs             * vertical.ejs         * window             * desktop.ejs             * dialog-box.ejs             * message                 * alert.ejs                 * warning.ejs                 * confirm.ejs         * ...     * error         * 404.ejs         * 423.ejs     * index.ejs     * iron-war.ico * prod     * js         * bundle.client.js         * bundle.server.js     * css         * bundle.css     * obj         * ...     * fonts         * ... * app     * img         * ...     * css         * ...     * obj         * ...     * fonts         * ...     * less         * global             * ...         * mixins             * ...         * blocks             * pages                 * ...             * layout                 * ...             * components                 * auth                     * ...                     * ...                 * message                     * ...                 * menu                     * ...                 * window                     * ...                     * message                         * ...             * error                 * ...         * bundle.less         * variables.less * config     * config.json     * prod.json     * dev.json * routing     * default.json * server     * core           * security             * ...         * Server.js         * ... * controller     * systems         * SecurityController.js         * SocketController.js         * EJSController.js         * ...     * ... * client     system         * ...     components         * ... * index.js * ...",
-  "main": "server.js",
+  "description": "",
+  "main": "app/index.js",
   "scripts": {
-    "start": "nodemon vendor/index.js --exec babel-node",
-    "build": "babel vendor -d prod",
-    "serve": "node prod/index.js"
+    "start": "nodemon dev_server/index.js --exec babel-node",
+    "build": "babel dev_server -d app_server | gulp move-server-dependencies",
+    "serve": "node app_server/index.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
     "body-parser": "^1.17.2",
     "ejs": "^2.5.6",
     "express": "^4.15.3",
+    "express-ejs-extend": "0.0.1",
     "express-session": "^1.15.3",
     "multer": "^1.3.0"
   },

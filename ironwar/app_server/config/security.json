@@ -1,4 +1,4 @@
-export let security = {
+{
   "security": {
     "access_control": [
       {"path": "/"},
@@ -13,4 +13,4 @@ export let security = {
       "ROLE_IW_ADMIN": ["ROLE_IW_USER"]
     }
   }
-};
+}
