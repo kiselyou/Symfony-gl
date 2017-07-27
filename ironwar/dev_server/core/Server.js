@@ -77,7 +77,7 @@ class Server extends Components {
 
         this._routes.load((routes) => {
 
-            // this._app.use('/dist/', express.static(path.join(__dirname, '/../../' + this.conf.pathEnvironment)));
+            this._app.use('/src/static', express.static(__dirname + '/../../src/static'));
 
             for (let route of routes) {
                 switch (route['method']) {
@@ -111,7 +111,7 @@ class Server extends Components {
             this._app.get('*', (req, res) => {
                 this._req = req;
                 this._res = res;
-                this.responseView(PATH_404, {msg: 'The page "' + this._req.url + '" was not found.'});
+                this.responseView(PATH_404, {code: 400, msg: 'The page "' + this._req.url + '" was not found.'});
             });
         });
     }

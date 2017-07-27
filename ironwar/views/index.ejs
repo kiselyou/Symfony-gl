@@ -1,9 +1,22 @@
-<% include layout/header.ejs %>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Iron War</title>
+        <link rel="icon" type="image/x-icon" href="/src/static/img/iron-war.ico" />
 
-<h1>
-    <span style="color: #00A000">
-    <%- content %>
-    </span>
-</h1>
+        <link href="/src/static/css/bundle.min.css" rel="stylesheet" />
 
-<% include layout/footer.ejs %>
+    </head>
+    <body>
+        <% include layout/header.ejs %>
+
+        <div><%- content %></div>
+
+        <% include layout/footer.ejs %>
+
+        <script type="application/javascript" src="/src/static/js/bundle.min.js"></script>
+
+    </body>
+</html>
+
