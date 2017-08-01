@@ -4,7 +4,7 @@
   "description": "",
   "main": "app/index.js",
   "scripts": {
-    "start": "nodemon dev_server/index.js --exec babel-node",
+    "start": "gulp watch | nodemon dev_server/index.js --exec babel-node",
     "build": "babel dev_server -d app_server | gulp move-server-dependencies",
     "serve": "node app_server/index.js"
   },

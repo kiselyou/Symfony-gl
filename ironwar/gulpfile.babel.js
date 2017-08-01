@@ -37,7 +37,25 @@ gulp.task('less', function() {
         .pipe(gulp.dest('./src/static/css'));
 });
 
-gulp.task('watch-less', function() {
+gulp.task('watch', function() {
     gulp.watch('./src/less/**/*.less', ['less']);
 });
 // ----------------------------------------------------- LESS END-------------------------------------------------------
+// =====================================================================================================================
+// ---------------------------------------------------- ES6 START-------------------------------------------------------
+gulp.task('es6', function () {
+
+    glob("./src/js/bundle.js", function (er, files) {
+        return browserify({entries: files, extensions: ['.js'], debug: true})
+            .transform(babelify, {sourceMaps: true})
+            .bundle()
+            .pipe(source('bundle.js'))
+            .pipe(buffer())
+            .pipe(gulpRename('bundle.min.js'))
+            .pipe(gulpSourcemaps.init({loadMaps: true}))
+            .pipe(gulpUglify())
+            .pipe(gulpSourcemaps.write('./'))
+            .pipe(gulp.dest("./src/static/js"));
+    });
+});
+// ------------------------------------------------------ ES6 END-------------------------------------------------------
