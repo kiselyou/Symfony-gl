@@ -1,1 +1,0 @@
-{"version":3,"sources":["bundle.min.css"],"names":[],"mappings":"AAAA,KAEE,gBAAiB,AAGjB,gBAAiB,AACjB,cAAe,AACf,kBAAmB,AACnB,UAAY,CALb","file":"bundle.min.css","sourcesContent":["body {\n  background: #ccc;\n  font-weight: 100;\n}\nbody {\n  background: #ccc;\n  color: #00A000;\n  text-align: center;\n  border: 1px;\n}\n"]}

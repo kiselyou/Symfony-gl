@@ -2,11 +2,11 @@
   "name": "ironwar",
   "version": "1.0.0",
   "description": "",
-  "main": "app/index.js",
+  "main": "app/server/index.js",
   "scripts": {
-    "start": "gulp watch | nodemon dev_server/index.js --exec babel-node",
-    "build": "babel dev_server -d app_server | gulp move-server-dependencies",
-    "serve": "node app_server/index.js"
+    "start": "gulp watch | nodemon dev/server/index.js --exec babel-node",
+    "build": "babel dev/server -d app/server | gulp move-server-dependencies",
+    "serve": "node app/server/index.js"
   },
   "repository": {
     "type": "git",
