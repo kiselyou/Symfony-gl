@@ -1,0 +1,40 @@
+.navbar_vertical {
+  overflow: hidden;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background: @background_color_dark;
+
+  & li a {
+    display: block;
+    text-decoration: none;
+  }
+  & li {
+    border-bottom: @border_md solid transparent;
+  }
+  li:hover {
+    border-bottom: @border_md solid @color_base;
+    background: @background_color_light;
+
+  }
+  li:hover, li:hover a, li a:hover {
+    color: @color_base_white;
+    cursor: pointer;
+  }
+
+  &__logo {
+    font-size: 16px;
+    background: @background_color_dark;
+    border-bottom: @border_xs solid transparent !important;
+  }
+
+  &__logo:hover {
+    background: @background_color_dark !important;
+    cursor: default !important;
+    color: @color_base !important;
+  }
+
+  &_sm li, &__logo {
+    padding: 10px 15px;
+  }
+}

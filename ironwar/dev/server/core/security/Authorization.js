@@ -1,6 +1,6 @@
 
 import passwordHash from 'password-hash';
-const KEY_SESSION = 'KEY_USER_SESSION';
+import SessionControls from './../SessionControls';
 
 class Authorization {
 
@@ -21,36 +21,46 @@ class Authorization {
          *
          */
         this._passwordHash = passwordHash;
+
+        /**
+         *
+         * @type {SessionControls}
+         */
+        this.sessionControls = new SessionControls(this._req);
     }
 
     /**
+     * Create session of user
      *
-     * @param {Object} user
+     * @param {(string|number)} id
      * @param {string} role
-     * @returns void
+     * @param {Object} [info]
+     * @returns {Authorization}
      */
-    createSessionUser(user, role) {
-        let session = {};
-        session[KEY_SESSION] = {user: user, role: role};
-        this._server.setSession(session);
+    createSessionUser(id, role, info = {}) {
+        info['role'] = role;
+        this.sessionControls.setSessionUser(id, info);
+        return this;
     };
 
     /**
+     * Get session of user
      *
      * @returns {Object}
      */
-    getUser() {
-        return this._server.getSession(KEY_SESSION);
+    getSessionUser() {
+        return this.sessionControls.getSessionUser();
     };
 
 
     /**
+     * Get role of user
      *
      * @returns {string}
      */
-    getUserRole() {
-        let user = this._server.getSession(KEY_SESSION);
-        return user.hasOwnProperty('role') ? user['role'] : 'ROLE_ANONYMOUSLY';
+    getSessionUserRole() {
+        let user = this.sessionControls.getSessionUser();
+        return user ? user['role'] : 'ROLE_ANONYMOUSLY';
     };
 
     /**

@@ -6,6 +6,14 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _os = require('os');
+
+var _os2 = _interopRequireDefault(_os);
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
 var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
@@ -26,102 +34,132 @@ var _multer = require('multer');
 
 var _multer2 = _interopRequireDefault(_multer);
 
-var _path = require('path');
+var _Socket = require('./Socket');
 
-var _path2 = _interopRequireDefault(_path);
+var _Socket2 = _interopRequireDefault(_Socket);
+
+var _SocketLock = require('./SocketLock');
+
+var _SocketLock2 = _interopRequireDefault(_SocketLock);
 
 var _Routes = require('./Routes');
 
 var _Routes2 = _interopRequireDefault(_Routes);
 
-var _Collection = require('../controllers/Collection');
+var _Components2 = require('./Components');
 
-var _Collection2 = _interopRequireDefault(_Collection);
-
-var _Conf = require('./Conf');
-
-var _Conf2 = _interopRequireDefault(_Conf);
-
-var _Socket = require('./Socket');
-
-var _Socket2 = _interopRequireDefault(_Socket);
+var _Components3 = _interopRequireDefault(_Components2);
 
 var _Security = require('./security/Security');
 
 var _Security2 = _interopRequireDefault(_Security);
 
-var _Authorization = require('./security/Authorization');
+var _Collection = require('../controllers/Collection');
 
-var _Authorization2 = _interopRequireDefault(_Authorization);
+var _Collection2 = _interopRequireDefault(_Collection);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var PATH_404 = 'error/404';
-var PATH_423 = 'error/423';
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-var Server = function () {
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ *
+ * @type {string}
+ */
+var PATH_404 = 'error/404';
+
+var Server = function (_Components) {
+    _inherits(Server, _Components);
+
     function Server() {
         _classCallCheck(this, Server);
 
-        this._app = (0, _express2.default)();
+        /**
+         * @type {express}
+         * @private
+         */
+        var _this = _possibleConstructorReturn(this, (Server.__proto__ || Object.getPrototypeOf(Server)).call(this));
 
-        this.conf = new _Conf2.default();
+        _this._app = (0, _express2.default)();
 
-        this._req = null;
-        this._res = null;
-
-        this._upload = (0, _multer2.default)();
+        /**
+         * @type {multer}
+         * @private
+         */
+        _this._upload = (0, _multer2.default)();
 
         /**
          *
          * @type {Collection}
          * @private
          */
-        this._collection = new _Collection2.default(this);
+        _this._collection = new _Collection2.default(_this);
 
         /**
          *
          * @type {Routes}
          * @private
          */
-        this._routes = new _Routes2.default();
+        _this._routes = new _Routes2.default();
 
         /**
          *
          * @type {Socket}
          * @private
          */
-        this._socket = new _Socket2.default(this._app, this);
+        _this._socket = new _Socket2.default(_this);
 
         /**
          *
          * @type {Security}
          */
-        this._security = new _Security2.default(this.conf);
+        _this._security = new _Security2.default(_this);
+
+        /**
+         * It is list current users in system
+         *
+         * @type {Array}
+         */
+        _this._listActiveUsers = [];
 
         /**
          *
-         * @type {Authorization}
+         * @type {SocketLock}
+         * @private
          */
-        this.auth = new _Authorization2.default();
+        _this._socketLock = new _SocketLock2.default(_this._app, _this._listActiveUsers);
+        return _this;
     }
 
     /**
      *
-     * @private
+     * @returns {*}
      */
 
 
     _createClass(Server, [{
+        key: 'getApp',
+        value: function getApp() {
+            return this._app;
+        }
+
+        /**
+         *
+         * @private
+         */
+
+    }, {
         key: '_createRoutes',
         value: function _createRoutes() {
-            var _this = this;
+            var _this2 = this;
 
             this._routes.load(function (routes) {
 
-                // this._app.use('/dist/', express.static(path.join(__dirname, '/../../' + this.conf.pathEnvironment)));
+                _this2._app.use('/src', _express2.default.static(_path2.default.join(__dirname, '/../../../src')));
 
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
@@ -133,27 +171,27 @@ var Server = function () {
 
                         switch (route['method']) {
                             case 'POST':
-                                _this._app.post(route['route'], _this._upload.array(), function (req, res) {
-                                    _this._req = req;
-                                    _this._res = res;
-                                    _this.sendResponse(route);
+                                _this2._app.post(route['route'], _this2._upload.array(), function (req, res) {
+                                    _this2._req = req;
+                                    _this2._res = res;
+                                    _this2.sendResponse(route);
                                 });
                                 break;
                             case 'GET':
-                                _this._app.get(route['route'], function (req, res) {
-                                    _this._req = req;
-                                    _this._res = res;
-                                    _this.sendResponse(route);
+                                _this2._app.get(route['route'], function (req, res) {
+                                    _this2._req = req;
+                                    _this2._res = res;
+                                    _this2.sendResponse(route);
                                 });
                                 break;
                             case 'SOCKET':
-                                _this._socket.listen(route['route'], route['port'], route['host']);
+                                _this2._socket.listen(route['route'], route['port'], route['host']);
                                 break;
                             default:
-                                _this._app.all(route['route'], function (req, res) {
-                                    _this._req = req;
-                                    _this._res = res;
-                                    _this.sendResponse(route);
+                                _this2._app.all(route['route'], function (req, res) {
+                                    _this2._req = req;
+                                    _this2._res = res;
+                                    _this2.sendResponse(route);
                                 });
                                 break;
                         }
@@ -177,10 +215,10 @@ var Server = function () {
                     }
                 }
 
-                _this._app.get('*', function (req, res) {
-                    _this._req = req;
-                    _this._res = res;
-                    _this.responseView(PATH_404, { msg: 'The page "' + _this._req.url + '" was not found.' });
+                _this2._app.get('*', function (req, res) {
+                    _this2._req = req;
+                    _this2._res = res;
+                    _this2.responseView(PATH_404, { code: 400, msg: 'The page "' + _this2._req.url + '" was not found.' });
                 });
             });
         }
@@ -194,14 +232,14 @@ var Server = function () {
     }, {
         key: 'sendResponse',
         value: function sendResponse(params) {
-            if (this._security.isGranted(this._req.url, this._security.getSessionRole(this._req))) {
+            if (this._security.isGranted(this._req.url, this._security.getUserRole())) {
                 if (params.hasOwnProperty('viewPath')) {
                     this.responseView(params['viewPath']);
                 } else {
                     this.responseController(params);
                 }
             } else {
-                this.responseView(PATH_423);
+                this.responseView(PATH_404, { code: 423, msg: 'Permission denied!' });
             }
         }
 
@@ -219,7 +257,7 @@ var Server = function () {
             var data = params['controller'].split(':');
 
             if (data.length !== 2) {
-                this.responseView(PATH_404, { msg: 'Route configuration is not correct' });
+                this.responseView(PATH_404, { code: 404, msg: 'Route configuration is not correct' });
                 return this;
             }
 
@@ -228,7 +266,7 @@ var Server = function () {
                 var controller = data[0];
                 this._collection[controller][method](this.req, this.res, params);
             } catch (e) {
-                this.responseView(PATH_404, { msg: 'Route configuration is not correct' });
+                this.responseView(PATH_404, { code: 404, msg: 'Route configuration is not correct' });
             }
             return this;
         }
@@ -239,16 +277,14 @@ var Server = function () {
         /**
          * Send view to client
          *
-         * @param {string} path - it is path to template ejs
+         * @param {string} pathView - it is path to template ejs
          * @param {Object} params
          * @returns {Server}
          */
-        value: function responseView(path) {
+        value: function responseView(pathView) {
             var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-            this._res.render(path, params);
-            // this._res.writeHead(200, {'Content-Type': 'text/html'});
-            // this._res.end(str, 'utf-8', true);
+            this._res.render(pathView, params);
             return this;
         }
     }, {
@@ -256,7 +292,6 @@ var Server = function () {
 
 
         /**
-         *
          * Send json to client
          *
          * @param {{}|[]} data
@@ -278,18 +313,18 @@ var Server = function () {
         value: function init() {
             this._app.engine('ejs', _expressEjsExtend2.default);
             this._app.set('view engine', 'ejs');
-            // this._app.set('views', path.join(__dirname, 'views'));
 
             this._app.use((0, _expressSession2.default)({ secret: 'keyboard cat', resave: false, saveUninitialized: true }));
             this._app.use(_bodyParser2.default.urlencoded({ extended: false }));
             this._app.use(_bodyParser2.default.json());
             this._createRoutes();
-            this._app.listen(this.conf.server.port, this.conf.server.host);
+            this._app.listen(this.config.server.port, this.config.server.host);
+            this._socketLock.listen(_os2.default.hostname());
             return this;
         }
     }]);
 
     return Server;
-}();
+}(_Components3.default);
 
 exports.default = Server;

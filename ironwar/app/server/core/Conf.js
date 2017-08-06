@@ -33,10 +33,27 @@ var Conf = function () {
     this.security = require('../config/security.json');
   }
 
+  /**
+   *
+   * @returns {{port: number, host: string}}
+   */
+
+
   _createClass(Conf, [{
     key: 'server',
     get: function get() {
       return this._conf.server;
+    }
+
+    /**
+     *
+     * @returns {{port: number, host: string}}
+     */
+
+  }, {
+    key: 'socket',
+    get: function get() {
+      return this._conf.socket;
     }
 
     /**

@@ -23,18 +23,18 @@ var Security = function (_Authorization) {
 
     /**
      *
-     * @type {Conf}
+     * @type {Server}
      */
-    function Security(config) {
+    function Security(server) {
         _classCallCheck(this, Security);
 
         /**
          *
          * @type {Conf}
          */
-        var _this = _possibleConstructorReturn(this, (Security.__proto__ || Object.getPrototypeOf(Security)).call(this, config));
+        var _this = _possibleConstructorReturn(this, (Security.__proto__ || Object.getPrototypeOf(Security)).call(this, server));
 
-        _this.conf = config;
+        _this._conf = server.config;
         return _this;
     }
 
@@ -49,15 +49,34 @@ var Security = function (_Authorization) {
     _createClass(Security, [{
         key: 'isGranted',
         value: function isGranted(route, role) {
-            var pathControls = this.conf.accessControl;
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
 
-            for (var i = 0; i < pathControls.length; i++) {
-                var find = pathControls[i]['path'].replace(/^\/|\/$/g, '');
-                var grant = route.replace(/^\/|\/$/g, '').split('/', 1);
-                if (grant[0] == find) {
-                    return !pathControls[i].hasOwnProperty('role') || role === pathControls[i]['role'] || this.hasRole(role, pathControls[i]['role']);
+            try {
+                for (var _iterator = this._conf.accessControl[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var item = _step.value;
+
+                    var grant = route.replace(/^\/|\/$/g, '').split('/', 1);
+                    if (grant[0] === item['path'].replace(/^\/|\/$/g, '')) {
+                        return !item.hasOwnProperty('role') || role === item['role'] || this.hasRole(role, item['role']);
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
                 }
             }
+
             return true;
         }
 
@@ -72,10 +91,31 @@ var Security = function (_Authorization) {
         key: 'hasRole',
         value: function hasRole(roleParent, roleChildren) {
             var has = false;
-            var hierarchy = this.conf.roleHierarchy;
+            var hierarchy = this._conf.roleHierarchy;
             if (hierarchy.hasOwnProperty(roleParent)) {
-                for (var i = 0; i < hierarchy[roleParent].length; i++) {
-                    has = roleChildren === hierarchy[roleParent][i] ? true : this.hasRole(hierarchy[roleParent][i], roleChildren);
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
+
+                try {
+                    for (var _iterator2 = hierarchy[roleParent][Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var role = _step2.value;
+
+                        has = roleChildren === role ? true : this.hasRole(role, roleChildren);
+                    }
+                } catch (err) {
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                            _iterator2.return();
+                        }
+                    } finally {
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
+                        }
+                    }
                 }
             }
             return has;

@@ -43,20 +43,19 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Socket = function () {
     /**
      *
-     * @param {express} app
-     * @param {Server} components
+     * @param {Server} server
      * @constructor
      */
-    function Socket(app, components) {
+    function Socket(server) {
         _classCallCheck(this, Socket);
 
         /**
          *
          * @type {Server}
          */
-        this.components = components;
+        this._server = server;
 
-        this.socketServer = _http2.default.createServer(app);
+        this.socketServer = _http2.default.createServer(this._server.getApp());
         this.io = (0, _socket2.default)(this.socketServer);
         this.users = {};
     }
@@ -83,7 +82,7 @@ var Socket = function () {
 
             room.on('connection', function (socket) {
 
-                //console.log(this.components.auth.getSessionUser());
+                //console.log(this._server.auth.getSessionUser());
 
                 // Подписался
                 var params = { clientID: socket.id };

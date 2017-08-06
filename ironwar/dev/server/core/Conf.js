@@ -23,8 +23,20 @@ class Conf {
         this.security = require('../config/security.json');
     }
 
+    /**
+     *
+     * @returns {{port: number, host: string}}
+     */
     get server() {
         return this._conf.server;
+    }
+
+    /**
+     *
+     * @returns {{port: number, host: string}}
+     */
+    get socket() {
+        return this._conf.socket;
     }
 
     /**

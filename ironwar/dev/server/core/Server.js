@@ -1,11 +1,13 @@
 
+import path from 'path';
 import express from 'express';
-import session from 'express-session';
+import expressSession from 'express-session';
 import express_ejs_extend from 'express-ejs-extend';
 import bodyParser from 'body-parser';
 import multer from 'multer';
 
 import Socket from './Socket';
+import SocketLock from './SocketLock';
 import Routes from './Routes';
 import Components from './Components';
 import Security from './security/Security';
@@ -59,6 +61,20 @@ class Server extends Components {
          * @type {Security}
          */
         this._security = new Security(this);
+
+        /**
+         * It is list IDs of current users in system
+         *
+         * @type {Array}
+         */
+        this._listActiveUsers = [];
+
+        /**
+         *
+         * @type {SocketLock}
+         * @private
+         */
+        this._socketLock = new SocketLock(this._app, this._listActiveUsers);
     }
 
     /**
@@ -77,7 +93,7 @@ class Server extends Components {
 
         this._routes.load((routes) => {
 
-            this._app.use('/src/static', express.static(__dirname + '/../../src/static'));
+            this._app.use('/src', express.static(path.join(__dirname, '/../../../src')));
 
             for (let route of routes) {
                 switch (route['method']) {
@@ -122,7 +138,7 @@ class Server extends Components {
      * @returns {void}
      */
     sendResponse(params) {
-        if (this._security.isGranted(this._req.url, this._security.getUserRole())) {
+        if (this._security.isGranted(this._req.url, this._security.getSessionUserRole())) {
             if (params.hasOwnProperty('viewPath')) {
                 this.responseView(params['viewPath']);
             } else {
@@ -161,14 +177,12 @@ class Server extends Components {
     /**
      * Send view to client
      *
-     * @param {string} path - it is path to template ejs
+     * @param {string} pathView - it is path to template ejs
      * @param {Object} params
      * @returns {Server}
      */
-    responseView(path, params = {}) {
-        this._res.render(path, params);
-        // this._res.writeHead(200, {'Content-Type': 'text/html'});
-        // this._res.end(str, 'utf-8', true);
+    responseView(pathView, params = {}) {
+        this._res.render(pathView, params);
         return this;
     };
 
@@ -192,7 +206,11 @@ class Server extends Components {
         this._app.engine('ejs', express_ejs_extend);
         this._app.set('view engine', 'ejs');
 
-        this._app.use(session({secret: 'keyboard cat', resave: false, saveUninitialized: true}));
+        let session = expressSession({secret: 'keyboard cat', resave: false, saveUninitialized: true});
+
+        this._app.use(session);
+        this._socketLock.listen(session);
+
         this._app.use(bodyParser.urlencoded({extended: false}));
         this._app.use(bodyParser.json());
         this._createRoutes();

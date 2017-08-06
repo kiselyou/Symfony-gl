@@ -30,32 +30,31 @@ gulp.task('move-server-dependencies', function () {
 gulp.task('less', function() {
     return gulp.src('./dev/less/bundle.less')
         .pipe(gulpLess())
-        .pipe(gulp.dest('./dev/css'))
         .pipe(gulpRename('bundle.min.css'))
         .pipe(gulpSourcemaps.init({loadMaps: true}))
         .pipe(gulpCssnano())
         .pipe(gulpSourcemaps.write('./'))
-        .pipe(gulp.dest('./app/css'));
+        .pipe(gulp.dest('./src/css'));
 });
-// ----------------------------------------------------- LESS END-------------------------------------------------------
+// ----------------------------------------------------- LESS END ------------------------------------------------------
 // =====================================================================================================================
-// ---------------------------------------------------- ES6 START-------------------------------------------------------
+// ---------------------------------------------------- ES6 START ------------------------------------------------------
 gulp.task('es6', function () {
-    glob('./dev/js/*.bundle.js', function (er, files) {
-        return browserify({entries: files, extensions: ['.js'], debug: true})
+    glob('dev/js/*.bundle.js', function (er, files) {
+        browserify({entries: files, extensions: ['.bundle.js']})
             .transform(babelify, {sourceMaps: true})
             .bundle()
             .pipe(source('bundle.js'))
-            .pipe(gulp.dest('./dev/js'))
             .pipe(buffer())
             .pipe(gulpRename('bundle.min.js'))
             .pipe(gulpSourcemaps.init({loadMaps: true}))
             .pipe(gulpUglify())
             .pipe(gulpSourcemaps.write('./'))
-            .pipe(gulp.dest("./app/js"));
+            .pipe(gulp.dest('src/js/'));
     });
 });
 // ------------------------------------------------------ ES6 END-------------------------------------------------------
 gulp.task('watch', function() {
-    gulp.watch(['./dev/less/**/*.less', './dev/js/*.bundle.js'], ['less', 'es6']);
+    gulp.watch('./dev/js/**/*.js', ['es6']);
+    gulp.watch('./dev/less/**/*.less', ['less']);
 });
