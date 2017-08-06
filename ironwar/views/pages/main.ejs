@@ -4,41 +4,21 @@
 <div class="container">
 
     <div class="visible_sm visible_md visible_lg col_sm_3 col_md_2 col_lg_2">
-        <ul class="navbar_vertical navbar_vertical_sm">
-            <li class="navbar_vertical__logo">
-                <span>IronWar</span>
-            </li>
-            <li>
-                <i class="fa fa-home"></i>
-                <span>Test - 2</span>
-            </li>
-            <li>
-                <i class="fa fa-home"></i>
-                <span>Test - 2</span>
-            </li>
-        </ul>
+        <% include ../components/menu/vertical.ejs %>
     </div>
 
     <div class="visible_xs col_xs_4">
-        <div class="navbar_vertical__logo">
-            <span>IronWar</span>
-        </div>
+        <% include ../layout/logo.ejs %>
     </div>
 
     <div class="col_xs_8 col_sm_9 col_md_10 col_lg_10">
-        <ul class="navbar_horizontal navbar_horizontal_right navbar_horizontal_sm">
-            <li title="Sign in" class="hint">
-                <a href="/">
-                    <i class="fa fa-lock"></i>
-                </a>
-            </li>
-            <li title="Sign out" class="hint">
-                <a href="/">
-                    <i class="fa fa-unlock"></i>
-                </a>
-            </li>
-        </ul>
+        <% include ../components/menu/horizontal.ejs %>
     </div>
 
-    <div class="col_xs_12 col_sm_9 col_md_10 col_lg_10">asdasdas</div>
+    <div class="col_xs_12 col_sm_9 col_md_10 col_lg_10">
+        <div class="desktop desktop_size_full">
+            <div class="desktop__head">Title</div>
+            <div class="desktop__body">Content</div>
+        </div>
+    </div>
 </div>

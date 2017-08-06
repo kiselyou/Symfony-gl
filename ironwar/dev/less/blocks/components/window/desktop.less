@@ -1,0 +1,93 @@
+@modal_margin: 2px;
+@modal_padding: 5px;
+
+.desktop {
+  overflow: hidden;
+  min-width: 30%;
+  margin: 10% 35%;
+  position: absolute;
+  z-index: 1;
+
+  &__control {
+    padding: 15px;
+  }
+
+  &__head {
+    border-bottom: 1px solid @color_base;
+    overflow: hidden;
+    margin: @modal_margin;
+    padding: @modal_padding;
+  }
+
+  &__body {
+    margin: @modal_margin;
+    padding: @modal_padding;
+    overflow: hidden;
+  }
+
+  &__foot {
+    min-height: 12px;
+    overflow: hidden;
+    margin: @modal_margin;
+    padding: @modal_padding;
+  }
+
+  &_skin {
+    &_dark {
+      background: @background_color_dark;
+    }
+
+    &_hidden {
+      box-shadow: none;
+      border: none;
+    }
+  }
+
+  &_size {
+    &_full {
+      width: 99%;
+      min-height: 98%;
+      margin: 0.5%;
+    }
+
+    &_xs {
+      width: 32%;
+      min-height: 19.83333333%;
+      margin: 6.03333333% 34%;
+    }
+    &_sm {
+      width: 40%;
+      min-height: 22%;
+      margin: 5.2% 30%;
+    }
+    &_md {
+      width: 56.33333333%;
+      min-height: 28.16666667%;
+      margin: 4.36666667% 21.83333333%;
+    }
+    &_lg {
+      width: 64.66666667%;
+      min-height: 32.33333333%;
+      margin: 3.53333333% 17.66666667%;
+    }
+
+    @media (max-width: 768px) {
+      &_xs {
+        width: 60%;
+        margin: 4% 20%;
+      }
+      &_sm {
+        width: 60%;
+        margin: 4% 20%;
+      }
+      &_md {
+        width: 80%;
+        margin: 4% 10%;
+      }
+      &_lg {
+        width: 80%;
+        margin: 4% 10%;
+      }
+    }
+  }
+}
