@@ -1,33 +1,5 @@
-
 <% extend('../index.ejs'); %>
 
 <div class="container">
-
-    <div class="row">
-        <div class="col_xs_4 col_sm_3 col_md_2 col_lg_2">
-            <% include ../layout/logo.ejs %>
-        </div>
-
-        <div class="col_xs_8 col_sm_9 col_md_10 col_lg_10">
-            <% include ../components/menu/horizontal.ejs %>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="visible_sm visible_md visible_lg col_sm_3 col_md_2 col_lg_2">
-            <% include ../components/menu/vertical.ejs %>
-        </div>
-
-        <div class="col_xs_12 col_sm_9 col_md_10 col_lg_10">
-            <div class="desktop desktop_size_full">
-                <div class="desktop__head">Title</div>
-                <div class="desktop__body">
-                    Content
-                    <hr/>
-
-                    <% include ../components/menu/hexagon.ejs %>
-                </div>
-            </div>
-        </div>
-    </div>
+    <canvas id="main_page"></canvas>
 </div>
