@@ -4,9 +4,9 @@
   "description": "",
   "main": "app/server/index.js",
   "scripts": {
-    "start": "nodemon dev/server/index.js --exec babel-node",
-    "build": "babel dev -d app | gulp move-server-dependencies",
-    "serve": "node app/server/index.js"
+    "start-prod": "node app/server/index.js",
+    "start-dev": "nodemon dev/server/index.js --exec babel-node",
+    "build": "babel dev -d app | gulp move-server-dependencies"
   },
   "repository": {
     "type": "git",

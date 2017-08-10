@@ -41,15 +41,15 @@ gulp.task('less', function() {
 // ---------------------------------------------------- ES6 START ------------------------------------------------------
 gulp.task('es6', function () {
     glob('dev/js/*.bundle.js', function (er, files) {
-        browserify({entries: files, extensions: ['.bundle.js']})
+        browserify({entries: files, extensions: '.bundle.js'})
             .transform(babelify, {sourceMaps: true})
             .bundle()
-            .pipe(source('bundle.js'))
-            .pipe(buffer())
-            .pipe(gulpRename('bundle.min.js'))
-            .pipe(gulpSourcemaps.init({loadMaps: true}))
-            .pipe(gulpUglify())
-            .pipe(gulpSourcemaps.write('./'))
+            .pipe(source('bundle.min.js'))
+            // .pipe(buffer())
+            // .pipe(gulpRename('bundle.min.js'))
+            // .pipe(gulpSourcemaps.init({loadMaps: true}))
+            // .pipe(gulpUglify())
+            // .pipe(gulpSourcemaps.write('./'))
             .pipe(gulp.dest('src/js/'));
     });
 });

@@ -328,7 +328,6 @@ IW.Scene = function ( idContainer ) {
     function windowResize() {
         scope.camera.aspect = scope.getAspect();
         scope.camera.updateProjectionMatrix();
-
         scope.renderer.setSize( scope.getWidth(), scope.getHeight() );
     }
 
