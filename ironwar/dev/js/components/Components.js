@@ -1,10 +1,8 @@
 
-import Application from './Application';
 
-class Components extends Application {
+class Components {
     constructor() {
-        super();
-        console.log('Components');
+
     }
 }
 

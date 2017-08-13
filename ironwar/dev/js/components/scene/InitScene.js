@@ -24,28 +24,55 @@ class InitScene {
          * @type {Scene}
          */
         this.scene = new THREE.Scene();
+        this.scene.fog = new THREE.Fog(0x000000, 250, 2500);
+
 
         /**
          *
          * @type {PerspectiveCamera}
          */
-        this.camera = new THREE.PerspectiveCamera(45, InitScene.aspect, 0.1, 20000);
-        this.camera.position.set(300, 300, 300);
+        this.camera = new THREE.PerspectiveCamera(30, InitScene.aspect, 0.1, 20000);
+        this.camera.position.set(0, 0, 700);
         this.camera.lookAt(this.scene.position);
 
         /**
          *
-         * @type {WebGLRenderer}
+         * @type {WebGLRenderer|THREE.WebGLRenderer}
          */
         this.renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
+        this.renderer.setClearColor(this.scene.fog.color);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
 
         /**
          *
-         * @type {HemisphereLight}
+         * @type {HemisphereLight|THREE.HemisphereLight}
          */
-        this.hemisphereLight = new THREE.HemisphereLight(0xFFFFFF, 0xFFFFFF, 1);
+        this.hemisphereLight = new THREE.HemisphereLight(0xFFFFFF, 0xFFFFFF, 0.3);
         this.hemisphereLight.position.set(0, 1000, 1000);
         this.scene.add(this.hemisphereLight);
+
+        /**
+         *
+         * @type {DirectionalLight|THREE.DirectionalLight}
+         */
+        this.directionalLight = new THREE.DirectionalLight(0xffffff, 1.125);
+        this.directionalLight.position.set(0, 0, 1).normalize();
+        this.scene.add(this.directionalLight);
+
+        /**
+         *
+         * @type {PointLight|THREE.PointLight}
+         */
+        this.pointLight = new THREE.PointLight(0xffffff, 0.5);
+        this.pointLight.position.set(0, 100, 90);
+        this.scene.add(this.pointLight);
+
+        /**
+         *
+         * @type {Array}
+         * @private
+         */
+        this._renderEvents = [];
     }
 
     /**
@@ -73,14 +100,25 @@ class InitScene {
     };
 
     /**
+     * Add element to scene
+     *
+     * @param {Mesh|Group} element
+     * @returns {InitScene}
+     */
+    add(element) {
+        this.scene.add(element);
+        return this;
+    }
+
+    /**
      * Render scene
      *
      * @returns {InitScene}
      */
-    draw() {
+    render() {
         this.renderer.setSize(InitScene.width, InitScene.height);
         this.container.appendChild(this.renderer.domElement);
-        this._render();
+        this._renderControls();
         this._resizeControls();
         return this;
     }
@@ -93,6 +131,22 @@ class InitScene {
     helper() {
         let axisHelper = new THREE.AxisHelper(50);
         this.scene.add(axisHelper);
+        return this;
+    }
+
+    /**
+     *
+     * @param {number} delta
+     * @callback renderEvent
+     */
+
+    /**
+     *
+     * @param event
+     * @returns {InitScene}
+     */
+    addRenderEvent(event) {
+        this._renderEvents.push(event);
         return this;
     }
 
@@ -116,11 +170,14 @@ class InitScene {
      *
      * @private
      */
-    _render() {
+    _renderControls() {
         let delta = this.clock.getDelta();
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(() => {
-            this._render();
+            for (let event of this._renderEvents) {
+                event(delta);
+            }
+            this._renderControls();
         });
     }
 }

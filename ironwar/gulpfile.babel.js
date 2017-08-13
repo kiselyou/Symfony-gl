@@ -15,7 +15,6 @@ import buffer from 'vinyl-buffer';
 import browserify from 'browserify';
 import source from 'vinyl-source-stream';
 
-
 // ---------------------------------------------------- SERVER START----------------------------------------------------
 // Compiling server side
 // It use npm script "package.json"
