@@ -58,60 +58,6 @@ var Components = function () {
          */
 
     }, {
-        key: 'getSession',
-
-
-        /**
-         *
-         * @param {string} [key]
-         * @returns {{}}
-         */
-        value: function getSession() {
-            var key = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-
-            var session = this._req.session ? this._req.session : {};
-            return key ? session[key] ? session[key] : {} : session;
-        }
-
-        /**
-         *
-         * @param {Object} data
-         * @returns {Components}
-         */
-
-    }, {
-        key: 'setSession',
-        value: function setSession(data) {
-            this._req.session = data;
-            return this;
-        }
-
-        /**
-         *
-         * @param {string} key
-         * @param {*} value
-         * @returns {Components}
-         */
-
-    }, {
-        key: 'addSessionData',
-        value: function addSessionData(key, value) {
-            this._req.session[key] = value;
-            return this;
-        }
-
-        /**
-         *
-         * @returns {Components}
-         */
-
-    }, {
-        key: 'destroySession',
-        value: function destroySession() {
-            this._req.session.destroy();
-            return this;
-        }
-    }, {
         key: 'config',
         get: function get() {
             return this._conf;

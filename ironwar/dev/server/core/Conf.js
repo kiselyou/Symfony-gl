@@ -1,9 +1,18 @@
 
 class Conf {
 
-    constructor() {
+    constructor(env) {
+
         /**
-         * @type {{encoding: string, server: {port: number, host: string}, socket: {port: number, host: string}}}
+         * Server.ENV_DEV|Server.ENV_PROD
+         *
+         * @type {string}
+         * @private
+         */
+        this._environment = env;
+
+        /**
+         * @type {{encoding: string, server: {dev: {port: number, host: string}, prod: {port: number, host: string}}, socket: {dev: {port: number, host: string}, prod: {port: number, host: string}}}}
          */
         this._conf = require('../config/config.json');
 
@@ -25,10 +34,48 @@ class Conf {
 
     /**
      *
+     *
+     * @returns {string}
+     * @constructor
+     */
+    static get ENV_DEV() {
+        return 'dev';
+    }
+
+    /**
+     *
+     *
+     * @returns {string}
+     * @constructor
+     */
+    static get ENV_PROD() {
+        return 'prod';
+    }
+
+    /**
+     * Check Environment is dev
+     *
+     * @returns {boolean}
+     */
+    isDevEnv() {
+        return this._environment === Conf.ENV_DEV;
+    }
+
+    /**
+     * Check Environment is prod
+     *
+     * @returns {boolean}
+     */
+    isProdEnv() {
+        return this._environment === Conf.ENV_PROD;
+    }
+
+    /**
+     *
      * @returns {{port: number, host: string}}
      */
     get server() {
-        return this._conf.server;
+        return this.isDevEnv() ? this._conf.server.dev : this._conf.server.prod;
     }
 
     /**
@@ -36,7 +83,7 @@ class Conf {
      * @returns {{port: number, host: string}}
      */
     get socket() {
-        return this._conf.socket;
+        return this.isDevEnv() ? this._conf.socket.dev : this._conf.socket.prod;
     }
 
     /**

@@ -1,7 +1,12 @@
 import Conf from './Conf';
 
 class Components {
-    constructor() {
+    /**
+     * Possible values it are constants of class "Conf"
+     *
+     * @param {string} env (Conf.ENV_DEV|Conf.ENV_PROD)
+     */
+    constructor(env) {
 
         this._req = {};
         this._res = {};
@@ -11,7 +16,7 @@ class Components {
          * @type {Conf}
          * @private
          */
-        this._conf = new Conf();
+        this._conf = new Conf(env);
     }
 
     /**

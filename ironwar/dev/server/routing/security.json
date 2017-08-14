@@ -1,7 +1,7 @@
 {
   "socket": {
-    "route": "/socket/info/:route",
-    "method": "GET",
+    "route": "/socket/info",
+    "method": "POST",
     "controller": "SocketController:configuration"
   },
 

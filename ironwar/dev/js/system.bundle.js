@@ -6,7 +6,12 @@ import InitScene from './components/scene/InitScene';
 
 
 let lock = new Lock();
-lock.controls();
+lock.isUser((status) => {
+    console.log(status);
+});
+lock.isUser((status) => {
+    console.log(status);
+});
 
 let sceneControls = new InitScene('initialisation_main_scene');
 

@@ -24,7 +24,7 @@ class InitScene {
          * @type {Scene}
          */
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.Fog(0x000000, 250, 2500);
+        this.scene.fog = new THREE.Fog(0x000000, 250, 3500);
 
 
         /**
@@ -66,6 +66,12 @@ class InitScene {
         this.pointLight = new THREE.PointLight(0xffffff, 0.5);
         this.pointLight.position.set(0, 100, 90);
         this.scene.add(this.pointLight);
+
+
+        // Add two lights in the scene
+        // An hemisphere light, to add different light from sky and ground
+        // var light = new THREE.HemisphereLight(0xffffbb, 0x887979, 0.9);
+        // this.scene.add(light);
 
         /**
          *

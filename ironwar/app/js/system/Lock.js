@@ -40,8 +40,9 @@ var Lock = function () {
         value: function controls() {
             var socket = _socket2.default.connect(location.hostname + ':' + Lock.PORT + Lock.NAMESPACE);
 
-            socket.on(Lock.EVENT_CONNECTED, function (data) {
-                console.log(data, 'client');
+            socket.on(Lock.EVENT_CHECK_STATUS, function (data) {
+
+                console.log(data, 'client1');
             });
         }
     }], [{
@@ -67,9 +68,9 @@ var Lock = function () {
          */
 
     }, {
-        key: 'EVENT_CONNECTED',
+        key: 'EVENT_CHECK_STATUS',
         get: function get() {
-            return 'connected';
+            return 'check';
         }
     }]);
 

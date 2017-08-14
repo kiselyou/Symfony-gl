@@ -25,8 +25,8 @@ class Ajax {
         return new Promise((resolve, reject) => {
             this._execute(
                 (xhr) => {
-                    xhr.open(AJAX_POST, Ajax._preparePostData(param));
-                    xhr.send(data);
+                    xhr.open(AJAX_POST, url);
+                    xhr.send(Ajax._preparePostData(param));
                 },
                 resolve,
                 reject

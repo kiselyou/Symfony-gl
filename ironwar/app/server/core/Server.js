@@ -6,10 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _os = require('os');
-
-var _os2 = _interopRequireDefault(_os);
-
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
@@ -120,7 +116,7 @@ var Server = function (_Components) {
         _this._security = new _Security2.default(_this);
 
         /**
-         * It is list current users in system
+         * It is list IDs of current users in system
          *
          * @type {Array}
          */
@@ -232,7 +228,7 @@ var Server = function (_Components) {
     }, {
         key: 'sendResponse',
         value: function sendResponse(params) {
-            if (this._security.isGranted(this._req.url, this._security.getUserRole())) {
+            if (this._security.isGranted(this._req.url, this._security.getSessionUserRole())) {
                 if (params.hasOwnProperty('viewPath')) {
                     this.responseView(params['viewPath']);
                 } else {
@@ -314,12 +310,15 @@ var Server = function (_Components) {
             this._app.engine('ejs', _expressEjsExtend2.default);
             this._app.set('view engine', 'ejs');
 
-            this._app.use((0, _expressSession2.default)({ secret: 'keyboard cat', resave: false, saveUninitialized: true }));
+            var session = (0, _expressSession2.default)({ secret: 'keyboard cat', resave: false, saveUninitialized: true });
+
+            this._app.use(session);
+            this._socketLock.listen(session);
+
             this._app.use(_bodyParser2.default.urlencoded({ extended: false }));
             this._app.use(_bodyParser2.default.json());
             this._createRoutes();
             this._app.listen(this.config.server.port, this.config.server.host);
-            this._socketLock.listen(_os2.default.hostname());
             return this;
         }
     }]);

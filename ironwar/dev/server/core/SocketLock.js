@@ -7,19 +7,18 @@ import SessionControls from './SessionControls';
 class SocketLock {
     /**
      *
-     * @param {express} app
-     * @param {Array} listUsers
+     * @param {Server} server
      */
-    constructor(app, listUsers) {
+    constructor(server) {
 
         /**
          *
-         * @type {Array}
+         * @type {Server}
          * @private
          */
-        this._listUsers = listUsers;
+        this._server = server;
 
-        this.socketServer = http.createServer(app);
+        this.socketServer = http.createServer(this._server.getApp());
     }
 
     /**
@@ -42,27 +41,32 @@ class SocketLock {
              */
             this._session = new SessionControls(socket.handshake.session);
 
-            socket.emit(Lock.EVENT_CHECK_STATUS, {status: this._addUserToList(this._session)});
+            socket.emit(Lock.EVENT_CHECK_LOCK, {lock: this._addUserToList(this._session)});
+
+            socket.on(Lock.EVENT_CHECK_USER_STATUS, () => {
+                socket.emit(Lock.EVENT_CHECK_USER_STATUS, this._session.isSessionUser());
+            });
 
             socket.on('disconnect', () => {
                 this._removeUserFromList(this._session);
             });
         });
 
-        this.socketServer.listen(Lock.PORT, 'localhost');
+        this.socketServer.listen(this._server.config.socket.port, this._server.config.socket.host);
     }
 
     /**
      * Add user to list
      *
      * @param {SessionControls} session
-     * @returns {boolean}
+     * @returns {boolean} - If is true user was added to list
+     *                      If is false probably user is not logged or has opened another tabs
      * @private
      */
     _addUserToList(session) {
         let id = session.setSessionUserID();
-        if (session.isSessionUser() && this._listUsers.indexOf(id) === -1) {
-            this._listUsers.push(id);
+        if (session.isSessionUser() && this._server.listActiveUsers.indexOf(id) === -1) {
+            this._server.listActiveUsers.push(id);
             return true;
         }
         return false;
@@ -76,9 +80,9 @@ class SocketLock {
      * @private
      */
     _removeUserFromList(session) {
-        let key = this._listUsers.indexOf(session.setSessionUserID());
+        let key = this._server.listActiveUsers.indexOf(session.setSessionUserID());
         if (key > -1) {
-            this._listUsers.splice(key, 1);
+            this._server.listActiveUsers.splice(key, 1);
             return true;
         }
         return false;

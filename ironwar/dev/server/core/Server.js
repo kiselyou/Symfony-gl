@@ -20,8 +20,14 @@ import Collection from '../controllers/Collection';
 const PATH_404 = 'error/404';
 
 class Server extends Components {
-    constructor() {
-        super();
+
+    /**
+     * Possible values it are constants of class "Conf"
+     *
+     * @param {string} env (Conf.ENV_DEV|Conf.ENV_PROD)
+     */
+    constructor(env) {
+        super(env);
 
         /**
          * @type {express}
@@ -67,14 +73,14 @@ class Server extends Components {
          *
          * @type {Array}
          */
-        this._listActiveUsers = [];
+        this.listActiveUsers = [];
 
         /**
          *
          * @type {SocketLock}
          * @private
          */
-        this._socketLock = new SocketLock(this._app, this._listActiveUsers);
+        this._socketLock = new SocketLock(this);
     }
 
     /**
@@ -164,12 +170,21 @@ class Server extends Components {
             return this;
         }
 
+        let method = data[1];
+        let controller = data[0];
+
         try {
-            let method = data[1];
-            let controller = data[0];
-            this._collection[controller][method](this.req, this.res, params);
+            let collection = this._collection.get();
+            if (collection.hasOwnProperty(controller)) {
+                collection[controller][method](this.req, this.res, params);
+            }
+
         } catch (e) {
-            this.responseView(PATH_404, {code: 404, msg: 'Route configuration is not correct'});
+            this.responseView(PATH_404, {
+                code: 404,
+                msg: 'Call to controller failed! Controller: ' + controller + ' method: ' + method,
+                detail: e
+            });
         }
         return this;
     };

@@ -10,11 +10,13 @@ var _passwordHash = require('password-hash');
 
 var _passwordHash2 = _interopRequireDefault(_passwordHash);
 
+var _SessionControls = require('./../SessionControls');
+
+var _SessionControls2 = _interopRequireDefault(_SessionControls);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var KEY_SESSION = 'KEY_USER_SESSION';
 
 var Authorization = function () {
 
@@ -36,45 +38,57 @@ var Authorization = function () {
      *
      */
     this._passwordHash = _passwordHash2.default;
+
+    /**
+     *
+     * @type {SessionControls}
+     */
+    this.sessionControls = new _SessionControls2.default(this._req);
   }
 
   /**
+   * Create session of user
    *
-   * @param {Object} user
+   * @param {(string|number)} id
    * @param {string} role
-   * @returns void
+   * @param {Object} [info]
+   * @returns {Authorization}
    */
 
 
   _createClass(Authorization, [{
     key: 'createSessionUser',
-    value: function createSessionUser(user, role) {
-      var session = {};
-      session[KEY_SESSION] = { user: user, role: role };
-      this._server.setSession(session);
+    value: function createSessionUser(id, role) {
+      var info = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+      info['role'] = role;
+      this.sessionControls.setSessionUser(id, info);
+      return this;
     }
   }, {
-    key: 'getUser',
+    key: 'getSessionUser',
 
 
     /**
+     * Get session of user
      *
      * @returns {Object}
      */
-    value: function getUser() {
-      return this._server.getSession(KEY_SESSION);
+    value: function getSessionUser() {
+      return this.sessionControls.getSessionUser();
     }
   }, {
-    key: 'getUserRole',
+    key: 'getSessionUserRole',
 
 
     /**
+     * Get role of user
      *
      * @returns {string}
      */
-    value: function getUserRole() {
-      var user = this._server.getSession(KEY_SESSION);
-      return user.hasOwnProperty('role') ? user['role'] : 'ROLE_ANONYMOUSLY';
+    value: function getSessionUserRole() {
+      var user = this.sessionControls.getSessionUser();
+      return user ? user['role'] : 'ROLE_ANONYMOUSLY';
     }
   }, {
     key: 'hashPassword',

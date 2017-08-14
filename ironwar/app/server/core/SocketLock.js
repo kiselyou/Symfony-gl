@@ -14,9 +14,17 @@ var _socket = require('socket.io');
 
 var _socket2 = _interopRequireDefault(_socket);
 
+var _expressSocket = require('express-socket.io-session');
+
+var _expressSocket2 = _interopRequireDefault(_expressSocket);
+
 var _Lock = require('./../../js/system/Lock');
 
 var _Lock2 = _interopRequireDefault(_Lock);
+
+var _SessionControls = require('./SessionControls');
+
+var _SessionControls2 = _interopRequireDefault(_SessionControls);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26,30 +34,93 @@ var SocketLock = function () {
     /**
      *
      * @param {express} app
-     * @param {Array} clientList
+     * @param {Array} listUsers
      */
-    function SocketLock(app, clientList) {
+    function SocketLock(app, listUsers) {
         _classCallCheck(this, SocketLock);
+
+        /**
+         *
+         * @type {Array}
+         * @private
+         */
+        this._listUsers = listUsers;
 
         this.socketServer = _http2.default.createServer(app);
     }
 
+    /**
+     *
+     * @param session
+     * @returns {void}
+     */
+
+
     _createClass(SocketLock, [{
         key: 'listen',
-        value: function listen() {
+        value: function listen(session) {
+            var _this = this;
+
             var io = (0, _socket2.default)(this.socketServer);
+
+            io.use((0, _expressSocket2.default)(session, { autoSave: true }));
+
             var room = io.of(_Lock2.default.NAMESPACE);
 
             room.on('connection', function (socket) {
-                console.log('connection');
+                /**
+                 *
+                 * @type {SessionControls}
+                 * @private
+                 */
+                _this._session = new _SessionControls2.default(socket.handshake.session);
 
-                var params = { clientID: socket.id };
+                socket.emit(_Lock2.default.EVENT_CHECK_STATUS, { status: _this._addUserToList(_this._session) });
 
-                socket.emit(_Lock2.default.EVENT_CONNECTED, params);
+                socket.on('disconnect', function () {
+                    _this._removeUserFromList(_this._session);
+                });
             });
 
-            // console.log(Lock.NAMESPACE, Lock.PORT, 'localhost');
             this.socketServer.listen(_Lock2.default.PORT, 'localhost');
+        }
+
+        /**
+         * Add user to list
+         *
+         * @param {SessionControls} session
+         * @returns {boolean}
+         * @private
+         */
+
+    }, {
+        key: '_addUserToList',
+        value: function _addUserToList(session) {
+            var id = session.setSessionUserID();
+            if (session.isSessionUser() && this._listUsers.indexOf(id) === -1) {
+                this._listUsers.push(id);
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Remove user from list
+         *
+         * @param {SessionControls} session
+         * @returns {boolean}
+         * @private
+         */
+
+    }, {
+        key: '_removeUserFromList',
+        value: function _removeUserFromList(session) {
+            var key = this._listUsers.indexOf(session.setSessionUserID());
+            if (key > -1) {
+                this._listUsers.splice(key, 1);
+                return true;
+            }
+            return false;
         }
     }]);
 
