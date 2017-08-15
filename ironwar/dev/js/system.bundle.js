@@ -4,14 +4,11 @@ import Text3D from './components/text/Text3D';
 import Tunnel from './components/tunnel/Tunnel';
 import InitScene from './components/scene/InitScene';
 
+import ViewControls from './view/ViewControls';
+
+new ViewControls();
 
 let lock = new Lock();
-lock.isUser((status) => {
-    console.log(status);
-});
-lock.isUser((status) => {
-    console.log(status);
-});
 
 let sceneControls = new InitScene('initialisation_main_scene');
 

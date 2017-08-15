@@ -25,6 +25,8 @@ class Lock {
          */
         this._config = {};
 
+        this._callbacks = [];
+
         if(!socketControls) {
             this._controls();
         } else {
@@ -113,6 +115,10 @@ class Lock {
                     console.log('Probably user is not logged or has opened another tabs');
                 }
             });
+
+            socketControls.on(Lock.EVENT_CHECK_USER_STATUS, (status) => {
+                console.log(status);
+            });
         });
     }
 
@@ -126,15 +132,13 @@ class Lock {
      * @param {isUserCallback} callback
      */
     isUser(callback) {
+
         if (!socketControls) {
             setTimeout(() => {
                 this.isUser(callback);
             }, 20);
         } else {
             socketControls.emit(Lock.EVENT_CHECK_USER_STATUS);
-            socketControls.on(Lock.EVENT_CHECK_USER_STATUS, (status) => {
-                callback(status);
-            });
         }
     }
 }

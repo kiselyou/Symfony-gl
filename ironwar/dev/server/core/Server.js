@@ -13,12 +13,6 @@ import Components from './Components';
 import Security from './security/Security';
 import Collection from '../controllers/Collection';
 
-/**
- *
- * @type {string}
- */
-const PATH_404 = 'error/404';
-
 class Server extends Components {
 
     /**
@@ -84,6 +78,16 @@ class Server extends Components {
     }
 
     /**
+     * Path to template 404
+     *
+     * @returns {string}
+     * @constructor
+     */
+    static get PATH_404() {
+        return 'error/404';
+    }
+
+    /**
      *
      * @returns {*}
      */
@@ -133,7 +137,7 @@ class Server extends Components {
             this._app.get('*', (req, res) => {
                 this._req = req;
                 this._res = res;
-                this.responseView(PATH_404, {code: 400, msg: 'The page "' + this._req.url + '" was not found.'});
+                this.responseView(Server.PATH_404, {code: 400, msg: 'The page "' + this._req.url + '" was not found.'});
             });
         });
     }
@@ -151,7 +155,7 @@ class Server extends Components {
                 this.responseController(params);
             }
         } else {
-            this.responseView(PATH_404, {code: 423, msg: 'Permission denied!'});
+            this.responseView(Server.PATH_404, {code: 423, msg: 'Permission denied!'});
         }
     }
 
@@ -166,7 +170,7 @@ class Server extends Components {
         let data = params['controller'].split(':');
 
         if (data.length !== 2) {
-            this.responseView(PATH_404, {code: 404, msg: 'Route configuration is not correct'});
+            this.responseView(Server.PATH_404, {code: 404, msg: 'Route configuration is not correct'});
             return this;
         }
 
@@ -176,13 +180,14 @@ class Server extends Components {
         try {
             let collection = this._collection.get();
             if (collection.hasOwnProperty(controller)) {
-                collection[controller][method](this.req, this.res, params);
+                collection[controller][method](this._req, this._res, params);
             }
 
         } catch (e) {
-            this.responseView(PATH_404, {
+            console.log(e);
+            this.responseView(Server.PATH_404, {
                 code: 404,
-                msg: 'Call to controller failed! Controller: ' + controller + ' method: ' + method,
+                msg: 'Call to controller failed! Controller: ' + controller + '. Method: ' + method,
                 detail: e
             });
         }
