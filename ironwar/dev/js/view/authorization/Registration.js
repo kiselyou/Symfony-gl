@@ -7,6 +7,8 @@ class Registration extends View {
      */
     constructor(path) {
         super(path);
+
+        this.upload();
     }
 }
 

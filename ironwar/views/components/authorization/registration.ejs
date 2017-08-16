@@ -1,0 +1,42 @@
+<% extend('../window/desktop_sm.ejs', {params: {title: 'Registration in IronWar'}}); %>
+
+<form action="/iw/registration" method="POST">
+    <div class="row">
+        <div class="col_xs_12 col_sm_12 col_md_6 col_lg_6">
+            <div class="form form_sm">
+                <label for="username">Username:<span class="star">*</span></label>
+                <input type="text" id="username" name="username" autocomplete="off" placeholder="Username">
+            </div>
+        </div>
+        <div class="col_xs_12 col_sm_12 col_md_6 col_lg_6">
+            <div class="form form_sm">
+                <label for="email">Email:<span class="star">*</span></label>
+                <input type="text" id="email" name="email" autocomplete="off" placeholder="game.iron.war@gmail.com">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col_xs_12 col_sm_12 col_md_6 col_lg_6">
+            <div class="form form_sm">
+                <label for="password">Password:<span class="star">*</span></label>
+                <input type="password" id="password" name="password" autocomplete="off" placeholder="****">
+            </div>
+        </div>
+        <div class="col_xs_12 col_sm_12 col_md_6 col_lg_6">
+            <div class="form form_sm">
+                <label for="repeat_password">Repeat Password:<span class="star">*</span></label>
+                <input type="password" id="repeat_password" name="repeat_password" autocomplete="off" placeholder="****">
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col_xs_12 col_sm_12 col_md_12 col_lg_12">
+        <div class="form form_sm">
+            <button type="submit" class="btn">Registration</button>
+        </div>
+    </div>
+</div>
+

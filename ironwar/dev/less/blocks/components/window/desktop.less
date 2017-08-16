@@ -1,12 +1,11 @@
-@modal_margin: 2px;
-@modal_padding: 5px;
-
 .desktop {
   overflow: hidden;
   min-width: 30%;
   margin: 10% 35%;
   position: absolute;
   z-index: 1;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 
   &__control {
     padding: 15px;
@@ -15,21 +14,22 @@
   &__head {
     border-bottom: 1px solid @color_base;
     overflow: hidden;
-    margin: @modal_margin;
-    padding: @modal_padding;
+    margin: @margin_xs;
+    padding: @padding_md;
+    font-size: @font_size_md !important;
   }
 
   &__body {
-    margin: @modal_margin;
-    padding: @modal_padding;
+    margin: @margin_xs;
+    padding: @padding_md;
     overflow: hidden;
   }
 
   &__foot {
     min-height: 12px;
     overflow: hidden;
-    margin: @modal_margin;
-    padding: @modal_padding;
+    margin: @margin_xs;
+    padding: @padding_md;
   }
 
   &_skin {

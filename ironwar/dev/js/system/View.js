@@ -8,7 +8,6 @@ class View extends Application {
      */
     constructor(path) {
         super();
-
         this._viewPath = path;
     }
 
@@ -25,7 +24,10 @@ class View extends Application {
     upload() {
         this.ajax.post(View.ROUTE_EJS, {name: this._viewPath, params: {}})
             .then((res) => {
-                console.log(res);
+
+                console.log(res, '+++');
+                let el = document.getElementById('initialisation_main_elements');
+                el.insertAdjacentHTML('beforeEnd', res);
             })
             .catch((error) => {
                 console.log(error);

@@ -8,7 +8,7 @@ class Login extends View {
     constructor(path) {
         super(path);
 
-        this.upload();
+        // this.upload();
     }
 }
 

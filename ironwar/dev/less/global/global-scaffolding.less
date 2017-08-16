@@ -72,6 +72,15 @@ body {
 .invisible {
   visibility: hidden;
 }
+.text-r {
+  text-align: right;
+}
+.text-l {
+  text-align: left;
+}
+.text-c {
+  text-align: center;
+}
 .text-hide {
   font: 0/0 a;
   color: transparent;
@@ -221,36 +230,18 @@ a:focus {
   clear: both;
   display: table;
   width: 100%;
-  &_xs {
-    padding: 5px;
-    width: ~"calc(100% - 10px)";
-  }
-  @media (min-width: 768px) {
-    &_sm {
-      padding: 10px;
-      width: ~"calc(100% - 20px)";
-    }
-  }
-  @media (min-width: 992px) {
-    &_md {
-      padding: 15px;
-      width: ~"calc(100% - 30px)";
-    }
-  }
-  @media (min-width: 1200px) {
-    &_lg {
-      padding: 20px;
-      width: ~"calc(100% - 40px)";
-    }
-  }
+
   &__border {
     border-bottom: solid 1px @color_base;
+
     &_success {
       border-color: @color_base_success;
     }
+
     &_warning {
       border-color: @color_base_warning;
     }
+
     &_danger {
       border-color: @color_base_danger;
     }

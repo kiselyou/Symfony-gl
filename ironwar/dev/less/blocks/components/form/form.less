@@ -1,0 +1,60 @@
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: ~"calc(100% - 20px)";
+  height: 30px;
+  border-radius: @border_radius_xs;
+  color: @color_base_light;
+  background: transparent;
+  border: @border_xs solid @color_base;
+  padding: 0 @padding_lg;
+  outline: none;
+}
+
+.form {
+
+  &_xs {
+    margin: @margin_xs;
+  }
+
+  &_sm {
+    margin: @margin_sm;
+  }
+
+  &_md {
+    margin: @margin_md;
+  }
+
+  &_lg {
+    margin: @margin_lg;
+  }
+
+  & input[type="text"],
+  & input[type="email"],
+  & input[type="password"],
+  & label {
+    margin: @margin_sm 0;
+  }
+
+  & input[type="text"]:hover,
+  & input[type="email"]:hover,
+  & input[type="password"]:hover {
+    color: @color_base_white !important;
+    background: @background_color_light;
+  }
+
+  & input[type="text"]:focus,
+  & input[type="email"]:focus,
+  & input[type="password"]:focus {
+    outline: none;
+    color: @color_base;
+  }
+
+  &__element_error {
+    border-bottom: @border_xs solid @color_base_warning;
+  }
+
+  &__element_success {
+    border-bottom: @border_xs solid @color_base_success;
+  }
+}
