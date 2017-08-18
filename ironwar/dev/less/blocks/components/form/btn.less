@@ -8,16 +8,6 @@
   text-decoration: none;
   display: inline;
 
-  &_skin {
-    &_round {
-      border-radius: 50%;
-    }
-
-    &_link {
-      border: @border_xs solid transparent;
-    }
-  }
-
   &_xs {
     padding: @padding_xs @padding_sm;
   }
@@ -32,6 +22,26 @@
 
   &:active {
     border: @border_xs solid @color_base_dark;
+  }
+
+  &_skin {
+    &_round {
+      border-radius: 50%;
+    }
+
+    &_link {
+      border: @border_xs solid transparent;
+
+      &:hover {
+        background: transparent;
+        color: @color_base !important;
+      }
+
+      &:active {
+        border: @border_xs solid transparent;
+        color: @color_base_dark !important;
+      }
+    }
   }
 }
 

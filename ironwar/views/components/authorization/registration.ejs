@@ -1,17 +1,17 @@
 <% extend('../window/desktop_sm.ejs', {params: {title: 'Registration in IronWar'}}); %>
 
-<form action="/iw/registration" method="POST">
+<form action="/iw/registration" method="POST" autocomplete="off">
     <div class="row">
         <div class="col_xs_12 col_sm_12 col_md_6 col_lg_6">
             <div class="form form_sm">
                 <label for="username">Username:<span class="star">*</span></label>
-                <input type="text" id="username" name="username" autocomplete="off" placeholder="Username">
+                <input type="text" id="username" name="username" placeholder="Username">
             </div>
         </div>
         <div class="col_xs_12 col_sm_12 col_md_6 col_lg_6">
             <div class="form form_sm">
                 <label for="email">Email:<span class="star">*</span></label>
-                <input type="text" id="email" name="email" autocomplete="off" placeholder="game.iron.war@gmail.com">
+                <input type="text" id="email" name="email" placeholder="game.iron.war@gmail.com">
             </div>
         </div>
     </div>
@@ -20,22 +20,28 @@
         <div class="col_xs_12 col_sm_12 col_md_6 col_lg_6">
             <div class="form form_sm">
                 <label for="password">Password:<span class="star">*</span></label>
-                <input type="password" id="password" name="password" autocomplete="off" placeholder="****">
+                <input type="password" id="password" name="password" placeholder="****">
             </div>
         </div>
         <div class="col_xs_12 col_sm_12 col_md_6 col_lg_6">
             <div class="form form_sm">
                 <label for="repeat_password">Repeat Password:<span class="star">*</span></label>
-                <input type="password" id="repeat_password" name="repeat_password" autocomplete="off" placeholder="****">
+                <input type="password" id="repeat_password" name="repeat_password" placeholder="****">
             </div>
         </div>
     </div>
 </form>
 
 <div class="row">
-    <div class="col_xs_12 col_sm_12 col_md_12 col_lg_12">
+    <div class="col_xs_6 col_sm_6 col_md_6 col_lg_6">
         <div class="form form_sm">
-            <button type="submit" class="btn">Registration</button>
+            <button type="submit" class="btn btn_skin_link" data-action="open-login-form">Login Form</button>
+        </div>
+    </div>
+
+    <div class="col_xs_6 col_sm_6 col_md_6 col_lg_6">
+        <div class="form form_sm block_right">
+            <button type="submit" class="btn" data-action="send-registration-form">Registration</button>
         </div>
     </div>
 </div>

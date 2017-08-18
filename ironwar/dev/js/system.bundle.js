@@ -6,7 +6,8 @@ import InitScene from './components/scene/InitScene';
 
 import ViewControls from './view/ViewControls';
 
-new ViewControls();
+let view = new ViewControls();
+view.initSecurityForm();
 
 let lock = new Lock();
 
