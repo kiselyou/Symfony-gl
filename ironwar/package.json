@@ -35,7 +35,11 @@
     "socket.io-client": "^2.0.3",
     "three": "^0.86.0",
     "tippy.js": "^1.2.0",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "mysql": "^2.13.0",
+    "mysql-utilities": "^1.0.10",
+    "nodemailer": "^4.0.1",
+    "password-hash": "^1.2.2"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

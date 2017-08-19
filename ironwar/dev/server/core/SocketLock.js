@@ -1,8 +1,7 @@
 import http from 'http';
 import socketIO from 'socket.io';
-import sharedsession from 'express-socket.io-session';
 import Lock from './../../js/system/Lock';
-import SessionControls from './SessionControls';
+import Session from './security/Session';
 
 class SocketLock {
     /**
@@ -23,32 +22,25 @@ class SocketLock {
 
     /**
      *
-     * @param session
      * @returns {void}
      */
-    listen(session) {
+    listen() {
         let io = socketIO(this.socketServer);
 
-        io.use(sharedsession(session, {autoSave:true}));
+        io.of(Lock.NAMESPACE).on('connection', (socket) => {
 
-        let room = io.of(Lock.NAMESPACE);
+            socket.emit(Lock.EVENT_CONNECT, {lock: this._addUserToList(socket.id, this._server.session)});
 
-        room.on('connection', (socket) => {
-            /**
-             *
-             * @type {SessionControls}
-             * @private
-             */
-            this._session = new SessionControls(socket.handshake.session);
+            socket.on(Lock.EVENT_LOCK, () => {
+                this._addUserToList(socket.id, this._server.session);
+            });
 
-            socket.emit(Lock.EVENT_CHECK_LOCK, {lock: this._addUserToList(this._session)});
-
-            socket.on(Lock.EVENT_CHECK_USER_STATUS, () => {
-                socket.emit(Lock.EVENT_CHECK_USER_STATUS, this._session.isSessionUser());
+            socket.on(Lock.EVENT_UNLOCK, () => {
+                this._removeUserFromList(socket.id);
             });
 
             socket.on('disconnect', () => {
-                this._removeUserFromList(this._session);
+                this._removeUserFromList(socket.id);
             });
         });
 
@@ -58,15 +50,15 @@ class SocketLock {
     /**
      * Add user to list
      *
-     * @param {SessionControls} session
+     * @param {string|number} key
+     * @param {Session} session
      * @returns {boolean} - If is true user was added to list
      *                      If is false probably user is not logged or has opened another tabs
      * @private
      */
-    _addUserToList(session) {
-        let id = session.setSessionUserID();
-        if (session.isSessionUser() && this._server.listActiveUsers.indexOf(id) === -1) {
-            this._server.listActiveUsers.push(id);
+    _addUserToList(key, session) {
+        if (session.isSessionUser() && !this._server.listActiveUsers.hasOwnProperty(key)) {
+            this._server.listActiveUsers[key] = session.setSessionUserID();
             return true;
         }
         return false;
@@ -75,14 +67,13 @@ class SocketLock {
     /**
      * Remove user from list
      *
-     * @param {SessionControls} session
+     * @param {string|number} key
      * @returns {boolean}
      * @private
      */
-    _removeUserFromList(session) {
-        let key = this._server.listActiveUsers.indexOf(session.setSessionUserID());
-        if (key > -1) {
-            this._server.listActiveUsers.splice(key, 1);
+    _removeUserFromList(key) {
+        if (this._server.listActiveUsers.hasOwnProperty(key)) {
+            delete this._server.listActiveUsers[key];
             return true;
         }
         return false;

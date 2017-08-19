@@ -1,8 +1,9 @@
 
 import EJSController from './systems/EJSController';
 import SocketController from './systems/SocketController';
+import SecurityController from './systems/SecurityController';
 
-class Collection {
+class ControllerCollection {
     /**
      *
      *
@@ -12,6 +13,7 @@ class Collection {
         this._collections = {};
         this._collections['EJSController'] = new EJSController(server);
         this._collections['SocketController'] = new SocketController(server);
+        this._collections['SecurityController'] = new SecurityController(server);
     }
 
     /**
@@ -24,4 +26,4 @@ class Collection {
     }
 }
 
-export default Collection;
+export default ControllerCollection;

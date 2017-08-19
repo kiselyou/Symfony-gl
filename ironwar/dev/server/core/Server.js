@@ -6,12 +6,14 @@ import express_ejs_extend from 'express-ejs-extend';
 import bodyParser from 'body-parser';
 import multer from 'multer';
 
+import Routes from './Routes';
 import Socket from './Socket';
 import SocketLock from './SocketLock';
-import Routes from './Routes';
+import MySQLConnect from './db/MySQLConnect';
+
 import Components from './Components';
-import Security from './security/Security';
-import Collection from '../controllers/Collection';
+import EntityCollection from '../entity/EntityCollection';
+import ControllerCollection from '../controllers/ControllerCollection';
 
 class Server extends Components {
 
@@ -36,11 +38,25 @@ class Server extends Components {
         this._upload = multer();
 
         /**
+         * It is db connect
+         *
+         * @type {MySQLConnect}
+         */
+        this.db = new MySQLConnect(this.config).open();
+
+        /**
          *
          * @type {Collection}
          * @private
          */
-        this._collection = new Collection(this);
+        this._entityCollection = new EntityCollection(this);
+
+        /**
+         *
+         * @type {Collection}
+         * @private
+         */
+        this._controllerCollection = new ControllerCollection(this);
 
         /**
          *
@@ -57,17 +73,11 @@ class Server extends Components {
         this._socket = new Socket(this);
 
         /**
-         *
-         * @type {Security}
-         */
-        this._security = new Security(this);
-
-        /**
          * It is list IDs of current users in system
          *
-         * @type {Array}
+         * @type {Object}
          */
-        this.listActiveUsers = [];
+        this.listActiveUsers = {};
 
         /**
          *
@@ -96,6 +106,17 @@ class Server extends Components {
     }
 
     /**
+     * Get Entity
+     *
+     * @param {string} name - name of Entity
+     * @returns {null}
+     */
+    getEntity(name) {
+        let collection = this._entityCollection.get();
+        return collection.hasOwnProperty(name) ? collection[name] : null;
+    }
+
+    /**
      *
      * @private
      */
@@ -109,15 +130,15 @@ class Server extends Components {
                 switch (route['method']) {
                     case 'POST':
                         this._app.post(route['route'], this._upload.array(), (req, res) => {
-                            this._req = req;
-                            this._res = res;
+                            this.request = req;
+                            this.response = res;
                             this.sendResponse(route);
                         });
                         break;
                     case 'GET':
                         this._app.get(route['route'], (req, res) => {
-                            this._req = req;
-                            this._res = res;
+                            this.request = req;
+                            this.response = res;
                             this.sendResponse(route);
                         });
                         break;
@@ -126,8 +147,8 @@ class Server extends Components {
                         break;
                     default:
                         this._app.all(route['route'], (req, res) => {
-                            this._req = req;
-                            this._res = res;
+                            this.request = req;
+                            this.response = res;
                             this.sendResponse(route);
                         });
                         break;
@@ -135,11 +156,20 @@ class Server extends Components {
             }
 
             this._app.get('*', (req, res) => {
-                this._req = req;
-                this._res = res;
+                this.request = req;
+                this.response = res;
                 this.responseView(Server.PATH_404, {code: 400, msg: 'The page "' + this._req.url + '" was not found.'});
             });
         });
+    }
+
+    findActiveUser(id) {
+        for (let key in this.listActiveUsers) {
+            if (this.listActiveUsers.hasOwnProperty(key) && this.listActiveUsers[key] === id) {
+                return this.listActiveUsers[key];
+            }
+        }
+        return null;
     }
 
     /**
@@ -148,7 +178,15 @@ class Server extends Components {
      * @returns {void}
      */
     sendResponse(params) {
-        if (this._security.isGranted(this._req.url, this._security.getSessionUserRole())) {
+        if (this.security.isGranted(this._req.url, this.authorization.getSessionUserRoles())) {
+            console.log(this.listActiveUsers, '-000-');
+
+            if (this.findActiveUser(this.session.setSessionUserID())) {
+                let msg = 'Page is locked. Probably this page has already opened in another tab!';
+                this.responseView(Server.PATH_404, {code: 423, msg: msg});
+                return;
+            }
+
             if (params.hasOwnProperty('viewPath')) {
                 this.responseView(params['viewPath']);
             } else {
@@ -178,7 +216,7 @@ class Server extends Components {
         let controller = data[0];
 
         try {
-            let collection = this._collection.get();
+            let collection = this._controllerCollection.get();
             if (collection.hasOwnProperty(controller)) {
                 collection[controller][method](this._req, this._res, params);
             }
@@ -226,10 +264,14 @@ class Server extends Components {
         this._app.engine('ejs', express_ejs_extend);
         this._app.set('view engine', 'ejs');
 
-        let session = expressSession({secret: 'keyboard cat', resave: false, saveUninitialized: true});
+        let session = expressSession({
+            secret: this.config.secret,
+            resave: true,
+            saveUninitialized: true
+        });
 
         this._app.use(session);
-        this._socketLock.listen(session);
+        this._socketLock.listen();
 
         this._app.use(bodyParser.urlencoded({extended: false}));
         this._app.use(bodyParser.json());

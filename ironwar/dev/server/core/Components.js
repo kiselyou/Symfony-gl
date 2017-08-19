@@ -1,4 +1,8 @@
 import Conf from './Conf';
+import Session from './security/Session';
+import Security from './security/Security';
+import Authorization from './security/Authorization';
+import uuidv4 from 'uuid/v4';
 import qs from 'qs';
 
 class Components {
@@ -23,13 +27,62 @@ class Components {
          * @type qs
          */
         this.qs = qs;
+
+        /**
+         *
+         * @type {Security}
+         */
+        this._security = new Security(this._conf);
+
+        /**
+         *
+         * @type {Session}
+         */
+        this._session = new Session();
+
+        /**
+         *
+         * @type {Authorization}
+         */
+        this._auth = new Authorization(this.session);
+
+        /**
+         *
+         * @type {v4}
+         */
+        this.uuid = uuidv4;
+    }
+
+    /**
+     * Security
+     *
+     * @returns {Security}
+     */
+    get security() {
+        return this._security;
     }
 
     /**
      *
-     * @returns {*}
+     * @returns {Authorization}
      */
-    getRequest() {
+    get authorization() {
+        return this._auth;
+    }
+
+    /**
+     *
+     * @returns {Session}
+     */
+    get session() {
+        return this._session;
+    }
+
+    /**
+     *
+     * @returns {Request}
+     */
+    get request() {
         return this._req;
     }
 
@@ -37,25 +90,43 @@ class Components {
      *
      * @returns {*}
      */
-    getResponse() {
+    get response() {
         return this._res;
     }
 
     /**
      *
-     * @param {string} data
-     * @returns {Object|Array}
+     * @param {Request} req
+     * @returns {void}
      */
-    parseData(data) {
-        return this.qs.parse(data);
+    set request(req) {
+        this._req = req;
+        this._session.update(this._req.session);
+    }
+
+    /**
+     *
+     * @param {*} res
+     * @returns {void}
+     */
+    set response(res) {
+        this._res = res;
+    }
+
+    /**
+     *
+     * @returns {Conf}
+     */
+    get config() {
+        return this._conf;
     }
 
     /**
      * Get POST data
      *
-     * @returns {{}}
+     * @returns {Object}
      */
-    getPostData() {
+    get POST() {
         return this._req.body;
     }
 
@@ -64,7 +135,7 @@ class Components {
      *
      * @returns {{}}
      */
-    getData() {
+    get GET() {
         let data = {};
         for (let key in this._req.params) {
             if (this._req.params.hasOwnProperty(key)) {
@@ -81,10 +152,11 @@ class Components {
 
     /**
      *
-     * @returns {Conf}
+     * @param {string} data
+     * @returns {Object|Array}
      */
-    get config() {
-        return this._conf;
+    parseData(data) {
+        return this.qs.parse(data);
     }
 }
 

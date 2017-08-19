@@ -1,12 +1,25 @@
 
-class SessionControls {
+class Session {
 
     /**
      *
-     * @param {Object} session
+     * @param {{}} [session]
      */
     constructor(session) {
-        this._session = session;
+        /**
+         *
+         * @type {{}}
+         * @private
+         */
+        this._session = session ? session : {};
+    }
+
+    /**
+     *
+     * @param {{}} session
+     */
+    update(session) {
+        this._session = session ? session : {};
     }
 
     /**
@@ -22,7 +35,7 @@ class SessionControls {
      *
      * @param {(string|number)} key
      * @param {*} [value]
-     * @returns {SessionControls}
+     * @returns {Session}
      */
     addSession(key, value = null) {
         this._session[key] = value;
@@ -36,7 +49,7 @@ class SessionControls {
      */
     getSessionUser() {
         if (this.isSessionUser()) {
-            return this._session[this.KEY_USER_INFO];
+            return this._session[Session.KEY_USER_INFO];
         }
         return null;
     }
@@ -46,11 +59,11 @@ class SessionControls {
      *
      * @param {(string|number)} id
      * @param {Object} [data]
-     * @returns {SessionControls}
+     * @returns {Session}
      */
     setSessionUser(id, data = {}) {
         data['id'] = id;
-        this.addSession(this.KEY_USER_INFO, data);
+        this.addSession(Session.KEY_USER_INFO, data);
         return this;
     }
 
@@ -69,13 +82,13 @@ class SessionControls {
      * @returns {boolean}
      */
     isSessionUser() {
-        return (this._session && this._session[this.KEY_USER_INFO]) ? true : false;
+        return (this._session && this._session[Session.KEY_USER_INFO]) ? true : false;
     }
 
     /**
      * Remove session of user
      *
-     * @returns {SessionControls}
+     * @returns {Session}
      */
     destroySession() {
         if (this._session) {
@@ -85,4 +98,4 @@ class SessionControls {
     }
 }
 
-export default SessionControls;
+export default Session;

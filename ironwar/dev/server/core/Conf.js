@@ -12,12 +12,12 @@ class Conf {
         this._environment = env;
 
         /**
-         * @type {{encoding: string, server: {dev: {port: number, host: string}, prod: {port: number, host: string}}, socket: {dev: {port: number, host: string}, prod: {port: number, host: string}}}}
+         * @type {{secretKeyBase: string, encoding: string, server: {dev: {port: number, host: string}, prod: {port: number, host: string}}, socket: {dev: {port: number, host: string}, prod: {port: number, host: string}}}}
          */
         this._conf = require('../config/config.json');
 
         /**
-         * @type {{database: {host: string, port: number, user: string, password: string, database: string}}}
+         * @type {{mysql: {host: string, port: number, user: string, password: string, database: string}}}
          */
         this.database = require('../config/database.json');
 
@@ -34,7 +34,6 @@ class Conf {
 
     /**
      *
-     *
      * @returns {string}
      * @constructor
      */
@@ -43,7 +42,6 @@ class Conf {
     }
 
     /**
-     *
      *
      * @returns {string}
      * @constructor
@@ -68,6 +66,22 @@ class Conf {
      */
     isProdEnv() {
         return this._environment === Conf.ENV_PROD;
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    get secret() {
+        return this._conf.secretKeyBase;
+    }
+
+    /**
+     *
+     * @returns {{host: string, port: number, user: string, password: string, database: string}}
+     */
+    get mysql() {
+        return this.database.mysql;
     }
 
     /**

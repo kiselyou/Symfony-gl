@@ -1,45 +1,47 @@
 
 import passwordHash from 'password-hash';
-import SessionControls from './../SessionControls';
 
 class Authorization {
 
     /**
      *
-     * @param {Server} server
+     * @param {Session} session
      */
-    constructor(server) {
+    constructor(session) {
 
         /**
          *
-         * @type {Server}
-         * @private
-         */
-        this._server = server;
-
-        /**
-         *
+         * @type {passwordHash}
          */
         this._passwordHash = passwordHash;
 
         /**
          *
-         * @type {SessionControls}
+         * @type {Session}
          */
-        this.sessionControls = new SessionControls(this._req);
+        this._session = session;
+    }
+
+    /**
+     * Get session
+     *
+     * @returns {Session}
+     */
+    get session() {
+        return this._session;
     }
 
     /**
      * Create session of user
      *
      * @param {(string|number)} id
-     * @param {string} role
+     * @param {string} roles
      * @param {Object} [info]
      * @returns {Authorization}
      */
-    createSessionUser(id, role, info = {}) {
-        info['role'] = role;
-        this.sessionControls.setSessionUser(id, info);
+    createSessionUser(id, roles, info = {}) {
+        info['roles'] = roles;
+        this._session.setSessionUser(id, info);
         return this;
     };
 
@@ -49,18 +51,18 @@ class Authorization {
      * @returns {Object}
      */
     getSessionUser() {
-        return this.sessionControls.getSessionUser();
+        return this._session.getSessionUser();
     };
 
 
     /**
-     * Get role of user
+     * Get roles of user
      *
-     * @returns {string}
+     * @returns {Array}
      */
-    getSessionUserRole() {
-        let user = this.sessionControls.getSessionUser();
-        return user ? user['role'] : 'ROLE_ANONYMOUSLY';
+    getSessionUserRoles() {
+        let user = this._session.getSessionUser();
+        return user ? user['roles'] : ['ROLE_ANONYMOUSLY'];
     };
 
     /**

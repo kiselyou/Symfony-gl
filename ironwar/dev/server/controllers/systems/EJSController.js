@@ -1,4 +1,4 @@
-import ViewPathControls from '../../../js/view/ViewPathControls';
+import {VIEW_PATH_LOGIN, VIEW_PATH_REGISTRATION} from '../../../js/view/view-path';
 
 class EJSController {
 
@@ -10,19 +10,17 @@ class EJSController {
         this._server = server;
 
         this.viewPaths = {};
-        this.viewPaths[ViewPathControls.PATH_LOGIN] = 'components/authorization/login.ejs';
-        this.viewPaths[ViewPathControls.PATH_REGISTRATION] = 'components/authorization/registration.ejs';
+        this.viewPaths[VIEW_PATH_LOGIN] = 'components/authorization/login.ejs';
+        this.viewPaths[VIEW_PATH_REGISTRATION] = 'components/authorization/registration.ejs';
     }
 
     /**
      * Upload template and send it to client
      *
-     * @param req
-     * @param res
-     * @param params
+     * @returns {void}
      */
-    render(req, res, params) {
-        let data = this._server.getPostData(true);
+    render(s) {
+        let data = this._server.POST;
         this._server.responseView(this._getViewPath(data['name']), this._server.parseData(data['params']));
     }
 

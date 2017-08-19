@@ -1,4 +1,5 @@
 import View from '../../system/View';
+import {ACTION_OPEN_FORM, ACTION_SEND_FORM} from '../actions.js';
 
 class Registration extends View {
     /**
@@ -16,7 +17,7 @@ class Registration extends View {
      * @returns {Registration}
      */
     eventBtnLogin(listener) {
-        let btn = this.el.getElementByActionName(Registration.NAME_ACTION_OPEN_LOGIN);
+        let btn = this.el.getElementByActionName(ACTION_OPEN_FORM);
         btn.addEvent('click', listener);
         return this;
     }
@@ -28,29 +29,10 @@ class Registration extends View {
      * @returns {Registration}
      */
     eventBtnRegistration(listener) {
-        let btn = this.el.getElementByActionName(Registration.NAME_ACTION_SEND);
-        btn.addEvent('click', () => {
-            listener(new FormData(this.el.findOne('form')));
+        this.addActionSendForm(ACTION_SEND_FORM, '/iw/registration', 'form', (res, status) => {
+            console.log(res, status);
         });
         return this;
-    }
-
-    /**
-     *
-     * @returns {string}
-     * @constructor
-     */
-    static get NAME_ACTION_OPEN_LOGIN() {
-        return 'open-login-form';
-    }
-
-    /**
-     *
-     * @returns {string}
-     * @constructor
-     */
-    static get NAME_ACTION_SEND() {
-        return 'send-registration-form';
     }
 }
 

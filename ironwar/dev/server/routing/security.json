@@ -31,7 +31,7 @@
   "authenticated": {
     "route": "/iw/authenticated",
     "method": "POST",
-    "controller": "SecurityController:authenticated"
+    "controller": "SecurityController:isLogged"
   },
 
   "registration": {

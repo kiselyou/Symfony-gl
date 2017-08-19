@@ -1,27 +1,47 @@
-import Authorization from './Authorization';
 
-class Security extends Authorization {
+class Security {
     /**
      *
-     * @type {Server}
+     * @param {Conf} config
      */
-    constructor(server) {
-        super(server);
+    constructor(config) {
 
         /**
          *
          * @type {Conf}
          */
-        this._conf = server.config;
+        this._conf = config;
     }
 
     /**
+     * Check permission by roles
      *
      * @param {string} route
-     * @param {string} role - It is role of user
+     * @param {Array|string} roles - It is roles of user. For string is possible delimiter "|"
      * @returns {boolean}
      */
-    isGranted(route, role) {
+    isGranted(route, roles) {
+        if (typeof roles === 'string') {
+            roles = roles.split('|');
+        }
+
+        for (let role of roles) {
+            role = typeof role === 'object' ? role['role'] : role;
+            if (this.checkAccess(route, role)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check permission by role
+     *
+     * @param {string} route
+     * @param {Array} role - It is roles of user
+     * @returns {boolean}
+     */
+    checkAccess(route, role) {
         for (let item of this._conf.accessControl) {
             let grant = route.replace(/^\/|\/$/g, '').split('/', 1);
             if (grant[0] === item['path'].replace(/^\/|\/$/g, '')) {

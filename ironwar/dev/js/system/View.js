@@ -2,6 +2,7 @@
 import uuidv4 from 'uuid/v4';
 import Application from './Application';
 import UIElement from './ui/UIElement';
+import {ACTION_DESKTOP_CLOSE} from '../view/actions.js';
 
 class View extends Application {
     /**
@@ -31,11 +32,16 @@ class View extends Application {
          *
          * @type {UIElement}
          */
-        this.el = new UIElement();
+        this.el = new UIElement().hide().setNameElement(this.name);
 
-        this.el
-            .hide()
-            .setNameElement(this.name);
+        /**
+         * Status of current element
+         *  true - Is hidden
+         *  false - Is shown
+         *
+         * @type {boolean}
+         */
+        this._hidden = true;
 
         /**
          * It is path to template. Possible values look at "ViewPathControls"
@@ -67,6 +73,75 @@ class View extends Application {
     };
 
     /**
+     * Get status of current element
+     *      true - Is hidden
+     *      false - Is shown
+     *
+     * @returns {boolean}
+     */
+    get isHidden() {
+        return this._hidden;
+    }
+
+    /**
+     * @param {string} res
+     * @param {boolean} status
+     * @callback sendFormListener
+     */
+
+    /**
+     * Send form data to server by method POST is using specific action
+     *
+     * @param {string} actionName - name of action
+     * @param {string} path - path to the server
+     * @param {string|FormData|Object} form - string is selector of form
+     * @param {sendFormListener} [listener]
+     */
+    addActionSendForm(actionName, path, form, listener) {
+        let el = this.el.getElementByActionName(actionName);
+        el.addEvent('click', () => {
+            let data = typeof form === 'string' ? new FormData(this.el.findOne(form).getElement()) : form;
+            let ajax = this.ajax.post(path, data);
+            if (listener) {
+                ajax
+                    .then((res) => {
+                        listener(res, true);
+                    })
+                    .catch((error) => {
+                        listener(res, false);
+                    });
+            }
+        });
+    }
+
+    /**
+     *
+     * @param {UIElement}
+     * @callback desktopClosedListener
+     */
+
+    /**
+     *
+     * @param {desktopClosedListener} [listener]
+     * @param {boolean} close If false desktop will not close and you need custom control it
+     * @returns {View}
+     */
+    addActionDesktopClose(listener, close = true) {
+        let el = this.el.getElementByActionName(ACTION_DESKTOP_CLOSE);
+        if (el) {
+            el.addEvent('click', () => {
+                if (listener) {
+                    listener(this.el);
+                }
+                if (close) {
+                    this.el.hide(true);
+                }
+            });
+        }
+        return this;
+    }
+
+    /**
      * @param {UIElement} template
      * @callback actionUploaded
      */
@@ -84,6 +159,7 @@ class View extends Application {
                 actionUploaded(this.el);
             })
             .catch((error) => {
+                console.log(error);
                 this.msg.alert('View Error', error);
             });
     }
@@ -94,6 +170,7 @@ class View extends Application {
      * @returns {View}
      */
     show() {
+        this._hidden = false;
         this.el.show(true);
         return this;
     }
@@ -104,6 +181,7 @@ class View extends Application {
      * @returns {View}
      */
     hide() {
+        this._hidden = true;
         this.el.hide(true);
         return this;
     }

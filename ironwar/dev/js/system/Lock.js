@@ -11,26 +11,8 @@ class Lock {
      */
     constructor() {
 
-        /**
-         *
-         * @type {Ajax}
-         * @private
-         */
-        this._ajax = new Ajax();
-
-        /**
-         *
-         * @type {{}}
-         * @private
-         */
-        this._config = {};
-
-        this._callbacks = [];
-
         if(!socketControls) {
             this._controls();
-        } else {
-            throw new Error('This class "Lock" has already running!');
         }
     }
 
@@ -56,20 +38,28 @@ class Lock {
      *
      * @returns {string}
      */
-    static get EVENT_CHECK_LOCK() {
-        return 'EVENT_CHECK_LOCK';
+    static get EVENT_CONNECT() {
+        return 'EVENT_CONNECT_';
     }
 
     /**
      *
      * @returns {string}
      */
-    static get EVENT_CHECK_USER_STATUS() {
-        return 'EVENT_CHECK_USER_STATUS';
+    static get EVENT_LOCK() {
+        return 'EVENT_LOCK';
     }
 
     /**
-     * @param {string} path
+     *
+     * @returns {string}
+     */
+    static get EVENT_UNLOCK() {
+        return 'EVENT_CHECK_UNLOCK';
+    }
+
+    /**
+     * @param {{path: string, host: string, port: number}} path
      * @callback loadedConfiguration
      */
 
@@ -80,16 +70,13 @@ class Lock {
      * @private
      */
     _loadConfiguration(done) {
-        if (this._config.hasOwnProperty('path')) {
-            done(this._config['path']);
-            return;
-        }
-        this._ajax.post('socket/info', {key: 'Lock'})
+        let ajax = new Ajax();
+        ajax.post('socket/info', {key: 'Lock'})
             .then((res) => {
                 try {
-                    this._config = JSON.parse(res);
-                    this._config['path'] = this._config['host'] + ':' + this._config['port'] + Lock.NAMESPACE;
-                    done(this._config['path']);
+                    let config = JSON.parse(res);
+                    config['path'] = config['host'] + ':' + config['port'] + Lock.NAMESPACE;
+                    done(config['path']);
                 } catch (error) {
                     Lock.alert(error);
                 }
@@ -108,7 +95,7 @@ class Lock {
     _controls() {
         this._loadConfiguration((path) => {
             socketControls = io.connect(path);
-            socketControls.on(Lock.EVENT_CHECK_LOCK, (data) => {
+            socketControls.on(Lock.EVENT_CONNECT, (data) => {
                 if (data['lock']) {
                     console.log('User was added to list');
                 } else {
@@ -116,29 +103,21 @@ class Lock {
                 }
             });
 
-            socketControls.on(Lock.EVENT_CHECK_USER_STATUS, (status) => {
-                console.log(status);
+            window.addEventListener('beforeunload', function () {
+                socketControls.emit(Lock.EVENT_UNLOCK);
             });
         });
     }
 
-    /**
-     * @param {boolean} status
-     * @callback isUserCallback
-     */
+    static lock() {
+        if (socketControls) {
+            socketControls.emit(Lock.EVENT_LOCK);
+        }
+    }
 
-    /**
-     *
-     * @param {isUserCallback} callback
-     */
-    isUser(callback) {
-
-        if (!socketControls) {
-            setTimeout(() => {
-                this.isUser(callback);
-            }, 20);
-        } else {
-            socketControls.emit(Lock.EVENT_CHECK_USER_STATUS);
+    static unlock() {
+        if (socketControls) {
+            socketControls.emit(Lock.EVENT_UNLOCK);
         }
     }
 }

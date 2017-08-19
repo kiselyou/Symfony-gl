@@ -19,5 +19,6 @@
 			"port": 3000,
 			"host": "iron-war.com"
 		}
-	}
+	},
+	"secretKeyBase": "8b892ca3-ca24-4873-974a-c783aee83d3e"
 }
