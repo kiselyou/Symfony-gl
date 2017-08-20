@@ -32,14 +32,12 @@ class ViewControls {
 
                 this._registration.addActionDesktopClose();
 
-                this._login.eventBtnRegistration(() => {
+                this._login.setEventBtnRegistration(() => {
                     this._login.hide();
                     this._registration.show();
                 });
 
-                this._login.eventBtnSignIn((formData) => {
-                    console.log(formData);
-                });
+                this._login.setEventBtnSignIn();
 
                 this._registration.eventBtnLogin(() => {
                     this._registration.hide();

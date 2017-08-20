@@ -163,13 +163,18 @@ class Server extends Components {
         });
     }
 
-    findActiveUser(id) {
+    /**
+     * Check the page is locked
+     *
+     * @returns {boolean}
+     */
+    checkLock(userID) {
         for (let key in this.listActiveUsers) {
-            if (this.listActiveUsers.hasOwnProperty(key) && this.listActiveUsers[key] === id) {
-                return this.listActiveUsers[key];
+            if (this.listActiveUsers.hasOwnProperty(key) && this.listActiveUsers[key] === userID) {
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     /**
@@ -179,9 +184,8 @@ class Server extends Components {
      */
     sendResponse(params) {
         if (this.security.isGranted(this._req.url, this.authorization.getSessionUserRoles())) {
-            console.log(this.listActiveUsers, '-000-');
-
-            if (this.findActiveUser(this.session.setSessionUserID())) {
+            // Check the page is locked
+            if (this.checkLock(this.session.setSessionUserID())) {
                 let msg = 'Page is locked. Probably this page has already opened in another tab!';
                 this.responseView(Server.PATH_404, {code: 423, msg: msg});
                 return;

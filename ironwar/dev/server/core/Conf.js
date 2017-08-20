@@ -22,9 +22,9 @@ class Conf {
         this.database = require('../config/database.json');
 
         /**
-         * @type {{mailer: {sender: string, transporter: {host: string, port: number, secure: bool, auth: {user: string, pass: string}}}}}
+         * @type {{sender: string, transporter: {host: string, port: number, secure: bool, auth: {user: string, pass: string}}}}
          */
-        this.mailer = require('../config/mailer.json');
+        this._mailer = require('../config/mailer.json');
 
         /**
          * @type {{security: {access_control: [{path: ''}, {path: "/home", role: "ROLE_IW_USER"}],role_hierarchy: {ROLE_ANONYMOUSLY: [], ROLE_IW: [ROLE_ANONYMOUSLY], ROLE_IW_USER: [ROLE_IW], ROLE_IW_ADMIN: [ROLE_IW_USER]}}}}
@@ -66,6 +66,14 @@ class Conf {
      */
     isProdEnv() {
         return this._environment === Conf.ENV_PROD;
+    }
+
+    /**
+     *
+     * @returns {{sender: string, transporter: {host: string, port: number, secure: bool, auth: {user: string, pass: string}}}}
+     */
+    get mailer() {
+        return this._mailer;
     }
 
     /**

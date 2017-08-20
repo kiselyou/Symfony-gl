@@ -1,4 +1,5 @@
 import Conf from './Conf';
+import Mailer from './Mailer';
 import Session from './security/Session';
 import Security from './security/Security';
 import Authorization from './security/Authorization';
@@ -13,7 +14,20 @@ class Components {
      */
     constructor(env) {
 
+        /**
+         * Request of server
+         *
+         * @type {Object|Request}
+         * @private
+         */
         this._req = {};
+
+        /**
+         * Response of server
+         *
+         * @type {Object}
+         * @private
+         */
         this._res = {};
 
         /**
@@ -27,6 +41,13 @@ class Components {
          * @type qs
          */
         this.qs = qs;
+
+        /**
+         *
+         * @type {Mailer}
+         * @private
+         */
+        this._mailer = new Mailer(this._conf);
 
         /**
          *
@@ -51,6 +72,15 @@ class Components {
          * @type {v4}
          */
         this.uuid = uuidv4;
+    }
+
+    /**
+     * Mailer
+     *
+     * @returns {Mailer}
+     */
+    get mailer() {
+        return this._mailer;
     }
 
     /**
@@ -122,6 +152,24 @@ class Components {
     }
 
     /**
+     * Get server host
+     *
+     * @returns {string}
+     */
+    get host() {
+        return this.headers.host;
+    }
+
+    /**
+     * Get headers
+     *
+     * @returns {Object}
+     */
+    get headers() {
+        return this._req.headers;
+    }
+
+    /**
      * Get POST data
      *
      * @returns {Object}
@@ -148,6 +196,17 @@ class Components {
             }
         }
         return data;
+    }
+
+    /**
+     * Redirect
+     *
+     * @param {string} [path]
+     * @returns {Components}
+     */
+    redirect(path) {
+        this.response.redirect(path ? path : '/');
+        return this;
     }
 
     /**

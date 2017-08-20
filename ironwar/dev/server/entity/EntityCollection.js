@@ -8,8 +8,8 @@ class EntityCollection {
      */
     constructor(server) {
         this._collections = {};
-        this._collections['Users'] = new Users(server.db);
-        this._collections['Roles'] = new Roles(server.db);
+        this._collections['Users'] = new Users(server.db, this);
+        this._collections['Roles'] = new Roles(server.db), this;
     }
 
     /**

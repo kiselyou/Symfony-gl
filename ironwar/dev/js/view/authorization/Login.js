@@ -16,21 +16,41 @@ class Login extends View {
      * @param listener
      * @returns {Login}
      */
-    eventBtnRegistration(listener) {
+    setEventBtnRegistration(listener) {
         let btn = this.el.getElementByActionName(ACTION_OPEN_FORM);
         btn.addEvent('click', listener);
         return this;
     }
 
     /**
+     * @param {Object} res
+     * @param {boolean} status - If error value is false else true
+     * @callback responseListener
+     */
+
+    /**
      * Make something when click on button "Sign in"
      *
-     * @param listener
+     * @param {responseListener} [responseListener]
      * @returns {Login}
      */
-    eventBtnSignIn(listener) {
+    setEventBtnSignIn(responseListener) {
         this.addActionSendForm(ACTION_SEND_FORM, '/iw/login', 'form', (res, status) => {
-            console.log(res, status);
+            if (responseListener) {
+                responseListener(res, status);
+            } else {
+                try {
+                    let data = JSON.parse(res);
+                    if (data['status']) {
+                        this.lock.lock();
+                        this.hide();
+                    } else {
+                        console.log(data['msg']);
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            }
         });
         return this;
     }

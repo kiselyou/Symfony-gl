@@ -90,9 +90,13 @@ class SecurityController {
 
         this._authorisation(this._server.POST, false, (status, msg, user, roles) => {
                 if (status) {
-                    let id = user['id'];
-                    this._server.authorization.createSessionUser(id, roles);
-                    this._server.responseJSON({status: true, msg: msg, id: id});
+                    if (user['is_active'] === 1) {
+                        let id = user['id'];
+                        this._server.authorization.createSessionUser(id, roles);
+                        this._server.responseJSON({status: true, msg: msg, id: id});
+                    } else {
+                        this._server.responseJSON({status: false, msg: 'This account is not activated! Please look at your email and follow by link'});
+                    }
                 } else {
                     this._server.responseJSON({status: false, msg: msg});
                 }
@@ -106,7 +110,6 @@ class SecurityController {
      * @returns {void}
      */
     registration() {
-
         if (this._server.authorization.getSessionUser()) {
             this._server.responseJSON({status: false, msg: 'User has already authenticated'});
             return;
@@ -120,6 +123,7 @@ class SecurityController {
 
         if (password != confirmPassword) {
             this._server.responseJSON({status: false, msg: 'Password is not correct'});
+            return;
         }
 
         this.user.findByName(username, (error, user) => {
@@ -127,6 +131,7 @@ class SecurityController {
                 this._server.responseJSON({status: false, msg: 'Server error'});
                 return;
             }
+
             if (user) {
                 this._server.responseJSON({status: false, msg: 'Username "' + username + '" has already exists'});
                 return;
@@ -135,8 +140,8 @@ class SecurityController {
             var userData = {
                 email: email,
                 username: username,
-                password: this.server.auth.hashPassword(password),
-                uuid: this.server.uuid(),
+                password: this._server.authorization.hashPassword(password),
+                uuid: this._server.uuid(),
                 is_active: 0,
                 deleted: 0
             };
@@ -150,13 +155,48 @@ class SecurityController {
                 this.role.findDefaultRole((error, role) => {
                     if (error) {
                         this._server.responseJSON({status: false, msg: 'Server error'});
+                        return;
                     }
+
+                    if (!role) {
+                        this._server.responseJSON({status: false, msg: 'Server error. Cannot find role by default'});
+                        return;
+                    }
+
+                    let dataRelationship = {
+                        user_id: userID,
+                        role_id: role['id']
+                    };
+
+                    this.role.insertRelationship(dataRelationship, (error, relationshipID) => {
+                        if (error) {
+                            this._server.responseJSON({status: false, msg: 'Server error'});
+                            return;
+                        }
+
+                        this._sendMail(userData.email, userData.uuid, (error, info) => {
+                            if (error) {
+                                this.role.deleteRelationship({id: relationshipID}, (error) => {
+                                    if (!error) {
+                                        this.user.deleteRecord({id: userID}, () => {
+                                            this._server.responseJSON({status: false, msg: 'Probably you set not correct email. Check data and try again'});
+                                        });
+                                    }
+                                });
+                                return;
+                            }
+
+                            let msg = `
+                                A message has just been sending to your email. 
+                                To activate the subscription follow by link in message.
+                            `;
+
+                            this._server.responseJSON({status: true, msg: msg});
+                        });
+                    });
                 });
             });
         });
-
-        // let data = this._server.POST;
-        // this._server.responseJSON({registration: 1, data: data});
     }
 
     /**
@@ -167,49 +207,43 @@ class SecurityController {
     isLogged() {
         this._server.responseJSON({user: this._server.authorization.session.isSessionUser()});
     }
-    //
-    // /**
-    //  *
-    //  * @param req
-    //  * @param res
-    //  * @returns {void}
-    //  */
-    // activation(req, res) {
-    //
-    //     this.user.findByOne(
-    //         (error) => {
-    //             res.redirect('/');
-    //         },
-    //         (user) => {
-    //             if (user) {
-    //                 this.user.update(
-    //                     (error) => {
-    //                         res.redirect('/');
-    //                     },
-    //                     (rows) => {
-    //                         this._authorisation(
-    //                             (msgError, status) => {
-    //                                 res.redirect('/');
-    //                             },
-    //                             (user, role, msg) => {
-    //                                 this.server.auth.createSessionUser(req, user['id'], role['role']);
-    //                                 res.redirect('/home');
-    //                             },
-    //                             user.username,
-    //                             null,
-    //                             true
-    //                         );
-    //                     },
-    //                     {uuid: null, is_active: 1},
-    //                     {uuid: req.query.key}
-    //                 );
-    //             } else {
-    //                 res.redirect('/');
-    //             }
-    //         },
-    //         {uuid: req.query.key, deleted: 0}
-    //     );
-    // }
+
+    /**
+     * Activate profile of user and redirect to main page in anyway
+     *
+     * @returns {void}
+     */
+    activation() {
+
+        if (this._server.authorization.getSessionUser()) {
+            this._server.redirect('/');
+            return;
+        }
+
+        let data = this._server.GET;
+
+        this.user.findNotActive(data['key'], (error, userData) => {
+            if (error) {
+                this._server.redirect('/');
+            }
+
+            let updateFields = {uuid: null, is_active: 1};
+            let where = {id: userData['id']};
+
+            this.user.updateRecord(updateFields, where, (error) => {
+                if (error) {
+                    this._server.redirect('/');
+                }
+
+                this._authorisation(userData, true, (status, msg, user, roles) => {
+                    if (status) {
+                        this._server.authorization.createSessionUser(user['id'], roles);
+                    }
+                    this._server.redirect('/');
+                });
+            });
+        });
+    }
 
     /**
      * Logout user
@@ -220,118 +254,25 @@ class SecurityController {
         this._server.authorization.session.destroySession();
         this._server.responseJSON({user: this._server.authorization.session.isSessionUser()});
     }
-    //
-    // /**
-    //  *
-    //  * @param req
-    //  * @param res
-    //  * @returns {void}
-    //  */
-    // registration(req, res) {
-    //
-    //     if (this.server.auth.getSessionUser(req)) {
-    //         this.jsonResponse(res, {status: false, msg: 'User is authenticated'});
-    //         return;
-    //     }
-    //
-    //     let email = this.post(req, 'email');
-    //     let username = this.post(req, 'username');
-    //     let password = this.post(req, 'password');
-    //     let confirmPassword = this.post(req, 'confirm_password');
-    //
-    //     if (password != confirmPassword) {
-    //         this.jsonResponse(res, {status: false, msg: 'Password is not correct'});
-    //     }
-    //
-    //     this.user.findByOne(
-    //         (err) => {
-    //             this.error(err);
-    //             this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
-    //         },
-    //         (user) => {
-    //             if (user) {
-    //                 this.jsonResponse(res, {status: false, msg: 'Username "' + username + '" already exists'});
-    //                 return;
-    //             }
-    //
-    //             var userData = {
-    //                 email: email,
-    //                 username: username,
-    //                 password: this.server.auth.hashPassword(password),
-    //                 uuid: this.server.uuid(),
-    //                 is_active: 0,
-    //                 deleted: 0
-    //             };
-    //
-    //             this.user.insert(
-    //                 (err) => {
-    //                     this.error(err);
-    //                     this.jsonResponse(res, {status: false, msg: 'Server error', error: err}, 500);
-    //                 },
-    //                 (userID) => {
-    //
-    //                     this.role.findByOne(
-    //                         (err) => {
-    //                             this.error(err);
-    //                             this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
-    //                         },
-    //                         (role) => {
-    //                             if (!role) {
-    //                                 this.jsonResponse(res, {status: false, msg: 'Cannot create user'});
-    //                             }
-    //
-    //                             let fields = {
-    //                                 user_id: userID,
-    //                                 role_id: role['id']
-    //                             };
-    //
-    //                             this.db.insert('iw_users_roles', fields, (err, relationID) => {
-    //                                 if (err) {
-    //                                     this.error(err);
-    //                                     this.jsonResponse(res, {status: false, msg: 'Server error'}, 500);
-    //                                     return;
-    //                                 }
-    //
-    //                                 this._sendMail(userData.email, req.headers.host, userData.uuid, (err, inf) => {
-    //                                     if (err) {
-    //                                         this.jsonResponse(res, {status: false, msg: 'Cannot Send mail'}, 500);
-    //                                     }
-    //                                 });
-    //
-    //                                 let msg = 'A message has been sent to your email to activate the subscription. Open the message and click on "Confirm subscription".';
-    //                                 this.jsonResponse(res, {status: true, msg: msg});
-    //                             });
-    //                         },
-    //                         {by_default: 1, deleted: 0}
-    //                     );
-    //                 },
-    //                 userData
-    //             );
-    //         },
-    //         {username: username, deleted: 0}
-    //     );
-    // }
-    //
-    //
-    // /**
-    //  *
-    //  * @param {string} email
-    //  * @param {string} host
-    //  * @param {string} uuid
-    //  * @param {function} callback
-    //  * @private
-    //  */
-    // _sendMail(email, host, uuid, callback) {
-    //     let msg = `
-    //         You was registered successfully.
-    //         To activate the profile you need
-    //         <a href="http://` + host + `/iw/activation?key=` + uuid + `">Confirm subscription</a>
-    //     `;
-    //
-    //     this.server.mailer
-    //         .message(email, 'Registration IronWar', null, msg)
-    //         .send(callback);
-    // }
+
+    /**
+     *
+     * @param {string} userEmail
+     * @param {string} uuid
+     * @param {function} [callback]
+     * @private
+     */
+    _sendMail(userEmail, uuid, callback) {
+        let msg = `
+            You was registered successfully.
+            To activate the profile you need follow by link
+            <a href="http://` + this._server.host + `/iw/activation?key=` + uuid + `">Confirm subscription</a>
+        `;
+
+        this._server.mailer
+            .html(msg)
+            .send(userEmail, 'Registration IronWar', callback);
+    }
 }
 
 export default SecurityController;

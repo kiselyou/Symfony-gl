@@ -2,8 +2,6 @@
 import io from 'socket.io-client';
 import Ajax from './Ajax';
 
-let socketControls = null;
-
 class Lock {
     /**
      *
@@ -11,8 +9,24 @@ class Lock {
      */
     constructor() {
 
-        if(!socketControls) {
+        /**
+         *
+         * @type {?eventCheckLock}
+         * @private
+         */
+        this._eventCheckLock = null;
+
+        /**
+         *
+         * @type {?Object}
+         */
+        this.socketControls = null;
+
+        if (!window._lock) {
+            window._lock = this;
             this._controls();
+        } else {
+            this.socketControls = window._lock.socketControls;
         }
     }
 
@@ -39,7 +53,7 @@ class Lock {
      * @returns {string}
      */
     static get EVENT_CONNECT() {
-        return 'EVENT_CONNECT_';
+        return 'EVENT_CONNECT';
     }
 
     /**
@@ -56,6 +70,14 @@ class Lock {
      */
     static get EVENT_UNLOCK() {
         return 'EVENT_CHECK_UNLOCK';
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    static get EVENT_CHECK_LOCK() {
+        return 'EVENT_CHECK_LOCK';
     }
 
     /**
@@ -94,30 +116,59 @@ class Lock {
      */
     _controls() {
         this._loadConfiguration((path) => {
-            socketControls = io.connect(path);
-            socketControls.on(Lock.EVENT_CONNECT, (data) => {
-                if (data['lock']) {
-                    console.log('User was added to list');
-                } else {
-                    console.log('Probably user is not logged or has opened another tabs');
+            this.socketControls = io.connect(path);
+
+            this.socketControls.on(Lock.EVENT_CHECK_LOCK, (status) => {
+                if (this._eventCheckLock) {
+                    this._eventCheckLock(status);
                 }
             });
 
-            window.addEventListener('beforeunload', function () {
-                socketControls.emit(Lock.EVENT_UNLOCK);
+            window.addEventListener('beforeunload', () => {
+                this.socketControls.emit(Lock.EVENT_UNLOCK);
             });
         });
     }
 
-    static lock() {
-        if (socketControls) {
-            socketControls.emit(Lock.EVENT_LOCK);
+    /**
+     * Lock page if user is logged
+     *
+     * @returns {void}
+     */
+    lock() {
+        if (this.socketControls) {
+            this.socketControls.emit(Lock.EVENT_LOCK);
         }
     }
 
-    static unlock() {
-        if (socketControls) {
-            socketControls.emit(Lock.EVENT_UNLOCK);
+    /**
+     * Unlock page if page was locked
+     *
+     * @returns {void}
+     */
+    unlock() {
+        if (this.socketControls) {
+            this.socketControls.emit(Lock.EVENT_UNLOCK);
+        }
+    }
+
+    /**
+     * Check user status
+     *
+     * @param {boolean} status true - If authenticated user is on the page else false
+     * @callback eventCheckLock
+     */
+
+    /**
+     * Check that authenticated user is on the page
+     *
+     * @param {eventCheckLock} eventCheckLock
+     * @returns {void}
+     */
+    isLocked(eventCheckLock) {
+        if (this.socketControls) {
+            this.socketControls.emit(Lock.EVENT_CHECK_LOCK);
+            this._eventCheckLock = eventCheckLock;
         }
     }
 }
