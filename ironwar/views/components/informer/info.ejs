@@ -1,10 +1,10 @@
-<div class="informer informer_info informer_xs">
-    <span>Info:</span>
+<div class="informer informer_xs informer_info">
+    <div class="informer__title">Info:</div>
     <ul>
         <% for (let message of messages) { %>
         <li>
-            <i class="fa fa-info-circle"></i>
-            <%= message %>
+            <i class="fa fa-exclamation-triangle informer__icon"></i>
+            <span><%= message %></span>
         </li>
         <% } %>
     </ul>

@@ -54,7 +54,7 @@ class SecurityController {
             }
 
             if (!user) {
-                completed(false, 'User not found');
+                completed(false, 'User was not found');
                 return;
             }
 
@@ -65,7 +65,7 @@ class SecurityController {
                         return;
                     }
                     if (!roles) {
-                        completed(false, 'Server error. Cannot find role');
+                        completed(false, 'Cannot find role');
                         return;
                     }
 
@@ -88,7 +88,15 @@ class SecurityController {
             return;
         }
 
-        this._authorisation(this._server.POST, false, (status, msg, user, roles) => {
+        let data = this._server.POST;
+        let errors = SecurityController.validation(data, false);
+
+        if (errors.length > 0) {
+            this._server.responseJSON({status: false, msg: errors});
+            return;
+        }
+
+        this._authorisation(data, false, (status, msg, user, roles) => {
                 if (status) {
                     if (user['is_active'] === 1) {
                         let id = user['id'];
@@ -105,6 +113,43 @@ class SecurityController {
     }
 
     /**
+     * Check data
+     *
+     * @param {Object} data
+     * @param {boolean} isRegistrationForm - If true Check data for form "registration" else form "login"
+     * @returns {Array}
+     */
+    static validation(data, isRegistrationForm) {
+
+        let username = data['username'];
+        let password = data['password'];
+        let errors = [];
+
+        if (typeof(username) !== 'string' || username.length < 5 || username.length > 20) {
+            errors.push('Username must be equal or less than 20 and more than 4 symbols');
+        }
+
+        if (typeof(password) !== 'string' || password.length < 6 || password.length > 20) {
+            errors.push('Password must be less than 20 and more than 5 symbols');
+        }
+
+        if (isRegistrationForm) {
+            let email = data['email'];
+            let confirmPassword = data['confirm_password'];
+
+            if (typeof(email) !== 'string' || email.length < 6 || email.length > 50) {
+                errors.push('Email must be equal or less than 50 and more than 5 symbols');
+            }
+
+            if (password != confirmPassword) {
+                errors.push('Password does not match the confirm password.');
+            }
+        }
+
+        return errors;
+    }
+
+    /**
      * This method is logging user in system
      *
      * @returns {void}
@@ -116,15 +161,16 @@ class SecurityController {
         }
 
         let data = this._server.POST;
+        let errors = SecurityController.validation(data, true);
+
+        if (errors.length > 0) {
+            this._server.responseJSON({status: false, msg: errors});
+            return;
+        }
+
         let email = data['email'];
         let username = data['username'];
         let password = data['password'];
-        let confirmPassword = data['confirm_password'];
-
-        if (password != confirmPassword) {
-            this._server.responseJSON({status: false, msg: 'Password is not correct'});
-            return;
-        }
 
         this.user.findByName(username, (error, user) => {
             if (error) {
@@ -159,7 +205,7 @@ class SecurityController {
                     }
 
                     if (!role) {
-                        this._server.responseJSON({status: false, msg: 'Server error. Cannot find role by default'});
+                        this._server.responseJSON({status: false, msg: 'Cannot find role by default'});
                         return;
                     }
 

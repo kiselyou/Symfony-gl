@@ -1,26 +1,30 @@
 .informer {
-  padding: @padding_md;
   list-style-type: none;
 
   & ul {
     list-style-type: none;
-    margin-left: @margin_lg;
-    padding-left: @margin_lg;
+    padding: @padding_xs;
   }
 
   &__title {
+    padding: @padding_md;
     color: @color_base;
-    font-size: @font_size;
-    border-bottom: solid @border_xs @color_base;
+    border-bottom: solid 1px @color_base;
   }
 
-  &_warning {
-    color: @color_base_warning;
+  &__icon {
+    color: @color_base;
+    text-align: center;
+    width: 40px;
   }
 
   &_error,
   &_danger {
     color: @color_base_danger;
+  }
+
+  &_warning {
+    color: @color_base_warning;
   }
 
   &_info {

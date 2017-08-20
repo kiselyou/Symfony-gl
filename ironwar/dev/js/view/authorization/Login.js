@@ -64,16 +64,17 @@ class Login extends View {
             if (responseListener) {
                 responseListener(res, status);
             } else {
+                let block = this.el.getElementByBlockName(VIEW_BLOCK_WARNING);
                 try {
                     let data = JSON.parse(res);
                     if (data['status']) {
                         this.lock.lock();
                         this.hide();
                     } else {
-                        this.informer.warning(this.el.getElementByBlockName(VIEW_BLOCK_WARNING), data['msg']);
+                        this.informer.warning(block, data['msg']);
                     }
                 } catch (e) {
-                    console.log(e);
+                    this.informer.danger(block, 'Something was broken');
                 }
             }
         });
