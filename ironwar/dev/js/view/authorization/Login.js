@@ -1,5 +1,14 @@
 import View from '../../system/View';
-import {ACTION_OPEN_FORM, ACTION_SEND_FORM} from '../actions.js';
+import Informer from './../informer/Informer';
+
+import {
+    ACTION_OPEN_FORM,
+    ACTION_SEND_FORM
+} from '../view-actions.js';
+
+import {
+    VIEW_BLOCK_WARNING
+} from '../view-blocks.js';
 
 class Login extends View {
     /**
@@ -8,6 +17,22 @@ class Login extends View {
      */
     constructor(path) {
         super(path);
+
+        /**
+         *
+         * @type {Informer}
+         */
+        this.informer = new Informer();
+    }
+
+    /**
+     * Clean block warning and return block element
+     *
+     * @returns {Login}
+     */
+    cleanBlockWarning() {
+        this.el.getElementByBlockName(VIEW_BLOCK_WARNING).clean();
+        return this;
     }
 
     /**
@@ -45,7 +70,7 @@ class Login extends View {
                         this.lock.lock();
                         this.hide();
                     } else {
-                        console.log(data['msg']);
+                        this.informer.warning(this.el.getElementByBlockName(VIEW_BLOCK_WARNING), data['msg']);
                     }
                 } catch (e) {
                     console.log(e);

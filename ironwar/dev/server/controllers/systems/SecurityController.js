@@ -179,7 +179,7 @@ class SecurityController {
                                 this.role.deleteRelationship({id: relationshipID}, (error) => {
                                     if (!error) {
                                         this.user.deleteRecord({id: userID}, () => {
-                                            this._server.responseJSON({status: false, msg: 'Probably you set not correct email. Check data and try again'});
+                                            this._server.responseJSON({status: false, msg: 'Probably you set not correct email. Check it and try again'});
                                         });
                                     }
                                 });

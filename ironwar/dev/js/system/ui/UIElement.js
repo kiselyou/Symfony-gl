@@ -19,6 +19,7 @@ class UIElement {
     }
 
     /**
+     * It is name of attribute "name"
      *
      * @returns {string}
      */
@@ -27,11 +28,21 @@ class UIElement {
     }
 
     /**
+     * It is name of attribute "action"
      *
      * @returns {string}
      */
     static get DATA_ACTION_ELEMENT() {
         return 'data-action';
+    }
+
+    /**
+     * It is name of attribute "block"
+     *
+     * @returns {string}
+     */
+    static get DATA_BLOCK_ELEMENT() {
+        return 'data-block';
     }
 
     /**
@@ -62,6 +73,18 @@ class UIElement {
      */
     getElement() {
         return this._el;
+    }
+
+    /**
+     * Clean element. Remove all children
+     *
+     * @returns {UIElement}
+     */
+    clean() {
+        while (this._el.firstChild) {
+            this._el.removeChild(this._el.firstChild);
+        }
+        return this;
     }
 
     /**
@@ -112,6 +135,28 @@ class UIElement {
     afterBegin(content) {
         this._insetAdjacent('afterBegin', content);
         return this;
+    }
+
+    /**
+     * Set block name (data-attribute) of element
+     *
+     * @param {string} blockName
+     * @returns {UIElement}
+     */
+    setBlockNameElement(blockName) {
+        this._el.setAttribute(UIElement.DATA_BLOCK_ELEMENT, blockName);
+        return this;
+    }
+
+    /**
+     * Get Element
+     *
+     * @param {string} blockName
+     * @returns {UIElement}
+     */
+    getElementByBlockName(blockName) {
+        let selector = '[' + UIElement.DATA_BLOCK_ELEMENT + '="' + blockName + '"]';
+        return new UIElement(this._el.querySelector(selector));
     }
 
     /**

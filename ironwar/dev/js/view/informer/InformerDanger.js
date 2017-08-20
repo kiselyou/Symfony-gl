@@ -1,6 +1,6 @@
 import View from '../../system/View';
 
-class InformerSuccess extends View {
+class InformerDanger extends View {
     /**
      *
      * @param {string} path - It is path to template
@@ -10,12 +10,12 @@ class InformerSuccess extends View {
     }
 
     /**
-     * Paste view success to the block
+     * Paste view danger to the block
      *
      * @param {UIElement|Element|string} blockElement - String is selector
      * @param {Array|string} messages - It is messages. Can be string
      * @param {boolean} autoClean - default is true
-     * @returns {InformerSuccess}
+     * @returns {InformerDanger}
      */
     pasteTo(blockElement, messages, autoClean = true) {
         this.viewParams = {messages: (typeof messages === 'string') ? [messages] : messages};
@@ -28,4 +28,4 @@ class InformerSuccess extends View {
     }
 }
 
-export default InformerSuccess;
+export default InformerDanger;

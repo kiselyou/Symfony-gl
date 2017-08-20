@@ -251,8 +251,39 @@ a:focus {
   display: table;
   width: 100%;
 
-  &__border {
-    border-bottom: solid 1px @color_base;
+  &_xs {
+    margin: 5px 0 5px 0;
+  }
+
+  &_sm {
+    margin: 10px 0 5px 0;
+  }
+
+  &_md {
+    margin: 15px 0 5px 0;
+  }
+
+  &_lg {
+    margin: 20px 0 5px 0;
+  }
+
+  &_border {
+
+    &_bottom {
+      border-bottom: solid 1px @color_base;
+    }
+
+    &_top {
+      border-top: solid 1px @color_base;
+    }
+
+    &_left {
+      border-left: solid 1px @color_base;
+    }
+
+    &_right {
+      border-right: solid 1px @color_base;
+    }
 
     &_success {
       border-color: @color_base_success;

@@ -1,5 +1,14 @@
 import View from '../../system/View';
-import {ACTION_OPEN_FORM, ACTION_SEND_FORM} from '../actions.js';
+import Informer from './../informer/Informer';
+
+import {
+    ACTION_OPEN_FORM,
+    ACTION_SEND_FORM
+} from '../view-actions.js';
+
+import {
+    VIEW_BLOCK_WARNING
+} from '../view-blocks.js';
 
 class Registration extends View {
     /**
@@ -8,6 +17,22 @@ class Registration extends View {
      */
     constructor(path) {
         super(path);
+
+        /**
+         *
+         * @type {Informer}
+         */
+        this.informer = new Informer();
+    }
+
+    /**
+     * Clean block warning and return block element
+     *
+     * @returns {Registration}
+     */
+    cleanBlockWarning() {
+        this.el.getElementByBlockName(VIEW_BLOCK_WARNING).clean();
+        return this;
     }
 
     /**
@@ -23,14 +48,33 @@ class Registration extends View {
     }
 
     /**
+     * @param {Object} res
+     * @param {boolean} status - If error value is false else true
+     * @callback responseListener
+     */
+
+    /**
      * Make something when click on button "Registration"
      *
-     * @param listener
+     * @param {responseListener} [responseListener]
      * @returns {Registration}
      */
-    eventBtnRegistration(listener) {
+    eventBtnRegistration(responseListener) {
         this.addActionSendForm(ACTION_SEND_FORM, '/iw/registration', 'form', (res, status) => {
-            console.log(res, status);
+            if (responseListener) {
+                responseListener(res, status);
+            } else {
+                try {
+                    let data = JSON.parse(res);
+                    if (data['status']) {
+                        this.informer.success(this.el.getElementByBlockName(VIEW_BLOCK_WARNING), data['msg']);
+                    } else {
+                        this.informer.warning(this.el.getElementByBlockName(VIEW_BLOCK_WARNING), data['msg']);
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            }
         });
         return this;
     }
