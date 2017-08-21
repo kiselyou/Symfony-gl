@@ -1,7 +1,0 @@
-{
-  "index": {
-    "route": "/",
-    "viewPath": "pages/main",
-    "method": "GET"
-  }
-}
