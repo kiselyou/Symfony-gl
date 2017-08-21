@@ -2,6 +2,11 @@ Commands of server:
 ------
 
 ```
+# Install of dependencies
+npm update
+```
+
+```
 # Prepare environment of production
 npm run build
 ```
