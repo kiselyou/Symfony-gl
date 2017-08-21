@@ -1,5 +1,5 @@
 /.idea/*
-/#/*
-/app/server/config/*
 /dev/server/config/*
 /node_modules/*
+/app/
+/#/
