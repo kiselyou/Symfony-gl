@@ -1,0 +1,11 @@
+<div class="informer informer_xs informer_warning">
+    <div class="informer__title">Warning:</div>
+    <ul>
+        <% for (let message of messages) { %>
+        <li>
+            <i class="fa fa-exclamation-triangle informer__icon"></i>
+            <span><%= message %></span>
+        </li>
+        <% } %>
+    </ul>
+</div>

@@ -1,0 +1,11 @@
+{
+	"encoding": "utf-8",
+	"server": {
+		"port": 80,
+		"host": "127.0.0.1"
+	},
+	"socket": {
+		"port": 3000,
+		"host": "127.0.0.1"
+	}
+}

@@ -1,0 +1,42 @@
+<% extend('../window/desktop_sm.ejs', {params: {title: 'Login to IronWar'}}); %>
+
+<form action="/iw/login" method="POST" autocomplete="off">
+    <div class="row">
+        <div class="col_xs_12 col_sm_12 col_md_6 col_lg_6">
+            <div class="form form_sm">
+                <label for="username">Username:<span class="star">*</span></label>
+                <input type="text" id="username" name="username" placeholder="Username">
+            </div>
+        </div>
+        <div class="col_xs_12 col_sm_12 col_md_6 col_lg_6">
+            <div class="form form_sm">
+                <label for="password">Password:<span class="star">*</span></label>
+                <input type="password" id="password" name="password" placeholder="****">
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col_xs_6 col_sm_6 col_md_6 col_lg_6">
+        <div class="form form_sm">
+            <button type="submit" class="btn hint" data-action="open-form">
+                <i class="fa fa-exchange"></i>
+                Go to registration form
+            </button>
+        </div>
+    </div>
+
+    <div class="col_xs_6 col_sm_6 col_md_6 col_lg_6">
+        <div class="form form_sm block_right">
+            <button type="submit" class="btn hint" data-action="send-form">
+                <i class="fa fa-sign-in"></i>
+                Sign in
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row row_sm">
+    <div class="col_xs_12 col_sm_12 col_md_12 col_lg_12" data-block="warning"></div>
+</div>

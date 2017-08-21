@@ -1,0 +1,47 @@
+.btn {
+  color: @color_base_light !important;
+  background: transparent;
+  border: @border_xs solid @color_base;
+  border-radius: @border_radius_xs;
+  padding: @padding_md @padding_lg;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline;
+
+  &_xs {
+    padding: @padding_xs @padding_sm;
+  }
+
+  &:hover {
+    background: @background_color_light;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:active {
+    border: @border_xs solid @color_base_dark;
+  }
+
+  &_skin {
+    &_round {
+      border-radius: 50%;
+    }
+
+    &_link {
+      border: @border_xs solid transparent;
+
+      &:hover {
+        background: transparent;
+        color: @color_base !important;
+      }
+
+      &:active {
+        border: @border_xs solid transparent;
+        color: @color_base_dark !important;
+      }
+    }
+  }
+}
+

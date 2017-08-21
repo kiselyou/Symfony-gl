@@ -1,0 +1,25 @@
+/* ================================================= SETTINGS START ================================================= */
+
+.tinymce,
+.load-container {
+    opacity: 0;
+}
+.form-group>textarea {
+    resize: vertical;
+    height: 80px;
+}
+
+/* ================================================== SETTINGS AND ================================================== */
+
+.btn-theme {
+    min-width: 100px;
+}
+.table-show th {
+    width: 20%;
+    text-align: right;
+    border-right: 1px solid #dddddd;
+}
+
+tr[data-go-to] {
+    cursor: pointer;
+}

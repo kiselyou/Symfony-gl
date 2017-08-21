@@ -1,9 +1,0 @@
-services:
-    iw_socket.iw_data_user:
-        class: SocketBundle\Service\IWDataSocket
-        tags:
-            - { name: gos_web_socket.rpc }
-    iw_socket.iw_play:
-        class: SocketBundle\Service\IWPlaySocket
-        tags:
-            - { name: gos_web_socket.topic }

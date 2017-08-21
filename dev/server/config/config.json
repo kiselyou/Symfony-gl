@@ -1,0 +1,24 @@
+{
+	"encoding": "utf-8",
+	"server": {
+		"dev": {
+			"port": 80,
+			"host": "127.0.0.1"
+		},
+		"prod": {
+			"port": 80,
+			"host": "iron-war.com"
+		}
+	},
+	"socket": {
+		"dev": {
+			"port": 3000,
+			"host": "127.0.0.1"
+		},
+		"prod": {
+			"port": 3000,
+			"host": "iron-war.com"
+		}
+	},
+	"secretKeyBase": "8b892ca3-ca24-4873-974a-c783aee83d3e"
+}

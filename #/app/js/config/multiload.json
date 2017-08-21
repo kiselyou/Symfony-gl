@@ -1,0 +1,39 @@
+{
+    "OBJ": [
+        {
+            "name": "S1_A",
+            "label": "UPLOAD SHIP - A",
+            "directory": "/models/S1/A/",
+            "pathOBJ": "starship.obj",
+            "starship.mtl": "starship.mtl"
+        },
+        {
+            "name": "S1_B",
+            "label": "UPLOAD SHIP - B",
+            "directory": "/models/S1/B/",
+            "pathOBJ": "ship.obj",
+            "starship.mtl": "ship.mtl"
+        },
+        {
+            "name": "R1_A",
+            "label": "UPLOAD ROCKETS - A",
+            "directory": "/models/R1/A/",
+            "pathOBJ": "rocket.obj",
+            "starship.mtl": "rocket.mtl"
+        }
+    ],
+    "JSON": [
+        {
+            "name": "config-action",
+            "label": "CONFIG",
+            "path": "/js/config/action.json",
+            "parse": true
+        },
+        {
+            "name": "config-weapon",
+            "label": "CONFIG",
+            "path": "/js/config/weapon.json",
+            "parse": true
+        }
+    ]
+}

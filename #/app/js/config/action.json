@@ -1,0 +1,67 @@
+{
+    "shot": [
+        {
+            "name": 1,
+            "icon": "/rockets/iw-re-1.png",
+            "keyCode": 49,
+            "active": false,
+            "weapon": "weapon_1"
+        },
+        {
+            "name": 2,
+            "icon": "/rockets/iw-re-1.png",
+            "keyCode": 50,
+            "active": false,
+            "weapon": "weapon_2"
+        },
+        {
+            "name": 3,
+            "icon": "/rockets/iw-re-1.png",
+            "keyCode": 51,
+            "active": false,
+            "weapon": "weapon_3"
+        },
+        {
+            "name": 4,
+            "icon": "/rockets/iw-re-1.png",
+            "keyCode": 52,
+            "active": false,
+            "weapon": "weapon_4"
+        },
+        {
+            "name": 5,
+            "icon": "/rockets/iw-re-1.png",
+            "keyCode": 53,
+            "active": false,
+            "weapon": "weapon_5"
+        },
+        {
+            "name": 6,
+            "icon": "/rockets/iw-re-1.png",
+            "keyCode": 54,
+            "active": false,
+            "weapon": "weapon_6"
+        },
+        {
+            "name": 7,
+            "icon": "/rockets/iw-re-1.png",
+            "keyCode": 55,
+            "active": false,
+            "weapon": "weapon_7"
+        },
+        {
+            "name": 8,
+            "icon": "/rockets/iw-re-1.png",
+            "keyCode": 56,
+            "active": false,
+            "weapon": "weapon_8"
+        },
+        {
+            "name": 9,
+            "icon": "/rockets/iw-re-1.png",
+            "keyCode": 57,
+            "active": false,
+            "weapon": "weapon_9"
+        }
+    ]
+}

@@ -1,3 +1,0 @@
-parameters:
-    socket_port: 9006
-    socket_host: 127.0.0.1
