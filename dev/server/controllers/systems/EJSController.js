@@ -4,7 +4,8 @@ import {
     VIEW_PATH_INFORMER_SUCCESS,
     VIEW_PATH_INFORMER_WARNING,
     VIEW_PATH_INFORMER_DANGER,
-    VIEW_PATH_INFORMER_INFO
+    VIEW_PATH_INFORMER_INFO,
+    VIEW_PATH_MENU_GENERAL
 } from '../../../js/view/view-path';
 
 class EJSController {
@@ -22,6 +23,7 @@ class EJSController {
         this.viewPaths[VIEW_PATH_INFORMER_WARNING] = 'components/informer/warning.ejs';
         this.viewPaths[VIEW_PATH_INFORMER_DANGER] = 'components/informer/danger.ejs';
         this.viewPaths[VIEW_PATH_INFORMER_INFO] = 'components/informer/info.ejs';
+        this.viewPaths[VIEW_PATH_MENU_GENERAL] = 'components/menu/general.ejs';
     }
 
     /**

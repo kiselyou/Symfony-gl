@@ -1,6 +1,7 @@
 
 import Login from './authorization/Login';
 import Registration from './authorization/Registration';
+import MenuControls from './menu/MenuControls';
 import {VIEW_PATH_LOGIN, VIEW_PATH_REGISTRATION} from './view-path';
 
 class ViewControls {
@@ -19,6 +20,12 @@ class ViewControls {
          * @private
          */
         this._registration = new Registration(VIEW_PATH_REGISTRATION);
+
+        /**
+         *
+         * @type {MenuControls}
+         */
+        this.menu = new MenuControls();
     }
 
     /**
@@ -29,8 +36,8 @@ class ViewControls {
     initSecurityForm() {
         this._login.upload(() => {
             this._login
-                .addActionDesktopClose()
-                .show();
+                .addActionDesktopClose();
+                // .show();
 
             this._registration.upload(() => {
                 this._registration.addActionDesktopClose();

@@ -250,24 +250,26 @@ class View extends Application {
     }
 
     /**
-     * Show form template
+     * Show template
      *
+     * @param {boolean} [animate] Add animation. Default is true
      * @returns {View}
      */
-    show() {
+    show(animate = true) {
         this._hidden = false;
-        this.el.show(true);
+        this.el.show(animate);
         return this;
     }
 
     /**
-     * Hide form template
+     * Hide template
      *
+     * @param {boolean} [animate] Add animation. Default is true
      * @returns {View}
      */
-    hide() {
+    hide(animate = true) {
         this._hidden = true;
-        this.el.hide(true);
+        this.el.hide(animate);
         return this;
     }
 }

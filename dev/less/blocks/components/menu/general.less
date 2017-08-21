@@ -1,0 +1,51 @@
+.menu_general {
+  position: absolute;
+  right: 0;
+  margin: @margin_lg;
+
+  &__item {
+    float: left;
+    margin: @margin_xs;
+    padding: @padding_sm @padding_lg;
+    border: @border_xs solid @color_base;
+    cursor: pointer;
+    font-size: @font_size_md;
+
+    &_right {
+      float: right;
+    }
+
+    &_left {
+      float: left;
+    }
+
+    &:hover {
+      background: @background_color_light;
+    }
+
+    &:focus,
+    &:active {
+      color: @color_base_light;
+      border: @border_xs solid @color_base_light;
+    }
+  }
+
+  & &__content {
+    position: fixed;
+    right: 0;
+    left: 0;
+    top: 15%;
+    height: 70%;
+    margin-right: auto;
+    margin-left: auto;
+    width: 40%;
+    border: @border_xs solid @color_base;
+
+    & ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+  }
+}
