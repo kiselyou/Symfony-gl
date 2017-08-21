@@ -1,7 +1,0 @@
-{
-  "uid": "galaxy",
-  "append": true,
-  "watch": true,
-  "script": "index.js",
-  "sourceDir": "/var/www/galaxy/"
-}
