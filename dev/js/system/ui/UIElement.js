@@ -19,7 +19,7 @@ class UIElement {
     }
 
     /**
-     * It is name of attribute "name"
+     * It is value of attribute "name"
      *
      * @returns {string}
      */
@@ -28,7 +28,7 @@ class UIElement {
     }
 
     /**
-     * It is name of attribute "action"
+     * It is value of attribute "action"
      *
      * @returns {string}
      */
@@ -37,7 +37,7 @@ class UIElement {
     }
 
     /**
-     * It is name of attribute "block"
+     * It is value of attribute "block"
      *
      * @returns {string}
      */

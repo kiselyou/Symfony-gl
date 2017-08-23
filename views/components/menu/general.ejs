@@ -1,26 +1,49 @@
 <div class="menu_general">
 
-    <div class="menu_general__item">
+    <%/*
+    It is example parameters for build of current template
+    let options = [
+        {
+            name: 'Main Menu IronWar',
+            action: 'main-menu',
+            subitems: [
+                {name: 'Login', action: 'main-menu-login'},
+                {name: 'Registration', action: 'main-menu-registration'},
+                {name: 'Logout', action: 'main-menu-logout'},
+                {name: 'Settings', action: 'main-menu-settings'},
+                {name: 'Close Menu', action: 'main-menu-close'}
+            ]
+        }
+    ];
+
+    */%>
+
+
+    <% for (let item of options) { %>
+
+    <div class="menu_general__item" data-action="<%= item['action'] %>">
         <i class="fa fa-bars"></i>
     </div>
 
-    <div class="menu_general__cover">
-
+    <div class="menu_general__cover" data-block="<%= item['action'] %>" hidden>
         <div class="menu_general__content">
-
-            <div class="menu_general__header">
-                <h3>Main Menu IronWar</h3>
+            <div class="menu_general__content_row">
+                <div class="menu_general__content_cell menu_general__header">
+                    <h3><%= item['name'] %></h3>
+                </div>
             </div>
 
-            <ul class="menu_general__body">
-                <li>Login</li>
-                <li>Registration</li>
-                <li>Logout</li>
-                <li>Settings</li>
-                <li>Help</li>
-                <li>Close Menu</li>
-            </ul>
+            <div class="menu_general__content_row">
+                <div class="menu_general__content_cell menu_general__body">
+                    <ul class="menu_general__body_items">
+                        <% for (let subitem of item['subitems']) { %>
+                        <li data-action="<%= subitem['action'] %>"><%= subitem['name'] %></li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
         </div>
-
     </div>
+
+    <% } %>
 </div>
