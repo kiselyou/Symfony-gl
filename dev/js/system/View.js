@@ -57,7 +57,7 @@ class View extends Application {
          * @type {Object}
          * @private
          */
-        this._viewOptions = {};
+        this._viewParams = {};
 
         /**
          * Add to container after upload
@@ -114,12 +114,21 @@ class View extends Application {
     }
 
     /**
-     * Set params for view
+     * Set options for view
      *
      * @param {Object} options
      */
     set viewOptions(options) {
-        this._viewOptions = {options: options};
+        this._viewParams = {options: options};
+    }
+
+    /**
+     * Get options of view
+     *
+     * @returns {Object}
+     */
+    get viewOptions() {
+        return this._viewParams.options;
     }
 
     /**
@@ -225,7 +234,7 @@ class View extends Application {
      * @returns {View}
      */
     upload(actionUploaded) {
-        this.ajax.post(View.ROUTE_EJS, {name: this._viewPath, options: this._viewOptions})
+        this.ajax.post(View.ROUTE_EJS, {name: this._viewPath, options: this._viewParams})
             .then((res) => {
                 if (this._autoCleanElement) {
                     this.el.clean();

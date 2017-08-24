@@ -40,6 +40,15 @@ class ViewControls {
                 // .show();
 
             this._registration.upload(() => {
+
+                this.menu.openFormLogin(() => {
+                    this._login.show();
+                });
+
+                this.menu.openFormRegistration(() => {
+                    this._registration.show();
+                });
+
                 this._registration.addActionDesktopClose();
                 this._registration.eventBtnRegistration();
                 this._registration.eventBtnLogin(() => {
@@ -58,6 +67,7 @@ class ViewControls {
                 });
             });
         });
+
         return this;
     }
 }

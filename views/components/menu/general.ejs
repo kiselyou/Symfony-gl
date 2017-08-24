@@ -6,7 +6,7 @@
         {
             name: 'Main Menu IronWar',
             action: 'main-menu',
-            subitems: [
+            subItems: [
                 {name: 'Login', action: 'main-menu-login'},
                 {name: 'Registration', action: 'main-menu-registration'},
                 {name: 'Logout', action: 'main-menu-logout'},
@@ -25,7 +25,7 @@
         <i class="fa fa-bars"></i>
     </div>
 
-    <div class="menu_general__cover" data-block="<%= item['action'] %>" hidden>
+    <div class="menu_general__cover" data-block="<%= item['block'] %>" hidden>
         <div class="menu_general__content">
             <div class="menu_general__content_row">
                 <div class="menu_general__content_cell menu_general__header">
@@ -36,7 +36,7 @@
             <div class="menu_general__content_row">
                 <div class="menu_general__content_cell menu_general__body">
                     <ul class="menu_general__body_items">
-                        <% for (let subitem of item['subitems']) { %>
+                        <% for (let subitem of item['subItems']) { %>
                         <li data-action="<%= subitem['action'] %>"><%= subitem['name'] %></li>
                         <% } %>
                     </ul>
