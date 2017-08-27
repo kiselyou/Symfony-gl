@@ -182,6 +182,14 @@ class MenuGeneral extends View {
         return this;
     }
 
+    _openBlock() {
+
+    }
+
+    _hideBlock() {
+
+    }
+
     /**
      * Add event to action
      *
@@ -206,6 +214,16 @@ class MenuGeneral extends View {
             this.actions[name] = this.el.getElementByActionName(name);
         }
         return this.actions[name];
+    }
+
+    /**
+     * Check if block menu is opened
+     *
+     * @param {string} name Name of block menu
+     * @returns {boolean}
+     */
+    isOpenedBlock(name) {
+        return this.status.hasOwnProperty(name) && this.status[name] === true;
     }
 
     /**
