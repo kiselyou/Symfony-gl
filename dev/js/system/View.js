@@ -35,15 +35,6 @@ class View extends Application {
         this.el = new UIElement().hide().setNameElement(this.name);
 
         /**
-         * Status of current element
-         *  true - Is hidden
-         *  false - Is shown
-         *
-         * @type {boolean}
-         */
-        this._hidden = true;
-
-        /**
          * It is path to template. Possible values look at "ViewPathControls"
          *
          * @type {string}
@@ -101,17 +92,6 @@ class View extends Application {
     static get ROUTE_EJS() {
         return '/ejs';
     };
-
-    /**
-     * Get status of current element
-     *      true - Is hidden
-     *      false - Is shown
-     *
-     * @returns {boolean}
-     */
-    get isHidden() {
-        return this._hidden;
-    }
 
     /**
      * Set options for view
@@ -265,7 +245,6 @@ class View extends Application {
      * @returns {View}
      */
     show(animate = true) {
-        this._hidden = false;
         this.el.show(animate);
         return this;
     }
@@ -277,7 +256,6 @@ class View extends Application {
      * @returns {View}
      */
     hide(animate = true) {
-        this._hidden = true;
         this.el.hide(animate);
         return this;
     }

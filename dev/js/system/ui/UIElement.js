@@ -16,6 +16,32 @@ class UIElement {
                 this._el = document.createElement('div');
                 break;
         }
+
+        /**
+         * Status of current element
+         *  true - Is hidden
+         *  false - Is shown
+         *
+         * @type {boolean}
+         */
+        this._hidden = true;
+
+        this._el.addEventListener('animationend', () => {
+            this._animationListener();
+        });
+    }
+
+    /**
+     *
+     *
+     * @returns {UIElement}
+     * @private
+     */
+    _animationListener() {
+        if (!this._hidden) {
+            this.hide();
+        }
+        return this;
     }
 
     /**
@@ -215,12 +241,24 @@ class UIElement {
     }
 
     /**
+     * Get status of element Hide or show
+     *      true - Is hidden
+     *      false - Is shown
+     *
+     * @returns {boolean}
+     */
+    get isHidden() {
+        return this._hidden;
+    }
+
+    /**
      * Hide element
      *
      * @param {boolean} [animate] Add animation
      * @returns {UIElement}
      */
     hide(animate = false) {
+        this._hidden = true;
         if (animate) {
             this._el.classList.remove('show_a');
             this._el.classList.add('hide_a');
@@ -237,6 +275,7 @@ class UIElement {
      * @returns {UIElement}
      */
     show(animate = false) {
+        this._hidden = false;
         this._el.hidden = false;
         if (animate) {
             this._el.classList.remove('hide_a');

@@ -49,6 +49,8 @@ class ViewControls {
                     this._registration.show();
                 });
 
+                this.menu.closeMenu();
+
                 this._registration.addActionDesktopClose();
                 this._registration.eventBtnRegistration();
                 this._registration.eventBtnLogin(() => {
