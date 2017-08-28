@@ -39,7 +39,8 @@
     "socket.io-client": "^2.0.3",
     "three": "^0.86.0",
     "tippy.js": "^1.2.0",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "validator": "^8.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
