@@ -33,6 +33,7 @@ class EJSController {
      */
     render(s) {
         let data = this._server.POST;
+        console.log(this._server.parseData(data['options']));
         this._server.responseView(this._getViewPath(data['name']), this._server.parseData(data['options']));
     }
 

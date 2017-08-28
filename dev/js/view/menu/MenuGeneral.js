@@ -61,9 +61,47 @@ class MenuGeneral extends View {
          */
         this._events = {};
 
+        /**
+         * It is event before block opening
+         *
+         * @callback eventsBeforeBlockOpen
+         */
+
+        /**
+         *
+         * @type {Object.<Array.<eventsBeforeBlockOpen>>}
+         * @private
+         */
+        this._eventsBeforeBlockOpen = {};
+
+        /**
+         * It is name active action
+         *
+         * @type {?string}
+         * @private
+         */
+        this._activeAction = null;
+
         this.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_CLOSE, (block, action) => {
-            this.toggle(block);
+            this.hideBlock(block);
         });
+    }
+
+    /**
+     * Set listener before open block
+     *
+     * @param {string} blockName - Name of block
+     * @param {eventsBeforeBlockOpen} listener
+     * @returns {MenuGeneral}
+     */
+    addEventBeforeBlockOpen(blockName, listener) {
+        if (!this._eventsBeforeBlockOpen.hasOwnProperty(blockName)) {
+            this._eventsBeforeBlockOpen[blockName] = [];
+        }
+
+        this._eventsBeforeBlockOpen[blockName].push(listener);
+
+        return this;
     }
 
     /**
@@ -76,6 +114,7 @@ class MenuGeneral extends View {
         for (let option of this.viewOptions) {
             let blockName = option['block'];
             this._addEventToAction(option['action'], () => {
+                this._activeAction = option['action'];
                 this.toggle(blockName);
             });
 
@@ -182,14 +221,6 @@ class MenuGeneral extends View {
         return this;
     }
 
-    _openBlock() {
-
-    }
-
-    _hideBlock() {
-
-    }
-
     /**
      * Add event to action
      *
@@ -249,7 +280,13 @@ class MenuGeneral extends View {
      */
     showBlock(name) {
         this.status[name] = true;
+        if (this._eventsBeforeBlockOpen.hasOwnProperty(name)) {
+            for (let listener of this._eventsBeforeBlockOpen[name]) {
+                listener();
+            }
+        }
         this.getBlock(name).show();
+        this.getAction(this._activeAction).disable();
         return this;
     }
 
@@ -263,6 +300,7 @@ class MenuGeneral extends View {
     hideBlock(name) {
         this.status[name] = false;
         this.getBlock(name).hide();
+        this.getAction(this._activeAction).enable();
         return this;
     }
 

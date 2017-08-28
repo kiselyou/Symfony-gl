@@ -18,7 +18,7 @@ class InformerSuccess extends View {
      * @returns {InformerSuccess}
      */
     pasteTo(blockElement, messages, autoClean = true) {
-        this.viewParams = {messages: (typeof messages === 'string') ? [messages] : messages};
+        this.viewOptions = {messages: (typeof messages === 'string') ? [messages] : messages};
         this
             .autoCleanElement(autoClean)
             .updateContainer(blockElement)

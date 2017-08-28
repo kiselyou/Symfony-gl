@@ -26,6 +26,17 @@ body {
 .clearfix {
   clear: both;
 }
+.disable,
+[disable="disable"] {
+  border-color: @color_base_disabled !important;
+  color: @color_base_disabled !important;
+  background-color: @background_color_disabled !important;
+  cursor: not-allowed !important;
+}
+.disable:hover,
+[disable="disable"]:hover {
+  background-color: @background_color_disabled !important;
+}
 .block_center {
   display: block;
   margin-left: auto;
@@ -61,7 +72,6 @@ body {
     -ms-transform: scale3d(0,0,0);
     transform: scale3d(0,0,0);
     opacity: 0;
-    //display: none;
   }
 }
 @keyframes show {
@@ -80,6 +90,7 @@ body {
 }
 .hide_a {
   opacity: 0;
+  display: none;
   animation-name: hide;
   animation-duration: 1s;
 }

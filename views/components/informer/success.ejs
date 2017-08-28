@@ -1,9 +1,9 @@
-<div class="informer informer_xs informer_success">
+<div class="informer informer_xs">
     <div class="informer__title">Success:</div>
     <ul>
-        <% for (let message of messages) { %>
+        <% for (let message of options.messages) { %>
         <li>
-            <i class="fa fa-exclamation-triangle informer__icon"></i>
+            <i class="fa fa-exclamation-triangle informer__icon informer__icon_success"></i>
             <span><%= message %></span>
         </li>
         <% } %>

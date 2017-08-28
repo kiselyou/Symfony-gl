@@ -18,7 +18,7 @@ class InformerDanger extends View {
      * @returns {InformerDanger}
      */
     pasteTo(blockElement, messages, autoClean = true) {
-        this.viewParams = {messages: (typeof messages === 'string') ? [messages] : messages};
+        this.viewOptions = {messages: (typeof messages === 'string') ? [messages] : messages};
         this
             .autoCleanElement(autoClean)
             .updateContainer(blockElement)

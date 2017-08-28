@@ -33,17 +33,13 @@ class MenuControls {
     }
 
     /**
-     * Close block menu
      *
-     * @param {listenItemsMenu} [listener]
-     * @returns {MenuControls}
+     * @param {eventsBeforeBlockOpen} listener
      */
-    closeMenu(listener) {
-        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_CLOSE, () => {
-            this.menuGeneral.hideBlock(MenuGeneral.BLOCK_MAIN_MENU);
-            listener ? listener() : null;
+    openMenu(listener) {
+        this.menuGeneral.addEventBeforeBlockOpen(MenuGeneral.BLOCK_MAIN_MENU, () => {
+            listener();
         });
-        return this;
     }
 }
 

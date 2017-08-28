@@ -1,4 +1,10 @@
 
+import {
+    CLASS_ANIMATION_HIDE,
+    CLASS_ANIMATION_SHOW,
+    CLASS_DISABLED
+} from './../../view/view-styles';
+
 class UIElement {
     /**
      *
@@ -25,23 +31,6 @@ class UIElement {
          * @type {boolean}
          */
         this._hidden = true;
-
-        this._el.addEventListener('animationend', () => {
-            this._animationListener();
-        });
-    }
-
-    /**
-     *
-     *
-     * @returns {UIElement}
-     * @private
-     */
-    _animationListener() {
-        if (!this._hidden) {
-            this.hide();
-        }
-        return this;
     }
 
     /**
@@ -260,8 +249,8 @@ class UIElement {
     hide(animate = false) {
         this._hidden = true;
         if (animate) {
-            this._el.classList.remove('show_a');
-            this._el.classList.add('hide_a');
+            this._el.classList.remove(CLASS_ANIMATION_SHOW);
+            this._el.classList.add(CLASS_ANIMATION_HIDE);
         } else {
             this._el.hidden = true;
         }
@@ -278,8 +267,34 @@ class UIElement {
         this._hidden = false;
         this._el.hidden = false;
         if (animate) {
-            this._el.classList.remove('hide_a');
-            this._el.classList.add('show_a');
+            this._el.classList.remove(CLASS_ANIMATION_HIDE);
+            this._el.classList.add(CLASS_ANIMATION_SHOW);
+        }
+        return this;
+    }
+
+    /**
+     * Disable element. Add class and attribute "disable"
+     *
+     * @returns {UIElement}
+     */
+    disable() {
+        this._el.classList.add(CLASS_DISABLED);
+        if (!this._el.hasAttribute('disable')) {
+            this._el.setAttribute('disable', 'disable');
+        }
+        return this;
+    }
+
+    /**
+     * Enable element. Remove class and attribute "disable"
+     *
+     * @returns {UIElement}
+     */
+    enable() {
+        this._el.classList.remove(CLASS_DISABLED);
+        if (this._el.hasAttribute('disable')) {
+            this._el.removeAttribute('disable');
         }
         return this;
     }

@@ -35,21 +35,23 @@ class ViewControls {
      */
     initSecurityForm() {
         this._login.upload(() => {
-            this._login
-                .addActionDesktopClose();
-                // .show();
+            this._login.addActionDesktopClose();
+
+            this.menu.openFormLogin(() => {
+                this._login.show();
+            });
 
             this._registration.upload(() => {
-
-                this.menu.openFormLogin(() => {
-                    this._login.show();
-                });
 
                 this.menu.openFormRegistration(() => {
                     this._registration.show();
                 });
 
-                this.menu.closeMenu();
+                this.menu
+                    .openMenu(() => {
+                        this._login.hide();
+                        this._registration.hide();
+                    });
 
                 this._registration.addActionDesktopClose();
                 this._registration.eventBtnRegistration();
