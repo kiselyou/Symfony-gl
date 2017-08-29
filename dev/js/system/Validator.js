@@ -58,6 +58,28 @@ class Validator {
     }
 
     /**
+     * Rule to check if value is equal value of field
+     * The value of field must be equal to the value of third of parameters. It is or UIElement or string (name of field on page)
+     *
+     * @returns {string}
+     * @constructor
+     */
+    static get RULE_EQUAL() {
+        return 'RULE_EQUAL';
+    }
+
+    /**
+     * Rule to check if value is equal value
+     * The value of field must be equal the third of parameters
+     *
+     * @returns {string}
+     * @constructor
+     */
+    static get RULE_EQUAL_VALUE() {
+        return 'RULE_EQUAL_VALUE';
+    }
+
+    /**
      *
      * @param {string} fieldName - name of filed
      * @param {string} rule - It is constants of current class
@@ -146,12 +168,15 @@ class Validator {
 
         switch (rule) {
             case Validator.RULE_IS_EMAIL:
-                return this._validator.isEmail(value) + ' +++|';
+                return this._validator.isEmail(value);
                 break;
             case Validator.RULE_MAX_LENGTH:
                 return 'max';
                 break;
             case Validator.RULE_MIN_LENGTH:
+                return 'min';
+                break;
+            case Validator.RULE_EQUAL:
                 return 'min';
                 break;
         }
