@@ -1,9 +1,9 @@
 import validator from 'validator';
 
-class Validate {
+class Validator {
     /**
      *
-     * @param {?UIElement} blockWarning - The block where will show messages or null
+     * @param {UIElement} [blockWarning] - The block where will show messages
      */
     constructor(blockWarning) {
         /**
@@ -14,7 +14,7 @@ class Validate {
         /**
          * The block where will show messages or null
          *
-         * @type {?UIElement}
+         * @type {UIElement}
          * @private
          */
         this._blockWarning = blockWarning;
@@ -63,7 +63,7 @@ class Validate {
      * @param {string} rule - It is constants of current class
      * @param {string|number} [mark] - It is value to need check. e.g RULE_MAX_LENGTH need set mark to 20 or some another value
      * @param {string} [message] - Message
-     * @returns {Validate}
+     * @returns {Validator}
      */
     rule(fieldName, rule, mark = null, message = null) {
         this._rules.push({
@@ -76,14 +76,14 @@ class Validate {
     }
 
     /**
-     * Check data
+     * Start check data
      *
      * @param {Object|FormData} data
-     * @returns {boolean}
+     * @returns {Array}
      */
-    check(data) {
-        this._validate(this._prepare(data));
-        return true;
+    start(data) {
+        let params = this._prepare(data);
+        return this._validate(params);
     }
 
     /**
@@ -112,6 +112,12 @@ class Validate {
         return obj;
     }
 
+    /**
+     *
+     * @param {Object} data
+     * @returns {Array}
+     * @private
+     */
     _validate(data) {
         let messages = [];
         for (let stack of this._rules) {
@@ -122,25 +128,34 @@ class Validate {
             }
 
             for (let value of data[field]) {
-                this._check(stack['rule']);
+                messages = this._performRule(stack['rule'], value);
             }
         }
+        return messages;
     }
 
-    _check(rule, value) {
+    /**
+     * Perform rule. Check data that value is goal
+     *
+     * @param {string} rule
+     * @param {string|number} value
+     * @returns {*}
+     * @private
+     */
+    _performRule(rule, value) {
 
         switch (rule) {
-            case Validate.RULE_IS_EMAIL:
-                console.log(this._validator.isEmail(value));
+            case Validator.RULE_IS_EMAIL:
+                return this._validator.isEmail(value) + ' +++|';
                 break;
-            case Validate.RULE_MAX_LENGTH:
-
+            case Validator.RULE_MAX_LENGTH:
+                return 'max';
                 break;
-            case Validate.RULE_MIN_LENGTH:
-
+            case Validator.RULE_MIN_LENGTH:
+                return 'min';
                 break;
         }
     }
 }
 
-export default Validate;
+export default Validator;

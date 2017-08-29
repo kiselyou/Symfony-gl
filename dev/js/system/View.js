@@ -2,7 +2,7 @@
 import uuidv4 from 'uuid/v4';
 import Application from './Application';
 import UIElement from './ui/UIElement';
-import Validate from './Validate';
+import Validator from './Validator';
 import {ACTION_DESKTOP_CLOSE} from '../view/view-actions.js';
 
 class View extends Application {
@@ -165,9 +165,10 @@ class View extends Application {
             let data = typeof form === 'string' ? new FormData(this.el.findOne(form).getElement()) : form;
 
 
-            let v = new Validate();
-            v.rule('email', Validate.RULE_IS_EMAIL);
-            console.log(v.check(data));
+            let v = new Validator();
+            v.rule('username', Validator.RULE_IS_EMAIL);
+
+            console.log(v.start(data));
 
 
 

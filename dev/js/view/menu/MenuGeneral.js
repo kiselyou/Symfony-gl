@@ -285,8 +285,8 @@ class MenuGeneral extends View {
                 listener();
             }
         }
-        this.getBlock(name).show();
-        this.getAction(this._activeAction).disable();
+        this.getBlock(name).show(true);
+        this.getAction(this._activeAction).hide();
         return this;
     }
 
@@ -299,8 +299,8 @@ class MenuGeneral extends View {
      */
     hideBlock(name) {
         this.status[name] = false;
-        this.getBlock(name).hide();
-        this.getAction(this._activeAction).enable();
+        this.getBlock(name).hide(true);
+        this.getAction(this._activeAction).show();
         return this;
     }
 

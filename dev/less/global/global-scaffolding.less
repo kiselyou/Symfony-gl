@@ -61,17 +61,24 @@ body {
   display: block !important;
 }
 @keyframes hide {
-  from {
+  0% {
     opacity: 1;
     -webkit-transform: scale3d(1,1,0);
     -ms-transform: scale3d(1,1,0);
     transform: scale3d(1,1,0);
   }
-  to {
+  99% {
     -webkit-transform: scale3d(0,0,0);
     -ms-transform: scale3d(0,0,0);
     transform: scale3d(0,0,0);
     opacity: 0;
+  }
+  100% {
+    -webkit-transform: scale3d(0,0,0);
+    -ms-transform: scale3d(0,0,0);
+    transform: scale3d(0,0,0);
+    opacity: 0;
+    display: none;
   }
 }
 @keyframes show {
@@ -90,9 +97,9 @@ body {
 }
 .hide_a {
   opacity: 0;
-  display: none;
   animation-name: hide;
-  animation-duration: 1s;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
 }
 .show_a {
   opacity: 1;
