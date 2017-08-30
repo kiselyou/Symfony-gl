@@ -13,7 +13,7 @@ class UIElement {
     constructor(el) {
         switch (typeof el) {
             case 'object':
-                this._el = el;
+                this._el = el ? el : document.createElement('div');
                 break;
             case 'string':
                 this._el = document.body.querySelector(el);
@@ -70,13 +70,13 @@ class UIElement {
         switch (typeof content) {
             case 'object':
                 if (content instanceof UIElement) {
-                    this._el.insertAdjacentElement(place, content._el);
+                    this.getElement().insertAdjacentElement(place, content._el);
                 } else {
-                    this._el.insertAdjacentElement(place, content);
+                    this.getElement().insertAdjacentElement(place, content);
                 }
                 break;
             default:
-                this._el.insertAdjacentHTML(place, content);
+                this.getElement().insertAdjacentHTML(place, content);
                 break;
         }
     }
@@ -96,8 +96,8 @@ class UIElement {
      * @returns {UIElement}
      */
     clean() {
-        while (this._el.firstChild) {
-            this._el.removeChild(this._el.firstChild);
+        while (this.getElement().firstChild) {
+            this.getElement().removeChild(this.getElement().firstChild);
         }
         return this;
     }
@@ -106,10 +106,21 @@ class UIElement {
      * Find only one element
      *
      * @param {string} selector
-     * @returns {UIElement}
+     * @returns {?UIElement}
      */
     findOne(selector) {
-        return new UIElement(this._el.querySelector(selector));
+        let el = this.getElement().querySelector(selector);
+        return el ? new UIElement(el) : null;
+    }
+
+    /**
+     * Get value of element
+     *
+     * @returns {*}
+     */
+    get value() {
+        let el = this.getElement();
+        return this.getElement().value;
     }
 
     /**
@@ -159,7 +170,7 @@ class UIElement {
      * @returns {UIElement}
      */
     setBlockNameElement(blockName) {
-        this._el.setAttribute(UIElement.DATA_BLOCK_ELEMENT, blockName);
+        this.getElement().setAttribute(UIElement.DATA_BLOCK_ELEMENT, blockName);
         return this;
     }
 
@@ -171,7 +182,7 @@ class UIElement {
      */
     getElementByBlockName(blockName) {
         let selector = '[' + UIElement.DATA_BLOCK_ELEMENT + '="' + blockName + '"]';
-        return new UIElement(this._el.querySelector(selector));
+        return new UIElement(this.getElement().querySelector(selector));
     }
 
     /**
@@ -181,7 +192,7 @@ class UIElement {
      * @returns {UIElement}
      */
     setActionNameElement(name) {
-        this._el.setAttribute(UIElement.DATA_ACTION_ELEMENT, name);
+        this.getElement().setAttribute(UIElement.DATA_ACTION_ELEMENT, name);
         return this;
     }
 
@@ -193,7 +204,7 @@ class UIElement {
      */
     getElementByActionName(name) {
         let selector = '[' + UIElement.DATA_ACTION_ELEMENT + '="' + name + '"]';
-        return new UIElement(this._el.querySelector(selector));
+        return new UIElement(this.getElement().querySelector(selector));
     }
 
     /**
@@ -203,7 +214,7 @@ class UIElement {
      * @returns {UIElement}
      */
     setNameElement(name) {
-        this._el.setAttribute(UIElement.DATA_NAME_ELEMENT, name);
+        this.getElement().setAttribute(UIElement.DATA_NAME_ELEMENT, name);
         return this;
     }
 
@@ -215,7 +226,7 @@ class UIElement {
      */
     getElementByName(name) {
         let selector = '[' + UIElement.DATA_NAME_ELEMENT + '="' + name + '"]';
-        return new UIElement(this._el.querySelector(selector));
+        return new UIElement(this.getElement().querySelector(selector));
     }
 
     /**
@@ -225,7 +236,7 @@ class UIElement {
      * @returns {UIElement}
      */
     addEvent(type, listener) {
-        this._el.addEventListener(type, listener);
+        this.getElement().addEventListener(type, listener);
         return this;
     }
 
@@ -249,10 +260,10 @@ class UIElement {
     hide(animate = false) {
         this._hidden = true;
         if (animate) {
-            this._el.classList.remove(CLASS_ANIMATION_SHOW);
-            this._el.classList.add(CLASS_ANIMATION_HIDE);
+            this.getElement().classList.remove(CLASS_ANIMATION_SHOW);
+            this.getElement().classList.add(CLASS_ANIMATION_HIDE);
         } else {
-            this._el.hidden = true;
+            this.getElement().hidden = true;
         }
         return this;
     }
@@ -265,10 +276,10 @@ class UIElement {
      */
     show(animate = false) {
         this._hidden = false;
-        this._el.hidden = false;
+        this.getElement().hidden = false;
         if (animate) {
-            this._el.classList.remove(CLASS_ANIMATION_HIDE);
-            this._el.classList.add(CLASS_ANIMATION_SHOW);
+            this.getElement().classList.remove(CLASS_ANIMATION_HIDE);
+            this.getElement().classList.add(CLASS_ANIMATION_SHOW);
         }
         return this;
     }
@@ -279,9 +290,9 @@ class UIElement {
      * @returns {UIElement}
      */
     disable() {
-        this._el.classList.add(CLASS_DISABLED);
-        if (!this._el.hasAttribute('disable')) {
-            this._el.setAttribute('disable', 'disable');
+        this.getElement().classList.add(CLASS_DISABLED);
+        if (!this.getElement().hasAttribute('disable')) {
+            this.getElement().setAttribute('disable', 'disable');
         }
         return this;
     }
@@ -292,9 +303,9 @@ class UIElement {
      * @returns {UIElement}
      */
     enable() {
-        this._el.classList.remove(CLASS_DISABLED);
-        if (this._el.hasAttribute('disable')) {
-            this._el.removeAttribute('disable');
+        this.getElement().classList.remove(CLASS_DISABLED);
+        if (this.getElement().hasAttribute('disable')) {
+            this.getElement().removeAttribute('disable');
         }
         return this;
     }

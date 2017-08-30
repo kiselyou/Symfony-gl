@@ -1,15 +1,17 @@
-import validator from 'validator';
+
+import isEmail from 'validator/lib/isEmail';
+import isByteLength from 'validator/lib/isByteLength';
+import equals from 'validator/lib/equals';
+
+import UIElement from './ui/UIElement';
 
 class Validator {
     /**
      *
-     * @param {UIElement} [blockWarning] - The block where will show messages
+     * @param {?string} [controlsAria] - It is element to controls validation e.g. Check if field has the same value as field by name
+     * @param {UIElement} [blockWarning] - The block where will show messages of errors or method "blockWarning"
      */
-    constructor(blockWarning) {
-        /**
-         * @type {validator}
-         */
-        this._validator = validator;
+    constructor(controlsAria, blockWarning) {
 
         /**
          * The block where will show messages or null
@@ -25,6 +27,21 @@ class Validator {
          * @private
          */
         this._rules = [];
+
+        /**
+         * @type {UIElement}
+         * @private
+         */
+        this._aria = new UIElement(controlsAria ? controlsAria : document.body);
+    }
+
+    /**
+     * The block where will show messages of errors
+     *
+     * @param {UIElement} blockWarning
+     */
+    blockWarning(blockWarning) {
+        this._blockWarning = blockWarning;
     }
 
     /**
@@ -64,8 +81,8 @@ class Validator {
      * @returns {string}
      * @constructor
      */
-    static get RULE_EQUAL() {
-        return 'RULE_EQUAL';
+    static get RULE_EQUAL_VALUE() {
+        return 'RULE_EQUAL_VALUE';
     }
 
     /**
@@ -75,16 +92,16 @@ class Validator {
      * @returns {string}
      * @constructor
      */
-    static get RULE_EQUAL_VALUE() {
-        return 'RULE_EQUAL_VALUE';
+    static get RULE_EQUAL_BY_FIELD_NAME() {
+        return 'RULE_EQUAL_BY_FIELD_NAME';
     }
 
     /**
      *
      * @param {string} fieldName - name of filed
      * @param {string} rule - It is constants of current class
-     * @param {string|number} [mark] - It is value to need check. e.g RULE_MAX_LENGTH need set mark to 20 or some another value
-     * @param {string} [message] - Message
+     * @param {?string|number} [mark] - It is value to need check. e.g RULE_MAX_LENGTH need set mark to 20 or some another value
+     * @param {?string} [message] - Message
      * @returns {Validator}
      */
     rule(fieldName, rule, mark = null, message = null) {
@@ -116,22 +133,22 @@ class Validator {
      * @private
      */
     _prepare(data) {
-        let obj = {};
+        let result = {};
         if (data instanceof FormData) {
             for (let stack of this._rules) {
                 let field = stack['field'];
-                if (!obj.hasOwnProperty(field)) {
-                    obj[field] = data.getAll(field);
+                if (!result.hasOwnProperty(field)) {
+                    result[field] = data.getAll(field);
                 }
             }
         } else {
             for (let field in data) {
                 if (data.hasOwnProperty(field)) {
-                    obj[field] = [field];
+                    result[field] = [field];
                 }
             }
         }
-        return obj;
+        return result;
     }
 
     /**
@@ -141,45 +158,67 @@ class Validator {
      * @private
      */
     _validate(data) {
-        let messages = [];
-        for (let stack of this._rules) {
-            let mark = stack['mark'];
-            let field = stack['field'];
+        let status = [];
+        for (let rule of this._rules) {
+            let field = rule['field'];
             if (!data.hasOwnProperty(field)) {
-                messages.push('Can not find field "' + field + '"');
+                status.push('Can not find field "' + field + '"');
             }
 
             for (let value of data[field]) {
-                messages = this._performRule(stack['rule'], value);
+                let perform = this._performRule(rule, value);
+                if (!perform['status']) {
+                    status.push(perform);
+                }
             }
         }
-        return messages;
+        return status;
     }
 
     /**
      * Perform rule. Check data that value is goal
      *
-     * @param {string} rule
+     * @param {{}} params
      * @param {string|number} value
      * @returns {*}
      * @private
      */
-    _performRule(rule, value) {
+    _performRule(params, value) {
+        let rule = params['rule'];
+        let mark = params['mark'];
+        let field = params['field'];
+
+        let response = {
+            msg: '',
+            status: true,
+            field: params['field']
+        };
+
 
         switch (rule) {
             case Validator.RULE_IS_EMAIL:
-                return this._validator.isEmail(value);
+                response['status'] = isEmail(value);
+                response['msg'] = 'Your email address is invalid';
                 break;
             case Validator.RULE_MAX_LENGTH:
-                return 'max';
+                response['status'] = isByteLength(value, {min: undefined, max: mark});
+                response['msg'] = field + ' should be maximum ' + mark + ' character';
                 break;
             case Validator.RULE_MIN_LENGTH:
-                return 'min';
+                response['status'] = isByteLength(value, {min: mark, max: undefined});
+                response['msg'] = field + ' should be minimum ' + mark + ' character';
                 break;
-            case Validator.RULE_EQUAL:
-                return 'min';
+            case Validator.RULE_EQUAL_VALUE:
+                response['status'] = equals(value, mark);
+                response['msg'] = field + ' should be equals "' + mark + '"';
+                break;
+            case Validator.RULE_EQUAL_BY_FIELD_NAME:
+                let element = this._aria.findOne('[name="' + mark + '"]');
+                response['status'] = equals(value, element.value);
+                response['msg'] = field + ' should be equals value of field "' + mark + '"';
                 break;
         }
+        return response;
     }
 }
 

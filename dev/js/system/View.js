@@ -72,6 +72,12 @@ class View extends Application {
          * @private
          */
         this._autoCleanElement = false;
+
+        /**
+         *
+         * @type {Validator}
+         */
+        this.validator = new Validator();
     }
 
     /**
@@ -162,13 +168,16 @@ class View extends Application {
     addActionSendForm(actionName, path, form, listener) {
         let el = this.el.getElementByActionName(actionName);
         el.addEvent('click', () => {
+
             let data = typeof form === 'string' ? new FormData(this.el.findOne(form).getElement()) : form;
 
+            this.validator.rule('username', Validator.RULE_IS_EMAIL);
+            this.validator.rule('password', Validator.RULE_MIN_LENGTH, 3);
+            this.validator.rule('password', Validator.RULE_MAX_LENGTH, 6);
+            this.validator.rule('password', Validator.RULE_EQUAL_BY_FIELD_NAME, 'username');
 
-            let v = new Validator();
-            v.rule('username', Validator.RULE_IS_EMAIL);
+            console.log(this.validator.start(data));
 
-            console.log(v.start(data));
 
 
 
