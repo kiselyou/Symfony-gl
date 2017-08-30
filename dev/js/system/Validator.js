@@ -33,6 +33,8 @@ class Validator {
          * @private
          */
         this._aria = new UIElement(controlsAria ? controlsAria : document.body);
+
+        this.status = true;
     }
 
     /**
@@ -118,7 +120,7 @@ class Validator {
      * Start check data
      *
      * @param {Object|FormData} data
-     * @returns {Array}
+     * @returns {Object.<Array>}
      */
     start(data) {
         let params = this._prepare(data);
@@ -135,40 +137,70 @@ class Validator {
     _prepare(data) {
         let result = {};
         if (data instanceof FormData) {
-            for (let stack of this._rules) {
-                let field = stack['field'];
-                if (!result.hasOwnProperty(field)) {
-                    result[field] = data.getAll(field);
-                }
+            let field = rule['field'];
+            if (!result.hasOwnProperty(field)) {
+                result[field] = data.getAll(field);
             }
         } else {
-            for (let field in data) {
-                if (data.hasOwnProperty(field)) {
-                    result[field] = [field];
-                }
-            }
+
         }
-        return result;
+
+
+        // let result = {};
+        // if (data instanceof FormData) {
+        //     for (let stack of this._rules) {
+        //         let field = stack['field'];
+        //         if (!result.hasOwnProperty(field)) {
+        //             result[field] = data.getAll(field);
+        //         }
+        //     }
+        // } else {
+        //     for (let field in data) {
+        //         if (data.hasOwnProperty(field)) {
+        //             result[field].push(data[field]);
+        //         } else {
+        //             result[field] = [data[field]];
+        //         }
+        //     }
+        // }
+        // return result;
+    }
+
+    /**
+     * Set status of validation
+     *
+     * @param {boolean} status
+     * @private
+     */
+    _setStatus(status) {
+        if (!status && this.status) {
+            this.status = false;
+        }
     }
 
     /**
      *
      * @param {Object} data
-     * @returns {Array}
+     * @returns {Object}
      * @private
      */
     _validate(data) {
-        let status = [];
+        let status = {};
         for (let rule of this._rules) {
             let field = rule['field'];
+            if (!status.hasOwnProperty(field)) {
+                status[field] = [];
+            }
+
             if (!data.hasOwnProperty(field)) {
-                status.push('Can not find field "' + field + '"');
+                status[field].push('Can not find field "' + field + '"');
             }
 
             for (let value of data[field]) {
                 let perform = this._performRule(rule, value);
                 if (!perform['status']) {
-                    status.push(perform);
+                    status[field].push(perform);
+                    this.status = false;
                 }
             }
         }
@@ -202,11 +234,11 @@ class Validator {
                 break;
             case Validator.RULE_MAX_LENGTH:
                 response['status'] = isByteLength(value, {min: undefined, max: mark});
-                response['msg'] = field + ' should be maximum ' + mark + ' character';
+                response['msg'] = field + ' should be less or equal ' + mark + ' character';
                 break;
             case Validator.RULE_MIN_LENGTH:
                 response['status'] = isByteLength(value, {min: mark, max: undefined});
-                response['msg'] = field + ' should be minimum ' + mark + ' character';
+                response['msg'] = field + ' should be more or equal ' + mark + ' character';
                 break;
             case Validator.RULE_EQUAL_VALUE:
                 response['status'] = equals(value, mark);

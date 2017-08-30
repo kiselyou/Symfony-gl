@@ -176,7 +176,7 @@ class View extends Application {
             this.validator.rule('password', Validator.RULE_MAX_LENGTH, 6);
             this.validator.rule('password', Validator.RULE_EQUAL_BY_FIELD_NAME, 'username');
 
-            console.log(this.validator.start(data));
+            this.validator.start(data);
 
 
 
