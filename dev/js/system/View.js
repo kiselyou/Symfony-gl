@@ -75,9 +75,9 @@ class View extends Application {
 
         /**
          *
-         * @type {Validator}
+         * @type {Object.<Validator>}
          */
-        this.validator = new Validator();
+        this.validator = {};
     }
 
     /**
@@ -152,7 +152,26 @@ class View extends Application {
     }
 
     /**
-     * @param {string} res
+     *
+     * @param {string} actionName - name of action
+     * @param {string} fieldName - name of filed
+     * @param {string} rule - It is constants of class "Validator"
+     * @param {?string|number} [mark] - It is value to need check. e.g RULE_MAX_LENGTH need set mark to 20 or some another value
+     * @param {?string} [message] - Message
+     * @returns {View}
+     */
+    addValidateRule(actionName, fieldName, rule, mark = null, message = null) {
+        if (!this.validator.hasOwnProperty(actionName)) {
+            this.validator[actionName] = new Validator();
+            this.validator[actionName].rule(fieldName, rule, mark, message);
+        } else {
+            this.validator[actionName].rule(fieldName, rule, mark, message);
+        }
+        return this;
+    }
+
+    /**
+     * @param {Array|string} res
      * @param {boolean} status
      * @callback sendFormListener
      */
@@ -163,35 +182,50 @@ class View extends Application {
      * @param {string} actionName - name of action
      * @param {string} path - path to the server
      * @param {string|FormData|Object} form - string is selector of form
-     * @param {sendFormListener} [listener]
+     * @param {sendFormListener} [sendForm]
      */
-    addActionSendForm(actionName, path, form, listener) {
+    addActionSendForm(actionName, path, form, sendForm) {
         let el = this.el.getElementByActionName(actionName);
         el.addEvent('click', () => {
-
             let data = typeof form === 'string' ? new FormData(this.el.findOne(form).getElement()) : form;
+            if (this.validator.hasOwnProperty(actionName)) {
+                this.validator[actionName].start(data);
 
-            this.validator.rule('username', Validator.RULE_IS_EMAIL);
-            this.validator.rule('password', Validator.RULE_MIN_LENGTH, 3);
-            this.validator.rule('password', Validator.RULE_MAX_LENGTH, 6);
-            this.validator.rule('password', Validator.RULE_EQUAL_BY_FIELD_NAME, 'username');
+                console.log(
+                    this.validator[actionName].isError(),
+                    this.validator[actionName].getMessages()
+                );
 
-            this.validator.start(data);
-
-
-
-
-            let ajax = this.ajax.post(path, data);
-            if (listener) {
-                ajax
-                    .then((res) => {
-                        listener(res, true);
-                    })
-                    .catch((error) => {
-                        listener(res, false);
-                    });
+                if (this.validator[actionName].isError()) {
+                    sendForm(this.validator[actionName].getMessages(), false);
+                } else {
+                    this._viewAjax(path, data, sendForm);
+                }
+            } else {
+                this._viewAjax(path, data, sendForm);
             }
         });
+    }
+
+    /**
+     * Send request to server
+     *
+     * @param {string} path
+     * @param {Object} data
+     * @param {sendFormListener} listener
+     * @private
+     */
+    _viewAjax(path, data, listener) {
+        let ajax = this.ajax.post(path, data);
+        if (listener) {
+            ajax
+                .then((res) => {
+                    listener(res, true);
+                })
+                .catch((error) => {
+                    listener(error, false);
+                });
+        }
     }
 
     /**

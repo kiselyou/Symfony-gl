@@ -287,22 +287,19 @@ function writeFile(file, obj, listener) {
 
             prompt.start();
             prompt.get(schema, function (err, result) {
-                switch (result['confirm']) {
-                    case 'Y':
+                switch (result['confirm'].toLowerCase()) {
                     case 'y':
-                    case 'Yes':
                     case 'yes':
                         // File has already exist. Rewrite
                         _write(path, json, listener);
                         break;
-                    case 'STOP':
-                    case 'Stop':
                     case 'stop':
-                    case 'S':
                     case 's':
                         // Stop generate configuration
                         listener(false);
                         break;
+                    case 'no':
+                    case 'n':
                     default:
                         // Skip and continue
                         listener(true);

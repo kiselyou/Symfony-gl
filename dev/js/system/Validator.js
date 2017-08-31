@@ -9,17 +9,8 @@ class Validator {
     /**
      *
      * @param {?string} [controlsAria] - It is element to controls validation e.g. Check if field has the same value as field by name
-     * @param {UIElement} [blockWarning] - The block where will show messages of errors or method "blockWarning"
      */
-    constructor(controlsAria, blockWarning) {
-
-        /**
-         * The block where will show messages or null
-         *
-         * @type {UIElement}
-         * @private
-         */
-        this._blockWarning = blockWarning;
+    constructor(controlsAria) {
 
         /**
          *
@@ -34,16 +25,11 @@ class Validator {
          */
         this._aria = new UIElement(controlsAria ? controlsAria : document.body);
 
-        this.status = true;
-    }
-
-    /**
-     * The block where will show messages of errors
-     *
-     * @param {UIElement} blockWarning
-     */
-    blockWarning(blockWarning) {
-        this._blockWarning = blockWarning;
+        /**
+         *
+         * @type {Array}
+         */
+        this.messages = [];
     }
 
     /**
@@ -74,6 +60,26 @@ class Validator {
      */
     static get RULE_MIN_LENGTH() {
         return 'RULE_MIN_LENGTH';
+    }
+
+    /**
+     * Rule to check range between values
+     *
+     * @returns {string}
+     * @constructor
+     */
+    static get RULE_RANGE_VALUES() {
+        return 'RULE_RANGE_VALUES';
+    }
+
+    /**
+     * Rule to check range between values of fields
+     *
+     * @returns {string}
+     * @constructor
+     */
+    static get RULE_RANGE_FIELDS() {
+        return 'RULE_RANGE_FIELDS';
     }
 
     /**
@@ -120,91 +126,87 @@ class Validator {
      * Start check data
      *
      * @param {Object|FormData} data
-     * @returns {Object.<Array>}
+     * @returns {boolean}
      */
     start(data) {
-        let params = this._prepare(data);
-        return this._validate(params);
+        this._clean();
+        let params = {};
+        if (data instanceof FormData) {
+            params = this._prepareFormData(data);
+        }
+        this._validate(params);
+        return this.isError();
     }
 
     /**
-     * Prepare data to validate
+     * Prepare Form Data to validate
      *
-     * @param {Object|FormData} data
-     * @returns {Object}
+     * @param {FormData} data
+     * @returns {Object.<Array>}
      * @private
      */
-    _prepare(data) {
+    _prepareFormData(data) {
         let result = {};
         if (data instanceof FormData) {
-            let field = rule['field'];
-            if (!result.hasOwnProperty(field)) {
-                result[field] = data.getAll(field);
+            for (let rule of this._rules) {
+                let field = rule['field'];
+                if (!result.hasOwnProperty(field)) {
+                    result[field] = data.getAll(field);
+                } else {
+                    result[field].push(data.get(field));
+                }
             }
-        } else {
-
         }
-
-
-        // let result = {};
-        // if (data instanceof FormData) {
-        //     for (let stack of this._rules) {
-        //         let field = stack['field'];
-        //         if (!result.hasOwnProperty(field)) {
-        //             result[field] = data.getAll(field);
-        //         }
-        //     }
-        // } else {
-        //     for (let field in data) {
-        //         if (data.hasOwnProperty(field)) {
-        //             result[field].push(data[field]);
-        //         } else {
-        //             result[field] = [data[field]];
-        //         }
-        //     }
-        // }
-        // return result;
+        return result;
     }
 
     /**
-     * Set status of validation
+     * Clean
      *
-     * @param {boolean} status
      * @private
      */
-    _setStatus(status) {
-        if (!status && this.status) {
-            this.status = false;
-        }
+    _clean() {
+        this.messages = [];
+    }
+
+    /**
+     * Check status of validation
+     *
+     * @returns {boolean}
+     */
+    isError() {
+        return this.messages.length > 0;
+    }
+
+    /**
+     * Get messages
+     *
+     * @returns {Array}
+     */
+    getMessages() {
+        return this.messages;
     }
 
     /**
      *
      * @param {Object} data
-     * @returns {Object}
+     * @returns {void}
      * @private
      */
     _validate(data) {
-        let status = {};
         for (let rule of this._rules) {
             let field = rule['field'];
-            if (!status.hasOwnProperty(field)) {
-                status[field] = [];
-            }
-
             if (!data.hasOwnProperty(field)) {
-                status[field].push('Can not find field "' + field + '"');
+                this.messages.push('Can not find field "' + field + '"');
             }
 
             for (let value of data[field]) {
-                let perform = this._performRule(rule, value);
-                if (!perform['status']) {
-                    status[field].push(perform);
-                    this.status = false;
+                let status = this._performRule(rule, value);
+                if (!status) {
+                    this.messages.push(Validator.getMessage(rule));
                 }
             }
         }
-        return status;
     }
 
     /**
@@ -220,37 +222,65 @@ class Validator {
         let mark = params['mark'];
         let field = params['field'];
 
-        let response = {
-            msg: '',
-            status: true,
-            field: params['field']
-        };
+        switch (rule) {
+            case Validator.RULE_IS_EMAIL:
+                return isEmail(value);
+                break;
+            case Validator.RULE_MAX_LENGTH:
+                return isByteLength(value, {min: undefined, max: mark});
+                break;
+            case Validator.RULE_MIN_LENGTH:
+                return isByteLength(value, {min: mark, max: undefined});
+                break;
+            case Validator.RULE_EQUAL_VALUE:
+                return equals(value, mark);
+                break;
+            case Validator.RULE_EQUAL_BY_FIELD_NAME:
+                let el = this._aria.findOne('[name="' + mark + '"]');
+                return equals(value, el.value);
+                break;
+        }
+    }
 
+    /**
+     * Get message
+     *
+     * @param {Object} params
+     * @returns {string}
+     */
+    static getMessage(params) {
+        let rule = params['rule'];
+        let mark = params['mark'];
+        let field = params['field'];
+        let message = params['message'];
 
         switch (rule) {
             case Validator.RULE_IS_EMAIL:
-                response['status'] = isEmail(value);
-                response['msg'] = 'Your email address is invalid';
+                return message ? message : Validator.LBL(field) + ': Email address is invalid';
                 break;
             case Validator.RULE_MAX_LENGTH:
-                response['status'] = isByteLength(value, {min: undefined, max: mark});
-                response['msg'] = field + ' should be less or equal ' + mark + ' character';
+                return message ? message : Validator.LBL(field) + ': The value should be less or equal ' + mark + ' character';
                 break;
             case Validator.RULE_MIN_LENGTH:
-                response['status'] = isByteLength(value, {min: mark, max: undefined});
-                response['msg'] = field + ' should be more or equal ' + mark + ' character';
+                return message ? message : Validator.LBL(field) + ': The value should be more or equal ' + mark + ' character';
                 break;
             case Validator.RULE_EQUAL_VALUE:
-                response['status'] = equals(value, mark);
-                response['msg'] = field + ' should be equals "' + mark + '"';
+                return message ? message : Validator.LBL(field) + ': The value should be equals "' + mark + '"';
                 break;
             case Validator.RULE_EQUAL_BY_FIELD_NAME:
-                let element = this._aria.findOne('[name="' + mark + '"]');
-                response['status'] = equals(value, element.value);
-                response['msg'] = field + ' should be equals value of field "' + mark + '"';
-                break;
+                return message ? message : Validator.LBL(field) + ': The value should be equals with value of field "' + Validator.LBL(mark)  + '"';
         }
-        return response;
+    }
+
+    /**
+     * Returns translated label or name of field
+     *
+     * @param {string} field - Field name
+     * @returns {string}
+     * @constructor
+     */
+    static LBL(field) {
+        return field;
     }
 }
 

@@ -1,5 +1,6 @@
 import View from '../../system/View';
 import Informer from './../informer/Informer';
+import Validator from './../../system/Validator';
 
 import {
     ACTION_OPEN_FORM,
@@ -10,6 +11,9 @@ import {
     VIEW_BLOCK_WARNING
 } from '../view-blocks.js';
 
+/**
+ * @extends View
+ */
 class Login extends View {
     /**
      *
@@ -60,21 +64,30 @@ class Login extends View {
      * @returns {Login}
      */
     setEventBtnSignIn(responseListener) {
+
+        this.addValidateRule(ACTION_SEND_FORM, 'username', Validator.RULE_IS_EMAIL);
+
         this.addActionSendForm(ACTION_SEND_FORM, '/iw/login', 'form', (res, status) => {
             if (responseListener) {
                 responseListener(res, status);
             } else {
                 let block = this.el.getElementByBlockName(VIEW_BLOCK_WARNING);
-                try {
-                    let data = JSON.parse(res);
-                    if (data['status']) {
-                        this.lock.lock();
-                        this.hide();
-                    } else {
-                        this.informer.warning(block, data['msg']);
+
+                if (status) {
+                    try {
+                        let data = JSON.parse(res);
+                        if (data['status']) {
+                            this.lock.lock();
+                            this.hide();
+                        } else {
+                            this.informer.warning(block, data['msg']);
+                        }
+                    } catch (e) {
+                        console.log(e);
+                        this.informer.danger(block, 'Something was broken');
                     }
-                } catch (e) {
-                    this.informer.danger(block, 'Something was broken');
+                } else {
+                    this.informer.warning(block, res);
                 }
             }
         });
