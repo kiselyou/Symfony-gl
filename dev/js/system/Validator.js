@@ -2,13 +2,13 @@
 import isEmail from 'validator/lib/isEmail';
 import isByteLength from 'validator/lib/isByteLength';
 import equals from 'validator/lib/equals';
-
 import UIElement from './ui/UIElement';
+import Str from './Str';
 
 class Validator {
     /**
      *
-     * @param {?string} [controlsAria] - It is element to controls validation e.g. Check if field has the same value as field by name
+     * @param {?(UIElement|Element|string)} [controlsAria] - It is element to controls validation e.g. Check if field has the same value as field by name
      */
     constructor(controlsAria) {
 
@@ -23,13 +23,36 @@ class Validator {
          * @type {UIElement}
          * @private
          */
-        this._aria = new UIElement(controlsAria ? controlsAria : document.body);
+        this._aria = controlsAria instanceof UIElement ? controlsAria : new UIElement(document.body);
 
         /**
          *
          * @type {Array}
          */
-        this.messages = [];
+        this._messages = [];
+
+        /**
+         * <input type="text" name="fieldName[0]"> the same <input type="text" name="fieldName">
+         * <input type="text" name="fieldName[1]">
+         * e.g
+         *      {
+         *          (string)fieldName: {
+         *              (integer)0: (boolean)status
+         *              (integer)1: (boolean)status
+         *          }
+         *      }
+         *
+         * @type {{}}
+         * @private
+         */
+        this._schema = {};
+
+        /**
+         *
+         * @type {{status: ?boolean, listener: ?listenerCheckedField}}
+         * @private
+         */
+        this._listenerCheckedField = {status: null, listener: null};
     }
 
     /**
@@ -125,35 +148,102 @@ class Validator {
     /**
      * Start check data
      *
-     * @param {Object|FormData} data
+     * @param {Object} [data]
      * @returns {boolean}
      */
     start(data) {
         this._clean();
         let params = {};
         if (data instanceof FormData) {
-            params = this._prepareFormData(data);
+            params = this._prepareFormData();
         }
         this._validate(params);
+        this._setListenerCheckedField();
         return this.isError();
+    }
+
+    /**
+     * Check status of validation
+     *
+     * @returns {boolean}
+     */
+    isError() {
+        return this._messages.length > 0;
+    }
+
+    /**
+     * Get messages
+     *
+     * @returns {Array}
+     */
+    getMessages() {
+        return this._messages;
+    }
+
+    /**
+     * Get schema
+     * The schema consist of fields that were checked
+     *
+     * @returns {Object}
+     */
+    getSchema() {
+        return this._schema;
+    }
+
+    /**
+     *
+     * @param {UIElement}
+     * @param {boolean} status
+     * @callback listenerCheckedField
+     */
+
+    /**
+     *
+     * @param {?boolean} status - true (Fields only with status true)
+     *                            false (Fields only with status false)
+     *                            null (Fields with any status)
+     * @param {listenerCheckedField} listener
+     * @returns {Validator}
+     */
+    findCheckedFields(status, listener) {
+        this._listenerCheckedField = {
+            status: status,
+            listener: listener
+        };
+        return this;
+    }
+
+    /**
+     * Set listener to find fields after validation
+     *
+     * @returns {void}
+     * @private
+     */
+    _setListenerCheckedField() {
+        if (this._listenerCheckedField.listener) {
+            for (let field in this._schema) {
+                if (this._schema.hasOwnProperty(field)) {
+                    this._findFields(field, this._listenerCheckedField.status, this._listenerCheckedField.listener);
+                }
+            }
+        }
     }
 
     /**
      * Prepare Form Data to validate
      *
-     * @param {FormData} data
      * @returns {Object.<Array>}
      * @private
      */
-    _prepareFormData(data) {
+    _prepareFormData() {
         let result = {};
-        if (data instanceof FormData) {
-            for (let rule of this._rules) {
-                let field = rule['field'];
-                if (!result.hasOwnProperty(field)) {
-                    result[field] = data.getAll(field);
-                } else {
-                    result[field].push(data.get(field));
+        for (let rule of this._rules) {
+            let field = rule['field'];
+            if (!result.hasOwnProperty(field)) {
+                result[field] = [];
+                let elements = this._aria.findAll('[name^="' + field + '"]');
+                for (let element of elements) {
+                    result[field].push(element.value);
                 }
             }
         }
@@ -166,30 +256,13 @@ class Validator {
      * @private
      */
     _clean() {
-        this.messages = [];
-    }
-
-    /**
-     * Check status of validation
-     *
-     * @returns {boolean}
-     */
-    isError() {
-        return this.messages.length > 0;
-    }
-
-    /**
-     * Get messages
-     *
-     * @returns {Array}
-     */
-    getMessages() {
-        return this.messages;
+        this._messages = [];
+        this._schema = {};
     }
 
     /**
      *
-     * @param {Object} data
+     * @param {Object.<Array>} data
      * @returns {void}
      * @private
      */
@@ -197,13 +270,53 @@ class Validator {
         for (let rule of this._rules) {
             let field = rule['field'];
             if (!data.hasOwnProperty(field)) {
-                this.messages.push('Can not find field "' + field + '"');
+                this._messages.push('Can not find field "' + field + '"');
             }
-
+            let key = 0;
             for (let value of data[field]) {
                 let status = this._performRule(rule, value);
+                this._schemaControls(field, key, status);
                 if (!status) {
-                    this.messages.push(Validator.getMessage(rule));
+                    this._messages.push(Validator.getMessage(rule));
+                }
+                key++;
+            }
+        }
+    }
+
+    /**
+     * Add information about validation to schema
+     *
+     * @param {string} field
+     * @param {number} key
+     * @param {boolean} status
+     * @returns {void}
+     * @private
+     */
+    _schemaControls(field, key, status) {
+        if (!this._schema.hasOwnProperty(field)) {
+            this._schema[field] = {};
+        }
+
+        this._schema[field][key] = status;
+    }
+
+    /**
+     *
+     * @param {string} field
+     * @param {?boolean} status
+     * @param {listenerCheckedField} listener
+     * @returns {void}
+     * @private
+     */
+    _findFields(field, status, listener) {
+        let fields = this._schema[field];
+        for (let key in fields) {
+            if (fields.hasOwnProperty(key)) {
+                let checkResult = fields[key];
+                if (status === null || checkResult == status) {
+                    let el = this._aria.findOne('[name="' + field + '[' + key + ']"]') || this._aria.findOne('[name="' + field + '"]');
+                    listener(el, checkResult);
                 }
             }
         }
@@ -212,7 +325,7 @@ class Validator {
     /**
      * Perform rule. Check data that value is goal
      *
-     * @param {{}} params
+     * @param {{rule: string, mark: *, field: string}} params
      * @param {string|number} value
      * @returns {*}
      * @private
@@ -280,7 +393,7 @@ class Validator {
      * @constructor
      */
     static LBL(field) {
-        return field;
+        return Str.uppercaseFirstLetter(field);
     }
 }
 

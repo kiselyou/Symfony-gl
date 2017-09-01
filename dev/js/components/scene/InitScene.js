@@ -37,11 +37,9 @@ class InitScene {
 
         /**
          *
-         * @type {WebGLRenderer|THREE.WebGLRenderer}
+         * @type {?WebGLRenderer}
          */
-        this.renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
-        this.renderer.setClearColor(this.scene.fog.color);
-        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer = this._webGLRenderer();
 
         /**
          *
@@ -106,6 +104,35 @@ class InitScene {
     };
 
     /**
+     * Check if Your graphics card is supporting WebGL.
+     *
+     * @returns {boolean}
+     */
+    static detectorWebGL() {
+        try {
+            let canvas = document.createElement('canvas');
+            return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+        } catch (e) {
+            return false;
+        }
+    }
+
+    /**
+     *
+     *
+     * @returns {?WebGLRenderer}
+     */
+    _webGLRenderer() {
+        if (InitScene.detectorWebGL()) {
+            let renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
+            renderer.setClearColor(this.scene.fog.color);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            return renderer;
+        }
+        return null;
+    }
+
+    /**
      * Add element to scene
      *
      * @param {Mesh|Group} element
@@ -122,6 +149,10 @@ class InitScene {
      * @returns {InitScene}
      */
     render() {
+        if (!this.renderer) {
+            console.warn('Your graphics card does not support WebGL');
+            return this;
+        }
         this.renderer.setSize(InitScene.width, InitScene.height);
         this.container.appendChild(this.renderer.domElement);
         this._renderControls();

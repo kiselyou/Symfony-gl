@@ -114,6 +114,23 @@ class UIElement {
     }
 
     /**
+     * Find all element
+     *
+     * @param {string} selector
+     * @returns {Array.<UIElement>}
+     */
+    findAll(selector) {
+        let arr = this.getElement().querySelectorAll(selector);
+        let res = [];
+        if (arr) {
+            for (let el of arr) {
+                res.push(new UIElement(el));
+            }
+        }
+        return res;
+    }
+
+    /**
      * Get value of element
      *
      * @returns {*}

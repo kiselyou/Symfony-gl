@@ -162,17 +162,32 @@ class View extends Application {
      */
     addValidateRule(actionName, fieldName, rule, mark = null, message = null) {
         if (!this.validator.hasOwnProperty(actionName)) {
-            this.validator[actionName] = new Validator();
-            this.validator[actionName].rule(fieldName, rule, mark, message);
-        } else {
-            this.validator[actionName].rule(fieldName, rule, mark, message);
+            this.validator[actionName] = new Validator(this.el);
+        }
+        this.validator[actionName].rule(fieldName, rule, mark, message);
+        return this;
+    }
+
+    /**
+     *
+     * @param {string} actionName - name of action
+     * @param {?boolean} status - true (Fields only with status true)
+     *                            false (Fields only with status false)
+     *                            null (Fields with any status)
+     * @param {listenerCheckedField} listener
+     * @returns {View}
+     */
+    findCheckedFields(actionName, status, listener) {
+        if (this.validator.hasOwnProperty(actionName)) {
+            this.validator[actionName].findCheckedFields(status, listener);
         }
         return this;
     }
 
     /**
-     * @param {Array|string} res
+     * @param {(Array|string)} res
      * @param {boolean} status
+     * @returns {void}
      * @callback sendFormListener
      */
 
@@ -189,15 +204,10 @@ class View extends Application {
         el.addEvent('click', () => {
             let data = typeof form === 'string' ? new FormData(this.el.findOne(form).getElement()) : form;
             if (this.validator.hasOwnProperty(actionName)) {
-                this.validator[actionName].start(data);
-
-                console.log(
-                    this.validator[actionName].isError(),
-                    this.validator[actionName].getMessages()
-                );
-
-                if (this.validator[actionName].isError()) {
-                    sendForm(this.validator[actionName].getMessages(), false);
+                let validator = this.validator[actionName];
+                validator.start(data);
+                if (validator.isError()) {
+                    sendForm(validator.getMessages(), false);
                 } else {
                     this._viewAjax(path, data, sendForm);
                 }
