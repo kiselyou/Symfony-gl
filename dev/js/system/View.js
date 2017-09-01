@@ -156,7 +156,11 @@ class View extends Application {
      * @param {string} actionName - name of action
      * @param {string} fieldName - name of filed
      * @param {string} rule - It is constants of class "Validator"
-     * @param {?string|number} [mark] - It is value to need check. e.g RULE_MAX_LENGTH need set mark to 20 or some another value
+     * @param {?string|number|array} [mark] - It is value to need check.
+     *        In some cases this value can have array
+     *        e.g.
+     *           Validator.RULE_BETWEEN_VALUES need set mark [2, 8]. It means that value have to be more or equal 2 and less or equal 8
+     *           Validator.RULE_MAX_LENGTH need set mark to 20 or some another value
      * @param {?string} [message] - Message
      * @returns {View}
      */
