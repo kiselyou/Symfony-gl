@@ -66,8 +66,8 @@ class Login extends View {
     setEventBtnSignIn(responseListener) {
 
         this.addValidateRule(ACTION_SEND_FORM, 'username', Validator.RULE_IS_EMAIL);
-        this.addValidateRule(ACTION_SEND_FORM, 'password', Validator.RULE_MIN_LENGTH, 3);
-        this.addValidateRule(ACTION_SEND_FORM, 'password', Validator.RULE_MAX_LENGTH, 6);
+        this.addValidateRule(ACTION_SEND_FORM, 'password', Validator.RULE_MIN_LENGTH, 6);
+        this.addValidateRule(ACTION_SEND_FORM, 'password', Validator.RULE_MAX_LENGTH, 20);
 
         this.findCheckedFields(ACTION_SEND_FORM, null, (el, status) => {
             console.log(el, status);
