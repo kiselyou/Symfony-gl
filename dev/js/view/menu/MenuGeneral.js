@@ -11,6 +11,7 @@ import {
  */
 const SHOW_IF_LOCKED = 1;
 const HIDE_IF_LOCKED = 2;
+const MENU_ACTIVE_MP3 = './src/mp3/desktop-open.mp3';
 
 /**
  * @class {MenuGeneral}
@@ -156,8 +157,14 @@ class MenuGeneral extends View {
                 let itemActionName = item['action'];
 
                 this._addEventToAction(itemActionName, () => {
+
+                    // this.getAction(itemActionName).addEvent('mouseover', () => {
+                    //     this.sound.start(MENU_ACTIVE_MP3);
+                    // });
+
                     this.toggle(blockName);
                     let block = this._events[blockName];
+
                     if (block && block[itemActionName]) {
                         let events = block[itemActionName];
                         for (let event of events) {
@@ -316,6 +323,7 @@ class MenuGeneral extends View {
         this.status[name] = true;
         if (this._eventsBeforeBlockOpen.hasOwnProperty(name)) {
             for (let listener of this._eventsBeforeBlockOpen[name]) {
+                this.sound.start(MENU_ACTIVE_MP3);
                 listener();
             }
         }

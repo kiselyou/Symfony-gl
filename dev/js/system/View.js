@@ -326,6 +326,16 @@ class View extends Application {
         this.el.hide(animate);
         return this;
     }
+
+    /**
+     * Remove view from the page
+     *
+     * @returns {View}
+     */
+    remove() {
+        this.container.removeChild(this.el.getElement());
+        return this;
+    }
 }
 
 export default View;

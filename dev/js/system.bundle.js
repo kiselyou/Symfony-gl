@@ -12,7 +12,7 @@ let sceneControls = new InitScene('initialisation_main_scene');
 let text = new Text3D();
 
 text
-    .setFar(- 1000)
+    .setFar(-1500)
     .showMirror(true)
     .write('IronWar', (text) => {
         sceneControls.add(text);

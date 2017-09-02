@@ -178,9 +178,9 @@ class Text3D extends Font3D {
                 new THREE.MeshPhongMaterial({color: this.colorFront, shading: THREE.FlatShading}),
                 new THREE.MeshPhongMaterial({color: this.colorSide, shading: THREE.SmoothShading})
             ];
-
             let textMesh = new THREE.Mesh(textGeo, material);
             let centerOffset = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
+
             textMesh.position.x = centerOffset;
             textMesh.position.y = this._hover;
             textMesh.rotation.y = Math.PI * 2;

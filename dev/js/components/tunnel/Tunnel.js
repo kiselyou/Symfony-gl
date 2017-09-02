@@ -46,7 +46,7 @@ class Tunnel {
          *
          * @type {number}
          */
-        this.speed = 0.02;
+        this.speed = 0.01;
 
         this._loaded = false;
     }
@@ -61,7 +61,7 @@ class Tunnel {
         let points = [];
 
         // Define points along Z axis
-        for (let i = -15; i < 2; i++) {
+        for (let i = -25; i < 10; i++) {
             points.push(new THREE.Vector3(0, 0, 600 * (i / 4)));
         }
 
@@ -84,8 +84,7 @@ class Tunnel {
      * @returns {Tunnel}
      */
     render(complete) {
-        this._loader.load('./src/img/test/0241-galvanised-steel-metal-facade-cladding-texture-seamless-hr.jpg', (rockPattern) => {
-
+        this._loader.load('./src/img/test/777.jpg', (rockPattern) => {
 
             // Empty geometry
             let geometry = new THREE.Geometry();
@@ -106,10 +105,10 @@ class Tunnel {
             // Repeat the pattern
             this.tubeMaterial.map.wrapS = THREE.RepeatWrapping;
             this.tubeMaterial.map.wrapT = THREE.RepeatWrapping;
-            this.tubeMaterial.map.repeat.set(7, 7);
+            this.tubeMaterial.map.repeat.set(15, 15);
 
             // Create a tube geometry based on the curve
-            this.tubeGeometry = new THREE.TubeGeometry(this._curve, 70, 400, 50, false);
+            this.tubeGeometry = new THREE.TubeGeometry(this._curve, 1, 350, 5, false);
             // Create a mesh based on the tube geometry and its material
             complete(new THREE.Mesh(this.tubeGeometry, this.tubeMaterial));
 
