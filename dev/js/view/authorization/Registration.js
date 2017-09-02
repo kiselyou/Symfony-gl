@@ -1,5 +1,6 @@
 import View from '../../system/View';
 import Informer from './../informer/Informer';
+import Validator from './../../system/Validator';
 
 import {
     ACTION_OPEN_FORM,
@@ -60,20 +61,30 @@ class Registration extends View {
      * @returns {Registration}
      */
     eventBtnRegistration(responseListener) {
+
+        this.addValidateRule(ACTION_SEND_FORM, 'email', Validator.RULE_IS_EMAIL);
+        this.addValidateRule(ACTION_SEND_FORM, 'username', Validator.RULE_LENGTH_BETWEEN_VALUES, [5, 20]);
+        this.addValidateRule(ACTION_SEND_FORM, 'password', Validator.RULE_LENGTH_BETWEEN_VALUES, [6, 20]);
+        this.addValidateRule(ACTION_SEND_FORM, 'confirm_password', Validator.RULE_EQUAL_FIELD, 'password');
+
         this.addActionSendForm(ACTION_SEND_FORM, '/iw/registration', 'form', (res, status) => {
             if (responseListener) {
                 responseListener(res, status);
             } else {
                 let block = this.el.getElementByBlockName(VIEW_BLOCK_WARNING);
-                try {
-                    let data = JSON.parse(res);
-                    if (data['status']) {
-                        this.informer.success(block, data['msg']);
-                    } else {
-                        this.informer.warning(block, data['msg']);
+                if (status) {
+                    try {
+                        let data = JSON.parse(res);
+                        if (data['status']) {
+                            this.informer.success(block, data['msg']);
+                        } else {
+                            this.informer.warning(block, data['msg']);
+                        }
+                    } catch (e) {
+                        this.informer.danger(block, 'Something was broken');
                     }
-                } catch (e) {
-                    this.informer.danger(block, 'Something was broken');
+                } else {
+                    this.informer.warning(block, res);
                 }
             }
         });

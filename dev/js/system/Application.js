@@ -6,6 +6,10 @@ class Application {
     constructor() {
         this.lock = new Lock();
 
+        this.lock.isLocked((status) => {
+            console.log(status);
+        });
+
         /**
          *
          * @type {Ajax}

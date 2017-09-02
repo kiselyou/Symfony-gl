@@ -62,7 +62,7 @@ class Ajax {
      * Prepare url to send on server
      *
      * @param {string} url
-     * @param {{}|[]} [params]
+     * @param {({}|[])} [params]
      * @returns {string}
      * @private
      */

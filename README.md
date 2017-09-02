@@ -29,3 +29,8 @@ npm run start
 # Start server development
 npm run start-dev
 ```
+
+```
+# Auto Start server - development
+autostart enable -n "IronWar" -p "/var/www/galaxy" -c "npm run start-dev"
+```

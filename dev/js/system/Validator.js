@@ -1,4 +1,5 @@
 
+import isEmpty from 'validator/lib/isEmpty';
 import isEmail from 'validator/lib/isEmail';
 import isByteLength from 'validator/lib/isByteLength';
 import equals from 'validator/lib/equals';
@@ -36,13 +37,19 @@ class Validator {
          * <input type="text" name="fieldName[1]">
          * e.g
          *      {
-         *          (string)fieldName: {
-         *              (integer)0: (boolean)status
-         *              (integer)1: (boolean)status
-         *          }
+         *          (string)fieldName: [
+         *              {
+         *                  status: (boolean)true,
+         *                  element: (UIElement)
+         *              }
+         *              {
+         *                  status: (boolean)false,
+         *                  element: (UIElement)
+         *              }
+         *          ]
          *      }
          *
-         * @type {{}}
+         * @type {Object.<Array.<{element: UIElement, status: boolean}>>}
          * @private
          */
         this._schema = {};
@@ -87,22 +94,44 @@ class Validator {
 
     /**
      * Rule to check range between values
+     * Marker must be Array
      *
      * @returns {string}
      * @constructor
      */
-    static get RULE_RANGE_VALUES() {
-        return 'RULE_RANGE_VALUES';
+    static get RULE_LENGTH_BETWEEN_VALUES() {
+        return 'RULE_LENGTH_BETWEEN_VALUES';
     }
 
     /**
      * Rule to check range between values of fields
+     * Marker must be Array
      *
      * @returns {string}
      * @constructor
      */
-    static get RULE_RANGE_FIELDS() {
-        return 'RULE_RANGE_FIELDS';
+    static get RULE_LENGTH_BETWEEN_FIELDS() {
+        return 'RULE_LENGTH_BETWEEN_FIELDS';
+    }
+
+    /**
+     * Rule to check if value is not empty
+     *
+     * @returns {string}
+     * @constructor
+     */
+    static get RULE_REQUIRE() {
+        return 'RULE_REQUIRE';
+    }
+
+    /**
+     * Rule to check if value is not empty. Ignore space letters
+     *
+     * @returns {string}
+     * @constructor
+     */
+    static get RULE_REQUIRE_TRIM() {
+        return 'RULE_REQUIRE_TRIM';
     }
 
     /**
@@ -117,21 +146,21 @@ class Validator {
     }
 
     /**
-     * Rule to check if value is equal value
+     * Rule to check if value is equal value of field
      * The value of field must be equal the third of parameters
      *
      * @returns {string}
      * @constructor
      */
-    static get RULE_EQUAL_BY_FIELD_NAME() {
-        return 'RULE_EQUAL_BY_FIELD_NAME';
+    static get RULE_EQUAL_FIELD() {
+        return 'RULE_EQUAL_FIELD';
     }
 
     /**
      *
      * @param {string} fieldName - name of filed
      * @param {string} rule - It is constants of current class
-     * @param {?string|number} [mark] - It is value to need check. e.g RULE_MAX_LENGTH need set mark to 20 or some another value
+     * @param {?string|number|Array} [mark] - It is value to need check. e.g RULE_MAX_LENGTH need set mark to 20 or some another value
      * @param {?string} [message] - Message
      * @returns {Validator}
      */
@@ -223,7 +252,7 @@ class Validator {
         if (this._listenerCheckedField.listener) {
             for (let field in this._schema) {
                 if (this._schema.hasOwnProperty(field)) {
-                    this._findFields(field, this._listenerCheckedField.status, this._listenerCheckedField.listener);
+                    Validator._findFields(this._schema[field], this._listenerCheckedField.status, this._listenerCheckedField.listener);
                 }
             }
         }
@@ -236,18 +265,20 @@ class Validator {
      * @private
      */
     _prepareFormData() {
-        let result = {};
         for (let rule of this._rules) {
             let field = rule['field'];
-            if (!result.hasOwnProperty(field)) {
-                result[field] = [];
+            if (!this._schema.hasOwnProperty(field)) {
+                this._schema[field] = [];
                 let elements = this._aria.findAll('[name^="' + field + '"]');
                 for (let element of elements) {
-                    result[field].push(element.value);
+                    this._schema[field].push({
+                        status: true,
+                        element: element
+                    });
                 }
             }
         }
-        return result;
+        return this._schema;
     }
 
     /**
@@ -262,7 +293,7 @@ class Validator {
 
     /**
      *
-     * @param {Object.<Array>} data
+     * @param {Object.<Array.<{element: UIElement, status: boolean}>>} data
      * @returns {void}
      * @private
      */
@@ -272,52 +303,29 @@ class Validator {
             if (!data.hasOwnProperty(field)) {
                 this._messages.push('Can not find field "' + field + '"');
             }
-            let key = 0;
-            for (let value of data[field]) {
-                let status = this._performRule(rule, value);
-                this._schemaControls(field, key, status);
+
+            for (let row of data[field]) {
+                let status = this._performRule(rule, row.element.value);
                 if (!status) {
+                    row.status = status;
                     this._messages.push(Validator.getMessage(rule));
                 }
-                key++;
             }
         }
     }
 
     /**
-     * Add information about validation to schema
      *
-     * @param {string} field
-     * @param {number} key
-     * @param {boolean} status
-     * @returns {void}
-     * @private
-     */
-    _schemaControls(field, key, status) {
-        if (!this._schema.hasOwnProperty(field)) {
-            this._schema[field] = {};
-        }
-
-        this._schema[field][key] = status;
-    }
-
-    /**
-     *
-     * @param {string} field
+     * @param {Array.<{element: UIElement, status: boolean}>} fields
      * @param {?boolean} status
      * @param {listenerCheckedField} listener
      * @returns {void}
      * @private
      */
-    _findFields(field, status, listener) {
-        let fields = this._schema[field];
-        for (let key in fields) {
-            if (fields.hasOwnProperty(key)) {
-                let checkResult = fields[key];
-                if (status === null || checkResult == status) {
-                    let el = this._aria.findOne('[name="' + field + '[' + key + ']"]') || this._aria.findOne('[name="' + field + '"]');
-                    listener(el, checkResult);
-                }
+    static _findFields(fields, status, listener) {
+        for (let field of fields) {
+            if (status === null || field.status === status) {
+                listener(field.element, field.status);
             }
         }
     }
@@ -339,6 +347,12 @@ class Validator {
             case Validator.RULE_IS_EMAIL:
                 return isEmail(value);
                 break;
+            case Validator.RULE_REQUIRE:
+                return !isEmpty(value);
+                break;
+            case Validator.RULE_REQUIRE_TRIM:
+                return !isEmpty(value.trim());
+                break;
             case Validator.RULE_MAX_LENGTH:
                 return isByteLength(value, {min: undefined, max: mark});
                 break;
@@ -348,9 +362,17 @@ class Validator {
             case Validator.RULE_EQUAL_VALUE:
                 return equals(value, mark);
                 break;
-            case Validator.RULE_EQUAL_BY_FIELD_NAME:
+            case Validator.RULE_EQUAL_FIELD:
                 let el = this._aria.findOne('[name="' + mark + '"]');
                 return equals(value, el.value);
+                break;
+            case Validator.RULE_LENGTH_BETWEEN_VALUES:
+                return isByteLength(value, {min: mark[0], max: mark[1]});
+                break;
+            case Validator.RULE_LENGTH_BETWEEN_FIELDS:
+                let elMin = this._aria.findOne('[name="' + mark[0] + '"]');
+                let elMax = this._aria.findOne('[name="' + mark[1] + '"]');
+                return isByteLength(value, {min: elMin, max: elMax});
                 break;
         }
     }
@@ -371,17 +393,30 @@ class Validator {
             case Validator.RULE_IS_EMAIL:
                 return message ? message : Validator.LBL(field) + ': Email address is invalid';
                 break;
+            case Validator.RULE_REQUIRE:
+                return message ? message : Validator.LBL(field) + ': It is required fields';
+                break;
+            case Validator.RULE_REQUIRE_TRIM:
+                return message ? message : Validator.LBL(field) + ': It is required fields';
+                break;
             case Validator.RULE_MAX_LENGTH:
-                return message ? message : Validator.LBL(field) + ': The value should be less or equal ' + mark + ' character';
+                return message ? message : Validator.LBL(field) + ': The length value should be less or equal ' + mark + ' character';
                 break;
             case Validator.RULE_MIN_LENGTH:
-                return message ? message : Validator.LBL(field) + ': The value should be more or equal ' + mark + ' character';
+                return message ? message : Validator.LBL(field) + ': The length should be more or equal ' + mark + ' character';
                 break;
             case Validator.RULE_EQUAL_VALUE:
-                return message ? message : Validator.LBL(field) + ': The value should be equals "' + mark + '"';
+                return message ? message : Validator.LBL(field) + ': The value should be equal ' + mark + '';
                 break;
-            case Validator.RULE_EQUAL_BY_FIELD_NAME:
-                return message ? message : Validator.LBL(field) + ': The value should be equals with value of field "' + Validator.LBL(mark)  + '"';
+            case Validator.RULE_EQUAL_FIELD:
+                return message ? message : Validator.LBL(field) + ': The value should be equal with value of field "' + Validator.LBL(mark)  + '"';
+                break;
+            case Validator.RULE_LENGTH_BETWEEN_VALUES:
+                return message ? message : Validator.LBL(field) + ': The length should be more or equal ' + mark[0] + ' and less or equal ' + mark[1] + ' character';
+                break;
+            case Validator.RULE_LENGTH_BETWEEN_FIELDS:
+                return message ? message : Validator.LBL(field) + ': The length should be more or equal of field value ' + mark[0] + ' and less or equal of field value ' + mark[1] + ' character';
+                break;
         }
     }
 
@@ -393,7 +428,11 @@ class Validator {
      * @constructor
      */
     static LBL(field) {
-        return Str.uppercaseFirstLetter(field);
+        return new Str(field)
+            .uppercaseFirstLetter()
+            .replaceSymbol('_', ' ')
+            .uppercaseEachLetter()
+            .toString();
     }
 }
 
