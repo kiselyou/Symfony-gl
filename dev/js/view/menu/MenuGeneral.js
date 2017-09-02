@@ -5,6 +5,14 @@ import {
 } from '../view-actions.js';
 
 /**
+ * Show element if user has already udentificated
+ *
+ * @type {number}
+ */
+const SHOW_IF_LOCKED = 1;
+const HIDE_IF_LOCKED = 2;
+
+/**
  * @class {MenuGeneral}
  * @extends {View}
  */
@@ -22,9 +30,9 @@ class MenuGeneral extends View {
                 action: ACTION_MAIN_MENU,
                 block: MenuGeneral.BLOCK_MAIN_MENU,
                 subItems: [
-                    {name: 'Login', action: MenuGeneral.ACTION_LOGIN},
-                    {name: 'Registration', action: MenuGeneral.ACTION_REGISTRATION},
-                    {name: 'Logout', action: MenuGeneral.ACTION_LOGOUT},
+                    {name: 'Login', action: MenuGeneral.ACTION_LOGIN, lock: HIDE_IF_LOCKED},
+                    {name: 'Registration', action: MenuGeneral.ACTION_REGISTRATION, lock: HIDE_IF_LOCKED},
+                    {name: 'Logout', action: MenuGeneral.ACTION_LOGOUT, lock: SHOW_IF_LOCKED},
                     {name: 'Settings', action: MenuGeneral.ACTION_SETTINGS},
                     {name: 'Close Menu', action: MenuGeneral.ACTION_CLOSE}
                 ]
@@ -85,6 +93,32 @@ class MenuGeneral extends View {
         this.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_CLOSE, (block, action) => {
             this.hideBlock(block);
         });
+    }
+
+    /**
+     *
+     * @param {Lock} locker
+     * @returns {MenuGeneral}
+     */
+    lockControls(locker) {
+        locker.isLocked((status) => {
+            for (let item of this.viewOptions) {
+                let subItems = item['subItems'];
+                for (let subItem of subItems) {
+                    let lock = subItem['lock'];
+                    let action = this.getAction(subItem['action']);
+
+                    if (lock === SHOW_IF_LOCKED) {
+                        status ? action.show() : action.hide();
+                    }
+
+                    if (lock === HIDE_IF_LOCKED) {
+                        status ? action.hide() : action.show();
+                    }
+                }
+            }
+        });
+        return this;
     }
 
     /**

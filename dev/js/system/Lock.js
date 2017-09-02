@@ -167,8 +167,8 @@ class Lock {
      */
     isLocked(eventCheckLock) {
         if (this.socketControls) {
-            this.socketControls.emit(Lock.EVENT_CHECK_LOCK);
             this._eventCheckLock = eventCheckLock;
+            this.socketControls.emit(Lock.EVENT_CHECK_LOCK);
         }
     }
 }

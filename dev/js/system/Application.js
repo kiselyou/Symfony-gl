@@ -1,14 +1,10 @@
-import Lock from './Lock';
+
 import Ajax from './Ajax';
 import UIMessage from './ui/UIMessage';
 
+/** Class representing a base functional. */
 class Application {
     constructor() {
-        this.lock = new Lock();
-
-        this.lock.isLocked((status) => {
-            console.log(status);
-        });
 
         /**
          *

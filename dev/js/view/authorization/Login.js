@@ -52,44 +52,40 @@ class Login extends View {
     }
 
     /**
-     * @param {Object} res
-     * @param {boolean} status - If error value is false else true
+     * @param {Object} res - The is response from server
      * @callback responseListener
      */
 
     /**
      * Make something when click on button "Sign in"
      *
-     * @param {responseListener} [responseListener]
+     * @param {responseListener} [success]
      * @returns {Login}
      */
-    setEventBtnSignIn(responseListener) {
-
-        this.addValidateRule(ACTION_SEND_FORM, 'username', Validator.RULE_IS_EMAIL);
+    setEventBtnSignIn(success) {
+        this.addValidateRule(ACTION_SEND_FORM, 'username', Validator.RULE_LENGTH_BETWEEN_VALUES, [5, 20]);
         this.addValidateRule(ACTION_SEND_FORM, 'password', Validator.RULE_LENGTH_BETWEEN_VALUES, [6, 20]);
 
         this.addActionSendForm(ACTION_SEND_FORM, '/iw/login', 'form', (res, status) => {
-            if (responseListener) {
-                responseListener(res, status);
-            } else {
-                let block = this.el.getElementByBlockName(VIEW_BLOCK_WARNING);
+            let block = this.el.getElementByBlockName(VIEW_BLOCK_WARNING);
 
-                if (status) {
-                    try {
-                        let data = JSON.parse(res);
-                        if (data['status']) {
-                            this.lock.lock();
-                            this.hide();
-                        } else {
-                            this.informer.warning(block, data['msg']);
+            if (status) {
+                try {
+                    let data = JSON.parse(res);
+                    if (data['status']) {
+                        if (success) {
+                            success(data);
                         }
-                    } catch (e) {
-                        console.log(e);
-                        this.informer.danger(block, 'Something was broken');
+                        this.hide();
+                    } else {
+                        this.informer.warning(block, data['msg']);
                     }
-                } else {
-                    this.informer.warning(block, res);
+                } catch (e) {
+                    console.log(e);
+                    this.informer.danger(block, 'Something was broken');
                 }
+            } else {
+                this.informer.warning(block, res);
             }
         });
         return this;

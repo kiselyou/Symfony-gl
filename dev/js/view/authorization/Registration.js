@@ -49,18 +49,17 @@ class Registration extends View {
     }
 
     /**
-     * @param {Object} res
-     * @param {boolean} status - If error value is false else true
+     * @param {Object} res - The is response from server
      * @callback responseListener
      */
 
     /**
      * Make something when click on button "Registration"
      *
-     * @param {responseListener} [responseListener]
+     * @param {responseListener} [success]
      * @returns {Registration}
      */
-    eventBtnRegistration(responseListener) {
+    eventBtnRegistration(success) {
 
         this.addValidateRule(ACTION_SEND_FORM, 'email', Validator.RULE_IS_EMAIL);
         this.addValidateRule(ACTION_SEND_FORM, 'username', Validator.RULE_LENGTH_BETWEEN_VALUES, [5, 20]);
@@ -68,24 +67,23 @@ class Registration extends View {
         this.addValidateRule(ACTION_SEND_FORM, 'confirm_password', Validator.RULE_EQUAL_FIELD, 'password');
 
         this.addActionSendForm(ACTION_SEND_FORM, '/iw/registration', 'form', (res, status) => {
-            if (responseListener) {
-                responseListener(res, status);
-            } else {
-                let block = this.el.getElementByBlockName(VIEW_BLOCK_WARNING);
-                if (status) {
-                    try {
-                        let data = JSON.parse(res);
-                        if (data['status']) {
-                            this.informer.success(block, data['msg']);
-                        } else {
-                            this.informer.warning(block, data['msg']);
+            let block = this.el.getElementByBlockName(VIEW_BLOCK_WARNING);
+            if (status) {
+                try {
+                    let data = JSON.parse(res);
+                    if (data['status']) {
+                        if (success) {
+                            success(data);
                         }
-                    } catch (e) {
-                        this.informer.danger(block, 'Something was broken');
+                        this.informer.success(block, data['msg']);
+                    } else {
+                        this.informer.warning(block, data['msg']);
                     }
-                } else {
-                    this.informer.warning(block, res);
+                } catch (e) {
+                    this.informer.danger(block, 'Something was broken');
                 }
+            } else {
+                this.informer.warning(block, res);
             }
         });
         return this;
