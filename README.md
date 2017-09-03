@@ -18,6 +18,7 @@ npm run config-ini
 ```
 # Prepare environment of production
 npm run build
+npm run build-dependencies
 ```
 
 ```
