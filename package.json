@@ -5,7 +5,8 @@
   "main": "app/server/index.js",
   "scripts": {
     "start": "nodemon dev/server/index.js dev --exec babel-node",
-    "build": "babel dev -d app | gulp move-server-dependencies",
+    "build": "babel dev -d app",
+    "move-conf": "gulp move-server-dependencies",
     "config-ini": "babel-node config.ini.js"
   },
   "repository": {
