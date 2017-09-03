@@ -21,21 +21,20 @@ npm run build
 ```
 
 ```
-# Start server production
+# Start server development
 npm run start
 ```
 
 ```
-# Start server development
-npm run start-dev
-```
-
-```
 # Auto Start server - development
-autostart enable -n "IronWar" -p "/var/www/galaxy" -c "npm run start-dev"
+autostart enable -n "IronWar" -p "/var/www/galaxy" -c "npm run start"
 ```
 
 ```
 # Auto Start server - production
-autostart enable -n "IronWar" -p "/var/www/galaxy" -c "npm run start"
+pm2 start processes.json 
+    # or
+pm2 start app/server/index.js -i max
+    # and for expected/unexpected server restart by typing this command
+pm2 save
 ```

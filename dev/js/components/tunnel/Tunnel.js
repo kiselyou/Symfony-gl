@@ -84,7 +84,7 @@ class Tunnel {
      * @returns {Tunnel}
      */
     render(complete) {
-        this._loader.load('./src/img/test/777.jpg', (rockPattern) => {
+        this._loader.load('./src/img/test/555.jpg', (rockPattern) => {
 
             // Empty geometry
             let geometry = new THREE.Geometry();
@@ -108,7 +108,7 @@ class Tunnel {
             this.tubeMaterial.map.repeat.set(15, 15);
 
             // Create a tube geometry based on the curve
-            this.tubeGeometry = new THREE.TubeGeometry(this._curve, 1, 350, 5, false);
+            this.tubeGeometry = new THREE.TubeGeometry(this._curve, 70, 350, 40, false);
             // Create a mesh based on the tube geometry and its material
             complete(new THREE.Mesh(this.tubeGeometry, this.tubeMaterial));
 
@@ -126,41 +126,9 @@ class Tunnel {
         this.tubeMaterial.map.offset.x -= this.speed;
     }
 
-   _updateCurve() {
-
-        let index = 0,
-            vertice_o = null,
-            vertice = null;
-        // For each vertex of the tube, move it a bit based on the spline
-        for (var i = 0, j = this.tubeGeometry.vertices.length; i < j; i += 1) {
-            // Get the original tube vertex
-            vertice_o = this.tubeGeometry_o.vertices[i];
-            // Get the visible tube vertex
-            vertice = this.tubeGeometry.vertices[i];
-            // Calculate index of the vertex based on the Z axis
-            // The tube is made of 50 rings of vertices
-            index = Math.floor(i / 50);
-            // Update tube vertex
-            vertice.x += (vertice_o.x + this.splineMesh.geometry.vertices[index].x - vertice.x) / 10;
-            vertice.y += (vertice_o.y + this.splineMesh.geometry.vertices[index].y - vertice.y) / 5;
-        }
-        // Warn ThreeJs that the points have changed
-        this.tubeGeometry.verticesNeedUpdate = true;
-
-        // Update the points along the curve base on mouse position
-        this._curve.points[2].x = 0.1; //-this.mouse.position.x * 0.1;
-        this._curve.points[4].x = 0.1; //-this.mouse.position.x * 0.1;
-        this._curve.points[2].y = 0.1; //this.mouse.position.y * 0.1;
-
-        // Warn ThreeJs that the spline has changed
-        this.splineMesh.geometry.verticesNeedUpdate = true;
-        this.splineMesh.geometry.vertices = this._curve.getPoints(70);
-    };
-
     update() {
         if(this._loaded) {
             this._updateMaterialOffset();
-            // this._updateCurve();
         }
     }
 }

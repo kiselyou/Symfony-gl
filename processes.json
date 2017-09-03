@@ -1,0 +1,7 @@
+{
+  "apps" : [{
+    "script"    : "app/server/index.js",
+    "instances" : "max",
+    "exec_mode" : "cluster"
+  }]
+}

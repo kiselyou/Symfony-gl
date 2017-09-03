@@ -11,7 +11,9 @@ import {
  */
 const SHOW_IF_LOCKED = 1;
 const HIDE_IF_LOCKED = 2;
-const MENU_ACTIVE_MP3 = './src/mp3/desktop-open.mp3';
+const MENU_OPEN_MP3 = './src/mp3/open.mp3';
+const MENU_HOVER_MP3 = './src/mp3/hover.mp3';
+const MENU_CLOSE_MP3 = './src/mp3/close.mp3';
 
 /**
  * @class {MenuGeneral}
@@ -34,7 +36,7 @@ class MenuGeneral extends View {
                     {name: 'Login', action: MenuGeneral.ACTION_LOGIN, lock: HIDE_IF_LOCKED},
                     {name: 'Registration', action: MenuGeneral.ACTION_REGISTRATION, lock: HIDE_IF_LOCKED},
                     {name: 'Logout', action: MenuGeneral.ACTION_LOGOUT, lock: SHOW_IF_LOCKED},
-                    {name: 'Settings', action: MenuGeneral.ACTION_SETTINGS},
+                    {name: 'Settings', action: MenuGeneral.ACTION_SETTINGS, lock: SHOW_IF_LOCKED},
                     {name: 'Close Menu', action: MenuGeneral.ACTION_CLOSE}
                 ]
             }
@@ -156,11 +158,11 @@ class MenuGeneral extends View {
             for (let item of option['subItems']) {
                 let itemActionName = item['action'];
 
-                this._addEventToAction(itemActionName, () => {
+                this.getAction(itemActionName).addEvent('mouseover', () => {
+                    this.sound.play(MENU_HOVER_MP3);
+                });
 
-                    // this.getAction(itemActionName).addEvent('mouseover', () => {
-                    //     this.sound.start(MENU_ACTIVE_MP3);
-                    // });
+                this._addEventToAction(itemActionName, () => {
 
                     this.toggle(blockName);
                     let block = this._events[blockName];
@@ -323,7 +325,6 @@ class MenuGeneral extends View {
         this.status[name] = true;
         if (this._eventsBeforeBlockOpen.hasOwnProperty(name)) {
             for (let listener of this._eventsBeforeBlockOpen[name]) {
-                this.sound.start(MENU_ACTIVE_MP3);
                 listener();
             }
         }
@@ -354,7 +355,14 @@ class MenuGeneral extends View {
      * @returns {MenuGeneral}
      */
     toggle(blockName) {
-        this.status[blockName] ? this.hideBlock(blockName) : this.showBlock(blockName);
+
+        if (this.status[blockName]) {
+            this.sound.play(MENU_CLOSE_MP3);
+            this.hideBlock(blockName)
+        } else {
+            this.sound.play(MENU_OPEN_MP3);
+            this.showBlock(blockName)
+        }
         return this;
     }
 }

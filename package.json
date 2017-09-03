@@ -4,8 +4,7 @@
   "description": "",
   "main": "app/server/index.js",
   "scripts": {
-    "start": "node app/server/index.js",
-    "start-dev": "nodemon dev/server/index.js dev --exec babel-node",
+    "start": "nodemon dev/server/index.js dev --exec babel-node",
     "build": "babel dev -d app | gulp move-server-dependencies",
     "config-ini": "babel-node config.ini.js"
   },
@@ -45,7 +44,6 @@
     "validator": "^8.1.0"
   },
   "devDependencies": {
-    "node-autostart": "^3.0.3",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
