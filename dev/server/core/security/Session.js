@@ -16,7 +16,7 @@ class Session {
 
     /**
      *
-     * @param {{}} session
+     * @param {Object} session
      */
     update(session) {
         this._session = session ? session : {};

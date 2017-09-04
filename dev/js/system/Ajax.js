@@ -18,10 +18,10 @@ class Ajax {
      * Send POST data
      *
      * @param {string} url
-     * @param {FormData|{}|Array} param
+     * @param {FormData|{}|Array} [param]
      * @returns {Promise}
      */
-    post(url, param) {
+    post(url, param = {}) {
         return new Promise((resolve, reject) => {
             this._execute(
                 (xhr) => {

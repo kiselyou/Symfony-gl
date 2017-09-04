@@ -1,3 +1,4 @@
+import FileLoader from './FileLoader';
 import Conf from './Conf';
 import Mailer from './Mailer';
 import Session from './security/Session';
@@ -72,6 +73,12 @@ class Components {
          * @type {v4}
          */
         this.uuid = uuidv4;
+
+        /**
+         *
+         * @type {FileLoader}
+         */
+        this.fileLoader = new FileLoader();
     }
 
     /**

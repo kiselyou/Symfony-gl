@@ -46,14 +46,14 @@ class Server extends Components {
 
         /**
          *
-         * @type {Collection}
+         * @type {EntityCollection}
          * @private
          */
         this._entityCollection = new EntityCollection(this);
 
         /**
          *
-         * @type {Collection}
+         * @type {ControllerCollection}
          * @private
          */
         this._controllerCollection = new ControllerCollection(this);
@@ -183,7 +183,7 @@ class Server extends Components {
      * @returns {void}
      */
     sendResponse(params) {
-        if (this.security.isGranted(this._req.url, this.authorization.getSessionUserRoles())) {
+        if (this.security.isGranted(this.request.url, this.authorization.getSessionUserRoles())) {
             // Check the page is locked
             if (this.checkLock(this.session.setSessionUserID())) {
                 let msg = 'Page is locked. Probably this page has already opened in another tab!';

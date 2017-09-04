@@ -326,6 +326,19 @@ class UIElement {
         }
         return this;
     }
+
+    /**
+     *
+     * @param {(UIElement|Element)} child
+     * @returns {UIElement}
+     */
+    removeChild(child) {
+        if (child instanceof UIElement) {
+            child = child.getElement();
+        }
+        this.getElement().removeChild(child);
+        return this;
+    }
 }
 
 export default UIElement;

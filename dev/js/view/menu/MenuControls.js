@@ -22,7 +22,7 @@ class MenuControls {
          */
         this.menuGeneral = new MenuGeneral(VIEW_PATH_MENU_GENERAL);
 
-        this.menuGeneral.upload(() => {
+        this.menuGeneral.render(() => {
             this.menuGeneral.show(false);
             this.menuGeneral.initEvents();
         });

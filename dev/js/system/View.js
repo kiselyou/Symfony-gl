@@ -1,4 +1,5 @@
 
+import ejs from 'ejs';
 import uuidv4 from 'uuid/v4';
 import Application from './Application';
 import UIElement from './ui/UIElement';
@@ -29,11 +30,11 @@ class View extends Application {
         this.container = container instanceof UIElement ? container : new UIElement(container ? container : View.MAIN_CONTAINER_ID);
 
         /**
-         * It is uploaded template
+         * It is empty element which will have template
          *
          * @type {UIElement}
          */
-        this.el = new UIElement().hide().setNameElement(this.name);
+        this.el = this._createElement();
 
         /**
          * It is path to template. Possible values look at "ViewPathControls"
@@ -78,6 +79,29 @@ class View extends Application {
          * @type {Object.<Validator>}
          */
         this.validator = {};
+
+        /**
+         * There is template EJS
+         *
+         * @type {?string}
+         * @private
+         */
+        this._tmp = null;
+
+        /**
+         * @type {ejs}
+         */
+        this.ejs = ejs;
+    }
+
+    /**
+     * Create empty element which will have template
+     *
+     * @returns {UIElement}
+     * @private
+     */
+    _createElement() {
+        return new UIElement().hide().setNameElement(this.name);
     }
 
     /**
@@ -91,13 +115,21 @@ class View extends Application {
     }
 
     /**
-     * It is path to controller EJS
+     * This is path to upload template and generate data in the server side
      *
      * @returns {string}
-     * @constructor
+     */
+    static get ROUTE_STR() {
+        return '/template/str';
+    };
+
+    /**
+     * This is path to upload EJE template as string from the server
+     *
+     * @returns {string}
      */
     static get ROUTE_EJS() {
-        return '/ejs';
+        return '/template/ejs';
     };
 
     /**
@@ -270,39 +302,90 @@ class View extends Application {
     }
 
     /**
-     * @param {UIElement} template
-     * @callback actionUploaded
+     * @param {UIElement} - The template Element
+     * @callback prepareElement
      */
 
     /**
-     * Upload template
+     * Upload completed template from the server
      *
-     * @param {actionUploaded} [actionUploaded]
+     * @param {prepareElement} [success]
      * @returns {View}
      */
-    upload(actionUploaded) {
-        this.ajax.post(View.ROUTE_EJS, {name: this._viewPath, options: this._viewParams})
-            .then((res) => {
-                if (this._autoCleanElement) {
-                    this.el.clean();
-                }
-                this.el.beforeEnd(res);
-                if (this.appendToContainer) {
-                    if (this._autoCleanContainer) {
-                        this.container.clean();
-                    }
-                    this.container.beforeEnd(this.el);
-                }
-
-                if (actionUploaded) {
-                    actionUploaded(this.el);
-                }
+    upload(success) {
+        this.ajax.post(View.ROUTE_STR, {name: this._viewPath, options: this._viewParams})
+            .then((html) => {
+                this._prepareElement(html, success);
             })
             .catch((error) => {
                 console.log(error);
                 this.msg.alert('View Error', error);
             });
         return this;
+    }
+
+    /**
+     * Upload EJS template from the server and compile in the client side
+     *
+     * @param {prepareElement} [success]
+     * @returns {View}
+     */
+    render(success) {
+        if (this._tmp) {
+            let html = this._renderEJS(this._tmp);
+            this._prepareElement(html, success);
+        } else {
+            this.ajax.post(View.ROUTE_EJS, {name: this._viewPath})
+                .then((res) => {
+                    try {
+                        let data = JSON.parse(res);
+                        this._tmp = data['ejs'];
+                        let html = this._renderEJS(this._tmp);
+                        this._prepareElement(html, success);
+                    } catch (error) {
+                        console.log(error);
+                        this.msg.alert('Load ejs Error', error);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.msg.alert('View Error', error);
+                });
+        }
+        return this;
+    }
+
+    /**
+     *
+     * @param {string} html - The HTML string of completed template
+     * @param {prepareElement} done - The event when template is prepared
+     * @returns {void}
+     * @private
+     */
+    _prepareElement(html, done) {
+        if (this._autoCleanElement) {
+            this.el.clean();
+        }
+        this.el.beforeEnd(html);
+        if (this.appendToContainer) {
+            if (this._autoCleanContainer) {
+                this.container.clean();
+            }
+            this.container.beforeEnd(this.el);
+        }
+        if (done) {
+            done(this.el);
+        }
+    }
+
+    /**
+     *
+     * @param {string} ejsTemplate
+     * @returns {*}
+     * @private
+     */
+    _renderEJS(ejsTemplate) {
+        return this.ejs.render(ejsTemplate, this._viewParams);
     }
 
     /**
@@ -334,6 +417,7 @@ class View extends Application {
      */
     remove() {
         this.container.removeChild(this.el.getElement());
+        this.el = this._createElement();
         return this;
     }
 }

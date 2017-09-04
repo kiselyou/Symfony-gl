@@ -1,7 +1,12 @@
 {
-  "ejs": {
-    "route": "/ejs",
+  "template_str": {
+    "route": "/template/str",
     "method": "POST",
     "controller": "EJSController:render"
+  },
+  "template_ejs": {
+    "route": "/template/ejs",
+    "method": "POST",
+    "controller": "EJSController:template"
   }
 }

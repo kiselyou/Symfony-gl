@@ -27,13 +27,25 @@ class EJSController {
     }
 
     /**
-     * Upload template and send it to client
+     * Render template. Send completed template to client
      *
      * @returns {void}
      */
-    render(s) {
+    render() {
         let data = this._server.POST;
         this._server.responseView(this._getViewPath(data['name']), this._server.parseData(data['options']));
+    }
+
+    /**
+     * Upload template. Send EJS template to client
+     *
+     * @returns {string}
+     */
+    template() {
+        let data = this._server.POST;
+        let path = this._getViewPath(data['name']);
+        let tmp = this._server.fileLoader.getTemplate(path);
+        this._server.responseJSON({ejs: tmp});
     }
 
     /**
