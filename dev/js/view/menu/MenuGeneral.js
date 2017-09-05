@@ -1,5 +1,5 @@
 import View from '../../system/View';
-
+import Lock from '../../system/Lock';
 /**
  * Show element if user has already udentificated
  *
@@ -74,6 +74,11 @@ class MenuGeneral extends View {
          * @private
          */
         this._activeAction = null;
+
+        this.lock.addEventChangeStatus((status) => {
+            this.lockControls(status);
+        });
+
     }
 
     /**
@@ -88,27 +93,24 @@ class MenuGeneral extends View {
 
     /**
      *
-     * @param {Lock} locker
      * @returns {MenuGeneral}
      */
-    lockControls(locker) {
-        locker.isLocked((status) => {
-            for (let item of this.viewOptions) {
-                let subItems = item['subItems'];
-                for (let subItem of subItems) {
-                    let lock = subItem['lock'];
-                    let action = this.getViewAction(subItem['action']);
+    lockControls(status) {
+        for (let item of this.viewOptions) {
+            let subItems = item['subItems'];
+            for (let subItem of subItems) {
+                let lock = subItem['lock'];
+                let action = this.getViewAction(subItem['action']);
 
-                    if (lock === SHOW_IF_LOCKED) {
-                        status ? action.show() : action.hide();
-                    }
+                if (lock === SHOW_IF_LOCKED) {
+                    status ? action.show() : action.hide();
+                }
 
-                    if (lock === HIDE_IF_LOCKED) {
-                        status ? action.hide() : action.show();
-                    }
+                if (lock === HIDE_IF_LOCKED) {
+                    status ? action.hide() : action.show();
                 }
             }
-        });
+        }
         return this;
     }
 

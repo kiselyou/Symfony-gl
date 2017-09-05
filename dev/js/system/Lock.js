@@ -2,6 +2,8 @@
 import io from 'socket.io-client';
 import Ajax from './Ajax';
 
+let locker = null;
+
 class Lock {
     /**
      *
@@ -10,24 +12,37 @@ class Lock {
     constructor() {
 
         /**
+         * It is events to change status of user
          *
-         * @type {?eventCheckLock}
+         * @type {Array.<eventChangeStatus>}
          * @private
          */
-        this._eventCheckLock = null;
+        this._eventsChangeStatus = [];
 
         /**
+         * The socket object
          *
          * @type {?Object}
          */
         this.socketControls = null;
 
-        if (!window._lock) {
-            window._lock = this;
-            this._controls();
-        } else {
-            this.socketControls = window._lock.socketControls;
-        }
+        /**
+         * It is status of user.
+         * If value is true it means that the page is locked and user is authenticated
+         *
+         * @type {boolean}
+         */
+        this.status = false;
+
+        this._controls();
+    }
+
+    /**
+     *
+     * @returns {Lock}
+     */
+    static get() {
+        return locker || (locker = new Lock());
     }
 
     /**
@@ -73,14 +88,6 @@ class Lock {
     }
 
     /**
-     *
-     * @returns {string}
-     */
-    static get EVENT_CHECK_LOCK() {
-        return 'EVENT_CHECK_LOCK';
-    }
-
-    /**
      * @param {{path: string, host: string, port: number}} path
      * @callback loadedConfiguration
      */
@@ -109,7 +116,7 @@ class Lock {
     }
 
     /**
-     * This method check lock status
+     * This method create socket connect and add listeners
      *
      * @returns {void}
      * @private
@@ -118,20 +125,36 @@ class Lock {
         this._loadConfiguration((path) => {
             this.socketControls = io.connect(path);
 
-            this.socketControls.on(Lock.EVENT_CHECK_LOCK, (status) => {
-                if (this._eventCheckLock) {
-                    this._eventCheckLock(status);
-                }
+            this.socketControls.on(Lock.EVENT_LOCK, (status) => {
+                this._changeStatus(status);
+            });
+
+            this.socketControls.on(Lock.EVENT_UNLOCK, (status) => {
+                this._changeStatus(status);
             });
 
             window.addEventListener('beforeunload', () => {
-                this.socketControls.emit(Lock.EVENT_UNLOCK);
+                this.unlock();
             });
         });
     }
 
     /**
-     * Lock page if user is logged
+     * Change status of user and is running listeners
+     *
+     * @param {boolean} status - The status of user
+     * @private
+     */
+    _changeStatus(status) {
+        this.status = status;
+        for (let listener of this._eventsChangeStatus) {
+            listener(this.status);
+        }
+    }
+
+    /**
+     * Lock the page if user is logged.
+     * Usually you need call this method when user was authenticated in system
      *
      * @returns {void}
      */
@@ -142,7 +165,8 @@ class Lock {
     }
 
     /**
-     * Unlock page if page was locked
+     * Unlock the page if page was locked
+     * Usually you need call this method when user left system
      *
      * @returns {void}
      */
@@ -153,23 +177,22 @@ class Lock {
     }
 
     /**
-     * Check user status
+     * The event to get status of user
      *
-     * @param {boolean} status true - If authenticated user is on the page else false
-     * @callback eventCheckLock
+     * @param {boolean} status true - If user id authenticated or false
+     * @callback eventChangeStatus
      */
 
     /**
-     * Check that authenticated user is on the page
+     * This method add event to change status.
+     * The event to get status of user
      *
-     * @param {eventCheckLock} eventCheckLock
-     * @returns {void}
+     * @param {eventChangeStatus} eventChangeStatus
+     * @returns {Lock}
      */
-    isLocked(eventCheckLock) {
-        if (this.socketControls) {
-            this._eventCheckLock = eventCheckLock;
-            this.socketControls.emit(Lock.EVENT_CHECK_LOCK);
-        }
+    addEventChangeStatus(eventChangeStatus) {
+        this._eventsChangeStatus.push(eventChangeStatus);
+        return this;
     }
 }
 

@@ -1,4 +1,4 @@
-
+import Lock from './../system/Lock';
 import Ajax from './Ajax';
 import UIMessage from './ui/UIMessage';
 import Sound from './../components/sound/Sound';
@@ -6,6 +6,12 @@ import Sound from './../components/sound/Sound';
 /** Class representing a base functional. */
 class Application {
     constructor() {
+
+        /**
+         *
+         * @type {Lock}
+         */
+        this.lock = Lock.get();
 
         /**
          *

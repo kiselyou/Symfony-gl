@@ -73,6 +73,7 @@ class Login extends View {
                 try {
                     let data = JSON.parse(res);
                     if (data['status']) {
+                        this.lock.lock();
                         if (success) {
                             success(data);
                         }

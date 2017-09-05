@@ -30,17 +30,16 @@ class SocketLock {
         io.of(Lock.NAMESPACE).on('connection', (socket) => {
 
             this._addUserToList(socket.id, this._server.session);
-
-            socket.on(Lock.EVENT_CHECK_LOCK, () => {
-                socket.emit(Lock.EVENT_CHECK_LOCK, this._server.checkLock(this._server.session.setSessionUserID()));
-            });
+            socket.emit(Lock.EVENT_LOCK, this._server.checkLock(this._server.session.setSessionUserID()));
 
             socket.on(Lock.EVENT_LOCK, () => {
                 this._addUserToList(socket.id, this._server.session);
+                socket.emit(Lock.EVENT_LOCK, this._server.checkLock(this._server.session.setSessionUserID()));
             });
 
             socket.on(Lock.EVENT_UNLOCK, () => {
                 this._removeUserFromList(socket.id);
+                socket.emit(Lock.EVENT_UNLOCK, this._server.checkLock(this._server.session.setSessionUserID()));
             });
 
             socket.on('disconnect', () => {

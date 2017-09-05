@@ -3,18 +3,7 @@ import {VIEW_PATH_MENU_GENERAL} from './../view-path';
 
 class MenuControls {
 
-    /**
-     *
-     * @param {Lock} locker
-     */
-    constructor(locker) {
-
-        /**
-         *
-         * @type {Lock}
-         * @private
-         */
-        this._locker = locker;
+    constructor() {
 
         /**
          *
@@ -26,15 +15,6 @@ class MenuControls {
             this.menuGeneral.show(false);
             this.menuGeneral.initEvents();
         });
-    }
-
-    /**
-     *
-     * @returns {MenuControls}
-     */
-    checkLock() {
-        this.menuGeneral.lockControls(this._locker);
-        return this;
     }
 
     /**
@@ -64,7 +44,6 @@ class MenuControls {
      */
     openMenu(listener) {
         this.menuGeneral.addEventBeforeBlockOpen(MenuGeneral.BLOCK_MAIN_MENU, () => {
-            this.checkLock();
             listener();
         });
         return this;

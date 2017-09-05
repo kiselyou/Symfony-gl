@@ -1,4 +1,4 @@
-import Lock from './../system/Lock';
+
 import Login from './authorization/Login';
 import Registration from './authorization/Registration';
 import Application from './../system/Application';
@@ -14,12 +14,6 @@ class ViewControls extends Application {
 
     constructor() {
         super();
-
-        /**
-         *
-         * @type {Lock}
-         */
-        this.lock = new Lock();
 
         /**
          *
@@ -39,7 +33,7 @@ class ViewControls extends Application {
          *
          * @type {MenuControls}
          */
-        this.menu = new MenuControls(this.lock);
+        this.menu = new MenuControls();
     }
 
     /**
@@ -63,10 +57,7 @@ class ViewControls extends Application {
                             .hide();
                 });
                 this._login
-                    .setEventBtnSignIn((res) => {
-                        this.lock.lock();
-                        this.menu.checkLock();
-                    })
+                    .setEventBtnSignIn()
                     .setEventBtnRegistration(() => {
                         this._registration.show();
                         this._login
