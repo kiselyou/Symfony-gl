@@ -1,9 +1,5 @@
 import View from '../../system/View';
 
-import {
-    ACTION_MAIN_MENU
-} from '../view-actions.js';
-
 /**
  * Show element if user has already udentificated
  *
@@ -30,31 +26,17 @@ class MenuGeneral extends View {
         this.viewOptions = [
             {
                 name: 'Main Menu IronWar',
-                action: ACTION_MAIN_MENU,
+                action: MenuGeneral.ACTION_OPEN_BLOCK_MAIN_MENU,
                 block: MenuGeneral.BLOCK_MAIN_MENU,
                 subItems: [
                     {name: 'Login', action: MenuGeneral.ACTION_LOGIN, lock: HIDE_IF_LOCKED},
                     {name: 'Registration', action: MenuGeneral.ACTION_REGISTRATION, lock: HIDE_IF_LOCKED},
                     {name: 'Logout', action: MenuGeneral.ACTION_LOGOUT, lock: SHOW_IF_LOCKED},
                     {name: 'Settings', action: MenuGeneral.ACTION_SETTINGS, lock: SHOW_IF_LOCKED},
-                    {name: 'Close Menu', action: MenuGeneral.ACTION_CLOSE}
+                    {name: 'Close Menu', action: MenuGeneral.ACTION_CLOSE_BLOCK_MAIN_MENU}
                 ]
             }
         ];
-
-        /**
-         * It is blocks
-         *
-         * @type {Object.<UIElement>}
-         */
-        this.blocks = {};
-
-        /**
-         * It is actions
-         *
-         * @type {Object.<UIElement>}
-         */
-        this.actions = {};
 
         /**
          * It is status of block.
@@ -92,10 +74,16 @@ class MenuGeneral extends View {
          * @private
          */
         this._activeAction = null;
+    }
 
-        this.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_CLOSE, (block, action) => {
-            this.hideBlock(block);
-        });
+    /**
+     * Remove menu
+     *
+     * @returns {void}
+     */
+    remove() {
+        this.status = {};
+        this.removeElement();
     }
 
     /**
@@ -109,7 +97,7 @@ class MenuGeneral extends View {
                 let subItems = item['subItems'];
                 for (let subItem of subItems) {
                     let lock = subItem['lock'];
-                    let action = this.getAction(subItem['action']);
+                    let action = this.getViewAction(subItem['action']);
 
                     if (lock === SHOW_IF_LOCKED) {
                         status ? action.show() : action.hide();
@@ -157,16 +145,13 @@ class MenuGeneral extends View {
 
             for (let item of option['subItems']) {
                 let itemActionName = item['action'];
-
-                this.getAction(itemActionName).addEvent('mouseover', () => {
+                this.getViewAction(itemActionName).addEvent('mouseover', () => {
                     this.sound.play(MENU_HOVER_MP3);
                 });
 
                 this._addEventToAction(itemActionName, () => {
-
                     this.toggle(blockName);
                     let block = this._events[blockName];
-
                     if (block && block[itemActionName]) {
                         let events = block[itemActionName];
                         for (let event of events) {
@@ -225,7 +210,7 @@ class MenuGeneral extends View {
      * @returns {string}
      * @constructor
      */
-    static get ACTION_CLOSE() {
+    static get ACTION_CLOSE_BLOCK_MAIN_MENU() {
         return 'main-menu-close';
     }
 
@@ -235,8 +220,18 @@ class MenuGeneral extends View {
      * @returns {string}
      * @constructor
      */
+    static get ACTION_OPEN_BLOCK_MAIN_MENU() {
+        return 'main-menu-open';
+    }
+
+    /**
+     * It is name of event "Open block of menu"
+     *
+     * @returns {string}
+     * @constructor
+     */
     static get BLOCK_MAIN_MENU() {
-        return ACTION_MAIN_MENU;
+        return 'main-menu';
     }
 
     /**
@@ -273,21 +268,7 @@ class MenuGeneral extends View {
      * @private
      */
     _addEventToAction(name, listener) {
-        this.getAction(name).addEvent('click', listener);
-    }
-
-    /**
-     * Get element of action by name
-     * You need call this method after upload menu
-     *
-     * @param {string} name - It is name of action
-     * @returns {UIElement}
-     */
-    getAction(name) {
-        if (!this.actions[name]) {
-            this.actions[name] = this.el.getElementByActionName(name);
-        }
-        return this.actions[name];
+        this.getViewAction(name).addEvent('click', listener);
     }
 
     /**
@@ -298,20 +279,6 @@ class MenuGeneral extends View {
      */
     isOpenedBlock(name) {
         return this.status.hasOwnProperty(name) && this.status[name] === true;
-    }
-
-    /**
-     * Get element block by name
-     * You need call this method after upload menu
-     *
-     * @param {string} name - name of block
-     * @returns {UIElement}
-     */
-    getBlock(name) {
-        if (!this.blocks[name]) {
-            this.blocks[name] = this.el.getElementByBlockName(name);
-        }
-        return this.blocks[name];
     }
 
     /**
@@ -328,8 +295,8 @@ class MenuGeneral extends View {
                 listener();
             }
         }
-        this.getBlock(name).show(true);
-        this.getAction(this._activeAction).hide();
+        this.getViewBlock(name).show(true);
+        this.getViewAction(this._activeAction).hide();
         return this;
     }
 
@@ -342,8 +309,8 @@ class MenuGeneral extends View {
      */
     hideBlock(name) {
         this.status[name] = false;
-        this.getBlock(name).hide(true);
-        this.getAction(this._activeAction).show();
+        this.getViewBlock(name).hide(true);
+        this.getViewAction(this._activeAction).show();
         return this;
     }
 

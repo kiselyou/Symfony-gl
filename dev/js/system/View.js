@@ -42,7 +42,21 @@ class View extends Application {
          * @type {string}
          * @private
          */
-        this._viewPath = viewPath;
+        this._pathView = viewPath;
+
+        /**
+         * It is blocks in the template
+         *
+         * @type {Object.<UIElement>}
+         */
+        this._blocks = {};
+
+        /**
+         * It is actions in the template
+         *
+         * @type {Object.<UIElement>}
+         */
+        this._actions = {};
 
         /**
          * Are params for build view
@@ -92,16 +106,6 @@ class View extends Application {
          * @type {ejs}
          */
         this.ejs = ejs;
-    }
-
-    /**
-     * Create empty element which will have template
-     *
-     * @returns {UIElement}
-     * @private
-     */
-    _createElement() {
-        return new UIElement().hide().setNameElement(this.name);
     }
 
     /**
@@ -254,27 +258,6 @@ class View extends Application {
     }
 
     /**
-     * Send request to server
-     *
-     * @param {string} path
-     * @param {Object} data
-     * @param {sendFormListener} listener
-     * @private
-     */
-    _viewAjax(path, data, listener) {
-        let ajax = this.ajax.post(path, data);
-        if (listener) {
-            ajax
-                .then((res) => {
-                    listener(res, true);
-                })
-                .catch((error) => {
-                    listener(error, false);
-                });
-        }
-    }
-
-    /**
      *
      * @param {UIElement}
      * @callback desktopClosedListener
@@ -313,7 +296,7 @@ class View extends Application {
      * @returns {View}
      */
     upload(success) {
-        this.ajax.post(View.ROUTE_STR, {name: this._viewPath, options: this._viewParams})
+        this.ajax.post(View.ROUTE_STR, {name: this._pathView, options: this._viewParams})
             .then((html) => {
                 this._prepareElement(html, success);
             })
@@ -335,7 +318,7 @@ class View extends Application {
             let html = this._renderEJS(this._tmp);
             this._prepareElement(html, success);
         } else {
-            this.ajax.post(View.ROUTE_EJS, {name: this._viewPath})
+            this.ajax.post(View.ROUTE_EJS, {name: this._pathView})
                 .then((res) => {
                     try {
                         let data = JSON.parse(res);
@@ -353,6 +336,87 @@ class View extends Application {
                 });
         }
         return this;
+    }
+
+    /**
+     * Show template
+     *
+     * @param {boolean} [animate] Add animation. Default is true
+     * @returns {View}
+     */
+    show(animate = true) {
+        this.el.show(animate);
+        return this;
+    }
+
+    /**
+     * Hide template
+     *
+     * @param {boolean} [animate] Add animation. Default is true
+     * @returns {View}
+     */
+    hide(animate = true) {
+        this.el.hide(animate);
+        return this;
+    }
+
+    /**
+     * Get element block by name
+     *
+     * @param {string} name - name of block
+     * @returns {UIElement}
+     */
+    getViewBlock(name) {
+        if (!this._blocks[name]) {
+            this._blocks[name] = this.el.getElementByBlockName(name);
+        }
+        return this._blocks[name];
+    }
+
+    /**
+     * Get element of action by name
+     *
+     * @param {string} name - It is name of action
+     * @returns {UIElement}
+     */
+    getViewAction(name) {
+        if (!this._actions[name]) {
+            this._actions[name] = this.el.getElementByActionName(name);
+        }
+        return this._actions[name];
+    }
+
+    /**
+     * Remove view from the page
+     *
+     * @returns {View}
+     */
+    removeElement() {
+        this.container.removeChild(this.el.getElement());
+        this.el = this._createElement();
+        this._actions = {};
+        this._blocks = {};
+        return this;
+    }
+
+    /**
+     *
+     * @param {string} ejsTemplate
+     * @returns {*}
+     * @private
+     */
+    _renderEJS(ejsTemplate) {
+        return this.ejs.render(ejsTemplate, this._viewParams);
+    }
+
+    /**
+     * Create empty element which will have template
+     *
+     * @returns {UIElement}
+     * @private
+     */
+    _createElement() {
+        return new UIElement().hide().setNameElement(this.name);
     }
 
     /**
@@ -379,46 +443,24 @@ class View extends Application {
     }
 
     /**
+     * Send request to server
      *
-     * @param {string} ejsTemplate
-     * @returns {*}
+     * @param {string} path
+     * @param {Object} data
+     * @param {sendFormListener} listener
      * @private
      */
-    _renderEJS(ejsTemplate) {
-        return this.ejs.render(ejsTemplate, this._viewParams);
-    }
-
-    /**
-     * Show template
-     *
-     * @param {boolean} [animate] Add animation. Default is true
-     * @returns {View}
-     */
-    show(animate = true) {
-        this.el.show(animate);
-        return this;
-    }
-
-    /**
-     * Hide template
-     *
-     * @param {boolean} [animate] Add animation. Default is true
-     * @returns {View}
-     */
-    hide(animate = true) {
-        this.el.hide(animate);
-        return this;
-    }
-
-    /**
-     * Remove view from the page
-     *
-     * @returns {View}
-     */
-    remove() {
-        this.container.removeChild(this.el.getElement());
-        this.el = this._createElement();
-        return this;
+    _viewAjax(path, data, listener) {
+        let ajax = this.ajax.post(path, data);
+        if (listener) {
+            ajax
+                .then((res) => {
+                    listener(res, true);
+                })
+                .catch((error) => {
+                    listener(error, false);
+                });
+        }
     }
 }
 
