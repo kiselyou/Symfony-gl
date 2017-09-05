@@ -23,7 +23,7 @@ class InformerWarning extends View {
         this
             .autoCleanElement(autoClean)
             .updateContainer(blockElement)
-            .upload(() => {
+            .render(() => {
                 this.show();
             });
     }

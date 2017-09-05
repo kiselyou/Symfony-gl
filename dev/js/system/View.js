@@ -290,7 +290,8 @@ class View extends Application {
      */
 
     /**
-     * Upload completed template from the server
+     * Upload completed template from the server.
+     * If your template have "extend" property you need use only this method to upload template
      *
      * @param {prepareElement} [success]
      * @returns {View}
@@ -309,6 +310,7 @@ class View extends Application {
 
     /**
      * Upload EJS template from the server and compile in the client side
+     * If your template don't have "extend" property you can use this method ao method "upload"
      *
      * @param {prepareElement} [success]
      * @returns {View}

@@ -1,5 +1,4 @@
 import View from '../../system/View';
-import Lock from '../../system/Lock';
 /**
  * Show element if user has already udentificated
  *
