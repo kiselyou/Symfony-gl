@@ -323,7 +323,6 @@ class MenuGeneral extends View {
      * @returns {MenuGeneral}
      */
     toggle(blockName) {
-
         if (this.status[blockName]) {
             this.sound.play(MENU_CLOSE_MP3);
             this.hideBlock(blockName)
