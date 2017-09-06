@@ -14,7 +14,6 @@ class ViewControls extends Application {
 
     constructor() {
         super();
-
         /**
          *
          * @type {Login}

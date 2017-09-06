@@ -6,7 +6,15 @@ class FileLoader {
         /**
          * @type {fs}
          */
-        this.fs = fs;
+        this._fs = fs;
+    }
+
+    /**
+     *
+     * @returns {fs}
+     */
+    get fs() {
+        return this._fs;
     }
 
     /**
@@ -16,7 +24,7 @@ class FileLoader {
      * @returns {string}
      */
     getTemplate(path) {
-        return this.fs.readFileSync('views/' + path, 'utf-8');
+        return this._fs.readFileSync('views/' + path, 'utf-8');
     }
 }
 
