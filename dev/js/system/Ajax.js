@@ -1,4 +1,5 @@
 import qs from 'qs';
+import ProgressAjax from './../view/progress/ProgressAjax';
 
 /**
  *
@@ -15,6 +16,12 @@ const AJAX_POST = 'POST';
 class Ajax {
 
     /**
+     *
+     * @type {ProgressAjax}
+     */
+    // this.progress = new ProgressAjax();
+
+    /**
      * Send POST data
      *
      * @param {string} url
@@ -22,6 +29,7 @@ class Ajax {
      * @returns {Promise}
      */
     post(url, param = {}) {
+        ProgressAjax.get().start();
         return new Promise((resolve, reject) => {
             this._execute(
                 (xhr) => {
@@ -121,6 +129,8 @@ class Ajax {
             if (xhr.readyState != 4) {
                 return;
             }
+
+            ProgressAjax.get().stop();
 
             if (xhr.status != 200) {
                 if (onError) {

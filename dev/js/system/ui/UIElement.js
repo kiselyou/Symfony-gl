@@ -16,7 +16,7 @@ class UIElement {
                 this._el = el ? el : document.createElement('div');
                 break;
             case 'string':
-                this._el = document.body.querySelector(el);
+                this._el = document.querySelector(el);
                 break;
             default:
                 this._el = document.createElement('div');

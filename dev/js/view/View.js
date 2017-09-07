@@ -1,9 +1,10 @@
 
 import ejs from 'ejs';
 import uuidv4 from 'uuid/v4';
-import Application from './Application';
-import UIElement from './ui/UIElement';
-import Validator from './Validator';
+import Application from './../system/Application';
+import UIElement from './../system/ui/UIElement';
+import Validator from './../system/Validator';
+
 import {ACTION_DESKTOP_CLOSE} from '../view/view-actions.js';
 
 class View extends Application {

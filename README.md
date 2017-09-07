@@ -23,6 +23,7 @@ npm run build-dependencies
 
 ```
 # Start server development
+npm run build-ejs
 npm run start
 ```
 

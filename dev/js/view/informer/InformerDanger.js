@@ -1,4 +1,4 @@
-import View from '../../system/View';
+import View from '../../view/View';
 
 class InformerDanger extends View {
     /**

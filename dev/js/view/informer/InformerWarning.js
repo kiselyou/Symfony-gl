@@ -1,5 +1,4 @@
-
-import View from '../../system/View';
+import View from '../../view/View';
 
 class InformerWarning extends View {
     /**

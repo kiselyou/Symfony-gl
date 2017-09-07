@@ -1,4 +1,4 @@
-import View from '../../system/View';
+import View from '../../view/View';
 import Informer from './../informer/Informer';
 import Validator from './../../system/Validator';
 
