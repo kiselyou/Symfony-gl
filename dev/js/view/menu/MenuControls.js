@@ -1,5 +1,5 @@
 import MenuGeneral from './MenuGeneral';
-import {VIEW_PATH_MENU_GENERAL} from './../view-path';
+import {VIEW_NAME_MENU_GENERAL} from './../../ini/ejs-ini';
 
 class MenuControls {
 
@@ -9,7 +9,7 @@ class MenuControls {
          *
          * @type {MenuGeneral}
          */
-        this.menuGeneral = new MenuGeneral(VIEW_PATH_MENU_GENERAL);
+        this.menuGeneral = new MenuGeneral(VIEW_NAME_MENU_GENERAL);
 
         this.menuGeneral.render(() => {
             this.menuGeneral.show(false);

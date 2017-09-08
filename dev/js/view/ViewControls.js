@@ -3,7 +3,7 @@ import View from './View';
 import Validator from './../system/Validator';
 import Application from './../system/Application';
 
-import {ACTION_DESKTOP_CLOSE} from '../view/view-actions.js';
+const ACTION_DESKTOP_CLOSE = 'desktop-close';
 
 class ViewControls extends View {
     /**

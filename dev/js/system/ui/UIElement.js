@@ -1,9 +1,7 @@
 
-import {
-    CLASS_ANIMATION_HIDE,
-    CLASS_ANIMATION_SHOW,
-    CLASS_DISABLED
-} from './../../view/view-styles';
+const CLASS_ANIMATION_HIDE = 'hide_a';
+const CLASS_ANIMATION_SHOW = 'show_a';
+const CLASS_DISABLED = 'disable';
 
 class UIElement {
     /**

@@ -1,12 +1,5 @@
-import {
-    VIEW_PATH_LOGIN,
-    VIEW_PATH_REGISTRATION,
-    VIEW_PATH_INFORMER_SUCCESS,
-    VIEW_PATH_INFORMER_WARNING,
-    VIEW_PATH_INFORMER_DANGER,
-    VIEW_PATH_INFORMER_INFO,
-    VIEW_PATH_MENU_GENERAL
-} from '../../../js/view/view-path';
+
+import {viewPath} from '../../../js/ini/ejs-ini';
 
 class EJSController {
 
@@ -16,14 +9,7 @@ class EJSController {
      */
     constructor(server) {
         this._server = server;
-        this.viewPaths = {};
-        this.viewPaths[VIEW_PATH_LOGIN] = 'components/authorization/login.ejs';
-        this.viewPaths[VIEW_PATH_REGISTRATION] = 'components/authorization/registration.ejs';
-        this.viewPaths[VIEW_PATH_INFORMER_SUCCESS] = 'components/informer/success.ejs';
-        this.viewPaths[VIEW_PATH_INFORMER_WARNING] = 'components/informer/warning.ejs';
-        this.viewPaths[VIEW_PATH_INFORMER_DANGER] = 'components/informer/danger.ejs';
-        this.viewPaths[VIEW_PATH_INFORMER_INFO] = 'components/informer/info.ejs';
-        this.viewPaths[VIEW_PATH_MENU_GENERAL] = 'components/menu/general.ejs';
+        this.viewPaths = viewPath;
     }
 
     /**

@@ -4,11 +4,11 @@ import InformerWarning from './InformerWarning';
 import InformerDanger from './InformerDanger';
 import InformerInfo from './InformerInfo';
 import {
-    VIEW_PATH_INFORMER_SUCCESS,
-    VIEW_PATH_INFORMER_WARNING,
-    VIEW_PATH_INFORMER_DANGER,
-    VIEW_PATH_INFORMER_INFO
-} from './../view-path';
+    VIEW_NAME_INFORMER_SUCCESS,
+    VIEW_NAME_INFORMER_WARNING,
+    VIEW_NAME_INFORMER_DANGER,
+    VIEW_NAME_INFORMER_INFO
+} from './../../ini/ejs-ini';
 
 class Informer {
     constructor() {
@@ -17,28 +17,28 @@ class Informer {
          * @type {InformerSuccess}
          * @private
          */
-        this._success = new InformerSuccess(VIEW_PATH_INFORMER_SUCCESS);
+        this._success = new InformerSuccess(VIEW_NAME_INFORMER_SUCCESS);
 
         /**
          *
          * @type {InformerWarning}
          * @private
          */
-        this._warning = new InformerWarning(VIEW_PATH_INFORMER_WARNING);
+        this._warning = new InformerWarning(VIEW_NAME_INFORMER_WARNING);
 
         /**
          *
          * @type {InformerWarning}
          * @private
          */
-        this._danger = new InformerDanger(VIEW_PATH_INFORMER_DANGER);
+        this._danger = new InformerDanger(VIEW_NAME_INFORMER_DANGER);
 
         /**
          *
          * @type {InformerWarning}
          * @private
          */
-        this._info = new InformerInfo(VIEW_PATH_INFORMER_INFO);
+        this._info = new InformerInfo(VIEW_NAME_INFORMER_INFO);
     }
 
     /**

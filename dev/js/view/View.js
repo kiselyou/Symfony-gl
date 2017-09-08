@@ -242,7 +242,6 @@ class View extends ViewBuffer {
             }
             this.container.beforeEnd(this.el);
         }
-
         return this.el;
     }
 

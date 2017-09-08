@@ -1,6 +1,6 @@
 import View from './../View';
 import UIElement from './../../system/ui/UIElement';
-import {VIEW_NAME_PROGRESS_AJAX} from './../view-path';
+import {VIEW_NAME_PROGRESS_AJAX} from './../../ini/ejs-ini';
 
 let progressAjax = null;
 

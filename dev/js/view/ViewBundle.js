@@ -3,7 +3,7 @@ import Login from './authorization/Login';
 import Registration from './authorization/Registration';
 import Application from './../system/Application';
 import MenuControls from './menu/MenuControls';
-import {VIEW_PATH_LOGIN, VIEW_PATH_REGISTRATION} from './view-path';
+import {VIEW_NAME_LOGIN, VIEW_NAME_REGISTRATION} from './../ini/ejs-ini';
 
 /**
  * Class representing views
@@ -19,14 +19,14 @@ class ViewBundle extends Application {
          * @type {Login}
          * @private
          */
-        this._login = new Login(VIEW_PATH_LOGIN);
+        this._login = new Login(VIEW_NAME_LOGIN);
 
         /**
          *
          * @type {Registration}
          * @private
          */
-        this._registration = new Registration(VIEW_PATH_REGISTRATION);
+        this._registration = new Registration(VIEW_NAME_REGISTRATION);
 
         /**
          *

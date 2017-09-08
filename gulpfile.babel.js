@@ -17,9 +17,7 @@ import browserify from 'browserify';
 import source from 'vinyl-source-stream';
 
 const pathBufferEJS = './dev/js/temp/bufferEJS.json';
-const filesEJS = {
-    'VIEW_NAME_PROGRESS_AJAX': './views/components/progress/ajax.ejs'
-};
+import {viewPath} from './dev/js/ini/ejs-ini';
 
 // ---------------------------------------------------- SERVER START----------------------------------------------------
 // Compiling server side
@@ -63,9 +61,9 @@ gulp.task('es6', function () {
 //######################################################################################################################
 gulp.task('ejs', () => {
     let tmp = {};
-    for (let key in filesEJS) {
-        if (filesEJS.hasOwnProperty(key)) {
-            tmp[key] = fs.readFileSync(filesEJS[key], 'utf-8');
+    for (let key in viewPath) {
+        if (viewPath.hasOwnProperty(key)) {
+            tmp[key] = fs.readFileSync('views/' + viewPath[key], 'utf-8');
         }
     }
 

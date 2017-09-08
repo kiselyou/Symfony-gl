@@ -2,14 +2,9 @@ import ViewRender from '../../view/ViewRender';
 import Informer from './../informer/Informer';
 import Validator from './../../system/Validator';
 
-import {
-    ACTION_OPEN_FORM,
-    ACTION_SEND_FORM
-} from '../view-actions.js';
-
-import {
-    VIEW_BLOCK_WARNING
-} from '../view-blocks.js';
+const ACTION_OPEN_FORM = 'open-form';
+const ACTION_SEND_FORM = 'send-form';
+const VIEW_BLOCK_WARNING = 'warning';
 
 class Registration extends ViewRender {
     /**
