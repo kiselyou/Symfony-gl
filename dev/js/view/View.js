@@ -61,7 +61,7 @@ class View extends ViewBuffer {
          *
          * @type {boolean}
          */
-        this.appendToContainer = true;
+        this._appendToContainer = true;
 
         /**
          * Clean container before append
@@ -113,6 +113,15 @@ class View extends ViewBuffer {
     }
 
     /**
+     * Thi is template element
+     *
+     * @returns {UIElement|*}
+     */
+    get viewElement() {
+        return this.el;
+    }
+
+    /**
      * Update main container
      *
      * @param {UIElement|Element|string} container - String is selector
@@ -120,6 +129,17 @@ class View extends ViewBuffer {
      */
     updateContainer(container) {
         this.container = container instanceof UIElement ? container : new UIElement(container);
+        return this;
+    }
+
+    /**
+     * Don't append element to container
+     *
+     * @param {boolean} value
+     * @returns {View}
+     */
+    notAppendToContainer(value = false) {
+        this._appendToContainer = value;
         return this;
     }
 
@@ -227,32 +247,40 @@ class View extends ViewBuffer {
     }
 
     /**
+     * The method:
+     *  Adding html to element.
+     *  Paste it to container by default
+     *      to controls actions look at follow methods:
+     *          "this.autoCleanElement"
+     *          "this.notAppendToContainer"
+     *          "this.autoCleanContainer"
      *
      * @param {string} html - The HTML string of completed template
-     * @returns {UIElement}
+     * @returns {void}
      */
     prepareElement(html) {
         if (this._autoCleanElement) {
             this.el.clean();
         }
         this.el.beforeEnd(html);
-        if (this.appendToContainer) {
+        if (this._appendToContainer) {
             if (this._autoCleanContainer) {
                 this.container.clean();
             }
             this.container.beforeEnd(this.el);
         }
-        return this.el;
     }
 
     /**
+     * Take EJS template from buffer and compile it
      *
-     * @param {string} viewName - It is constant. Name of template from the file "view-path"
-     * @returns {UIElement}
+     * @param {string} viewName - It is constant. Template name
+     * @returns {View}
      */
-    find(viewName) {
+    build(viewName) {
         let html = this.findInBuffer(viewName);
-        return this.prepareElement(html);
+        this.prepareElement(this.renderEJS(html));
+        return this;
     }
 }
 

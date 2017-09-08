@@ -10,11 +10,6 @@ class MenuControls {
          * @type {MenuGeneral}
          */
         this.menuGeneral = new MenuGeneral(VIEW_NAME_MENU_GENERAL);
-
-        this.menuGeneral.render(() => {
-            this.menuGeneral.show(false);
-            this.menuGeneral.initEvents();
-        });
     }
 
     /**

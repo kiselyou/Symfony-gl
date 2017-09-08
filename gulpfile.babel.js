@@ -16,9 +16,6 @@ import buffer from 'vinyl-buffer';
 import browserify from 'browserify';
 import source from 'vinyl-source-stream';
 
-const pathBufferEJS = './dev/js/temp/bufferEJS.json';
-import {viewPath} from './dev/js/ini/ejs-ini';
-
 // ---------------------------------------------------- SERVER START----------------------------------------------------
 // Compiling server side
 // It use npm script "package.json"
@@ -58,7 +55,10 @@ gulp.task('es6', function () {
     });
 });
 // ------------------------------------------------------ ES6 END-------------------------------------------------------
-//######################################################################################################################
+
+import {viewPath} from './dev/js/ini/ejs-ini';
+const pathBufferEJS = './dev/js/temp/bufferEJS.json';
+
 gulp.task('ejs', () => {
     let tmp = {};
     for (let key in viewPath) {
@@ -67,16 +67,19 @@ gulp.task('ejs', () => {
         }
     }
 
-    let json = JSON.stringify(tmp, null, 4);
-    fs.writeFile(pathBufferEJS, json, 'utf8', (error, res) => {
-        if (error) {
-            console.log('Cannot write to the file "' + pathBufferEJS + '"');
-            return;
-        }
-        console.log('Buffer of templates has already created successfully');
-    });
+    if (Object.keys(tmp).length > 0) {
+        let json = JSON.stringify(tmp, null, 4);
+        fs.writeFile(pathBufferEJS, json, 'utf8', (error, res) => {
+            if (error) {
+                console.log('Cannot write to the file "' + pathBufferEJS + '"');
+                return;
+            }
+            console.log('The file "' + pathBufferEJS + '" was generated successfully');
+        });
+    } else {
+        console.log('List EJS templates is empty');
+    }
 });
-//######################################################################################################################
 
 gulp.task('watch', function() {
     gulp.watch('./dev/js/**/*.js', ['es6']);

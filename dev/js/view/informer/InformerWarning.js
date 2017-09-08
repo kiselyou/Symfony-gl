@@ -1,12 +1,20 @@
-import ViewRender from '../../view/ViewRender';
+import View from '../../view/View';
 
-class InformerWarning extends ViewRender {
+class InformerWarning extends View {
     /**
      *
-     * @param {string} path - It is path to template
+     * @param {string} viewName - It is template name
      */
-    constructor(path) {
-        super(path);
+    constructor(viewName) {
+        super();
+
+        /**
+         * Template name
+         *
+         * @type {string}
+         * @private
+         */
+        this._viewName = viewName;
     }
 
     /**
@@ -19,12 +27,12 @@ class InformerWarning extends ViewRender {
      */
     pasteTo(blockElement, messages, autoClean = true) {
         this.viewOptions = {messages: (typeof messages === 'string') ? [messages] : messages};
+
         this
             .autoCleanElement(autoClean)
             .updateContainer(blockElement)
-            .render(() => {
-                this.show();
-            });
+            .build(this._viewName)
+            .show();
     }
 }
 

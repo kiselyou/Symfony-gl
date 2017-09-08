@@ -78,9 +78,9 @@ class ViewRender extends ViewControls {
     upload(success) {
         this.app.ajax.post(ViewRender.ROUTE_STR, {name: this._viewName, options: this._viewParams})
             .then((html) => {
-                let el = this.prepareElement(html);
+                this.prepareElement(html);
                 if (success) {
-                    success(el);
+                    success(this.viewElement);
                 }
             })
             .catch((error) => {
@@ -99,9 +99,9 @@ class ViewRender extends ViewControls {
      */
     render(success) {
         if (this.template) {
-            let el = this.prepareElement(this.renderEJS(this.template));
+            this.prepareElement(this.renderEJS(this.template));
             if (success) {
-                success(el);
+                success(this.viewElement);
             }
         } else {
             this.app.ajax.post(ViewRender.ROUTE_EJS, {name: this._viewName})
@@ -109,9 +109,9 @@ class ViewRender extends ViewControls {
                     try {
                         let data = JSON.parse(res);
                         this.template = data['ejs'];
-                        let el = this.prepareElement(this.renderEJS(this.template));
+                        this.prepareElement(this.renderEJS(this.template));
                         if (success) {
-                            success(el);
+                            success(this.viewElement);
                         }
                     } catch (error) {
                         console.log(error);

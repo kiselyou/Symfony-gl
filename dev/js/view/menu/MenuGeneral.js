@@ -1,26 +1,31 @@
-import ViewRender from '../../view/ViewRender';
+import ViewControls from '../../view/ViewControls';
 /**
- * Show element if user has already udentificated
+ * Show element if user is logged
  *
  * @type {number}
  */
 const SHOW_IF_LOCKED = 1;
 const HIDE_IF_LOCKED = 2;
-const MENU_OPEN_MP3 = './src/mp3/open.mp3';
-const MENU_HOVER_MP3 = './src/mp3/hover.mp3';
-const MENU_CLOSE_MP3 = './src/mp3/close.mp3';
+
+import {
+    MENU_OPEN_MP3,
+    MENU_HOVER_MP3,
+    MENU_CLOSE_MP3
+} from './../../ini/sound-ini';
 
 /**
  * @class {MenuGeneral}
  * @extends {View}
  */
-class MenuGeneral extends ViewRender {
+class MenuGeneral extends ViewControls {
     /**
      *
-     * @param {string} path It is path to template
+     * @param {string} viewName - It is template name
      */
-    constructor(path) {
-        super(path);
+    constructor(viewName) {
+        super();
+
+        this._viewName = viewName;
 
         this.viewOptions = [
             {
@@ -78,6 +83,9 @@ class MenuGeneral extends ViewRender {
             this.lockControls(status);
         });
 
+        this.build(this._viewName);
+        this.show(false);
+        this.initEvents();
     }
 
     /**

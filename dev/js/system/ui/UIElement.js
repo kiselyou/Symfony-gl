@@ -337,6 +337,17 @@ class UIElement {
         this.getElement().removeChild(child);
         return this;
     }
+
+    /**
+     * Set text in element
+     *
+     * @param {string} text
+     * @returns {UIElement}
+     */
+    setText(text) {
+        this.getElement().innerHTML = text;
+        return this;
+    }
 }
 
 export default UIElement;

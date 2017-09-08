@@ -16,12 +16,6 @@ const AJAX_POST = 'POST';
 class Ajax {
 
     /**
-     *
-     * @type {ProgressAjax}
-     */
-    // this.progress = new ProgressAjax();
-
-    /**
      * Send POST data
      *
      * @param {string} url
@@ -34,6 +28,22 @@ class Ajax {
             this._execute(
                 (xhr) => {
                     xhr.open(AJAX_POST, url);
+
+                    xhr.upload.onprogress = (e) => {
+                        if (e.lengthComputable) {
+                            ProgressAjax.get().update(e.total, e.loaded);
+                            // progressBar.max = e.total;
+                            // progressBar.value = e.loaded;
+                        }
+                    };
+
+                    // xhr.upload.onloadstart = function (e) {
+                    //     progressBar.value = 0;
+                    // }
+                    // xhr.upload.onloadend = function (e) {
+                    //     progressBar.value = e.loaded;
+                    // }
+
                     xhr.send(Ajax._preparePostData(param));
                 },
                 resolve,

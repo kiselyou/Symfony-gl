@@ -1,12 +1,20 @@
-import ViewRender from '../../view/ViewRender';
+import View from '../../view/View';
 
-class InformerSuccess extends ViewRender {
+class InformerSuccess extends View {
     /**
      *
-     * @param {string} path - It is path to template
+     * @param {string} viewName - It is template name
      */
-    constructor(path) {
-        super(path);
+    constructor(viewName) {
+        super(viewName);
+
+        /**
+         * Template name
+         *
+         * @type {string}
+         * @private
+         */
+        this._viewName = viewName;
     }
 
     /**
@@ -22,9 +30,8 @@ class InformerSuccess extends ViewRender {
         this
             .autoCleanElement(autoClean)
             .updateContainer(blockElement)
-            .render(() => {
-                this.show();
-            });
+            .build(this._viewName)
+            .show();
     }
 }
 

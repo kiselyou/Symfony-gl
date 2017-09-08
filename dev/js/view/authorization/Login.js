@@ -12,10 +12,10 @@ const VIEW_BLOCK_WARNING = 'warning';
 class Login extends ViewRender {
     /**
      *
-     * @param {string} path It is path to template
+     * @param {string} viewName - It is template name
      */
-    constructor(path) {
-        super(path);
+    constructor(viewName) {
+        super(viewName);
 
         /**
          *
