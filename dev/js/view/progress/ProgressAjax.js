@@ -1,27 +1,19 @@
-import ViewBuffer from './../ViewBuffer';
+import View from './../View';
 import UIElement from './../../system/ui/UIElement';
 import {VIEW_NAME_PROGRESS_AJAX} from './../view-path';
 
 let progressAjax = null;
 
-class ProgressAjax {
+class ProgressAjax extends View {
     constructor() {
-
-        this._viewBuffer = new ViewBuffer();
+        super();
 
         /**
-         * It is empty element which will have template
+         * It is template of EJS
          *
          * @type {UIElement}
          */
-        this.el = this._viewBuffer.find(VIEW_NAME_PROGRESS_AJAX);
-
-        /**
-         * It is element which will have templates
-         *
-         * @type {UIElement}
-         */
-        this.container = new UIElement('body');
+        this._tmp = this.find(VIEW_NAME_PROGRESS_AJAX);
     }
 
     /**
@@ -34,16 +26,20 @@ class ProgressAjax {
 
     /**
      *
+     * @returns {ProgressAjax}
      */
     start() {
-        this.el.show();
-        this.container.afterBegin(this.el);
+        this._tmp.show();
         return this;
     }
 
+    /**
+     *
+     * @returns {ProgressAjax}
+     */
     stop() {
-        this.el.hide();
-        // this.container.removeChild(this.el);
+        this._tmp.hide();
+        return this;
     }
 }
 

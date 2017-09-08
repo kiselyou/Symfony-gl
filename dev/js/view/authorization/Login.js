@@ -1,4 +1,4 @@
-import View from '../../view/View';
+import ViewRender from '../../view/ViewRender';
 import Informer from './../informer/Informer';
 import Validator from './../../system/Validator';
 
@@ -14,7 +14,7 @@ import {
 /**
  * @extends View
  */
-class Login extends View {
+class Login extends ViewRender {
     /**
      *
      * @param {string} path It is path to template

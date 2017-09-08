@@ -1,5 +1,5 @@
-import Lock from './../system/Lock';
 import Ajax from './Ajax';
+import Lock from './Lock';
 import UIMessage from './ui/UIMessage';
 import Sound from './sound/Sound';
 

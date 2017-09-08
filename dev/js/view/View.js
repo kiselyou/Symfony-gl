@@ -1,19 +1,16 @@
 
 import ejs from 'ejs';
 import uuidv4 from 'uuid/v4';
-import Application from './../system/Application';
 import UIElement from './../system/ui/UIElement';
-import Validator from './../system/Validator';
+import ViewBuffer from './ViewBuffer';
 
-import {ACTION_DESKTOP_CLOSE} from '../view/view-actions.js';
-
-class View extends Application {
+class View extends ViewBuffer {
     /**
      *
-     * @param {string} viewPath It is constant of path to template from file "view-path"
      * @param {Element|UIElement|string} [container] - It can be Element or selector of container
      */
-    constructor(viewPath, container) {
+    constructor(container) {
+
         super();
 
         /**
@@ -36,14 +33,6 @@ class View extends Application {
          * @type {UIElement}
          */
         this.el = this._createElement();
-
-        /**
-         * It is path to template. Possible values look at "ViewPathControls"
-         *
-         * @type {string}
-         * @private
-         */
-        this._pathView = viewPath;
 
         /**
          * It is blocks in the template
@@ -90,20 +79,6 @@ class View extends Application {
         this._autoCleanElement = false;
 
         /**
-         *
-         * @type {Object.<Validator>}
-         */
-        this.validator = {};
-
-        /**
-         * There is template EJS
-         *
-         * @type {?string}
-         * @private
-         */
-        this._tmp = null;
-
-        /**
          * @type {ejs}
          */
         this.ejs = ejs;
@@ -118,24 +93,6 @@ class View extends Application {
     static get MAIN_CONTAINER_ID() {
         return '#initialisation_main_elements';
     }
-
-    /**
-     * This is path to upload template and generate data in the server side
-     *
-     * @returns {string}
-     */
-    static get ROUTE_STR() {
-        return '/template/str';
-    };
-
-    /**
-     * This is path to upload EJE template as string from the server
-     *
-     * @returns {string}
-     */
-    static get ROUTE_EJS() {
-        return '/template/ejs';
-    };
 
     /**
      * Set options for view
@@ -185,159 +142,6 @@ class View extends Application {
      */
     autoCleanElement(clean = true) {
         this._autoCleanElement = clean;
-        return this;
-    }
-
-    /**
-     *
-     * @param {string} actionName - name of action
-     * @param {string} fieldName - name of filed
-     * @param {string} rule - It is constants of class "Validator"
-     * @param {?string|number|Array} [mark] - It is value to need check.
-     *        In some cases this value can have array
-     *        e.g.
-     *           Validator.RULE_LENGTH_BETWEEN_VALUES need set mark [2, 8]. It means that value have to be more or equal 2 and less or equal 8
-     *           Validator.RULE_MAX_LENGTH need set mark to 20 or some another value
-     * @param {?string} [message] - Message
-     * @returns {View}
-     */
-    addValidateRule(actionName, fieldName, rule, mark = null, message = null) {
-        if (!this.validator.hasOwnProperty(actionName)) {
-            this.validator[actionName] = new Validator(this.el);
-        }
-        this.validator[actionName].rule(fieldName, rule, mark, message);
-        return this;
-    }
-
-    /**
-     *
-     * @param {string} actionName - name of action
-     * @param {?boolean} status - true (Fields only with status true)
-     *                            false (Fields only with status false)
-     *                            null (Fields with any status)
-     * @param {listenerCheckedField} listener
-     * @returns {View}
-     */
-    findCheckedFields(actionName, status, listener) {
-        if (this.validator.hasOwnProperty(actionName)) {
-            this.validator[actionName].findCheckedFields(status, listener);
-        }
-        return this;
-    }
-
-    /**
-     * @param {(Array|string)} res
-     * @param {boolean} status
-     * @returns {void}
-     * @callback sendFormListener
-     */
-
-    /**
-     * Send form data to server by method POST is using specific action
-     *
-     * @param {string} actionName - name of action
-     * @param {string} path - path to the server
-     * @param {string|FormData|Object} form - string is selector of form
-     * @param {sendFormListener} [sendForm]
-     */
-    addActionSendForm(actionName, path, form, sendForm) {
-        let el = this.el.getElementByActionName(actionName);
-        el.addEvent('click', () => {
-            let data = typeof form === 'string' ? new FormData(this.el.findOne(form).getElement()) : form;
-            if (this.validator.hasOwnProperty(actionName)) {
-                let validator = this.validator[actionName];
-                validator.start(data);
-                if (validator.isError()) {
-                    sendForm(validator.getMessages(), false);
-                } else {
-                    this._viewAjax(path, data, sendForm);
-                }
-            } else {
-                this._viewAjax(path, data, sendForm);
-            }
-        });
-    }
-
-    /**
-     *
-     * @param {UIElement}
-     * @callback desktopClosedListener
-     */
-
-    /**
-     *
-     * @param {desktopClosedListener} [listener]
-     * @param {boolean} close If false desktop will not close and you need custom control it
-     * @returns {View}
-     */
-    addActionDesktopClose(listener, close = true) {
-        let el = this.el.getElementByActionName(ACTION_DESKTOP_CLOSE);
-        if (el) {
-            el.addEvent('click', () => {
-                if (listener) {
-                    listener(this.el);
-                }
-                if (close) {
-                    this.el.hide(true);
-                }
-            });
-        }
-        return this;
-    }
-
-    /**
-     * @param {UIElement} - The template Element
-     * @callback prepareElement
-     */
-
-    /**
-     * Upload completed template from the server.
-     * If your template have "extend" property you need use only this method to upload template
-     *
-     * @param {prepareElement} [success]
-     * @returns {View}
-     */
-    upload(success) {
-        this.ajax.post(View.ROUTE_STR, {name: this._pathView, options: this._viewParams})
-            .then((html) => {
-                this._prepareElement(html, success);
-            })
-            .catch((error) => {
-                console.log(error);
-                this.msg.alert('View Error', error);
-            });
-        return this;
-    }
-
-    /**
-     * Upload EJS template from the server and compile in the client side
-     * If your template don't have "extend" property you can use this method ao method "upload"
-     *
-     * @param {prepareElement} [success]
-     * @returns {View}
-     */
-    render(success) {
-        if (this._tmp) {
-            let html = this._renderEJS(this._tmp);
-            this._prepareElement(html, success);
-        } else {
-            this.ajax.post(View.ROUTE_EJS, {name: this._pathView})
-                .then((res) => {
-                    try {
-                        let data = JSON.parse(res);
-                        this._tmp = data['ejs'];
-                        let html = this._renderEJS(this._tmp);
-                        this._prepareElement(html, success);
-                    } catch (error) {
-                        console.log(error);
-                        this.msg.alert('Load ejs Error', error);
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.msg.alert('View Error', error);
-                });
-        }
         return this;
     }
 
@@ -403,12 +207,12 @@ class View extends Application {
     }
 
     /**
+     * Render template EJS
      *
      * @param {string} ejsTemplate
      * @returns {*}
-     * @private
      */
-    _renderEJS(ejsTemplate) {
+    renderEJS(ejsTemplate) {
         return this.ejs.render(ejsTemplate, this._viewParams);
     }
 
@@ -425,11 +229,9 @@ class View extends Application {
     /**
      *
      * @param {string} html - The HTML string of completed template
-     * @param {prepareElement} done - The event when template is prepared
-     * @returns {void}
-     * @private
+     * @returns {UIElement}
      */
-    _prepareElement(html, done) {
+    prepareElement(html) {
         if (this._autoCleanElement) {
             this.el.clean();
         }
@@ -440,30 +242,18 @@ class View extends Application {
             }
             this.container.beforeEnd(this.el);
         }
-        if (done) {
-            done(this.el);
-        }
+
+        return this.el;
     }
 
     /**
-     * Send request to server
      *
-     * @param {string} path
-     * @param {Object} data
-     * @param {sendFormListener} listener
-     * @private
+     * @param {string} viewName - It is constant. Name of template from the file "view-path"
+     * @returns {UIElement}
      */
-    _viewAjax(path, data, listener) {
-        let ajax = this.ajax.post(path, data);
-        if (listener) {
-            ajax
-                .then((res) => {
-                    listener(res, true);
-                })
-                .catch((error) => {
-                    listener(error, false);
-                });
-        }
+    find(viewName) {
+        let html = this.findInBuffer(viewName);
+        return this.prepareElement(html);
     }
 }
 

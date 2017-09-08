@@ -1,4 +1,4 @@
-import View from '../../view/View';
+import ViewRender from '../../view/ViewRender';
 import Informer from './../informer/Informer';
 import Validator from './../../system/Validator';
 
@@ -11,7 +11,7 @@ import {
     VIEW_BLOCK_WARNING
 } from '../view-blocks.js';
 
-class Registration extends View {
+class Registration extends ViewRender {
     /**
      *
      * @param {string} path It is path to template

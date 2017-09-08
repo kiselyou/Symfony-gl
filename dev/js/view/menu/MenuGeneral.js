@@ -1,4 +1,4 @@
-import View from '../../view/View';
+import ViewRender from '../../view/ViewRender';
 /**
  * Show element if user has already udentificated
  *
@@ -14,7 +14,7 @@ const MENU_CLOSE_MP3 = './src/mp3/close.mp3';
  * @class {MenuGeneral}
  * @extends {View}
  */
-class MenuGeneral extends View {
+class MenuGeneral extends ViewRender {
     /**
      *
      * @param {string} path It is path to template
@@ -74,7 +74,7 @@ class MenuGeneral extends View {
          */
         this._activeAction = null;
 
-        this.lock.addEventChangeStatus((status) => {
+        this.app.lock.addEventChangeStatus((status) => {
             this.lockControls(status);
         });
 
@@ -147,7 +147,7 @@ class MenuGeneral extends View {
             for (let item of option['subItems']) {
                 let itemActionName = item['action'];
                 this.getViewAction(itemActionName).addEvent('mouseover', () => {
-                    this.sound.play(MENU_HOVER_MP3);
+                    this.app.sound.play(MENU_HOVER_MP3);
                 });
 
                 this._addEventToAction(itemActionName, () => {
@@ -324,10 +324,10 @@ class MenuGeneral extends View {
      */
     toggle(blockName) {
         if (this.status[blockName]) {
-            this.sound.play(MENU_CLOSE_MP3);
+            this.app.sound.play(MENU_CLOSE_MP3);
             this.hideBlock(blockName)
         } else {
-            this.sound.play(MENU_OPEN_MP3);
+            this.app.sound.play(MENU_OPEN_MP3);
             this.showBlock(blockName)
         }
         return this;

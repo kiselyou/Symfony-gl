@@ -1,7 +1,7 @@
 
-import View from '../../view/View';
+import ViewRender from '../../view/ViewRender';
 
-class InformerInfo extends View {
+class InformerInfo extends ViewRender {
     /**
      *
      * @param {string} path - It is path to template

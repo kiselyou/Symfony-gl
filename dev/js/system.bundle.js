@@ -2,9 +2,9 @@
 import Text3D from './components/text/Text3D';
 import Tunnel from './components/tunnel/Tunnel';
 import InitScene from './components/scene/InitScene';
-import ViewControls from './view/ViewControls';
+import ViewBundle from './view/ViewBundle';
 
-let view = new ViewControls();
+let view = new ViewBundle();
 view.initSecurityForm();
 
 let sceneControls = new InitScene('initialisation_main_scene');
