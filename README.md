@@ -45,3 +45,8 @@ pm2 save
 pm2 start app/server/index.js
 pm2 save
 ```
+
+```
+# Restart server
+pm2 restart all
+```
