@@ -8,7 +8,6 @@ import gulpUglify from 'gulp-uglify';
 import gulpConcat from 'gulp-concat';
 import gulpCssnano from 'gulp-cssnano';
 import gulpSourcemaps from 'gulp-sourcemaps';
-import gulpLivereload from 'gulp-livereload';
 
 import glob from 'glob';
 import babelify from 'babelify';
@@ -50,8 +49,7 @@ gulp.task('es6-dev', ['ejs'], () => {
         .bundle()
         .pipe(source('bundle.min.js'))
         .pipe(buffer())
-        .pipe(gulp.dest('./src/js'))
-        .pipe(gulpLivereload());
+        .pipe(gulp.dest('./src/js'));
 });
 
 gulp.task('es6-prod', ['ejs'], () => {
@@ -63,8 +61,7 @@ gulp.task('es6-prod', ['ejs'], () => {
         .pipe(gulpSourcemaps.init())
         .pipe(gulpUglify())
         .pipe(gulpSourcemaps.write('./maps'))
-        .pipe(gulp.dest('./src/js'))
-        .pipe(gulpLivereload());
+        .pipe(gulp.dest('./src/js'));
 });
 
 // ------------------------------------------------------ ES6 END-------------------------------------------------------
@@ -99,7 +96,6 @@ gulp.task('ejs', () => {
 // ------------------------------------------------------ EJS END-------------------------------------------------------
 
 gulp.task('watch', function() {
-    gulpLivereload.listen();
     gulp.watch(['./dev/js/**/*.js', './views/components/**/*.ejs'], ['es6-dev']);
     gulp.watch('./dev/less/**/*.less', ['less']);
 });
