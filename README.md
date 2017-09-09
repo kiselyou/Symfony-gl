@@ -36,14 +36,12 @@ Commands of server:
 
 ```
 # Auto Start server - development
-autostart enable -n "IronWar" -p "/var/www/galaxy" -c "npm run start"
+pm2 start --interpreter babel-node dev/server/index.js
+pm2 save
 ```
 
 ```
 # Auto Start server - production
-pm2 start processes.json 
-    # or
-pm2 start app/server/index.js -i max
-    # and for expected/unexpected server restart by typing this command
+pm2 start app/server/index.js
 pm2 save
 ```

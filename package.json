@@ -11,7 +11,7 @@
     "build:ejs": "gulp ejs",
     "build": "npm run prepare:prod && npm run build:css && babel dev -d app",
     "start:prod": "npm run build && nodejs app/server/index.js",
-    "start:dev": "build:js && build:css && nodemon dev/server/index.js dev --exec babel-node"
+    "start:dev": "npm run build:js && npm run build:css && nodemon dev/server/index.js dev --exec babel-node"
   },
   "repository": {
     "type": "git",

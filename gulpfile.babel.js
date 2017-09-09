@@ -79,12 +79,9 @@ gulp.task('ejs', () => {
             tmp[key] = fs.readFileSync('views/' + viewPath[key], 'utf-8');
         }
     }
-
     if (Object.keys(tmp).length > 0) {
         let json = JSON.stringify(tmp, null, 4);
-
         let pathBufferEJS = tempDir + '/' + fileBufferEJS;
-
         if (!fs.existsSync(tempDir)){
             fs.mkdirSync(tempDir);
         }
