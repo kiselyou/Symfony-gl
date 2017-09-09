@@ -13,6 +13,7 @@ class MenuControls {
     }
 
     /**
+     * Add event open form login
      *
      * @param {listenItemsMenu} listener
      * @returns {MenuControls}
@@ -23,6 +24,7 @@ class MenuControls {
     }
 
     /**
+     * Add event open form registration
      *
      * @param {listenItemsMenu} listener
      * @returns {MenuControls}
@@ -33,6 +35,18 @@ class MenuControls {
     }
 
     /**
+     * Add event logout
+     *
+     * @param {listenItemsMenu} [listener]
+     * @returns {MenuControls}
+     */
+    logout(listener) {
+        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_LOGOUT, listener);
+        return this;
+    }
+
+    /**
+     * Add event open menu
      *
      * @param {eventsBeforeBlockOpen} listener
      * @returns {MenuControls}
@@ -41,6 +55,17 @@ class MenuControls {
         this.menuGeneral.addEventBeforeBlockOpen(MenuGeneral.BLOCK_MAIN_MENU, () => {
             listener();
         });
+        return this;
+    }
+
+    /**
+     * Add event close menu
+     *
+     * @param {listenItemsMenu} listener
+     * @returns {MenuControls}
+     */
+    closeMenu(listener) {
+        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_CLOSE_MENU, listener);
         return this;
     }
 }

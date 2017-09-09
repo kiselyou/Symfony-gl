@@ -185,7 +185,7 @@ class Server extends Components {
     sendResponse(params) {
         if (this.security.isGranted(this.request.url, this.authorization.getSessionUserRoles())) {
             // Check the page is locked
-            if (this.checkLock(this.session.setSessionUserID())) {
+            if (this.checkLock(this.session.setSessionUserID()) && !this.request.xhr) {
                 let msg = 'Page is locked. Probably this page has already opened in another tab!';
                 this.responseView(Server.PATH_404, {code: 423, msg: msg});
                 return;

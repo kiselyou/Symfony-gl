@@ -51,7 +51,7 @@ class Ajax {
      * Update Progress
      *
      * @param {XMLHttpRequest} xhr
-     * @returns {void}
+     * @returns {Ajax}
      * @private
      */
     _progressUpdate(xhr) {
@@ -62,6 +62,7 @@ class Ajax {
                 }
             };
         }
+        return this;
     }
 
     /**
@@ -88,12 +89,13 @@ class Ajax {
         this
             ._showProgress(showProgress)
             ._progressStart();
-
         return new Promise((resolve, reject) => {
             this._execute(
                 (xhr) => {
                     xhr.open(AJAX_POST, url);
-                    this._progressUpdate(xhr);
+                    this
+                        ._setHeaderHTTP(xhr)
+                        ._progressUpdate(xhr);
                     xhr.send(Ajax._preparePostData(param));
                 },
                 resolve,
@@ -154,7 +156,9 @@ class Ajax {
             this._execute(
                 (xhr) => {
                     xhr.open(AJAX_GET, Ajax._prepareGetURL(url, params));
-                    this._progressUpdate(xhr);
+                    this
+                        ._setHeaderHTTP(xhr)
+                        ._progressUpdate(xhr);
                     xhr.send();
                 },
                 resolve,
@@ -162,6 +166,18 @@ class Ajax {
             );
         });
     };
+
+    /**
+     * Set HTTP Headers
+     *
+     * @param {XMLHttpRequest} xhr
+     * @returns {Ajax}
+     * @private
+     */
+    _setHeaderHTTP(xhr) {
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        return this;
+    }
 
     /**
      * @param {XMLHttpRequest} xhr

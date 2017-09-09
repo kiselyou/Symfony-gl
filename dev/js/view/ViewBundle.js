@@ -1,5 +1,6 @@
 
 import Login from './authorization/Login';
+import Logout from './authorization/Logout';
 import Registration from './authorization/Registration';
 import Application from './../system/Application';
 import MenuControls from './menu/MenuControls';
@@ -15,6 +16,7 @@ class ViewBundle extends Application {
     constructor() {
         super();
         /**
+         * Form login
          *
          * @type {Login}
          * @private
@@ -22,6 +24,7 @@ class ViewBundle extends Application {
         this._login = new Login(VIEW_NAME_LOGIN);
 
         /**
+         * Form registration
          *
          * @type {Registration}
          * @private
@@ -76,6 +79,9 @@ class ViewBundle extends Application {
             })
             .openFormRegistration(() => {
                 this._registration.show();
+            })
+            .logout(() => {
+                Logout.get().run();
             });
 
         return this;

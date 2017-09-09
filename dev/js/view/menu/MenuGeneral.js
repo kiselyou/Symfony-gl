@@ -30,14 +30,14 @@ class MenuGeneral extends ViewControls {
         this.viewOptions = [
             {
                 name: 'Main Menu IronWar',
-                action: MenuGeneral.ACTION_OPEN_BLOCK_MAIN_MENU,
+                action: MenuGeneral.ACTION_OPEN_MENU,
                 block: MenuGeneral.BLOCK_MAIN_MENU,
                 subItems: [
                     {name: 'Login', action: MenuGeneral.ACTION_LOGIN, lock: HIDE_IF_LOCKED},
                     {name: 'Registration', action: MenuGeneral.ACTION_REGISTRATION, lock: HIDE_IF_LOCKED},
                     {name: 'Logout', action: MenuGeneral.ACTION_LOGOUT, lock: SHOW_IF_LOCKED},
                     {name: 'Settings', action: MenuGeneral.ACTION_SETTINGS, lock: SHOW_IF_LOCKED},
-                    {name: 'Close Menu', action: MenuGeneral.ACTION_CLOSE_BLOCK_MAIN_MENU}
+                    {name: 'Close Menu', action: MenuGeneral.ACTION_CLOSE_MENU}
                 ]
             }
         ];
@@ -80,12 +80,34 @@ class MenuGeneral extends ViewControls {
         this._activeAction = null;
 
         this.app.lock.addEventChangeStatus((status) => {
+            this.rebuildMenu();
             this.lockControls(status);
         });
 
+        this.buildMenu();
+    }
+
+    /**
+     * Build Menu
+     *
+     * @returns {MenuGeneral}
+     */
+    buildMenu() {
         this.build(this._viewName);
         this.show(false);
         this.initEvents();
+        return this;
+    }
+
+    /**
+     * Rebuild menu
+     *
+     * @returns {MenuGeneral}
+     */
+    rebuildMenu() {
+        this.removeMenu();
+        this.buildMenu();
+        return this;
     }
 
     /**
@@ -93,7 +115,7 @@ class MenuGeneral extends ViewControls {
      *
      * @returns {void}
      */
-    remove() {
+    removeMenu() {
         this.status = {};
         this.removeElement();
     }
@@ -110,11 +132,11 @@ class MenuGeneral extends ViewControls {
                 let action = this.getViewAction(subItem['action']);
 
                 if (lock === SHOW_IF_LOCKED) {
-                    status ? action.show() : action.hide();
+                    status ? action.show() : action.remove();
                 }
 
                 if (lock === HIDE_IF_LOCKED) {
-                    status ? action.hide() : action.show();
+                    status ? action.remove() : action.show();
                 }
             }
         }
@@ -134,7 +156,6 @@ class MenuGeneral extends ViewControls {
         }
 
         this._eventsBeforeBlockOpen[blockName].push(listener);
-
         return this;
     }
 
@@ -219,7 +240,7 @@ class MenuGeneral extends ViewControls {
      * @returns {string}
      * @constructor
      */
-    static get ACTION_CLOSE_BLOCK_MAIN_MENU() {
+    static get ACTION_CLOSE_MENU() {
         return 'main-menu-close';
     }
 
@@ -229,7 +250,7 @@ class MenuGeneral extends ViewControls {
      * @returns {string}
      * @constructor
      */
-    static get ACTION_OPEN_BLOCK_MAIN_MENU() {
+    static get ACTION_OPEN_MENU() {
         return 'main-menu-open';
     }
 

@@ -93,6 +93,7 @@ class Session {
     destroySession() {
         if (this._session) {
             this._session.destroy();
+            delete this._session[Session.KEY_USER_INFO];
         }
         return this;
     }

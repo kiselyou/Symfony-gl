@@ -338,6 +338,7 @@ class UIElement {
     }
 
     /**
+     * Remove children element
      *
      * @param {(UIElement|Element)} child
      * @returns {UIElement}
@@ -347,6 +348,17 @@ class UIElement {
             child = child.getElement();
         }
         this.getElement().removeChild(child);
+        return this;
+    }
+
+    /**
+     * Remove element
+     *
+     * @returns {UIElement}
+     */
+    remove() {
+        let parent = this.getElement().parentElement;
+        parent.removeChild(this.getElement());
         return this;
     }
 
