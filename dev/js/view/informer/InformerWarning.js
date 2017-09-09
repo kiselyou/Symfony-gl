@@ -1,5 +1,7 @@
 import View from '../../view/View';
 
+const VIEW_BLOCK_HEADER = 'header';
+
 class InformerWarning extends View {
     /**
      *
@@ -15,6 +17,12 @@ class InformerWarning extends View {
          * @private
          */
         this._viewName = viewName;
+
+        /**
+         *
+         * @type {boolean}
+         */
+        this.hideHeder = true;
     }
 
     /**
@@ -33,6 +41,8 @@ class InformerWarning extends View {
             .updateContainer(blockElement)
             .build(this._viewName)
             .show();
+
+        this.getViewBlock(VIEW_BLOCK_HEADER).toggleShowOrHide(this.hideHeder);
     }
 }
 

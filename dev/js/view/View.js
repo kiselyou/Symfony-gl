@@ -166,6 +166,18 @@ class View extends ViewBuffer {
     }
 
     /**
+     * Show or Hide view by value
+     *
+     * @param {boolean} hide
+     * @param animation
+     * @returns {View}
+     */
+    toggleShowOrHide(hide, animation = true) {
+        hide ? this.hide(animation) : this.show(animation);
+        return this;
+    }
+
+    /**
      * Show template
      *
      * @param {boolean} [animate] Add animation. Default is true
@@ -220,7 +232,18 @@ class View extends ViewBuffer {
      */
     removeElement() {
         this.container.removeChild(this.el.getElement());
+        this.updateElement();
         this.el = this._createElement();
+        return this;
+    }
+
+    /**
+     * Update element view.
+     * This method clean all blocks and actions of current view
+     *
+     * @returns {View}
+     */
+    updateElement() {
         this._actions = {};
         this._blocks = {};
         return this;
@@ -262,6 +285,7 @@ class View extends ViewBuffer {
         if (this._autoCleanElement) {
             this.el.clean();
         }
+        this.updateElement();
         this.el.beforeEnd(html);
         if (this._appendToContainer) {
             if (this._autoCleanContainer) {

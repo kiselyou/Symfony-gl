@@ -267,6 +267,18 @@ class UIElement {
     }
 
     /**
+     * Show or Hide element by value
+     *
+     * @param {boolean} hide
+     * @param animation
+     * @returns {UIElement}
+     */
+    toggleShowOrHide(hide, animation = false) {
+        hide ? this.hide(animation) : this.show(animation);
+        return this;
+    }
+
+    /**
      * Hide element
      *
      * @param {boolean} [animate] Add animation

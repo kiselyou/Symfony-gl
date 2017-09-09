@@ -1,9 +1,11 @@
 <div class="informer informer_xs">
-    <div class="informer__title">Danger:</div>
+    <div class="informer__title" data-block="header">
+        <span>Danger:</span>
+    </div>
     <ul>
         <% for (let message of options.messages) { %>
         <li>
-            <i class="fa fa-exclamation-triangle informer__icon informer__icon_info"></i>
+            <i class="fa fa-exclamation-triangle informer__icon informer__icon_danger"></i>
             <span><%= message %></span>
         </li>
         <% } %>

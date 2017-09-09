@@ -83,7 +83,7 @@ class ProgressAjax extends View {
             }
             this._blockStatus.setText(this._percentMove + '%');
             this._percentMove += 1;
-        }, 15);
+        }, 5);
     }
 
     /**
@@ -96,6 +96,7 @@ class ProgressAjax extends View {
         if (this._timer) {
             clearInterval(this._timer);
             this._timer = null;
+            this._percentMove = 0;
         }
     }
 
@@ -122,11 +123,11 @@ class ProgressAjax extends View {
     /**
      * Update Status Progress
      *
-     * @param max
-     * @param loaded
+     * @param {number} max
+     * @param {number} loaded
      * @returns {ProgressAjax}
      */
-    update(max, loaded) {
+    updateProgress(max, loaded) {
         this._max = max;
         this._loaded = loaded;
         this._percentStop = this._getPercent();
@@ -153,7 +154,7 @@ class ProgressAjax extends View {
      * @returns {ProgressAjax}
      */
     stop() {
-        this.update(100, 100);
+        this.updateProgress(100, 100);
         return this;
     }
 }

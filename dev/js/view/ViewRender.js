@@ -73,10 +73,11 @@ class ViewRender extends ViewControls {
      * If your template have "extend" property you need use only this method to upload template
      *
      * @param {prepareElement} [success]
-     * @returns {View}
+     * @returns {ViewRender}
      */
     upload(success) {
-        this.app.ajax.post(ViewRender.ROUTE_STR, {name: this._viewName, options: this._viewParams})
+        this.app.ajax
+            .post(ViewRender.ROUTE_STR, {name: this._viewName, options: this._viewParams}, false)
             .then((html) => {
                 this.prepareElement(html);
                 if (success) {
@@ -95,7 +96,7 @@ class ViewRender extends ViewControls {
      * If your template don't have "extend" property you can use this method ao method "upload"
      *
      * @param {prepareElement} [success]
-     * @returns {View}
+     * @returns {ViewRender}
      */
     render(success) {
         if (this.template) {
@@ -104,7 +105,8 @@ class ViewRender extends ViewControls {
                 success(this.viewElement);
             }
         } else {
-            this.app.ajax.post(ViewRender.ROUTE_EJS, {name: this._viewName})
+            this.app.ajax
+                .post(ViewRender.ROUTE_EJS, {name: this._viewName}, false)
                 .then((res) => {
                     try {
                         let data = JSON.parse(res);

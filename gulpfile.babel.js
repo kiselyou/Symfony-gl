@@ -84,4 +84,5 @@ gulp.task('ejs', () => {
 gulp.task('watch', function() {
     gulp.watch('./dev/js/**/*.js', ['es6']);
     gulp.watch('./dev/less/**/*.less', ['less']);
+    gulp.watch('./views/components/**/*.ejs', ['ejs']);
 });

@@ -15,35 +15,85 @@ const AJAX_POST = 'POST';
 
 class Ajax {
 
+    constructor() {
+        /**
+         * If it value is true will be shown ajax progress
+         *
+         * @type {boolean}
+         */
+        this._progress = true;
+    }
+
+    /**
+     * Show or Hide Progress
+     *
+     * @param {boolean} show
+     * @returns {Ajax}
+     */
+    _showProgress(show = true) {
+        this._progress = show;
+        return this;
+    }
+
+    /**
+     * Start Progress
+     *
+     * @private
+     * @returns {void}
+     */
+    _progressStart() {
+        if (this._progress) {
+            ProgressAjax.get().start();
+        }
+    }
+
+    /**
+     * Update Progress
+     *
+     * @param {XMLHttpRequest} xhr
+     * @returns {void}
+     * @private
+     */
+    _progressUpdate(xhr) {
+        if (this._progress) {
+            xhr.upload.onprogress = (e) => {
+                if (e.lengthComputable) {
+                    ProgressAjax.get().updateProgress(e.total, e.loaded);
+                }
+            };
+        }
+    }
+
+    /**
+     * Stop Progress
+     *
+     * @private
+     * @returns {void}
+     */
+    _progressStop() {
+        if (this._progress) {
+            ProgressAjax.get().stop();
+        }
+    }
+
     /**
      * Send POST data
      *
      * @param {string} url
      * @param {FormData|{}|Array} [param]
+     * @param {boolean} [showProgress]
      * @returns {Promise}
      */
-    post(url, param = {}) {
-        ProgressAjax.get().start();
+    post(url, param = {}, showProgress = true) {
+        this
+            ._showProgress(showProgress)
+            ._progressStart();
+
         return new Promise((resolve, reject) => {
             this._execute(
                 (xhr) => {
                     xhr.open(AJAX_POST, url);
-
-                    xhr.upload.onprogress = (e) => {
-                        if (e.lengthComputable) {
-                            ProgressAjax.get().update(e.total, e.loaded);
-                            // progressBar.max = e.total;
-                            // progressBar.value = e.loaded;
-                        }
-                    };
-
-                    // xhr.upload.onloadstart = function (e) {
-                    //     progressBar.value = 0;
-                    // }
-                    // xhr.upload.onloadend = function (e) {
-                    //     progressBar.value = e.loaded;
-                    // }
-
+                    this._progressUpdate(xhr);
                     xhr.send(Ajax._preparePostData(param));
                 },
                 resolve,
@@ -93,13 +143,18 @@ class Ajax {
      *
      * @param {string} url
      * @param {{}|[]} [params]
+     * @param {boolean} [showProgress]
      * @returns {Promise}
      */
-    get(url, params = null) {
+    get(url, params = null, showProgress = true) {
+        this
+            ._showProgress(showProgress)
+            ._progressStart();
         return new Promise((resolve, reject) => {
             this._execute(
                 (xhr) => {
                     xhr.open(AJAX_GET, Ajax._prepareGetURL(url, params));
+                    this._progressUpdate(xhr);
                     xhr.send();
                 },
                 resolve,
@@ -140,7 +195,7 @@ class Ajax {
                 return;
             }
 
-            ProgressAjax.get().stop();
+            this._progressStop();
 
             if (xhr.status != 200) {
                 if (onError) {
