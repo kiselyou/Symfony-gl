@@ -68,8 +68,9 @@ gulp.task('es6-prod', ['ejs'], () => {
 // =====================================================================================================================
 // ---------------------------------------------------- EJS START ------------------------------------------------------
 
+const tempDir = './temp';
+const fileBufferEJS = 'bufferEJS.json';
 import {viewPath} from './dev/js/ini/ejs-ini';
-const pathBufferEJS = './temp/bufferEJS.json';
 
 gulp.task('ejs', () => {
     let tmp = {};
@@ -81,6 +82,12 @@ gulp.task('ejs', () => {
 
     if (Object.keys(tmp).length > 0) {
         let json = JSON.stringify(tmp, null, 4);
+
+        let pathBufferEJS = tempDir + '/' + fileBufferEJS;
+
+        if (!fs.existsSync(tempDir)){
+            fs.mkdirSync(tempDir);
+        }
         fs.writeFile(pathBufferEJS, json, 'utf8', (error, res) => {
             if (error) {
                 console.log(colors.red('Cannot write to a file: ' + pathBufferEJS));
