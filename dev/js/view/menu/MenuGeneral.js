@@ -79,12 +79,12 @@ class MenuGeneral extends ViewControls {
          */
         this._activeAction = null;
 
+        this.buildMenu();
+
         this.app.lock.addEventChangeStatus((status) => {
             this.rebuildMenu();
             this.lockControls(status);
         });
-
-        this.buildMenu();
     }
 
     /**
