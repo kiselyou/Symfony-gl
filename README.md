@@ -16,7 +16,7 @@ Commands of server:
 ```
 
 ```
-# Prepare environment of production
+# Prepare environment and start server of production
     npm run start:prod
 ```
 
