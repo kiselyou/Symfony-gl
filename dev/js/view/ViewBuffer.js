@@ -1,5 +1,5 @@
 
-const bufferEJS = require('./../temp/bufferEJS.json');
+const bufferEJS = require('./../../../temp/bufferEJS.json');
 
 class ViewBuffer {
 

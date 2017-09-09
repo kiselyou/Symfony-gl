@@ -4,11 +4,14 @@
   "description": "",
   "main": "app/server/index.js",
   "scripts": {
-    "start": "nodemon dev/server/index.js dev --exec babel-node",
-    "build": "babel dev -d app",
-    "build-dependencies": "gulp move-server-dependencies",
-    "build-ejs": "gulp ejs",
-    "config-ini": "babel-node config.ini.js"
+    "config:ini": "babel-node config.ini.js",
+    "prepare:prod": "gulp prepare:prod",
+    "build:js": "gulp es6-prod",
+    "build:css": "gulp less",
+    "build:ejs": "gulp ejs",
+    "build": "npm run prepare:prod && npm run build:css && babel dev -d app",
+    "start:prod": "npm run build && nodejs app/server/index.js",
+    "start:dev": "build:js && build:css && nodemon dev/server/index.js dev --exec babel-node"
   },
   "repository": {
     "type": "git",
@@ -43,7 +46,8 @@
     "three": "^0.86.0",
     "tippy.js": "^1.2.0",
     "uuid": "^3.1.0",
-    "validator": "^8.1.0"
+    "validator": "^8.1.0",
+    "watchify": "^3.9.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -56,12 +60,14 @@
     "babel-preset-stage-2": "^6.24.1",
     "babelify": "^7.3.0",
     "browserify": "^14.4.0",
+    "colors": "^1.1.2",
     "glob": "^7.1.2",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.1",
     "gulp-cssnano": "^2.1.2",
     "gulp-less": "^3.3.2",
+    "gulp-livereload": "^3.8.1",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^2.6.1",
     "gulp-uglify": "^3.0.0",

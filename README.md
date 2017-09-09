@@ -3,28 +3,35 @@ Commands of server:
 
 ```
 # Install of dependencies
-npm update
+    npm update
 ```
 
 ```
 # Create configuration
-npm run config-ini
-# If file of configuration has already exist the program will ask confirm. Possible values are below
-# Y - Yes. Rewrite and continue
-# N - No. Not rewrite and continue
-# S - Stop. Not rewrite and Stop
+    npm run config:ini
+        # If file of configuration has already exist the program will ask confirm. Possible values are below
+        # Y - Yes. Rewrite and continue
+        # N - No. Not rewrite and continue
+        # S - Stop. Not rewrite and Stop
 ```
 
 ```
 # Prepare environment of production
-npm run build
-npm run build-dependencies
+    npm run start:prod
 ```
 
 ```
 # Start server development
-npm run build-ejs
-npm run start
+    npm run start:dev
+```
+
+```
+# Additional commands
+    npm run build
+    npm run build:js
+    npm run build:css
+    npm run build:ejs
+    npm run prepare:prod
 ```
 
 ```
