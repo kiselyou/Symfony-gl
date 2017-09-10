@@ -45,6 +45,7 @@
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
     "three": "^0.86.0",
+    "three-mtl-loader": "^1.0.1",
     "three-obj-loader": "^1.1.2",
     "tippy.js": "^1.2.0",
     "uuid": "^3.1.0",

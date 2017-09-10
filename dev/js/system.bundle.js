@@ -5,14 +5,6 @@ import InitScene from './play/scene/InitScene';
 import ViewBundle from './view/ViewBundle';
 
 import Loader from './play/Loader/Loader';
-
-
-
-
-
-
-
-
 import Lock from './system/Lock';
 
 let view = new ViewBundle();
@@ -26,7 +18,7 @@ let tunnel = new Tunnel(sceneControls.camera);
 
 text
     .setSize(100)
-    .setFar(-2000)
+    .setFar(-1500)
     .showMirror(true)
     .write('IronWar');
 
@@ -36,29 +28,29 @@ sceneControls
     .render()
     .addRenderEvent(() => {
         if (start) {
-            text.animation();
+            // text.animation();
             tunnel.update();
         }
     });
 
+Loader.get().start(() => {
+    let obj = Loader.get().getObj('sss3');
+    obj.position.y = 0;
+    obj.position.z = 0;
+    obj.rotation.x = 0.2;
+    obj.rotation.y = Math.PI;
+    sceneControls.add(obj);
+    console.log(obj);
+});
+
 Lock.get().addEventChangeStatus((status) => {
     start = !status;
     if (start) {
-        sceneControls.add(text.get());
+        // sceneControls.add(text.get());
         // sceneControls.add(tunnel.get());
     } else {
         sceneControls.remove(text.get());
         // sceneControls.remove(tunnel.get());
-
-        Loader.get().start(() => {
-            let obj = Loader.get().getObj('sss1');
-            obj.position.y = -250;
-            obj.position.z = -2500;
-            obj.rotation.x = 0.2;
-            sceneControls.add(obj);
-            console.log(obj);
-        });
-
     }
 });
 

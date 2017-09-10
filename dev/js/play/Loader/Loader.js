@@ -1,6 +1,18 @@
 import * as THREE from 'three';
 import Application from './../../system/Application';
 
+
+// var MTLLoader = require('three-mtl-loader');
+//
+// let mtl = new MTLLoader();
+//
+// mtl.setTexturePath('./src/test/Maps');
+// mtl.load('./src/test/Wraith_Raider_Starship.mtl', (materials) => {
+//     console.log(materials);
+//     materials.preload();
+//     console.log(materials);
+// });
+
 let inst = null;
 
 class Loader extends Application {
