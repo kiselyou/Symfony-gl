@@ -1,0 +1,7 @@
+{
+  "loader_obj": {
+    "route": "/load/obj",
+    "method": "POST",
+    "controller": "OBJController:load"
+  }
+}

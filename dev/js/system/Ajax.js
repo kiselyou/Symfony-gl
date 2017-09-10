@@ -1,5 +1,5 @@
 import qs from 'qs';
-import ProgressAjax from './../view/progress/ProgressAjax';
+import ProgressAjax from './progress/ProgressAjax';
 
 /**
  *
@@ -56,7 +56,7 @@ class Ajax {
      */
     _progressUpdate(xhr) {
         if (this._progress) {
-            xhr.upload.onprogress = (e) => {
+            xhr.onprogress = (e) => {
                 if (e.lengthComputable) {
                     ProgressAjax.get().updateProgress(e.total, e.loaded);
                 }

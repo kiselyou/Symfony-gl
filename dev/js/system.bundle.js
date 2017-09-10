@@ -1,34 +1,64 @@
 
-import Text3D from './components/text/Text3D';
-import Tunnel from './components/tunnel/Tunnel';
-import InitScene from './components/scene/InitScene';
+import Text3D from './play/text/Text3D';
+import Tunnel from './play/tunnel/Tunnel';
+import InitScene from './play/scene/InitScene';
 import ViewBundle from './view/ViewBundle';
+
+import Loader from './play/Loader/Loader';
+
+
+
+
+
+
+
+
+import Lock from './system/Lock';
 
 let view = new ViewBundle();
 view.initSecurityForm();
 
 let sceneControls = new InitScene('initialisation_main_scene');
 
+let start = true;
 let text = new Text3D();
-
-text
-    .setFar(-1500)
-    .showMirror(true)
-    .write('IronWar', (text) => {
-        sceneControls.add(text);
-    });
-
 let tunnel = new Tunnel(sceneControls.camera);
 
-tunnel
-    .render((element) => {
-        sceneControls.add(element);
-    });
+text
+    .setSize(100)
+    .setFar(-2000)
+    .showMirror(true)
+    .write('IronWar');
+
+// tunnel.render();
 
 sceneControls
     .render()
     .addRenderEvent(() => {
-        text.animation();
-        tunnel.update();
+        if (start) {
+            text.animation();
+            tunnel.update();
+        }
     });
+
+Lock.get().addEventChangeStatus((status) => {
+    start = !status;
+    if (start) {
+        sceneControls.add(text.get());
+        // sceneControls.add(tunnel.get());
+    } else {
+        sceneControls.remove(text.get());
+        // sceneControls.remove(tunnel.get());
+
+        Loader.get().start(() => {
+            let obj = Loader.get().getObj('sss1');
+            obj.position.y = -250;
+            obj.position.z = -2500;
+            obj.rotation.x = 0.2;
+            sceneControls.add(obj);
+            console.log(obj);
+        });
+
+    }
+});
 

@@ -3,6 +3,8 @@ import EJSController from './systems/EJSController';
 import SocketController from './systems/SocketController';
 import SecurityController from './systems/SecurityController';
 
+import OBJController from './loader/OBJController';
+
 class ControllerCollection {
     /**
      *
@@ -14,6 +16,7 @@ class ControllerCollection {
         this._collections['EJSController'] = new EJSController(server);
         this._collections['SocketController'] = new SocketController(server);
         this._collections['SecurityController'] = new SecurityController(server);
+        this._collections['OBJController'] = new OBJController(server);
     }
 
     /**

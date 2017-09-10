@@ -255,8 +255,9 @@ class Server extends Components {
      * @returns {Server}
      */
     responseJSON(data) {
-        this._res.writeHead(200, {'Content-Type': 'application/json'});
-        this._res.end(JSON.stringify(data), 'utf-8', true);
+        let json = JSON.stringify(data);
+        this._res.writeHead(200, {'Content-Type': 'application/json', 'Content-Length': json.length});
+        this._res.end(json, 'utf-8', true);
         return this;
     };
 
