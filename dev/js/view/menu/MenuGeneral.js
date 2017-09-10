@@ -25,8 +25,17 @@ class MenuGeneral extends ViewControls {
     constructor(viewName) {
         super();
 
+        /**
+         *
+         * @type {string}
+         * @private
+         */
         this._viewName = viewName;
 
+        /**
+         *
+         * @type {*[]}
+         */
         this.viewOptions = [
             {
                 name: 'Main Menu IronWar',

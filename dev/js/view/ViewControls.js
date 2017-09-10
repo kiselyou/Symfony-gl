@@ -3,7 +3,7 @@ import View from './View';
 import Validator from './../system/Validator';
 import Application from './../system/Application';
 
-const ACTION_DESKTOP_CLOSE = 'desktop-close';
+const ACTION_CLOSE = 'close';
 
 class ViewControls extends View {
     /**
@@ -48,7 +48,7 @@ class ViewControls extends View {
      * @returns {View}
      */
     addActionDesktopClose(listener, close = true) {
-        let el = this.el.getElementByActionName(ACTION_DESKTOP_CLOSE);
+        let el = this.el.getElementByActionName(ACTION_CLOSE);
         if (el) {
             el.addEvent('click', () => {
                 if (listener) {

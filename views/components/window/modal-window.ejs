@@ -1,15 +1,16 @@
 <div class="col_xs_12 col_sm_12 col_md_12 col_lg_12">
-    <div class="desktop desktop_size_sm desktop_skin_dark">
-        <div class="desktop__head">
+    <div class="modal modal_size_sm modal_skin_dark">
+        <div class="modal__head">
             <div class="col_xs_10 col_sm_10 col_md_10 col_lg_10">
                 <%= params.title %>
             </div>
             <div class="col_xs_2 col_sm_2 col_md_2 col_lg_2 text-r">
-                <i class="fa fa-close desktop__head_btn btn btn_xs btn_skin_link" data-action="desktop-close"></i>
+                <i class="fa fa-close modal__head_btn btn btn_xs btn_skin_link" data-action="close"></i>
             </div>
         </div>
-        <div class="desktop__body">
+        <div class="modal__body">
             <%- content %>
         </div>
     </div>
 </div>
+
