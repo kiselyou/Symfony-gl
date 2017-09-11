@@ -72,15 +72,15 @@ class Loader extends Application {
                     let data = JSON.parse(json);
                     let models = data['obj'];
                     let mtl = data['mtl'];
-                    console.log(mtl);
+                    console.log(models);
 
 
 
                     for (let key in models) {
                         if (models.hasOwnProperty(key)) {
                             let obj = this._loader.parse(models[key]);
-                            console.log(obj);
-                            // this._loadMTL(obj);
+                            // console.log(obj);
+                            this._loadMTL(obj);
                             this._listModels[key] = obj;
                         }
                     }
@@ -100,14 +100,10 @@ class Loader extends Application {
     }
 
     _loadMTL(obj) {
-        // this._loaderMTL.setTexturePath('./temp/obj/test');
-    //     mtlLoader.setPath( 'assets/obj/' );
-    // *     mtlLoader.load( 'my.mtl', ... );
-        this._loaderMTL.setPath('./temp/obj/test/');
-        this._loaderMTL.load('Wraith.mtl', (materials) => {
+        this._loaderMTL.load('./src/obj/test/Wraith.mtl', (materials) => {
             materials.preload();
-            obj.setMaterials(materials);
             console.log(materials);
+
         });
     }
 }
