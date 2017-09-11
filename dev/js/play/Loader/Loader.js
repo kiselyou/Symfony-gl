@@ -1,17 +1,10 @@
 import * as THREE from 'three';
+import MTLLoader from 'three-mtl-loader';
 import Application from './../../system/Application';
 
-
-// var MTLLoader = require('three-mtl-loader');
-//
-// let mtl = new MTLLoader();
-//
-// mtl.setTexturePath('./src/test/Maps');
-// mtl.load('./src/test/Wraith_Raider_Starship.mtl', (materials) => {
-//     console.log(materials);
-//     materials.preload();
-//     console.log(materials);
-// });
+import {
+    TEMP_DIR_OBJ
+} from './../../ini/obj.ini';
 
 let inst = null;
 
@@ -21,10 +14,17 @@ class Loader extends Application {
 
         /**
          *
-         * @type {any}
+         * @type {THREE.ObjectLoader|ObjectLoader}
          * @private
          */
         this._loader = new THREE.ObjectLoader();
+
+        /**
+         *
+         * @type {MTLLoader}
+         * @private
+         */
+        this._loaderMTL = new MTLLoader();
 
         /**
          *
@@ -69,10 +69,19 @@ class Loader extends Application {
             .post('/load/obj')
             .then((json) => {
                 try {
-                    let models = JSON.parse(json);
+                    let data = JSON.parse(json);
+                    let models = data['obj'];
+                    let mtl = data['mtl'];
+                    console.log(mtl);
+
+
+
                     for (let key in models) {
                         if (models.hasOwnProperty(key)) {
-                            this._listModels[key] = this._loader.parse(models[key]);
+                            let obj = this._loader.parse(models[key]);
+                            console.log(obj);
+                            // this._loadMTL(obj);
+                            this._listModels[key] = obj;
                         }
                     }
                     if (listener) {
@@ -88,6 +97,18 @@ class Loader extends Application {
                 this.msg.alert('Cannot load models');
             });
         return this;
+    }
+
+    _loadMTL(obj) {
+        // this._loaderMTL.setTexturePath('./temp/obj/test');
+    //     mtlLoader.setPath( 'assets/obj/' );
+    // *     mtlLoader.load( 'my.mtl', ... );
+        this._loaderMTL.setPath('./temp/obj/test/');
+        this._loaderMTL.load('Wraith.mtl', (materials) => {
+            materials.preload();
+            obj.setMaterials(materials);
+            console.log(materials);
+        });
     }
 }
 

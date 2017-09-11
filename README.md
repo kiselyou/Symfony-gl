@@ -31,6 +31,7 @@ Commands of server:
     npm run build:js
     npm run build:css
     npm run build:ejs
+    npm run build:obj
     npm run prepare:prod
 ```
 

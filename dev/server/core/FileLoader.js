@@ -4,6 +4,14 @@ import * as THREE from 'three';
 import OBJLoader from 'three-obj-loader';
 OBJLoader(THREE);
 
+import {
+    BASE_DIR_OBJ
+} from './../../js/ini/obj.ini';
+
+import {
+    BASE_DIR_VIEW
+} from './../../js/ini/ejs-ini';
+
 class FileLoader {
 
     constructor() {
@@ -48,7 +56,7 @@ class FileLoader {
      * @returns {string}
      */
     getModel(path) {
-        let model = this._fs.readFileSync('models/' + path, 'utf-8');
+        let model = this._fs.readFileSync(BASE_DIR_OBJ + path, 'utf-8');
         return this._OBJLoader.parse(model).toJSON();
     }
 
@@ -77,7 +85,7 @@ class FileLoader {
      * @returns {string}
      */
     getTemplate(path) {
-        return this._fs.readFileSync('views/' + path, 'utf-8');
+        return this._fs.readFileSync(BASE_DIR_VIEW + path, 'utf-8');
     }
 
     /**

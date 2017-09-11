@@ -1,5 +1,5 @@
 
-import {viewPath} from '../../../js/ini/ejs-ini';
+import {VIEW_PATH} from '../../../js/ini/ejs-ini';
 
 class EJSController {
 
@@ -9,7 +9,7 @@ class EJSController {
      */
     constructor(server) {
         this._server = server;
-        this.viewPaths = viewPath;
+        this.viewPaths = VIEW_PATH;
     }
 
     /**

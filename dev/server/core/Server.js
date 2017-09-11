@@ -244,7 +244,7 @@ class Server extends Components {
      * @returns {Server}
      */
     responseView(pathView, params = {}) {
-        this._res.render(pathView, params);
+        this._res.render(pathView.replace(/^\/+/, ''), params);
         return this;
     };
 

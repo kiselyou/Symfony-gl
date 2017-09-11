@@ -8,6 +8,9 @@ import gulpUglify from 'gulp-uglify';
 import gulpConcat from 'gulp-concat';
 import gulpCssnano from 'gulp-cssnano';
 import gulpSourcemaps from 'gulp-sourcemaps';
+import gulpImageMin from 'gulp-imagemin';
+import gulpCache from 'gulp-cache';
+
 
 import glob from 'glob';
 import babelify from 'babelify';
@@ -43,7 +46,7 @@ gulp.task('less', function() {
 // =====================================================================================================================
 // ---------------------------------------------------- ES6 START ------------------------------------------------------
 
-gulp.task('es6-dev', ['ejs'], () => {
+gulp.task('es6-dev', ['ejs:prepare'], () => {
     return browserify({entries: './dev/js/system.bundle.js', debug: true})
         .transform(babelify)
         .bundle()
@@ -52,7 +55,7 @@ gulp.task('es6-dev', ['ejs'], () => {
         .pipe(gulp.dest('./src/js'));
 });
 
-gulp.task('es6-prod', ['ejs'], () => {
+gulp.task('es6-prod', ['ejs:prepare'], () => {
     return browserify({entries: './dev/js/system.bundle.js', debug: true})
         .transform(babelify, {sourceMaps: true})
         .bundle()
@@ -67,23 +70,26 @@ gulp.task('es6-prod', ['ejs'], () => {
 // ------------------------------------------------------ ES6 END-------------------------------------------------------
 // =====================================================================================================================
 // ---------------------------------------------------- EJS START ------------------------------------------------------
-
-const tempDir = './temp';
 const fileBufferEJS = 'bufferEJS.json';
-import {viewPath} from './dev/js/ini/ejs-ini';
 
-gulp.task('ejs', () => {
+import {
+    VIEW_PATH,
+    BASE_DIR_VIEW,
+    TEMP_DIR_VIEW
+} from './dev/js/ini/ejs-ini';
+
+gulp.task('ejs:prepare', () => {
     let tmp = {};
-    for (let key in viewPath) {
-        if (viewPath.hasOwnProperty(key)) {
-            tmp[key] = fs.readFileSync('views/' + viewPath[key], 'utf-8');
+    for (let key in VIEW_PATH) {
+        if (VIEW_PATH.hasOwnProperty(key)) {
+            tmp[key] = fs.readFileSync(BASE_DIR_VIEW + VIEW_PATH[key], 'utf-8');
         }
     }
     if (Object.keys(tmp).length > 0) {
         let json = JSON.stringify(tmp, null, 4);
-        let pathBufferEJS = tempDir + '/' + fileBufferEJS;
-        if (!fs.existsSync(tempDir)){
-            fs.mkdirSync(tempDir);
+        let pathBufferEJS = TEMP_DIR_VIEW + '/' + fileBufferEJS;
+        if (!fs.existsSync(TEMP_DIR_VIEW)){
+            fs.mkdirSync(TEMP_DIR_VIEW);
         }
         fs.writeFile(pathBufferEJS, json, 'utf8', (error, res) => {
             if (error) {
@@ -98,6 +104,28 @@ gulp.task('ejs', () => {
 });
 
 // ------------------------------------------------------ EJS END-------------------------------------------------------
+// =====================================================================================================================
+// ---------------------------------------------------- OBJ START ------------------------------------------------------
+
+import {
+    BASE_DIR_OBJ,
+    TEMP_DIR_OBJ
+} from './dev/js/ini/obj.ini';
+
+gulp.task('obj:prepare', () => {
+    gulp
+        .src([BASE_DIR_OBJ + '/**/*.mtl'])
+        .pipe(gulp.dest(TEMP_DIR_OBJ));
+
+    gulp.src(BASE_DIR_OBJ + '/**/*.+(png|jpg|jpeg|gif|svg)')
+        .pipe(gulpCache(gulpImageMin({
+            progressive: true,
+            interlaced: true
+        })))
+        .pipe(gulp.dest(TEMP_DIR_OBJ));
+});
+
+// ------------------------------------------------------ OBJ END-------------------------------------------------------
 
 gulp.task('watch', function() {
     gulp.watch(['./dev/js/**/*.js', './views/components/**/*.ejs'], ['es6-dev']);
