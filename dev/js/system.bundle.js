@@ -33,14 +33,16 @@ sceneControls
         }
     });
 
-Loader.get().start(() => {
-    let obj = Loader.get().getObj('Wraith');
+Loader.get().start((loader) => {
+    let obj = loader.getObj('Wraith');
+    // console.log(obj);
+
     obj.position.y = -200;
     obj.position.z = -1500;
     obj.rotation.x = 0.2;
     // obj.rotation.y = Math.PI;
     sceneControls.add(obj);
-    // console.log(obj);
+    console.log(obj);
 });
 
 Lock.get().addEventChangeStatus((status) => {

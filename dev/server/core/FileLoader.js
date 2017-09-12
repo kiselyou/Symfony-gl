@@ -1,9 +1,5 @@
 import fs from 'fs';
 
-import * as THREE from 'three';
-import OBJLoader from 'three-obj-loader';
-OBJLoader(THREE);
-
 import {
     BASE_DIR_OBJ
 } from './../../js/ini/obj.ini';
@@ -19,13 +15,6 @@ class FileLoader {
          * @type {fs}
          */
         this._fs = fs;
-
-        /**
-         *
-         * @type {THREE.OBJLoader}
-         * @private
-         */
-        this._OBJLoader = new THREE.OBJLoader();
 
         /**
          *
@@ -56,8 +45,7 @@ class FileLoader {
      * @returns {string}
      */
     getModel(path) {
-        let model = this._fs.readFileSync(BASE_DIR_OBJ + path, 'utf-8');
-        return this._OBJLoader.parse(model).toJSON();
+        return this._fs.readFileSync(BASE_DIR_OBJ + path, 'utf-8');
     }
 
     /**

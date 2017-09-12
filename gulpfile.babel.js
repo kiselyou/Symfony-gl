@@ -105,27 +105,6 @@ gulp.task('ejs:prepare', () => {
 
 // ------------------------------------------------------ EJS END-------------------------------------------------------
 // =====================================================================================================================
-// ---------------------------------------------------- OBJ START ------------------------------------------------------
-
-import {
-    BASE_DIR_OBJ,
-    TEMP_DIR_OBJ
-} from './dev/js/ini/obj.ini';
-
-gulp.task('obj:prepare', () => {
-    gulp
-        .src([BASE_DIR_OBJ + '/**/*.mtl'])
-        .pipe(gulp.dest(TEMP_DIR_OBJ));
-
-    gulp.src(BASE_DIR_OBJ + '/**/*.+(png|jpg|jpeg|gif|svg)')
-        .pipe(gulpCache(gulpImageMin({
-            progressive: true,
-            interlaced: true
-        })))
-        .pipe(gulp.dest(TEMP_DIR_OBJ));
-});
-
-// ------------------------------------------------------ OBJ END-------------------------------------------------------
 
 gulp.task('watch', function() {
     gulp.watch(['./dev/js/**/*.js', './views/components/**/*.ejs'], ['es6-dev']);

@@ -9,8 +9,7 @@
     "build:js": "gulp es6-prod",
     "build:css": "gulp less",
     "build:ejs": "gulp ejs:prepare",
-    "build:obj": "gulp obj:prepare",
-    "build": "npm run prepare:prod && npm run build:obj && npm run build:css && babel dev -d app",
+    "build": "npm run prepare:prod && npm run build:css && babel dev -d app",
     "start:prod": "npm run build && nodejs app/server/index.js",
     "start:dev": "npm run build:js && npm run build:css && npm run start",
     "start": "nodemon dev/server/index.js dev --exec babel-node"
@@ -46,8 +45,6 @@
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
     "three": "^0.86.0",
-    "three-mtl-loader": "^1.0.1",
-    "three-obj-loader": "^1.1.2",
     "tippy.js": "^1.2.1",
     "uuid": "^3.1.0",
     "validator": "^8.2.0",
