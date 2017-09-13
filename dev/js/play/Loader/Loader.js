@@ -127,7 +127,6 @@ class Loader extends Application {
                 this._loaderOBJ.setMaterials(materials);
                 this._listModels[name] = this._loaderOBJ.parse(model);
                 this._prepareOBJ(models, mtl);
-                console.log(this._listModels[name]);
             });
         } else {
             this._listModels[name] = this._loaderOBJ.parse(model);

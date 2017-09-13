@@ -45,7 +45,7 @@ class FileLoader {
      * @returns {string}
      */
     getModel(path) {
-        return this._fs.readFileSync(BASE_DIR_OBJ + path, 'utf-8');
+        return this._fs.readFileSync(FileLoader.preparePath(BASE_DIR_OBJ + path), 'utf-8');
     }
 
     /**
@@ -73,7 +73,7 @@ class FileLoader {
      * @returns {string}
      */
     getTemplate(path) {
-        return this._fs.readFileSync(BASE_DIR_VIEW + path, 'utf-8');
+        return this._fs.readFileSync(FileLoader.preparePath(BASE_DIR_VIEW + path), 'utf-8');
     }
 
     /**
@@ -89,6 +89,17 @@ class FileLoader {
             }
         }
         return this._templates;
+    }
+
+    /**
+     * Prepare URL
+     *
+     * @param {string} url
+     * @returns {string}
+     * @static
+     */
+    static preparePath(url) {
+        return './' + (url.replace(/^.\/|\/+/, ''));
     }
 }
 
