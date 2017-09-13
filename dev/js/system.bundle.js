@@ -1,10 +1,13 @@
 
+import { insertAdjacentElement } from './libs/polyfill/insertAdjacentHTML.polyfill';
+HTMLElement.prototype.insertAdjacentElement = HTMLElement.prototype.insertAdjacentElement || insertAdjacentElement;
+
 import Text3D from './play/text/Text3D';
 import Tunnel from './play/tunnel/Tunnel';
 import InitScene from './play/scene/InitScene';
 import ViewBundle from './view/ViewBundle';
 
-import Loader from './play/Loader/Loader';
+import Loader from './play/loader/Loader';
 import Lock from './system/Lock';
 
 let view = new ViewBundle();
@@ -33,8 +36,8 @@ sceneControls
         }
     });
 
-Loader.get().start((loader) => {
-    let obj = loader.getObj('Wraith');
+Loader.get().load((loader) => {
+    let obj = loader.getModel('Wraith');
     // console.log(obj);
 
     obj.position.y = -200;
@@ -42,8 +45,8 @@ Loader.get().start((loader) => {
     obj.rotation.x = 0.2;
     // obj.rotation.y = Math.PI;
     sceneControls.add(obj);
-    console.log(obj);
-});
+    console.log(loader.getAllModels(), loader.getNamesModel());
+}, 'Wraith');
 
 Lock.get().addEventChangeStatus((status) => {
     start = !status;

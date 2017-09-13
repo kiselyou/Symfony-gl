@@ -14,8 +14,8 @@
     "start:dev": "npm run build:js && npm run build:css && npm run start",
     "start": "nodemon dev/server/index.js dev --exec babel-node"
   },
-  "engines" : {
-    "node" : ">=8.5.0"
+  "engines": {
+    "node": ">=8.5.0"
   },
   "repository": {
     "type": "git",

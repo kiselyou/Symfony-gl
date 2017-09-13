@@ -1,0 +1,289 @@
+import * as THREE from 'three';
+
+import MTLLoader from './MTLLoader';
+import OBJLoader from './OBJLoader';
+import ProgressAjax from './../../system/progress/ProgressAjax';
+
+import Application from './../../system/Application';
+
+import {
+    BASE_DIR_OBJ
+} from './../../ini/obj.ini';
+
+let inst = null;
+
+class Loader extends Application {
+    constructor() {
+        super();
+
+        /**
+         *
+         * @type {LoadingManager}
+         */
+        this._manager = new THREE.LoadingManager();
+
+        /**
+         *
+         * @type {MTLLoader}
+         * @private
+         */
+        this._mtl = new MTLLoader(this._manager);
+
+        /**
+         *
+         * @type {OBJLoader}
+         * @private
+         */
+        this._obj = new OBJLoader(this._manager);
+
+        /**
+         * List loaded models
+         *
+         * @type {Object.<{string: Mesh|Group}>}
+         * @private
+         */
+        this._listModels = {};
+
+        /**
+         * Names of loaded models
+         *
+         * @type {Array}
+         * @private
+         */
+        this._listNamesModel = [];
+
+        /**
+         * Events after load
+         *
+         * @type {?loadCompleted}
+         * @private
+         */
+        this._loadListener = null;
+
+        /**
+         * The key of model which is loading at the moment
+         *
+         * @type {number}
+         * @private
+         */
+        this._currentTempKey = 0;
+
+        /**
+         * The models names which need to load MTL files after getting response from server
+         *
+         * @type {Array}
+         * @private
+         */
+        this._tempNames = [];
+
+        this._iniManager();
+    }
+
+    /**
+     * Initialisation events and progress bar
+     *
+     * @returns {void}
+     * @private
+     */
+    _iniManager() {
+        this._manager.onStart = () => {
+            ProgressAjax.get().start();
+        };
+
+        this._manager.onProgress = (url, loaded, total) => {
+            ProgressAjax.get().updateProgress(total, loaded);
+        };
+
+        this._manager.onLoad = () => {
+            ProgressAjax.get().stop();
+        };
+    }
+
+    /**
+     *
+     * @returns {Loader}
+     */
+    static get() {
+        return inst || (inst = new Loader());
+    }
+
+    /**
+     * Get model by name
+     *
+     * @param {string} name - This is specific model's name
+     * @returns {Mesh|Group}
+     */
+    getModel(name) {
+        return this._listModels.hasOwnProperty(name) ? this._listModels[name] : null;
+    }
+
+    /**
+     * Get all models
+     *
+     * @returns {Object.<{string: (Mesh|Group)}>}
+     */
+    getAllModels() {
+        return this._listModels;
+    }
+
+    /**
+     * Get names of loaded model
+     *
+     * @returns {Array}
+     */
+    getNamesModel() {
+        return this._listNamesModel;
+    }
+
+    /**
+     * Load specific models
+     *
+     * @param {loadCompleted} [listener]
+     * @param {(Array|string)} [names] - Empty array means that need load all models
+     * @returns {Loader}
+     */
+    load(listener, names = []) {
+        /**
+         * @type {Array}
+         */
+        let loadNames = Array.isArray(names) ? names : [names];
+        for (let i = 0; i < loadNames.length; i++) {
+            let name = loadNames[i];
+            if (this._listNamesModel.indexOf(name) >= 0) {
+                loadNames.splice(i, 1);
+            }
+        }
+
+        let exceptNames = [];
+        if (loadNames.length === 0 && this._listNamesModel.length > 0) {
+            exceptNames = this._listNamesModel;
+        }
+
+        this._loadListener = listener;
+        this._start({load: loadNames, except: exceptNames});
+        return this;
+    }
+
+    /**
+     *
+     * @callback loadCompleted
+     */
+
+    /**
+     * Start load.
+     *
+     * @param {{load: Array, except: Array}} params
+     * @returns {Loader}
+     */
+    _start(params) {
+        this._cleanTempOptions();
+        this.ajax
+            .post('/load/obj', params)
+            .then((json) => {
+                try {
+                    let data = JSON.parse(json);
+                    let models = data['obj'];
+                    this._tempNames = Object.keys(models);
+                    this._startLoadMTL(models, data['mtl']);
+
+                } catch (e) {
+                    console.log(e);
+                    this.msg.alert('Cannot load models');
+                }
+            })
+            .catch((e) => {
+                console.log(e);
+                this.msg.alert('Cannot load models');
+            });
+        return this;
+    }
+
+    /**
+     *
+     * @param {string} name - This is specific model's name
+     * @param {Object} models - The are models from server
+     * @param {Object} mtl - The list path to specific models
+     * @private
+     */
+    _loadingMTL(name, models, mtl) {
+        let model = models[name];
+        let mtlPath = BASE_DIR_OBJ + mtl[name];
+        if (mtl.hasOwnProperty(name)) {
+            this._mtl.load(mtlPath, (materials) => {
+                materials.preload();
+                this._obj.setMaterials(materials);
+                this._addModel(name, this._obj.parse(model));
+                this._startLoadMTL(models, mtl);
+            });
+        } else {
+            this._addModel(name, this._obj.parse(model));
+        }
+    }
+
+    /**
+     *
+     * @param {Object} models - The are models from server
+     * @param {Object} mtl - The list path to specific models
+     * @private
+     */
+    _startLoadMTL(models, mtl) {
+        let name = this._getNextName();
+        if (models.hasOwnProperty(name)) {
+            this._loadingMTL(name, models, mtl);
+        } else {
+            this._cleanTempOptions();
+            this._addListener();
+        }
+    }
+
+    /**
+     * Add listener after all loading
+     *
+     * @returns {void}
+     * @private
+     */
+    _addListener() {
+        if (this._loadListener) {
+            this._loadListener(this);
+        }
+    }
+
+    /**
+     *
+     * @param {string} name - This is specific model's name
+     * @param {Mesh|Group} model
+     * @returns {Loader}
+     * @private
+     */
+    _addModel(name, model) {
+        this._listModels[name] = model;
+        this._listNamesModel.push(name);
+        return this;
+    }
+
+    /**
+     * Clean temporary options
+     *
+     * @returns {Loader}
+     * @private
+     */
+    _cleanTempOptions() {
+        this._tempNames = [];
+        this._currentTempKey = 0;
+        return this;
+    }
+
+    /**
+     * Gets next model's name to loading MTL
+     *
+     * @returns {string|undefined}
+     * @private
+     */
+    _getNextName() {
+        let name = this._tempNames[this._currentTempKey];
+        this._currentTempKey++;
+        return name;
+    }
+}
+
+export default Loader;
