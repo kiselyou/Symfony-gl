@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 let fonts = {};
 
-const PATH_FONT_AUDIO_WIDE = './src/fonts/Audiowide/Audiowide_Regular.json';
+const PATH_FONT_AUDIO_WIDE = '/src/fonts/Audiowide/Audiowide_Regular.json';
 
 class Font3D {
     constructor() {

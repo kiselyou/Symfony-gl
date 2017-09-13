@@ -100,7 +100,7 @@ class Lock {
      */
     _loadConfiguration(done) {
         let ajax = new Ajax();
-        ajax.post('socket/info', {key: 'Lock'}, false)
+        ajax.post('/socket/info', {key: 'Lock'}, false)
             .then((res) => {
                 try {
                     let config = JSON.parse(res);

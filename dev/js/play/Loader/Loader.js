@@ -18,7 +18,7 @@ class Loader extends Application {
 
         /**
          *
-         * @type {THREE.LoadingManager|LoadingManager}
+         * @type {LoadingManager}
          */
         this._manager = new THREE.LoadingManager();
 
@@ -103,7 +103,6 @@ class Loader extends Application {
                 try {
                     this._startKey = 0;
                     let data = JSON.parse(json);
-                    let mtl = data['mtl'];
                     let models = data['obj'];
                     this._keys = Object.keys(models);
                     this._prepareOBJ(models, data['mtl']);

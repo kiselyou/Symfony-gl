@@ -1,0 +1,7 @@
+{
+  "tests": {
+    "route": "/tests/progress",
+    "viewPath": "pages/tests/progress",
+    "method": "GET"
+  }
+}

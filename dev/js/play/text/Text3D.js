@@ -73,7 +73,7 @@ class Text3D extends Font3D {
         /**
          * Get object Text
          *
-         * @type {?Group|THREE.Group}
+         * @type {?Group}
          * @private
          */
         this._mesh = new THREE.Group();
@@ -217,7 +217,7 @@ class Text3D extends Font3D {
     /**
      * Get object Text
      *
-     * @returns {?Mesh|Group|THREE.Mesh|THREE.Group}
+     * @returns {?Mesh|Group}
      */
     get() {
         return this._mesh;

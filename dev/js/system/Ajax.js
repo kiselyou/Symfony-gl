@@ -92,7 +92,7 @@ class Ajax {
         return new Promise((resolve, reject) => {
             this._execute(
                 (xhr) => {
-                    xhr.open(AJAX_POST, url);
+                    xhr.open(AJAX_POST, Ajax._prepareURL(url));
                     this
                         ._setHeaderHTTP(xhr)
                         ._progressUpdate(xhr);
@@ -113,7 +113,7 @@ class Ajax {
      */
     static _preparePostData(param) {
         if (!(param instanceof FormData)) {
-            var formData = new FormData();
+            let formData = new FormData();
             for (let key in param) {
                 if (param.hasOwnProperty(key)) {
                     if (typeof param[key] === 'object') {
@@ -129,15 +129,29 @@ class Ajax {
     }
 
     /**
+     * Prepare URL
+     *
+     * @param {string} url
+     * @returns {string}
+     * @static
+     * @private
+     */
+    static _prepareURL(url) {
+        return '/' + (url.replace(/^\/+/, ''));
+    }
+
+    /**
      * Prepare url to send on server
      *
      * @param {string} url
      * @param {({}|[])} [params]
      * @returns {string}
+     * @static
      * @private
      */
     static _prepareGetURL(url, params = null) {
-        return params ? qs.stringify(params, {addQueryPrefix: (url.indexOf('?') === -1)}) : '';
+        let path = Ajax._prepareURL(url);
+        return params ? qs.stringify(params, {addQueryPrefix: (path.indexOf('?') === -1)}) : '';
     }
 
     /**

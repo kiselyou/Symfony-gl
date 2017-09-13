@@ -24,9 +24,14 @@ class ProgressAjax extends View {
         this._loaded = 0;
 
         /**
-         * It is template of EJS
          *
-         * @type {UIElement}
+         * @type {?number}
+         * @private
+         */
+        this._timerID = null;
+
+        /**
+         * Compile EJS template
          */
         this.build(VIEW_NAME_PROGRESS_AJAX);
 
@@ -79,18 +84,33 @@ class ProgressAjax extends View {
      */
     start() {
         this.show();
-        let timerID = setInterval(() => {
+        if (this._timerID) {
+            this.reset();
+            return this;
+        }
+        this._timerID = setInterval(() => {
             if (this._loaded < this._max) {
                 this._loaded++;
                 this._blockStatus.setText(this._loaded + '%');
             }
             if (this._loaded >= 100) {
                 this.hide();
-                this._max = 0;
-                this._loaded = 0;
-                clearInterval(timerID);
+                this.reset();
+                clearInterval(this._timerID);
+                this._timerID = null;
             }
         }, 5);
+        return this;
+    }
+
+    /**
+     * Reset options of progress
+     *
+     * @returns {ProgressAjax}
+     */
+    reset() {
+        this._max = 0;
+        this._loaded = 0;
         return this;
     }
 
