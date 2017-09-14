@@ -31,7 +31,7 @@ sceneControls
     .render()
     .addRenderEvent(() => {
         if (start) {
-            // text.animation();
+            text.animation();
             tunnel.update();
         }
     });
@@ -50,7 +50,7 @@ Loader.get().load((loader) => {
 Lock.get().addEventChangeStatus((status) => {
     start = !status;
     if (start) {
-        // sceneControls.add(text.get());
+        sceneControls.add(text.get());
         sceneControls.add(tunnel.get());
     } else {
         // sceneControls.remove(text.get());
