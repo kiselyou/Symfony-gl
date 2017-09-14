@@ -8,7 +8,7 @@ import {
     VIEW_NAME_INFORMER_WARNING,
     VIEW_NAME_INFORMER_DANGER,
     VIEW_NAME_INFORMER_INFO
-} from './../../ini/ejs-ini';
+} from './../../ini/ejs.ini';
 
 class Informer {
     constructor() {

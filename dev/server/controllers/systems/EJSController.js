@@ -1,5 +1,5 @@
 
-import {VIEW_PATH} from '../../../js/ini/ejs-ini';
+import {VIEW_PATH} from '../../../js/ini/ejs.ini';
 
 class EJSController {
 

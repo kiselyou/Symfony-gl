@@ -125,6 +125,7 @@ class Server extends Components {
         this._routes.load((routes) => {
 
             this._app.use('/src', express.static(path.join(__dirname, '/../../../src')));
+            this._app.use('/temp', express.static(path.join(__dirname, '/../../../temp')));
 
             for (let route of routes) {
                 switch (route['method']) {

@@ -1,16 +1,10 @@
 import * as THREE from 'three';
-
 import MTLLoader from './MTLLoader';
 import OBJLoader from './OBJLoader';
 import ProgressAjax from './../../system/progress/ProgressAjax';
-
 import Application from './../../system/Application';
 
-import {
-    BASE_DIR_OBJ
-} from './../../ini/obj.ini';
-
-let inst = null;
+let loader = null;
 
 class Loader extends Application {
     constructor() {
@@ -104,7 +98,7 @@ class Loader extends Application {
      * @returns {Loader}
      */
     static get() {
-        return inst || (inst = new Loader());
+        return loader || (loader = new Loader());
     }
 
     /**
@@ -207,9 +201,8 @@ class Loader extends Application {
      */
     _loadingMTL(name, models, mtl) {
         let model = models[name];
-        let mtlPath = BASE_DIR_OBJ + mtl[name];
         if (mtl.hasOwnProperty(name)) {
-            this._mtl.load(mtlPath, (materials) => {
+            this._mtl.load(mtl[name], (materials) => {
                 materials.preload();
                 this._obj.setMaterials(materials);
                 this._addModel(name, this._obj.parse(model));

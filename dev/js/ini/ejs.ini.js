@@ -8,7 +8,6 @@ export const VIEW_NAME_MENU_GENERAL = 'menu-general';
 export const VIEW_NAME_PROGRESS_AJAX = 'progress-ajax';
 
 export const BASE_DIR_VIEW = './views';
-export const TEMP_DIR_VIEW = './temp';
 
 export const VIEW_PATH = {};
 VIEW_PATH[VIEW_NAME_LOGIN] = '/components/authorization/login.ejs';

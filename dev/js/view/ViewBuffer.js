@@ -1,5 +1,9 @@
-
-const bufferEJS = require('./../../../temp/bufferEJS.json');
+/**
+ * The EJS Templates
+ *
+ * @type {Object}
+ */
+const buffer = require('./../../../temp/ejs.json');
 
 class ViewBuffer {
 
@@ -8,7 +12,7 @@ class ViewBuffer {
         /**
          * @type {Object}
          */
-        this._buffer = bufferEJS;
+        this._buffer = buffer;
     }
 
     /**

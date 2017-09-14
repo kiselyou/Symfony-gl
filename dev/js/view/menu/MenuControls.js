@@ -1,5 +1,5 @@
 import MenuGeneral from './MenuGeneral';
-import {VIEW_NAME_MENU_GENERAL} from './../../ini/ejs-ini';
+import {VIEW_NAME_MENU_GENERAL} from './../../ini/ejs.ini';
 
 class MenuControls {
 

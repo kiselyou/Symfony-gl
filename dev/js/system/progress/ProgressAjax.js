@@ -1,6 +1,6 @@
 import View from './../../view/View';
 import UIElement from './../ui/UIElement';
-import {VIEW_NAME_PROGRESS_AJAX} from './../../ini/ejs-ini';
+import {VIEW_NAME_PROGRESS_AJAX} from './../../ini/ejs.ini';
 
 const VIEW_BLOCK_STATUS = 'status';
 let progressAjax = null;

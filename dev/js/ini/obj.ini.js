@@ -1,5 +1,5 @@
 
-export const BASE_DIR_OBJ = '/src/models';
+export const BASE_DIR_OBJ = './src/models';
 
 export const MODEL_TEST1 = 'Wraith';
 export const MODEL_TEST2 = 'Wraith1';

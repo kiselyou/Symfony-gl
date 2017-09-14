@@ -4,7 +4,7 @@ import Logout from './authorization/Logout';
 import Registration from './authorization/Registration';
 import Application from './../system/Application';
 import MenuControls from './menu/MenuControls';
-import {VIEW_NAME_LOGIN, VIEW_NAME_REGISTRATION} from './../ini/ejs-ini';
+import {VIEW_NAME_LOGIN, VIEW_NAME_REGISTRATION} from './../ini/ejs.ini';
 
 /**
  * Class representing views

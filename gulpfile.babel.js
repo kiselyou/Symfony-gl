@@ -20,6 +20,8 @@ import source from 'vinyl-source-stream';
 
 import colors from 'colors/safe';
 
+const TEMP_DIR = './temp';
+
 // ---------------------------------------------------- SERVER START----------------------------------------------------
 
 gulp.task('prepare:prod', ['es6-prod'], function () {
@@ -39,7 +41,7 @@ gulp.task('less', function() {
         .pipe(gulpSourcemaps.init({loadMaps: true}))
         .pipe(gulpCssnano())
         .pipe(gulpSourcemaps.write('./maps'))
-        .pipe(gulp.dest('./src/css'));
+        .pipe(gulp.dest(TEMP_DIR + '/css'));
 });
 
 // ----------------------------------------------------- LESS END ------------------------------------------------------
@@ -52,7 +54,7 @@ gulp.task('es6-dev', ['ejs:prepare'], () => {
         .bundle()
         .pipe(source('bundle.min.js'))
         .pipe(buffer())
-        .pipe(gulp.dest('./src/js'));
+        .pipe(gulp.dest(TEMP_DIR + '/js'));
 });
 
 gulp.task('es6-prod', ['ejs:prepare'], () => {
@@ -64,19 +66,17 @@ gulp.task('es6-prod', ['ejs:prepare'], () => {
         .pipe(gulpSourcemaps.init())
         .pipe(gulpUglify())
         .pipe(gulpSourcemaps.write('./maps'))
-        .pipe(gulp.dest('./src/js'));
+        .pipe(gulp.dest(TEMP_DIR + '/js'));
 });
 
 // ------------------------------------------------------ ES6 END-------------------------------------------------------
 // =====================================================================================================================
 // ---------------------------------------------------- EJS START ------------------------------------------------------
-const fileBufferEJS = 'bufferEJS.json';
 
 import {
     VIEW_PATH,
-    BASE_DIR_VIEW,
-    TEMP_DIR_VIEW
-} from './dev/js/ini/ejs-ini';
+    BASE_DIR_VIEW
+} from './dev/js/ini/ejs.ini';
 
 gulp.task('ejs:prepare', () => {
     let tmp = {};
@@ -87,9 +87,9 @@ gulp.task('ejs:prepare', () => {
     }
     if (Object.keys(tmp).length > 0) {
         let json = JSON.stringify(tmp, null, 4);
-        let pathBufferEJS = TEMP_DIR_VIEW + '/' + fileBufferEJS;
-        if (!fs.existsSync(TEMP_DIR_VIEW)){
-            fs.mkdirSync(TEMP_DIR_VIEW);
+        let pathBufferEJS = TEMP_DIR + '/ejs.json';
+        if (!fs.existsSync(TEMP_DIR)){
+            fs.mkdirSync(TEMP_DIR);
         }
         fs.writeFile(pathBufferEJS, json, 'utf8', (error, res) => {
             if (error) {

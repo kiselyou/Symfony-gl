@@ -6,7 +6,7 @@ import {
 
 import {
     BASE_DIR_VIEW
-} from './../../js/ini/ejs-ini';
+} from './../../js/ini/ejs.ini';
 
 class FileLoader {
 
