@@ -22,11 +22,9 @@ class OBJController {
      */
     load() {
 
-        this._getListModelsToLoad();
-
         let models = {};
         try {
-            models['obj'] = this._server.fileLoader.getModels(this._objFiles);
+            models['obj'] = this._server.fileLoader.getModels(this._getListModelsToLoad());
             models['mtl'] = this._mtl;
         } catch (e) {
             console.log(e);
@@ -37,17 +35,27 @@ class OBJController {
     _getListModelsToLoad() {
         let list = {};
         let load = this._server.parseData(this._server.POST['load']);
-        let except = this._server.parseData(this._server.POST['except']);
         let namesLoad = OBJController._toArray(load);
+
+        if (namesLoad.length > 0) {
+            for (let name of namesLoad) {
+                list[name] = this._objFiles[name];
+            }
+        } else {
+            list = this._objFiles;
+        }
+
+        let except = this._server.parseData(this._server.POST['except']);
         let namesExcept = OBJController._toArray(except);
 
-        for (let key in this._objFiles) {
-            if (this._objFiles.hasOwnProperty(key)) {
-
+        if (namesExcept.length > 0) {
+            for (let name of namesExcept) {
+                if (list.hasOwnProperty(name)) {
+                    delete list[name];
+                }
             }
         }
-        console.log();
-        console.log(OBJController._toArray(except));
+        return list;
     }
 
     static _toArray(data) {
