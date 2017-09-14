@@ -25,7 +25,7 @@ text
     .showMirror(true)
     .write('IronWar');
 
-// tunnel.render();
+tunnel.render();
 
 sceneControls
     .render()
@@ -39,10 +39,10 @@ sceneControls
 Loader.get().load((loader) => {
     let obj = loader.getModel('Wraith');
 
-    obj.position.y = -200;
+    obj.position.y = -300;
     obj.position.z = -1500;
     obj.rotation.x = 0.2;
-    // obj.rotation.y = Math.PI;
+    obj.rotation.y = Math.PI;
     sceneControls.add(obj);
 
 }, 'Wraith');
@@ -51,9 +51,9 @@ Lock.get().addEventChangeStatus((status) => {
     start = !status;
     if (start) {
         // sceneControls.add(text.get());
-        // sceneControls.add(tunnel.get());
+        sceneControls.add(tunnel.get());
     } else {
-        sceneControls.remove(text.get());
+        // sceneControls.remove(text.get());
         // sceneControls.remove(tunnel.get());
     }
 });
