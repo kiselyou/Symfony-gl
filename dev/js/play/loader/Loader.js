@@ -130,31 +130,35 @@ class Loader extends Application {
     }
 
     /**
-     * Load specific models
+     * Load specific or all models
      *
      * @param {loadCompleted} [listener]
-     * @param {(Array|string)} [names] - Empty array means that need load all models
+     * @param {(Array|string)} [names] - If is empty array that need load all models
      * @returns {Loader}
      */
     load(listener, names = []) {
         /**
          * @type {Array}
          */
-        let loadNames = Array.isArray(names) ? names : [names];
+        let loadNames = Array.isArray(names) ? names : (names ? [names] : []);
         for (let i = 0; i < loadNames.length; i++) {
             let name = loadNames[i];
             if (this._listNamesModel.indexOf(name) >= 0) {
+                // remove names of models which have already loaded
                 loadNames.splice(i, 1);
             }
         }
 
-        let exceptNames = [];
-        if (loadNames.length === 0 && this._listNamesModel.length > 0) {
-            exceptNames = this._listNamesModel;
-        }
-
         this._loadListener = listener;
-        this._start({load: loadNames, except: exceptNames});
+
+        let uniqueNames = loadNames.filter((elem, index, self) => {
+            return index == self.indexOf(elem);
+        });
+
+        this._start({
+            load: uniqueNames,
+            except: this._listNamesModel
+        });
         return this;
     }
 

@@ -12,7 +12,6 @@ class OBJController {
     constructor(server) {
         this._server = server;
         this._objFiles = MODELS_PATH;
-        this._mtl = OBJController._prepareListMTL(MODELS_PATH);
     }
 
     /**
@@ -21,33 +20,53 @@ class OBJController {
      * @returns {void}
      */
     load() {
-
         let models = {};
         try {
-            models['obj'] = this._server.fileLoader.getModels(this._getListModelsToLoad());
-            models['mtl'] = this._mtl;
+            let load = this._server.parseData(this._server.POST['load']);
+            let except = this._server.parseData(this._server.POST['except']);
+            let listModels = this._getListModelsToLoad(load, except);
+            models['obj'] = this._server.fileLoader.getModels(listModels);
+            models['mtl'] = OBJController._prepareListMTL(listModels);
         } catch (e) {
             console.log(e);
         }
         this._server.responseJSON(models);
     }
 
-    _getListModelsToLoad() {
+    /**
+     * Get List models for load
+     *
+     * @param {Array|Object} load - List models to load from POST data
+     * @param {Array|Object} except - List models witch need exclude from POST data
+     * @returns {*}
+     * @private
+     */
+    _getListModelsToLoad(load, except) {
         let list = {};
-        let load = this._server.parseData(this._server.POST['load']);
         let namesLoad = OBJController._toArray(load);
-
         if (namesLoad.length > 0) {
             for (let name of namesLoad) {
-                list[name] = this._objFiles[name];
+                if (this._objFiles.hasOwnProperty(name)) {
+                    list[name] = this._objFiles[name];
+                }
             }
         } else {
             list = this._objFiles;
         }
 
-        let except = this._server.parseData(this._server.POST['except']);
-        let namesExcept = OBJController._toArray(except);
+        return OBJController._excludeModelsFromList(list, except);
+    }
 
+    /**
+     * Exclude models from load
+     *
+     * @param {Object} list - List models to load
+     * @param {Array|Object} except - List models witch need exclude
+     * @returns {*}
+     * @private
+     */
+    static _excludeModelsFromList(list, except) {
+        let namesExcept = OBJController._toArray(except);
         if (namesExcept.length > 0) {
             for (let name of namesExcept) {
                 if (list.hasOwnProperty(name)) {
@@ -58,6 +77,12 @@ class OBJController {
         return list;
     }
 
+    /**
+     *
+     * @param {Object} data
+     * @returns {Array}
+     * @private
+     */
     static _toArray(data) {
         let arr = [];
         for (let key in data) {

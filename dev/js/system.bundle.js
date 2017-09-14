@@ -38,14 +38,13 @@ sceneControls
 
 Loader.get().load((loader) => {
     let obj = loader.getModel('Wraith');
-    // console.log(obj);
 
     obj.position.y = -200;
     obj.position.z = -1500;
     obj.rotation.x = 0.2;
     // obj.rotation.y = Math.PI;
     sceneControls.add(obj);
-    console.log(loader.getAllModels(), loader.getNamesModel());
+
 }, 'Wraith');
 
 Lock.get().addEventChangeStatus((status) => {
