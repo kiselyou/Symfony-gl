@@ -303,7 +303,11 @@ class View extends ViewBuffer {
      */
     build(viewName) {
         let html = this.findInBuffer(viewName);
-        this.prepareElement(this.renderEJS(html));
+        if (html) {
+            this.prepareElement(this.renderEJS(html));
+        } else {
+            alert('Template with name "' + viewName + '" doesn\'t exist');
+        }
         return this;
     }
 }

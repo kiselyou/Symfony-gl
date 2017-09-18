@@ -6,13 +6,14 @@
   z-index: 1;
   -moz-user-select: none;
   -webkit-user-select: none;
+  border: @border_xs solid @color_base_dark;
 
   &__control {
     padding: 15px;
   }
 
   &__head {
-    border-bottom: @border_xs solid @color_base;
+    border-bottom: @border_xs solid @color_base_dark;
     overflow: hidden;
     margin: @margin_xs;
     padding: @padding_md;
@@ -30,13 +31,15 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    background: @background_color_light;
   }
 
   &__foot {
+    border-top: @border_xs solid @color_base_dark;
     min-height: 12px;
     overflow: hidden;
     margin: @margin_xs;
-    padding: @padding_xs;
+    padding: @padding_md;
   }
 
   &_skin {

@@ -10,6 +10,14 @@ import ViewBundle from './view/ViewBundle';
 import Loader from './play/loader/Loader';
 import Lock from './system/Lock';
 
+import WindowAlert from './view/window/WindowAlert';
+
+
+let al = new WindowAlert();
+al.show('asda', 'asdsada', (e) => {
+    console.log(12, e);
+});
+
 let view = new ViewBundle();
 view.initSecurityForm();
 
