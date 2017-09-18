@@ -12,7 +12,7 @@
   }
 
   &__head {
-    border-bottom: 1px solid @color_base;
+    border-bottom: @border_xs solid @color_base;
     overflow: hidden;
     margin: @margin_xs;
     padding: @padding_md;
@@ -25,11 +25,18 @@
     overflow: hidden;
   }
 
+  &_alert &__body {
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
   &__foot {
     min-height: 12px;
     overflow: hidden;
     margin: @margin_xs;
-    padding: @padding_md;
+    padding: @padding_xs;
   }
 
   &_skin {
