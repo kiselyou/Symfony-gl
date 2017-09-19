@@ -55,7 +55,7 @@ class ViewControls extends View {
                     listener(this.el);
                 }
                 if (close) {
-                    this.el.hide(true);
+                    this.el.hideElement(true);
                 }
             });
         }

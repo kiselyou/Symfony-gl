@@ -53,32 +53,32 @@ class ViewBundle extends Application {
                     .addActionDesktopClose()
                     .eventBtnRegistration()
                     .eventBtnLogin(() => {
-                        this._login.show();
+                        this._login.showView();
                         this._registration
                             .cleanBlockWarning()
-                            .hide();
+                            .hideView();
                 });
                 this._login
                     .setEventBtnSignIn()
                     .setEventBtnRegistration(() => {
-                        this._registration.show();
+                        this._registration.showView();
                         this._login
                             .cleanBlockWarning()
-                            .hide();
+                            .hideView();
                 });
             });
         });
 
         this.menu
             .openMenu(() => {
-                this._login.hide();
-                this._registration.hide();
+                this._login.hideView();
+                this._registration.hideView();
             })
             .openFormLogin(() => {
-                this._login.show();
+                this._login.showView();
             })
             .openFormRegistration(() => {
-                this._registration.show();
+                this._registration.showView();
             })
             .logout(() => {
                 Logout.get().run();

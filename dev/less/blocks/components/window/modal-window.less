@@ -1,3 +1,12 @@
+@keyframes modalShow {
+  0% {
+    top: -1500px;
+  }
+  100% {
+    top: 0;
+  }
+}
+
 .modal {
   overflow: hidden;
   min-width: 30%;
@@ -24,6 +33,11 @@
     margin: @margin_xs;
     padding: @padding_md;
     overflow: hidden;
+  }
+
+  &_animation {
+    animation-name: modalShow;
+    animation-duration: 0.5s;
   }
 
   &_alert &__body {

@@ -173,7 +173,7 @@ class View extends ViewBuffer {
      * @returns {View}
      */
     toggleShowOrHide(hide, animation = true) {
-        hide ? this.hide(animation) : this.show(animation);
+        hide ? this.hideView(animation) : this.showView(animation);
         return this;
     }
 
@@ -183,8 +183,8 @@ class View extends ViewBuffer {
      * @param {boolean} [animate] Add animation. Default is true
      * @returns {View}
      */
-    show(animate = true) {
-        this.el.show(animate);
+    showView(animate = true) {
+        this.el.showElement(animate);
         return this;
     }
 
@@ -194,8 +194,8 @@ class View extends ViewBuffer {
      * @param {boolean} [animate] Add animation. Default is true
      * @returns {View}
      */
-    hide(animate = true) {
-        this.el.hide(animate);
+    hideView(animate = true) {
+        this.el.hideElement(animate);
         return this;
     }
 
@@ -230,7 +230,7 @@ class View extends ViewBuffer {
      *
      * @returns {View}
      */
-    removeElement() {
+    removeView() {
         this.container.removeChild(this.el.getElement());
         this.updateElement();
         this.el = this._createElement();
@@ -266,7 +266,7 @@ class View extends ViewBuffer {
      * @private
      */
     _createElement() {
-        return new UIElement().hide().setNameElement(this.name);
+        return new UIElement().hideElement().setNameElement(this.name);
     }
 
     /**

@@ -83,7 +83,7 @@ class ProgressAjax extends View {
      * @returns {ProgressAjax}
      */
     start() {
-        this.show();
+        this.showView();
         if (this._timerID) {
             this.reset();
             return this;
@@ -94,7 +94,7 @@ class ProgressAjax extends View {
                 this._blockStatus.setText(this._loaded + '%');
             }
             if (this._loaded >= 100) {
-                this.hide();
+                this.hideView();
                 this.reset();
                 clearInterval(this._timerID);
                 this._timerID = null;

@@ -274,7 +274,7 @@ class UIElement {
      * @returns {UIElement}
      */
     toggleShowOrHide(hide, animation = false) {
-        hide ? this.hide(animation) : this.show(animation);
+        hide ? this.hideElement(animation) : this.showElement(animation);
         return this;
     }
 
@@ -284,7 +284,7 @@ class UIElement {
      * @param {boolean} [animate] Add animation
      * @returns {UIElement}
      */
-    hide(animate = false) {
+    hideElement(animate = false) {
         this._hidden = true;
         if (animate) {
             this.getElement().classList.remove(CLASS_ANIMATION_SHOW);
@@ -301,7 +301,7 @@ class UIElement {
      * @param {boolean} [animate] Add animation
      * @returns {UIElement}
      */
-    show(animate = false) {
+    showElement(animate = false) {
         this._hidden = false;
         this.getElement().hidden = false;
         if (animate) {

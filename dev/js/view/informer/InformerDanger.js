@@ -39,7 +39,7 @@ class InformerDanger extends View {
             .autoCleanElement(autoClean)
             .updateContainer(blockElement)
             .build(this._viewName)
-            .show();
+            .showView();
 
         this.getViewBlock(VIEW_BLOCK_HEADER).toggleShowOrHide(this.hideHeder);
     }

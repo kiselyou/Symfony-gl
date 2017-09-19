@@ -72,7 +72,7 @@ class Login extends ViewRender {
                         if (success) {
                             success(data);
                         }
-                        this.hide();
+                        this.hideView();
                     } else {
                         this.informer.warning(block, data['msg']);
                     }

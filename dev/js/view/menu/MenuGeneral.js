@@ -103,7 +103,7 @@ class MenuGeneral extends ViewControls {
      */
     buildMenu() {
         this.build(this._viewName);
-        this.show(false);
+        this.showView(false);
         this.initEvents();
         return this;
     }
@@ -126,7 +126,7 @@ class MenuGeneral extends ViewControls {
      */
     removeMenu() {
         this.status = {};
-        this.removeElement();
+        this.removeView();
     }
 
     /**
@@ -141,11 +141,11 @@ class MenuGeneral extends ViewControls {
                 let action = this.getViewAction(subItem['action']);
 
                 if (lock === SHOW_IF_LOCKED) {
-                    status ? action.show() : action.remove();
+                    status ? action.showElement() : action.remove();
                 }
 
                 if (lock === HIDE_IF_LOCKED) {
-                    status ? action.remove() : action.show();
+                    status ? action.remove() : action.showElement();
                 }
             }
         }
@@ -334,8 +334,8 @@ class MenuGeneral extends ViewControls {
                 listener();
             }
         }
-        this.getViewBlock(name).show(true);
-        this.getViewAction(this._activeAction).hide();
+        this.getViewBlock(name).showElement(true);
+        this.getViewAction(this._activeAction).hideElement();
         return this;
     }
 
@@ -348,8 +348,8 @@ class MenuGeneral extends ViewControls {
      */
     hideBlock(name) {
         this.status[name] = false;
-        this.getViewBlock(name).hide(true);
-        this.getViewAction(this._activeAction).show();
+        this.getViewBlock(name).hideElement(true);
+        this.getViewAction(this._activeAction).showElement();
         return this;
     }
 
