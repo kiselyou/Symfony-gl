@@ -19,7 +19,7 @@ let start = false;
 let text = new Text3D();
 
 text
-    .setSize(100)
+    .setSize(60)
     .setFar(-1500)
     .showMirror(true)
     .write('IronWar');
