@@ -155,10 +155,14 @@ class Loader extends Application {
             return index == self.indexOf(elem);
         });
 
-        this._start({
-            load: uniqueNames,
-            except: this._listNamesModel
-        });
+        if (names.length > 0 && uniqueNames.length === 0) {
+            this._addListener();
+        } else {
+            this._start({
+                load: uniqueNames,
+                except: this._listNamesModel
+            });
+        }
         return this;
     }
 
@@ -180,6 +184,7 @@ class Loader extends Application {
             .then((json) => {
                 try {
                     let data = JSON.parse(json);
+                    console.log(data);
                     let models = data['obj'];
                     this._tempNames = Object.keys(models);
                     this._startLoadMTL(models, data['mtl']);

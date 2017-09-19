@@ -121,6 +121,7 @@ class ProgressAjax extends View {
      */
     stop() {
         this._max = 100;
+        this._loaded = 85;
         return this;
     }
 }

@@ -88,6 +88,11 @@ class Informer {
         this._info.pasteTo(blockElement, messages);
         return this;
     }
+
+    clean() {
+        //TODO
+        return this;
+    }
 }
 
 export default Informer;

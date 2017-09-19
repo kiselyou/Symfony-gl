@@ -15,9 +15,8 @@ view.initSecurityForm();
 
 let sceneControls = new InitScene('initialisation_main_scene');
 
-let start = true;
+let start = false;
 let text = new Text3D();
-let tunnel = new Tunnel(sceneControls.camera);
 
 text
     .setSize(100)
@@ -25,37 +24,44 @@ text
     .showMirror(true)
     .write('IronWar');
 
+let tunnel = new Tunnel(sceneControls.camera);
 tunnel.render();
 
 sceneControls
     .render()
     .addRenderEvent(() => {
         if (start) {
-            text.animation();
             tunnel.update();
+        } else {
+            text.animation();
         }
     });
 
-// Loader.get().load((loader) => {
-//     let obj = loader.getModel('Wraith');
-//
-//     obj.position.y = -300;
-//     obj.position.z = -1500;
-//     obj.rotation.x = 0.2;
-//     obj.rotation.y = Math.PI;
-//     sceneControls.add(obj);
-//
-// }, 'Wraith');
-
+let model = null;
 
 Lock.get().addEventChangeStatus((status) => {
-    start = !status;
+    start = status;
     if (start) {
-        sceneControls.add(text.get());
-        sceneControls.add(tunnel.get());
+
+        sceneControls.remove(text.get());
+
+        Loader.get().load((loader) => {
+            model = loader.getModel('Wraith');
+
+            model.position.y = -300;
+            model.position.z = -1500;
+            model.rotation.x = 0.2;
+            model.rotation.y = Math.PI;
+            sceneControls.add(model);
+            sceneControls.add(tunnel.get());
+
+        }, 'Wraith');
     } else {
-        // sceneControls.remove(text.get());
-        // sceneControls.remove(tunnel.get());
+
+        sceneControls.remove(model);
+        sceneControls.remove(tunnel.get());
+
+        sceneControls.add(text.get());
     }
 });
 

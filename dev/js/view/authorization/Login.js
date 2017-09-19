@@ -58,6 +58,7 @@ class Login extends ViewRender {
      * @returns {Login}
      */
     setEventBtnSignIn(success) {
+        this.informer.clean();
         this.addValidateRule(ACTION_SEND_FORM, 'username', Validator.RULE_LENGTH_BETWEEN_VALUES, [5, 20]);
         this.addValidateRule(ACTION_SEND_FORM, 'password', Validator.RULE_LENGTH_BETWEEN_VALUES, [6, 20]);
 
