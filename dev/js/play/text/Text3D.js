@@ -183,8 +183,8 @@ class Text3D extends Font3D {
             textGeo.computeVertexNormals();
 
             let material = [
-                new THREE.MeshPhongMaterial({color: this.colorFront, shading: THREE.FlatShading}),
-                new THREE.MeshPhongMaterial({color: this.colorSide, shading: THREE.SmoothShading})
+                new THREE.MeshPhongMaterial({color: this.colorFront, flatShading: THREE.FlatShading}),
+                new THREE.MeshPhongMaterial({color: this.colorSide, flatShading: THREE.SmoothShading})
             ];
             let textMesh = new THREE.Mesh(textGeo, material);
             let centerOffset = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
