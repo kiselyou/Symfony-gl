@@ -26,12 +26,11 @@ class InitScene {
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.Fog(0x000000, 250, 3500);
 
-
         /**
          *
          * @type {PerspectiveCamera}
          */
-        this.camera = new THREE.PerspectiveCamera(30, InitScene.aspect, 0.1, 20000);
+        this.camera = new THREE.PerspectiveCamera(30, InitScene.aspect, 0.1, 10000);
         this.camera.position.set(0, 0, 700);
         this.camera.lookAt(this.scene.position);
 

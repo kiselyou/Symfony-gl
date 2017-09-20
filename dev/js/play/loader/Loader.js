@@ -152,7 +152,7 @@ class Loader extends Application {
         this._loadListener = listener;
 
         let uniqueNames = loadNames.filter((elem, index, self) => {
-            return index == self.indexOf(elem);
+            return index === self.indexOf(elem);
         });
 
         if (names.length > 0 && uniqueNames.length === 0) {
@@ -184,7 +184,6 @@ class Loader extends Application {
             .then((json) => {
                 try {
                     let data = JSON.parse(json);
-                    console.log(data);
                     let models = data['obj'];
                     this._tempNames = Object.keys(models);
                     this._startLoadMTL(models, data['mtl']);
