@@ -50,3 +50,10 @@ pm2 save
 # Restart server
 pm2 restart all
 ```
+
+```
+# Update each dependency in package.json
+npm i -g npm-check-updates
+npm-check-updates -u
+npm install
+```
