@@ -210,12 +210,20 @@ class Loader extends Application {
     _loadingMTL(name, models, mtl) {
         let model = models[name];
         if (mtl.hasOwnProperty(name)) {
-            this._mtl.load(mtl[name], (materials) => {
-                materials.preload();
-                this._obj.setMaterials(materials);
+            let path = mtl[name];
+            let arr = path.match(/^(.*)(\/[^\/]*\.mtl)/);
+            if (arr.length === 3) {
+                this._mtl.setPath(arr[1]);
+                this._mtl.load(arr[2], (materials) => {
+                    materials.preload();
+                    this._obj.setMaterials(materials);
+                    this._addModel(name, this._obj.parse(model));
+                    this._startLoadMTL(models, mtl);
+                });
+            } else {
                 this._addModel(name, this._obj.parse(model));
-                this._startLoadMTL(models, mtl);
-            });
+                this.msg.alert('The path to MTL file is not correct');
+            }
         } else {
             this._addModel(name, this._obj.parse(model));
         }
