@@ -8,5 +8,10 @@
     "route": "/tests/alert",
     "viewPath": "pages/tests/alert",
     "method": "GET"
+  },
+  "tabs": {
+    "route": "/tests/tabs",
+    "viewPath": "pages/tests/tabs",
+    "method": "GET"
   }
 }
