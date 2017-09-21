@@ -1,7 +1,7 @@
 .tab {
   width: ~"calc(100% - 20px)";
   height: ~"calc(100% - 30px)";
-  padding: 20px 10px 10px 10px;
+  padding: 20px 10px 10px;
   position: absolute;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -9,7 +9,7 @@
   &__head {
     height: 32px;
     padding: 0 15px;
-    border-bottom: 1px solid @color_base;
+    border-bottom: @border_sm solid @color_base;
 
     &_item {
       float: left;
@@ -25,7 +25,7 @@
       & div:nth-child(1), & div:nth-child(3) {
         width: 25px;
         height: ~"calc(100% - 1px)";
-        background: @background_color_base;
+        background: @background_dark_strong;
         border-top: 1px solid @color_base_dark;
       }
 
@@ -48,7 +48,7 @@
       & div:nth-child(2) {
         width: ~"calc(100% - 32px)";
         height: ~"calc(100% - 11px)";
-        background: @background_color_base;
+        background: @background_dark_strong;
         padding: 5px;
         margin: 0 10px;
         z-index: 1000;
