@@ -100,6 +100,17 @@ class UIElement {
     }
 
     /**
+     * Add HTML class
+     *
+     * @param {string} className
+     * @returns {UIElement}
+     */
+    addClass(className) {
+        this._el.classList.add(className);
+        return this;
+    }
+
+    /**
      * Clean element. Remove all children
      *
      * @returns {UIElement}
@@ -259,10 +270,11 @@ class UIElement {
      *
      * @param {string} type
      * @param {Function} listener
+     * @param {boolean} [useCapture]
      * @returns {UIElement}
      */
-    addEvent(type, listener) {
-        this.getElement().addEventListener(type, listener);
+    addEvent(type, listener, useCapture = false) {
+        this.getElement().addEventListener(type, listener, useCapture);
         return this;
     }
 

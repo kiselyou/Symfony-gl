@@ -80,6 +80,7 @@ class ViewBundle extends Application {
             .openFormRegistration(() => {
                 this._registration.showView();
             })
+            .openSettings()
             .logout(() => {
                 Logout.get().run();
             });

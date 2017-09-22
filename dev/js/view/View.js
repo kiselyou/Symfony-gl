@@ -258,6 +258,26 @@ class View extends ViewBuffer {
     }
 
     /**
+     *
+     * @param {string|number} name
+     * @returns {View}
+     */
+    removeViewAction(name) {
+        this.getViewAction(name).remove();
+        return this;
+    }
+
+    /**
+     *
+     * @param {string|number} name
+     * @returns {View}
+     */
+    removeViewBlock(name) {
+        this.getViewBlock(name).remove();
+        return this;
+    }
+
+    /**
      * Render template EJS
      *
      * @param {string} ejsTemplate

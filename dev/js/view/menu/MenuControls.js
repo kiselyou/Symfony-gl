@@ -1,4 +1,5 @@
 import MenuGeneral from './MenuGeneral';
+import Tabs from './../tabs/Tabs';
 import {VIEW_NAME_MENU_GENERAL} from './../../ini/ejs.ini';
 
 class MenuControls {
@@ -10,6 +11,12 @@ class MenuControls {
          * @type {MenuGeneral}
          */
         this.menuGeneral = new MenuGeneral(VIEW_NAME_MENU_GENERAL);
+
+        /**
+         *
+         * @type {Tabs}
+         */
+        this.tabs = new Tabs();
     }
 
     /**
@@ -53,7 +60,24 @@ class MenuControls {
      */
     openMenu(listener) {
         this.menuGeneral.addEventBeforeBlockOpen(MenuGeneral.BLOCK_MAIN_MENU, () => {
+            this.tabs.hideView();
             listener();
+        });
+        return this;
+    }
+
+    /**
+     * Add event open settings
+     *
+     * @returns {MenuControls}
+     */
+    openSettings() {
+        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_SETTINGS, () => {
+            this.tabs
+                .addItem('Settings', 'ssssssssssssssss', 'fa-cog', true)
+                .buildTabs()
+                .showView();
+
         });
         return this;
     }

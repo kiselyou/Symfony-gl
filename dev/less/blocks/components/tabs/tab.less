@@ -20,7 +20,7 @@
 
       & > div i,
       & > div span {
-        z-index: 1;
+        z-index: 2;
         position: relative;
       }
 
@@ -36,20 +36,19 @@
         position: absolute;
         z-index: 0;
         content: "";
+        top: -1px;
       }
 
       & > div:before {
         border-left: 1px solid @color_base_dark;
         transform: skewX(-30deg);
         left: -10px;
-        top: -1px;
       }
 
       & > div:after {
         border-right: 1px solid @color_base_dark;
         transform: skewX(30deg);
         right: -10px;
-        top: -1px;
       }
 
       & > div {
@@ -80,17 +79,27 @@
 
       &_active {
         & > div {
-          border-top: 1px solid @color_base;
+          //border-top: 1px solid @color_base;
+          border-color: @color_base;
+          height: ~"calc(100% - 12px)";
+        }
+
+        & > div:before,
+        & > div:after {
+          z-index: 1;
+          border-color: @color_base;
         }
 
         & > div:before {
-          border-left: 1px solid @color_base;
-          border-top: 1px solid @color_base;
+          //border-left: 1px solid @color_base;
+          //border-top: 1px solid @color_base;
+          //border-color: @color_base;
         }
 
         & > div:after {
-          border-right: 1px solid @color_base;
-          border-top: 1px solid @color_base;
+          //border-right: 1px solid @color_base;
+          //border-top: 1px solid @color_base;
+          //border-color: @color_base;
         }
       }
     }

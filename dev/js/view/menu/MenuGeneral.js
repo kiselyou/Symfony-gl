@@ -1,4 +1,5 @@
 import ViewControls from '../../view/ViewControls';
+
 /**
  * Show element if user is logged
  *
