@@ -1,8 +1,11 @@
 Commands of server: 
-------
+-------------------
 
 ```
 # Install of dependencies
+    cd /home/valery/
+    sudo chown -R valery:valery galaxy/
+    cd galaxy/
     npm update
 ```
 
@@ -56,4 +59,22 @@ pm2 restart all
 npm i -g npm-check-updates
 npm-check-updates -u
 npm install
+```
+
+Commands of tmux:
+-----------------
+
+```
+sudo apt install tmux
+vim .bashrc
+# paste setting to and
+[ -z "$TMUX"  ] && { tmux attach || exec tmux new-session && exit;}
+# restart console
+# commands
+# ctrl + b -> c
+# ctrl + b -> %
+# ctrl + b -> "
+# ctrl + b -> p
+# ctrl + b -> n
+# ctrl + b -> arrows
 ```
