@@ -10,6 +10,17 @@ import ViewBundle from './view/ViewBundle';
 import Loader from './play/loader/Loader';
 import Lock from './system/Lock';
 
+import Tabs from './view/tabs/Tabs';
+
+
+let tabs = new Tabs();
+tabs
+    .addItem('Tab - 1', 'Content - 1', 'fa-home', true)
+    .addItem('Tab - 2', 'Content - 2', 'fa-home')
+    .addItem('Tab - 3', 'Content - 3', 'fa-home')
+    .addItem('Tab - 4', 'Content - 4', 'fa-home')
+    .buildTabs();
+
 let view = new ViewBundle();
 view.initSecurityForm();
 

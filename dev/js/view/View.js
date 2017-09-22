@@ -200,9 +200,17 @@ class View extends ViewBuffer {
     }
 
     /**
+     *
+     * @returns {UIElement}
+     */
+    getView() {
+        return this.el;
+    }
+
+    /**
      * Get element block by name
      *
-     * @param {string} name - name of block
+     * @param {string|number} name - name of block
      * @returns {UIElement}
      */
     getViewBlock(name) {
@@ -215,7 +223,7 @@ class View extends ViewBuffer {
     /**
      * Get element of action by name
      *
-     * @param {string} name - It is name of action
+     * @param {string|number} name - It is name of action
      * @returns {UIElement}
      */
     getViewAction(name) {

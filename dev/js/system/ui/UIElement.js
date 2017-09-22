@@ -89,6 +89,17 @@ class UIElement {
     }
 
     /**
+     * Toggle HTML class
+     *
+     * @param {string} className
+     * @returns {UIElement}
+     */
+    toggleClass(className) {
+        this._el.classList.toggle(className);
+        return this;
+    }
+
+    /**
      * Clean element. Remove all children
      *
      * @returns {UIElement}

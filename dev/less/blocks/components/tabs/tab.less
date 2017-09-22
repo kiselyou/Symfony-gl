@@ -18,47 +18,80 @@
       margin-right: 1px;
       position: relative;
 
+      & > div i,
+      & > div span {
+        z-index: 1;
+        position: relative;
+      }
+
       & div:hover {
         cursor: pointer;
       }
 
-      & div:nth-child(1), & div:nth-child(3) {
+      & > div:before, & > div:after {
         width: 25px;
-        height: ~"calc(100% - 1px)";
+        height: 100%;
         background: @background_dark_strong;
         border-top: 1px solid @color_base_dark;
+        position: absolute;
+        z-index: 0;
+        content: "";
       }
 
-      & div:nth-child(1) {
+      & > div:before {
         border-left: 1px solid @color_base_dark;
         transform: skewX(-30deg);
-        position: absolute;
-        left: 0;
-        top: 0;
+        left: -10px;
+        top: -1px;
       }
 
-      & div:nth-child(3) {
+      & > div:after {
         border-right: 1px solid @color_base_dark;
         transform: skewX(30deg);
-        position: absolute;
-        right: 0;
-        top: 0;
+        right: -10px;
+        top: -1px;
       }
 
-      & div:nth-child(2) {
+      & > div {
         width: ~"calc(100% - 32px)";
         height: ~"calc(100% - 11px)";
         background: @background_dark_strong;
         padding: 5px;
         margin: 0 10px;
-        z-index: 1000;
         position: absolute;
         border-top: 1px solid @color_base_dark;
       }
 
-      &_active div {
-        border-color: @color_base !important;
-        z-index: 1000;
+      &_close {
+        width: 10px;
+        float: right;
+        padding: 0;
+        margin-top: -3px;
+        margin-right: -2px;
+
+        & i::after {
+          content: "\f00d";
+        }
+
+        & i:hover::after {
+          content: "\f057";
+        }
+      }
+
+      &_active {
+        & > div {
+          border-top: 1px solid @color_base;
+        }
+
+        & > div:before {
+          border-left: 1px solid @color_base;
+          border-top: 1px solid @color_base;
+        }
+
+        & > div:after {
+          border-right: 1px solid @color_base;
+          border-top: 1px solid @color_base;
+        }
       }
     }
   }

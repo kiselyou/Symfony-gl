@@ -7,6 +7,7 @@ export const VIEW_NAME_INFORMER_INFO = 'informer-info';
 export const VIEW_NAME_MENU_GENERAL = 'menu-general';
 export const VIEW_NAME_PROGRESS_AJAX = 'progress-ajax';
 export const VIEW_NAME_WINDOW_ALERT = 'window-alert';
+export const VIEW_NAME_TABS = 'tabs';
 
 export const BASE_DIR_VIEW = './views';
 
@@ -20,3 +21,4 @@ VIEW_PATH[VIEW_NAME_INFORMER_INFO] = '/components/informer/info.ejs';
 VIEW_PATH[VIEW_NAME_MENU_GENERAL] = '/components/menu/general.ejs';
 VIEW_PATH[VIEW_NAME_PROGRESS_AJAX] = '/components/progress/ajax.ejs';
 VIEW_PATH[VIEW_NAME_WINDOW_ALERT] = '/components/window/alert.ejs';
+VIEW_PATH[VIEW_NAME_TABS] = '/components/tabs/tab.ejs';
