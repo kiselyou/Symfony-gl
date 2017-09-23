@@ -5,19 +5,22 @@
         <% for (let i = 0; i < options.length; i++) { %>
 
             <% let item = options[i]; %>
+            <% let key = item['key']; %>
             <% let active = item.hasOwnProperty('active') && item['active'] ? 'tab__head_item_active' : ''; %>
 
-            <div class="tab__head_item <%= active %>" data-action="<%= i %>">
+            <div class="tab__head_item <%= active %>" data-action="<%= key %>">
                 <div>
+                    <div class="tab__head_item_name">
+                        <% if (item.hasOwnProperty('icon')) { %>
+                            <% let icon = item['icon'] %>
+                            <i class="fa <%= icon %>"></i>
+                        <% } %>
 
-                    <% if (item.hasOwnProperty('icon')) { %>
-                        <% let icon = item['icon'] %>
-                        <i class="fa <%= icon %>"></i>
-                    <% } %>
+                        <span><%= item['name'] %></span>
+                    </div>
 
-                    <span><%= item['name'] %></span>
                     <div class="tab__head_item_close">
-                        <i class="fa" data-action="close-<%= i %>"></i>
+                        <i class="fa" data-action="<%= key %>"></i>
                     </div>
                 </div>
             </div>
@@ -30,9 +33,10 @@
         <% for (let i = 0; i < options.length; i++) { %>
 
             <% let item = options[i]; %>
+            <% let key = item['key']; %>
             <% let active = item.hasOwnProperty('active') && item['active'] ? 'tab__content_item_active' : ''; %>
 
-            <div class="tab__content_item <%= active %>" data-block="<%= i %>"><%= item['content'] %></div>
+            <div class="tab__content_item <%= active %>" data-block="<%= key %>"><%= item['content'] %></div>
 
         <% } %>
     </div>

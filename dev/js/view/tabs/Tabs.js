@@ -25,13 +25,6 @@ class Tabs extends View {
 
         /**
          *
-         * @type {Array}
-         * @private
-         */
-        this._removedItems = [];
-
-        /**
-         *
          * @type {Application}
          * @private
          */
@@ -39,24 +32,42 @@ class Tabs extends View {
     }
 
     /**
+     * This method add setting to build tab.
+     * The name is unique. If this tab has already added it will rewrite
      *
-     * @param {string} name
-     * @param {?string} [content]
-     * @param {?string} [icon]
-     * @param {boolean} [active]
+     * @param {string} name - The name of tab. WARNING: Is unique
+     * @param {?string} [content] - The content of tab
+     * @param {?string} [icon] - This is name of icon e.g "fa-id-card-o"
+     * @param {boolean} [active] - If set true the the tab will be active
+     * @param {?string|number} key - You can set specific key for tab
      * @returns {Tabs}
      */
-    addItem(name, content = '', icon = '', active = false) {
-        let item = this._options.find((el) => {
-            return el['name'] === name;
-        });
-        if (!item) {
+    addItem(name, content = '', icon = '', active = false, key = null) {
+        let add = true;
+        for (let i = 0; i < this._options.length; i++) {
+            let item = this._options[i];
+            if (active) {
+                item['active'] = false;
+            }
+            if (item['name'] === name) {
+                add = false;
+                item['icon'] = icon;
+                item['content'] = content;
+                item['active'] = Boolean(active);
+            }
+            if (item['name'] !== name && item['key'] === key) {
+                this._app.msg.alert('The key "' + key + '" has already exist');
+            }
+        }
+
+        if (add) {
             this._options.push(
                 {
                     name: name,
                     icon: icon,
                     content: content,
-                    active: Boolean(active)
+                    active: Boolean(active),
+                    key: this._app.uuid
                 }
             );
         }
@@ -64,6 +75,7 @@ class Tabs extends View {
     }
 
     /**
+     * Each times when you added tabs after it you need build it.
      *
      * @returns {Tabs}
      */
@@ -81,25 +93,7 @@ class Tabs extends View {
     }
 
     /**
-     * @returns {void}
-     * @private
-     */
-    _addEventToAction() {
-        for (let i = 0; i < this._options.length; i++) {
-            let item = this.getViewAction(i);
-            item.addEvent('click', () => {
-                this.toggleTab(i);
-            });
-
-            let itemClose = this.getViewAction('close-' + i);
-            itemClose.addEvent('click', (e) => {
-                e.cancelBubble = true;
-                this.closeTab(i);
-            });
-        }
-    }
-
-    /**
+     * Get active tab
      *
      * @returns {UIElement}
      */
@@ -108,6 +102,7 @@ class Tabs extends View {
     }
 
     /**
+     * Get active block
      *
      * @returns {UIElement}
      */
@@ -116,8 +111,9 @@ class Tabs extends View {
     }
 
     /**
+     * Toggle tabs
      *
-     * @param {string|number} key
+     * @param {string|number} key - This is unique key of tab
      * @returns {Tabs}
      */
     toggleTab(key) {
@@ -130,8 +126,9 @@ class Tabs extends View {
     }
 
     /**
+     * Find nearest tab
      *
-     * @param {string|number} key
+     * @param {string|number} key - This is unique key of tab
      * @returns {?{tab: UIElement, content: UIElement, key: (string|number)}}
      */
     findNearestTab(key) {
@@ -139,21 +136,21 @@ class Tabs extends View {
     }
 
     /**
+     * Find previous tab
      *
-     * @param {string|number} key
+     * @param {string|number} key - This is unique key of tab
      * @returns {?{tab: UIElement, content: UIElement, key: (string|number)}}
      */
     findPreviousTab(key) {
-        for (let i = (key - 1); i >= 0; i--) {
-            if (this._isRemoved(i)) {
-                continue;
-            }
-            let tab = this.getViewAction(i);
+        let number = this.getNumberTab(key);
+        for (let i = (number - 1); i >= 0; i--) {
+            let item = this._options[i];
+            let tab = this.getViewAction(item['key']);
             if (tab) {
                 return {
                     tab: tab,
-                    content: this.getViewBlock(i),
-                    key: i
+                    content: this.getViewBlock(item['key']),
+                    key: item['key']
                 };
             }
         }
@@ -161,21 +158,37 @@ class Tabs extends View {
     }
 
     /**
+     * Serial number of tab
      *
-     * @param {string|number} key
+     * @param {string|number} key - This is unique key of tab
+     * @returns {number}
+     */
+    getNumberTab(key) {
+        for (let i = 0; i < this._options.length; i++) {
+            let item = this._options[i];
+            if (item['key'] === key) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Find next tab
+     *
+     * @param {string|number} key - This is unique key of tab
      * @returns {?{tab: UIElement, content: UIElement, key: (string|number)}}
      */
     findNextTab(key) {
-        for (let i = (key + 1); i < this._options.length; i++) {
-            if (this._isRemoved(i)) {
-                continue;
-            }
-            let tab = this.getViewAction(i);
+        let number = this.getNumberTab(key);
+        for (let i = (number + 1); i < this._options.length; i++) {
+            let item = this._options[i];
+            let tab = this.getViewAction(item['key']);
             if (tab) {
                 return {
                     tab: tab,
-                    content: this.getViewBlock(i),
-                    key: i
+                    content: this.getViewBlock(item['key']),
+                    key: item['key']
                 };
             }
         }
@@ -183,36 +196,44 @@ class Tabs extends View {
     }
 
     /**
+     * Close tab. This method remove tab and content from the page
      *
-     * @param {string|number} key
-     * @returns {boolean}
-     * @private
-     */
-    _isRemoved(key) {
-        return this._removedItems.indexOf(key) >= 0;
-    }
-
-    /**
-     *
-     * @param {string|number} key
+     * @param {string|number} key - This is unique key of tab
      * @returns {Tabs}
      */
     closeTab(key) {
-        this._removedItems.push(key);
         this
             .removeViewAction(key)
             .removeViewBlock(key);
-
-        if (!this.getActiveTab()) {
+        if (this._options.length > 0 && !this.getActiveTab()) {
             this.activeNearestTab(key);
         }
-
+        this.removeTab(key);
         return this;
     }
 
     /**
+     * This method remove tab from the options.
+     * If you need remove tab from the page. Please use method "closeTab"
      *
-     * @param {string|number} key
+     * @param {string|number} key - This is unique key of tab
+     * @returns {Tabs}
+     */
+    removeTab(key) {
+        for (let i = 0; i < this._options.length; i++) {
+            let item = this._options[i];
+            if (item['key'] === key) {
+                this._options.splice(i, 1);
+                break;
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Set active nearest tab
+     *
+     * @param {string|number} key - This is unique key of tab
      * @returns {Tabs}
      */
     activeNearestTab(key) {
@@ -227,8 +248,9 @@ class Tabs extends View {
     }
 
     /**
+     * Toggle content on the page
      *
-     * @param {string|number} key
+     * @param {string|number} key - This is unique key of tab
      * @returns {Tabs}
      * @private
      */
@@ -243,6 +265,28 @@ class Tabs extends View {
             .showElement()
             .toggleClass(ACTIVE_BLOCK);
         return this;
+    }
+
+    /**
+     * Add events to tabs
+     *
+     * @returns {void}
+     * @private
+     */
+    _addEventToAction() {
+        for (let i = 0; i < this._options.length; i++) {
+            let key = this._options[i]['key'];
+            let item = this.getViewAction(key);
+            item.addEvent('click', () => {
+                this.toggleTab(key);
+            });
+
+            let itemClose = item.getElementByActionName(key);
+            itemClose.addEvent('click', (e) => {
+                e.cancelBubble = true;
+                this.closeTab(key);
+            });
+        }
     }
 }
 

@@ -47,6 +47,10 @@ class MenuGeneral extends ViewControls {
                     {name: 'Registration', action: MenuGeneral.ACTION_REGISTRATION, lock: HIDE_IF_LOCKED},
                     {name: 'Logout', action: MenuGeneral.ACTION_LOGOUT, lock: SHOW_IF_LOCKED},
                     {name: 'Settings', action: MenuGeneral.ACTION_SETTINGS, lock: SHOW_IF_LOCKED},
+                    {name: 'Test - 1', action: 'test-1'},
+                    {name: 'Test - 2', action: 'test-2'},
+                    {name: 'Test - 3', action: 'test-3'},
+                    {name: 'Test - 4', action: 'test-4'},
                     {name: 'Close Menu', action: MenuGeneral.ACTION_CLOSE_MENU}
                 ]
             }

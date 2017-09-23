@@ -92,6 +92,91 @@ class MenuControls {
         this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_CLOSE_MENU, listener);
         return this;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Add event open settings
+     *
+     * @returns {MenuControls}
+     */
+    openTest1() {
+        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, 'test-1', () => {
+            this.tabs
+                .addItem('Tab Name Test-1', 'ssssssssssssssss', 'fa-cog', true)
+                .buildTabs()
+                .showView();
+
+        });
+        return this;
+    }
+
+    /**
+     * Add event open settings
+     *
+     * @returns {MenuControls}
+     */
+    openTest2() {
+        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, 'test-2', () => {
+            this.tabs
+                .addItem('Tab Name Test-2', '8888888888', 'fa-cog', true)
+                .buildTabs()
+                .showView();
+
+        });
+        return this;
+    }
+
+
+    /**
+     * Add event open settings
+     *
+     * @returns {MenuControls}
+     */
+    openTest3() {
+        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, 'test-3', () => {
+            this.tabs
+                .addItem('Tab Name Test-3', 'ZXZxzXZXZX', 'fa-cog', true)
+                .buildTabs()
+                .showView();
+
+        });
+        return this;
+    }
+
+    /**
+     * Add event open settings
+     *
+     * @returns {MenuControls}
+     */
+    openTest4() {
+        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, 'test-4', () => {
+            this.tabs
+                .addItem('Tab Name Test-4', 'retretrertretreter', 'fa-cog', true)
+                .buildTabs()
+                .showView();
+
+        });
+        return this;
+    }
+
+
+
 }
 
 export default MenuControls;
