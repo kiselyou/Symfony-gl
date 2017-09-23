@@ -1,4 +1,5 @@
 import ViewControls from '../../view/ViewControls';
+import MenuGeneralBlock from './MenuGeneralBlock';
 
 /**
  * Show element if user is logged
@@ -34,27 +35,45 @@ class MenuGeneral extends ViewControls {
         this._viewName = viewName;
 
         /**
+         * This is options for menu
          *
-         * @type {*[]}
+         * @type {Array}
+         * @private
          */
-        this.viewOptions = [
-            {
-                name: 'Main Menu IronWar',
-                action: MenuGeneral.ACTION_OPEN_MENU,
-                block: MenuGeneral.BLOCK_MAIN_MENU,
-                subItems: [
-                    {name: 'Login', action: MenuGeneral.ACTION_LOGIN, lock: HIDE_IF_LOCKED},
-                    {name: 'Registration', action: MenuGeneral.ACTION_REGISTRATION, lock: HIDE_IF_LOCKED},
-                    {name: 'Logout', action: MenuGeneral.ACTION_LOGOUT, lock: SHOW_IF_LOCKED},
-                    {name: 'Settings', action: MenuGeneral.ACTION_SETTINGS, lock: SHOW_IF_LOCKED},
-                    {name: 'Test - 1', action: 'test-1'},
-                    {name: 'Test - 2', action: 'test-2'},
-                    {name: 'Test - 3', action: 'test-3'},
-                    {name: 'Test - 4', action: 'test-4'},
-                    {name: 'Close Menu', action: MenuGeneral.ACTION_CLOSE_MENU}
-                ]
-            }
-        ];
+        this._options = [];
+
+        // /**
+        //  *
+        //  * @type {*[]}
+        //  */
+        // this.viewOptions = [
+        //     {
+        //         name: 'TEST - 1',
+        //         action: 'test_1',
+        //         block: 'block_test_1',
+        //         icon: 'fa-home',
+        //         subItems: [
+        //             {name: 'Test - 1', action: 'test-1'},
+        //             {name: 'Test - 2', action: 'test-2'},
+        //             {name: 'Test - 3', action: 'test-3'},
+        //             {name: 'Test - 4', action: 'test-4'},
+        //             {name: 'Close Menu', action: 'close'}
+        //         ]
+        //     },
+        //     {
+        //         name: 'Main Menu IronWar',
+        //         action: MenuGeneral.ACTION_OPEN_MENU,
+        //         block: MenuGeneral.BLOCK_MAIN_MENU,
+        //         icon: null,
+        //         subItems: [
+        //             {name: 'Login', action: MenuGeneral.ACTION_LOGIN, lock: HIDE_IF_LOCKED},
+        //             {name: 'Registration', action: MenuGeneral.ACTION_REGISTRATION, lock: HIDE_IF_LOCKED},
+        //             {name: 'Logout', action: MenuGeneral.ACTION_LOGOUT, lock: SHOW_IF_LOCKED},
+        //             {name: 'Settings', action: MenuGeneral.ACTION_SETTINGS, lock: SHOW_IF_LOCKED},
+        //             {name: 'Close Menu', action: MenuGeneral.ACTION_CLOSE_MENU}
+        //         ]
+        //     }
+        // ];
 
         /**
          * It is status of block.
@@ -67,33 +86,21 @@ class MenuGeneral extends ViewControls {
         this.status = {};
 
         /**
+         * This is collection of listener for block.
+         * Script call it before open any block
          *
-         * @type {Object.<Object.<Array>>}
-         */
-        this._events = {};
-
-        /**
-         * It is event before block opening
-         *
-         * @callback eventsBeforeBlockOpen
-         */
-
-        /**
-         *
-         * @type {Object.<Array.<eventsBeforeBlockOpen>>}
+         * @type {Array}
          * @private
          */
-        this._eventsBeforeBlockOpen = {};
+        this._eventsBeforeOpen = [];
 
         /**
-         * It is name active action
+         * It is name active action and block
          *
-         * @type {?string}
+         * @type {{action: ?string, block: ?string}}
          * @private
          */
-        this._activeAction = null;
-
-        this.buildMenu();
+        this.active = {action: null, block: null};
 
         this.app.lock.addEventChangeStatus((status) => {
             this.rebuildMenu();
@@ -102,11 +109,52 @@ class MenuGeneral extends ViewControls {
     }
 
     /**
+     * Create block menu
+     *
+     * @param {string} name - This is name block
+     * @returns {MenuGeneralBlock}
+     */
+    addBlock(name) {
+        let block = new MenuGeneralBlock(name);
+        this._options.push(block);
+        return block;
+    }
+
+    /**
+     * Sort only blocks menu
+     *
+     * @param {string} [type] - 'ASC' | 'DESC'
+     * @returns {MenuGeneral}
+     */
+    sortBlocks(type = 'ASC') {
+        this._options.sort(function(a, b) {
+            return type === 'ASC' ? a['order'] - b['order'] : b['order'] - a['order'];
+        });
+        return this;
+    }
+
+    /**
+     * Sort blocks menu and items
+     *
+     * @param {string} [typeSortBlocks] - 'ASC' | 'DESC'
+     * @param {string} [typeSortItems] - 'ASC' | 'DESC'
+     * @returns {MenuGeneral}
+     */
+    sortFull(typeSortBlocks = 'ASC', typeSortItems = 'ASC') {
+        this.sortBlocks(typeSortBlocks);
+        for (let block of this._options) {
+            block.sortItems(typeSortItems);
+        }
+        return this;
+    }
+
+    /**
      * Build Menu
      *
      * @returns {MenuGeneral}
      */
     buildMenu() {
+        this.viewOptions = this._options;
         this.build(this._viewName);
         this.showView(false);
         this.initEvents();
@@ -158,18 +206,20 @@ class MenuGeneral extends ViewControls {
     }
 
     /**
-     * Set listener before open block
+     * It is event before block opening
      *
-     * @param {string} blockName - Name of block
+     * @callback eventsBeforeBlockOpen
+     */
+
+    /**
+     * Add listener before open any block
+     * Script call it before open any block
+     *
      * @param {eventsBeforeBlockOpen} listener
      * @returns {MenuGeneral}
      */
-    addEventBeforeBlockOpen(blockName, listener) {
-        if (!this._eventsBeforeBlockOpen.hasOwnProperty(blockName)) {
-            this._eventsBeforeBlockOpen[blockName] = [];
-        }
-
-        this._eventsBeforeBlockOpen[blockName].push(listener);
+    addEventBeforeOpen(listener) {
+        this._eventsBeforeOpen.push(listener);
         return this;
     }
 
@@ -180,126 +230,33 @@ class MenuGeneral extends ViewControls {
      * @returns {MenuGeneral}
      */
     initEvents() {
-        for (let option of this.viewOptions) {
-            let blockName = option['block'];
-            this._addEventToAction(option['action'], () => {
-                this._activeAction = option['action'];
-                this.toggle(blockName);
+        for (let block of this.viewOptions) {
+            let blockName = block['block'];
+            let actionName = block['action'];
+            this._addEventToAction(block['action'], () => {
+                let events = block['events'];
+                for (let event of events) {
+                    event(blockName);
+                }
+                this.toggle(actionName, blockName);
             });
 
-            for (let item of option['subItems']) {
+            for (let item of block['subItems']) {
                 let itemActionName = item['action'];
                 this.getViewAction(itemActionName).addEvent('mouseover', () => {
                     this.app.sound.play(MENU_HOVER_MP3);
                 });
 
                 this._addEventToAction(itemActionName, () => {
-                    this.toggle(blockName);
-                    let block = this._events[blockName];
-                    if (block && block[itemActionName]) {
-                        let events = block[itemActionName];
-                        for (let event of events) {
-                            event(blockName, itemActionName);
-                        }
+                    this.toggle(actionName, blockName);
+
+                    let events = item['events'];
+                    for (let event of events) {
+                        event(blockName, itemActionName);
                     }
                 });
             }
         }
-        return this;
-    }
-
-    /**
-     * It is name of event "Login"
-     *
-     * @returns {string}
-     * @constructor
-     */
-    static get ACTION_LOGIN() {
-        return 'main-menu-login';
-    }
-
-    /**
-     * It is name of event "Registration"
-     *
-     * @returns {string}
-     * @constructor
-     */
-    static get ACTION_REGISTRATION() {
-        return 'main-menu-registration';
-    }
-
-    /**
-     * It is name of event "Logout"
-     *
-     * @returns {string}
-     * @constructor
-     */
-    static get ACTION_LOGOUT() {
-        return 'main-menu-logout';
-    }
-
-    /**
-     * It is name of event "Settings"
-     *
-     * @returns {string}
-     * @constructor
-     */
-    static get ACTION_SETTINGS() {
-        return 'main-menu-settings';
-    }
-
-    /**
-     * It is name of event "Close block of menu"
-     *
-     * @returns {string}
-     * @constructor
-     */
-    static get ACTION_CLOSE_MENU() {
-        return 'main-menu-close';
-    }
-
-    /**
-     * It is name of event "Open block of menu"
-     *
-     * @returns {string}
-     * @constructor
-     */
-    static get ACTION_OPEN_MENU() {
-        return 'main-menu-open';
-    }
-
-    /**
-     * It is name of event "Open block of menu"
-     *
-     * @returns {string}
-     * @constructor
-     */
-    static get BLOCK_MAIN_MENU() {
-        return 'main-menu';
-    }
-
-    /**
-     * @callback listenItemsMenu
-     */
-
-    /**
-     * Add event for items of menu
-     *
-     * @param {string} block It is name of block
-     * @param {string} action It is action name of item in block
-     * @param {listenItemsMenu} listenItemsMenu
-     * @returns {MenuGeneral}
-     */
-    addItemEvent(block, action, listenItemsMenu) {
-        if (!this._events.hasOwnProperty(block)) {
-            this._events[block] = {};
-        }
-
-        if (!this._events[block].hasOwnProperty(action)) {
-            this._events[block][action] = [];
-        }
-
-        this._events[block][action].push(listenItemsMenu);
         return this;
     }
 
@@ -329,18 +286,17 @@ class MenuGeneral extends ViewControls {
      * Show block
      * You need call this method after upload menu
      *
-     * @param {string} name - It is name of block
+     * @param {string} actionName
+     * @param {string} blockName - It is name of block
      * @returns {MenuGeneral}
      */
-    showBlock(name) {
-        this.status[name] = true;
-        if (this._eventsBeforeBlockOpen.hasOwnProperty(name)) {
-            for (let listener of this._eventsBeforeBlockOpen[name]) {
-                listener();
-            }
+    showBlock(actionName, blockName) {
+        this.status[blockName] = true;
+        for (let listener of this._eventsBeforeOpen) {
+            listener();
         }
-        this.getViewBlock(name).showElement(true);
-        this.getViewAction(this._activeAction).hideElement();
+        this.getViewBlock(blockName).showElement(true);
+        this.getViewAction(actionName).hideElement();
         return this;
     }
 
@@ -348,13 +304,14 @@ class MenuGeneral extends ViewControls {
      * Hide block
      * You need call this method after upload menu
      *
-     * @param {string} name - It is name of block
+     * @param {string} actionName
+     * @param {string} blockName - It is name of block
      * @returns {MenuGeneral}
      */
-    hideBlock(name) {
-        this.status[name] = false;
-        this.getViewBlock(name).hideElement(true);
-        this.getViewAction(this._activeAction).showElement();
+    hideBlock(actionName, blockName) {
+        this.status[blockName] = false;
+        this.getViewBlock(blockName).hideElement(true);
+        this.getViewAction(actionName).showElement();
         return this;
     }
 
@@ -362,16 +319,26 @@ class MenuGeneral extends ViewControls {
      * Open or close block menu
      * You need call this method after upload menu
      *
+     * @param {string} actionName
      * @param {string} blockName It is name of block
      * @returns {MenuGeneral}
      */
-    toggle(blockName) {
+    toggle(actionName, blockName) {
+
         if (this.status[blockName]) {
-            this.app.sound.play(MENU_CLOSE_MP3);
-            this.hideBlock(blockName)
-        } else {
+            // this.app.sound.play(MENU_CLOSE_MP3);
             this.app.sound.play(MENU_OPEN_MP3);
-            this.showBlock(blockName)
+            this.hideBlock(actionName, blockName);
+        } else {
+            // If other block has already opened then closed it
+            if (this.active['action'] && this.active['block']) {
+                this.hideBlock(this.active['action'], this.active['block'])
+            }
+
+            this.app.sound.play(MENU_OPEN_MP3);
+            this.showBlock(actionName, blockName);
+            this.active['action'] = actionName;
+            this.active['block'] = blockName;
         }
         return this;
     }

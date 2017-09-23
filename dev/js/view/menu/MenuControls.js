@@ -1,4 +1,6 @@
+
 import MenuGeneral from './MenuGeneral';
+import MenuGeneralItem from './MenuGeneralItem';
 import Tabs from './../tabs/Tabs';
 import {VIEW_NAME_MENU_GENERAL} from './../../ini/ejs.ini';
 
@@ -12,32 +14,75 @@ class MenuControls {
          */
         this.menuGeneral = new MenuGeneral(VIEW_NAME_MENU_GENERAL);
 
+        this._mainBlock = this.menuGeneral
+            .addBlock('Main Menu IronWar')
+            .setBlockTitle('Main Menu IronWar')
+            .setBlockIcon('fa-gavel');
+
+        this._homeBlock = this.menuGeneral
+            .addBlock('Home Page')
+            .setBlockTitle('Home Page')
+            .setBlockIcon('fa-home');
+
         /**
          *
          * @type {Tabs}
          */
         this.tabs = new Tabs();
+
+        // Hide tabs before open any block menu
+        this.menuGeneral.addEventBeforeOpen(() => {
+            this.tabs.hideView();
+        });
     }
+
+    /**
+     * Start build menu
+     *
+     * @returns {MenuControls}
+     */
+    build() {
+        this._mainBlock
+            .addItem('Close Menu')
+            .setOrder(100);
+        this._homeBlock
+            .addItem('Close Menu')
+            .setOrder(100);
+        this.menuGeneral
+            .sortFull()
+            .buildMenu();
+        return this;
+    }
+
+    /**
+     * @callback listenItemsMenu
+     */
 
     /**
      * Add event open form login
      *
-     * @param {listenItemsMenu} listener
+     * @param {listenItemsMenu} [listener]
      * @returns {MenuControls}
      */
     openFormLogin(listener) {
-        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_LOGIN, listener);
+        this._mainBlock
+            .addItem('Login', listener)
+            .setOrder(10)
+            .setLockStatus(MenuGeneralItem.HIDE_IF_LOCKED);
         return this;
     }
 
     /**
      * Add event open form registration
      *
-     * @param {listenItemsMenu} listener
+     * @param {listenItemsMenu} [listener]
      * @returns {MenuControls}
      */
     openFormRegistration(listener) {
-        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_REGISTRATION, listener);
+        this._mainBlock
+            .addItem('Registration', listener)
+            .setOrder(20)
+            .setLockStatus(MenuGeneralItem.HIDE_IF_LOCKED);
         return this;
     }
 
@@ -48,7 +93,10 @@ class MenuControls {
      * @returns {MenuControls}
      */
     logout(listener) {
-        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_LOGOUT, listener);
+        this._mainBlock
+            .addItem('Logout', listener)
+            .setOrder(30)
+            .setLockStatus(MenuGeneralItem.SHOW_IF_LOCKED);
         return this;
     }
 
@@ -59,7 +107,7 @@ class MenuControls {
      * @returns {MenuControls}
      */
     openMenu(listener) {
-        this.menuGeneral.addEventBeforeBlockOpen(MenuGeneral.BLOCK_MAIN_MENU, () => {
+        this.menuGeneral.addEventBeforeOpen(() => {
             this.tabs.hideView();
             listener();
         });
@@ -72,111 +120,45 @@ class MenuControls {
      * @returns {MenuControls}
      */
     openSettings() {
-        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_SETTINGS, () => {
-            this.tabs
-                .addItem('Settings', 'ssssssssssssssss', 'fa-cog', true)
-                .buildTabs()
-                .showView();
+        this._mainBlock
+            .addItem('Settings')
+            .setOrder(40)
+            .addEvent(() => {
+                this.tabs
+                    .addTab('Settings', true)
+                    .setIcon('fa-volume-up')
+                    .setContent('<h1>Setting of sound</h1>');
 
-        });
+                this.tabs
+                    .buildTabs()
+                    .showView();
+            })
+            .setLockStatus(MenuGeneralItem.SHOW_IF_LOCKED);
         return this;
     }
 
     /**
-     * Add event close menu
-     *
-     * @param {listenItemsMenu} listener
-     * @returns {MenuControls}
-     */
-    closeMenu(listener) {
-        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, MenuGeneral.ACTION_CLOSE_MENU, listener);
-        return this;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Add event open settings
+     * Create Item Home Page
      *
      * @returns {MenuControls}
      */
-    openTest1() {
-        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, 'test-1', () => {
-            this.tabs
-                .addItem('Tab Name Test-1', 'ssssssssssssssss', 'fa-cog', true)
-                .buildTabs()
-                .showView();
+    openHomePage() {
+        this._homeBlock
+            .addItem('Home Page')
+            .setOrder(10)
+            .setLockStatus(MenuGeneralItem.SHOW_IF_LOCKED)
+            .addEvent(() => {
+                this.tabs
+                    .addTab('Home', true)
+                    .setIcon('fa-home')
+                    .setContent('ssssssssssssssss');
 
-        });
+                this.tabs
+                    .buildTabs()
+                    .showView();
+            });
         return this;
     }
-
-    /**
-     * Add event open settings
-     *
-     * @returns {MenuControls}
-     */
-    openTest2() {
-        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, 'test-2', () => {
-            this.tabs
-                .addItem('Tab Name Test-2', '8888888888', 'fa-cog', true)
-                .buildTabs()
-                .showView();
-
-        });
-        return this;
-    }
-
-
-    /**
-     * Add event open settings
-     *
-     * @returns {MenuControls}
-     */
-    openTest3() {
-        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, 'test-3', () => {
-            this.tabs
-                .addItem('Tab Name Test-3', 'ZXZxzXZXZX', 'fa-cog', true)
-                .buildTabs()
-                .showView();
-
-        });
-        return this;
-    }
-
-    /**
-     * Add event open settings
-     *
-     * @returns {MenuControls}
-     */
-    openTest4() {
-        this.menuGeneral.addItemEvent(MenuGeneral.BLOCK_MAIN_MENU, 'test-4', () => {
-            this.tabs
-                .addItem('Tab Name Test-4', 'retretrertretreter', 'fa-cog', true)
-                .buildTabs()
-                .showView();
-
-        });
-        return this;
-    }
-
-
-
 }
 
 export default MenuControls;

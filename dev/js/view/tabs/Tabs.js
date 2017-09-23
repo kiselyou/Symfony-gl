@@ -1,8 +1,15 @@
 
 import View from '../../view/View';
+import TabItem from './TabItem';
 import Application from '../../system/Application';
 
-import {VIEW_NAME_TABS} from './../../ini/ejs.ini';
+import {
+    MENU_CLOSE_MP3
+} from './../../ini/sound-ini';
+
+import {
+    VIEW_NAME_TABS
+} from './../../ini/ejs.ini';
 
 const ACTIVE_TAB = 'tab__head_item_active';
 const ACTIVE_BLOCK = 'tab__content_item_active';
@@ -18,7 +25,7 @@ class Tabs extends View {
 
         /**
          *
-         * @type {Array}
+         * @type {Array.<TabItem>}
          * @private
          */
         this._options = [];
@@ -36,42 +43,32 @@ class Tabs extends View {
      * The name is unique. If this tab has already added it will rewrite
      *
      * @param {string} name - The name of tab. WARNING: Is unique
-     * @param {?string} [content] - The content of tab
-     * @param {?string} [icon] - This is name of icon e.g "fa-id-card-o"
-     * @param {boolean} [active] - If set true the the tab will be active
-     * @param {?string|number} key - You can set specific key for tab
-     * @returns {Tabs}
+     * @param {boolean} active - If set true the the tab will be active
+     * @returns {TabItem}
      */
-    addItem(name, content = '', icon = '', active = false, key = null) {
-        let add = true;
+    addTab(name, active = false) {
+        let newTab = null;
         for (let i = 0; i < this._options.length; i++) {
-            let item = this._options[i];
+            /**
+             * @type {TabItem}
+             */
+            let tab = this._options[i];
+            // If current tab is active then set all other tabs are making not active
             if (active) {
-                item['active'] = false;
+                tab.setActive(false);
             }
-            if (item['name'] === name) {
-                add = false;
-                item['icon'] = icon;
-                item['content'] = content;
-                item['active'] = Boolean(active);
-            }
-            if (item['name'] !== name && item['key'] === key) {
-                this._app.msg.alert('The key "' + key + '" has already exist');
+            if (tab.name === name) {
+                newTab = tab;
             }
         }
 
-        if (add) {
-            this._options.push(
-                {
-                    name: name,
-                    icon: icon,
-                    content: content,
-                    active: Boolean(active),
-                    key: this._app.uuid
-                }
-            );
+        if (!newTab) {
+            newTab = new TabItem(name);
+            this._options.push(newTab);
         }
-        return this;
+
+        newTab.setActive(active);
+        return newTab;
     }
 
     /**
@@ -145,12 +142,13 @@ class Tabs extends View {
         let number = this.getNumberTab(key);
         for (let i = (number - 1); i >= 0; i--) {
             let item = this._options[i];
-            let tab = this.getViewAction(item['key']);
+            let uuid = item['uuid'];
+            let tab = this.getViewAction(uuid);
             if (tab) {
                 return {
                     tab: tab,
-                    content: this.getViewBlock(item['key']),
-                    key: item['key']
+                    key: uuid,
+                    content: this.getViewBlock(uuid),
                 };
             }
         }
@@ -166,7 +164,7 @@ class Tabs extends View {
     getNumberTab(key) {
         for (let i = 0; i < this._options.length; i++) {
             let item = this._options[i];
-            if (item['key'] === key) {
+            if (item['uuid'] === key) {
                 return i;
             }
         }
@@ -183,12 +181,13 @@ class Tabs extends View {
         let number = this.getNumberTab(key);
         for (let i = (number + 1); i < this._options.length; i++) {
             let item = this._options[i];
-            let tab = this.getViewAction(item['key']);
+            let uuid = item['uuid'];
+            let tab = this.getViewAction(uuid);
             if (tab) {
                 return {
                     tab: tab,
-                    content: this.getViewBlock(item['key']),
-                    key: item['key']
+                    content: this.getViewBlock(uuid),
+                    key: uuid
                 };
             }
         }
@@ -209,6 +208,18 @@ class Tabs extends View {
             this.activeNearestTab(key);
         }
         this.removeTab(key);
+        this._app.sound.play(MENU_CLOSE_MP3);
+        return this;
+    }
+
+    /**
+     *
+     * @returns {Tabs}
+     */
+    clearTabs() {
+        for (let item of this._options) {
+            this.closeTab(item['uuid']);
+        }
         return this;
     }
 
@@ -222,7 +233,7 @@ class Tabs extends View {
     removeTab(key) {
         for (let i = 0; i < this._options.length; i++) {
             let item = this._options[i];
-            if (item['key'] === key) {
+            if (item['uuid'] === key) {
                 this._options.splice(i, 1);
                 break;
             }
@@ -275,8 +286,10 @@ class Tabs extends View {
      */
     _addEventToAction() {
         for (let i = 0; i < this._options.length; i++) {
-            let key = this._options[i]['key'];
+            let key = this._options[i]['uuid'];
+
             let item = this.getViewAction(key);
+
             item.addEvent('click', () => {
                 this.toggleTab(key);
             });

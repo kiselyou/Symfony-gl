@@ -5,22 +5,21 @@
         <% for (let i = 0; i < options.length; i++) { %>
 
             <% let item = options[i]; %>
-            <% let key = item['key']; %>
-            <% let active = item.hasOwnProperty('active') && item['active'] ? 'tab__head_item_active' : ''; %>
+            <% let uuid = item['uuid']; %>
+            <% let active = item['active'] ? 'tab__head_item_active' : ''; %>
 
-            <div class="tab__head_item <%= active %>" data-action="<%= key %>">
+            <div class="tab__head_item <%= active %>" data-action="<%= uuid %>">
                 <div>
                     <div class="tab__head_item_name">
-                        <% if (item.hasOwnProperty('icon')) { %>
-                            <% let icon = item['icon'] %>
-                            <i class="fa <%= icon %>"></i>
+                        <% if (item['icon']) { %>
+                            <i class="fa <%= item['icon'] %>"></i>
                         <% } %>
 
                         <span><%= item['name'] %></span>
                     </div>
 
                     <div class="tab__head_item_close">
-                        <i class="fa" data-action="<%= key %>"></i>
+                        <i class="fa" data-action="<%= uuid %>"></i>
                     </div>
                 </div>
             </div>
@@ -33,10 +32,10 @@
         <% for (let i = 0; i < options.length; i++) { %>
 
             <% let item = options[i]; %>
-            <% let key = item['key']; %>
-            <% let active = item.hasOwnProperty('active') && item['active'] ? 'tab__content_item_active' : ''; %>
+            <% let uuid = item['uuid']; %>
+            <% let active = item['active'] ? 'tab__content_item_active' : ''; %>
 
-            <div class="tab__content_item <%= active %>" data-block="<%= key %>"><%= item['content'] %></div>
+            <div class="tab__content_item <%= active %>" data-block="<%= uuid %>"><%- item['content'] %></div>
 
         <% } %>
     </div>

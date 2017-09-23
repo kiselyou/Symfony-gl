@@ -9,6 +9,7 @@
   &__head {
     height: 32px;
     padding: 0 15px;
+    overflow: hidden;
     border-bottom: @border_sm solid @color_base;
 
     &_item {
@@ -89,13 +90,15 @@
       &_active {
         & > div {
           border-color: @color_base;
-          height: ~"calc(100% - 12px)";
+          height: ~"calc(100% - 11px)";
+          background: #222;
         }
 
         & > div:before,
         & > div:after {
           z-index: 1;
           border-color: @color_base;
+          background: #222;
         }
       }
     }

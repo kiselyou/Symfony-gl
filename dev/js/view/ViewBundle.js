@@ -77,17 +77,15 @@ class ViewBundle extends Application {
             .openFormLogin(() => {
                 this._login.showView();
             })
+            .logout(() => {
+                Logout.get().run();
+            })
             .openFormRegistration(() => {
                 this._registration.showView();
             })
-            .openTest1()
-            .openTest2()
-            .openTest3()
-            .openTest4()
             .openSettings()
-            .logout(() => {
-                Logout.get().run();
-            });
+            .openHomePage()
+            .build();
 
         return this;
     }

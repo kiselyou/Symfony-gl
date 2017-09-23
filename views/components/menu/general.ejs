@@ -23,7 +23,8 @@
     <% for (let item of options) { %>
 
     <div class="menu_general__item" data-action="<%= item['action'] %>">
-        <i class="fa fa-bars"></i>
+        <% let icon = item['icon'] ? item['icon'] : 'fa-bars'; %>
+        <i class="fa <%= icon %>"></i>
     </div>
 
     <div class="menu_general__cover" data-block="<%= item['block'] %>" hidden>
