@@ -77,6 +77,13 @@ class MenuGeneralBlock {
          * @private
          */
         this._events = [];
+
+        /**
+         *
+         * @type {number}
+         * @private
+         */
+        this._lock = 0;
     }
 
     /**
@@ -149,6 +156,26 @@ class MenuGeneralBlock {
      */
     get order() {
         return this._order;
+    }
+
+    /**
+     * Get lock status
+     *
+     * @returns {string|number}
+     */
+    get lock() {
+        return this._lock;
+    }
+
+    /**
+     * Set lock status. (MenuGeneral.HIDE_IF_LOCKED | MenuGeneral.SHOW_IF_LOCKED)
+     *
+     * @param {number} status - This are constants of class "MenuGeneral"
+     * @returns {MenuGeneralBlock}
+     */
+    setLockStatus(status) {
+        this._lock = status;
+        return this;
     }
 
     /**

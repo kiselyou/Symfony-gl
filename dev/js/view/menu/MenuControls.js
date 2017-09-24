@@ -1,6 +1,5 @@
 
 import MenuGeneral from './MenuGeneral';
-import MenuGeneralItem from './MenuGeneralItem';
 import Tabs from './../tabs/Tabs';
 import {VIEW_NAME_MENU_GENERAL} from './../../ini/ejs.ini';
 
@@ -22,7 +21,8 @@ class MenuControls {
         this._homeBlock = this.menuGeneral
             .addBlock('Home Page')
             .setBlockTitle('Home Page')
-            .setBlockIcon('fa-home');
+            .setBlockIcon('fa-home')
+            .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
 
         /**
          *
@@ -68,7 +68,7 @@ class MenuControls {
         this._mainBlock
             .addItem('Login', listener)
             .setOrder(10)
-            .setLockStatus(MenuGeneralItem.HIDE_IF_LOCKED);
+            .setLockStatus(MenuGeneral.HIDE_IF_LOCKED);
         return this;
     }
 
@@ -82,7 +82,7 @@ class MenuControls {
         this._mainBlock
             .addItem('Registration', listener)
             .setOrder(20)
-            .setLockStatus(MenuGeneralItem.HIDE_IF_LOCKED);
+            .setLockStatus(MenuGeneral.HIDE_IF_LOCKED);
         return this;
     }
 
@@ -96,7 +96,7 @@ class MenuControls {
         this._mainBlock
             .addItem('Logout', listener)
             .setOrder(30)
-            .setLockStatus(MenuGeneralItem.SHOW_IF_LOCKED);
+            .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
         return this;
     }
 
@@ -127,13 +127,13 @@ class MenuControls {
                 this.tabs
                     .addTab('Settings', true)
                     .setIcon('fa-volume-up')
-                    .setContent('<h1>Setting of sound</h1>');
+                    .setContent('Setting of sound');
 
                 this.tabs
                     .buildTabs()
                     .showView();
             })
-            .setLockStatus(MenuGeneralItem.SHOW_IF_LOCKED);
+            .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
         return this;
     }
 
@@ -146,7 +146,7 @@ class MenuControls {
         this._homeBlock
             .addItem('Home Page')
             .setOrder(10)
-            .setLockStatus(MenuGeneralItem.SHOW_IF_LOCKED)
+            .setLockStatus(MenuGeneral.SHOW_IF_LOCKED)
             .addEvent(() => {
                 this.tabs
                     .addTab('Home', true)

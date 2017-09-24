@@ -1,6 +1,7 @@
 
 const CLASS_ANIMATION_HIDE = 'hide_a';
 const CLASS_ANIMATION_SHOW = 'show_a';
+const CLASS_HIDE = 'hide';
 const CLASS_DISABLED = 'disable';
 
 class UIElement {
@@ -107,6 +108,17 @@ class UIElement {
      */
     addClass(className) {
         this._el.classList.add(className);
+        return this;
+    }
+
+    /**
+     * Remove HTML class
+     *
+     * @param {string} className
+     * @returns {UIElement}
+     */
+    removeClass(className) {
+        this._el.classList.remove(className);
         return this;
     }
 
@@ -310,10 +322,13 @@ class UIElement {
     hideElement(animate = false) {
         this._hidden = true;
         if (animate) {
-            this.getElement().classList.remove(CLASS_ANIMATION_SHOW);
-            this.getElement().classList.add(CLASS_ANIMATION_HIDE);
+            this.removeClass(CLASS_HIDE);
+            this.removeClass(CLASS_ANIMATION_SHOW);
+            this.addClass(CLASS_ANIMATION_HIDE);
         } else {
-            this.getElement().hidden = true;
+            this.removeClass(CLASS_ANIMATION_SHOW);
+            this.removeClass(CLASS_ANIMATION_HIDE);
+            this.addClass(CLASS_HIDE);
         }
         return this;
     }
@@ -326,10 +341,39 @@ class UIElement {
      */
     showElement(animate = false) {
         this._hidden = false;
-        this.getElement().hidden = false;
         if (animate) {
-            this.getElement().classList.remove(CLASS_ANIMATION_HIDE);
-            this.getElement().classList.add(CLASS_ANIMATION_SHOW);
+            this.removeClass(CLASS_HIDE);
+            this.removeClass(CLASS_ANIMATION_HIDE);
+            this.addClass(CLASS_ANIMATION_SHOW);
+        } else {
+            this.removeClass(CLASS_ANIMATION_SHOW);
+            this.removeClass(CLASS_ANIMATION_HIDE);
+            this.removeClass(CLASS_HIDE);
+        }
+        return this;
+    }
+
+    /**
+     * Set attribute
+     *
+     * @param {string} attr
+     * @param {?string} [value] - Value null means that value is the same as attribute name
+     * @returns {UIElement}
+     */
+    addAttribute(attr, value = null) {
+        this.getElement().setAttribute(attr, value ? value : attr);
+        return this;
+    }
+
+    /**
+     * Remove attribute
+     *
+     * @param {string} attr
+     * @returns {UIElement}
+     */
+    removeAttribute(attr) {
+        if (!this.getElement().hasAttribute(attr)) {
+            this.getElement().removeAttribute(attr);
         }
         return this;
     }
@@ -340,10 +384,9 @@ class UIElement {
      * @returns {UIElement}
      */
     disable() {
-        this.getElement().classList.add(CLASS_DISABLED);
-        if (!this.getElement().hasAttribute('disable')) {
-            this.getElement().setAttribute('disable', 'disable');
-        }
+        this
+            .addClass(CLASS_DISABLED)
+            .addAttribute('disable');
         return this;
     }
 
@@ -353,10 +396,9 @@ class UIElement {
      * @returns {UIElement}
      */
     enable() {
-        this.getElement().classList.remove(CLASS_DISABLED);
-        if (this.getElement().hasAttribute('disable')) {
-            this.getElement().removeAttribute('disable');
-        }
+        this
+            .removeClass(CLASS_DISABLED)
+            .removeAttribute('disable');
         return this;
     }
 
@@ -375,7 +417,7 @@ class UIElement {
     }
 
     /**
-     * Remove element
+     * Remove this element
      *
      * @returns {UIElement}
      */

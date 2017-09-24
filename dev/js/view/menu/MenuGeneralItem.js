@@ -50,24 +50,6 @@ class MenuGeneralItem {
     }
 
     /**
-     * Show item if user is logged
-     *
-     * @type {number}
-     */
-    static get SHOW_IF_LOCKED() {
-        return 1;
-    }
-
-    /**
-     * Hide item if user is logged
-     *
-     * @type {number}
-     */
-    static get HIDE_IF_LOCKED() {
-        return 2;
-    }
-
-    /**
      * This is item name
      *
      * @returns {string}
@@ -135,9 +117,9 @@ class MenuGeneralItem {
     }
 
     /**
-     * Set lock status. (MenuGeneralItem.HIDE_IF_LOCKED | MenuGeneralItem.SHOW_IF_LOCKED)
+     * Set lock status. (MenuGeneral.HIDE_IF_LOCKED | MenuGeneral.SHOW_IF_LOCKED)
      *
-     * @param {number} status - This are constants of current class
+     * @param {number} status - This are constants of class "MenuGeneral"
      * @returns {MenuGeneralItem}
      */
     setLockStatus(status) {

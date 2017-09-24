@@ -1,14 +1,6 @@
 import ViewControls from '../../view/ViewControls';
 import MenuGeneralBlock from './MenuGeneralBlock';
 
-/**
- * Show element if user is logged
- *
- * @type {number}
- */
-const SHOW_IF_LOCKED = 1;
-const HIDE_IF_LOCKED = 2;
-
 import {
     MENU_OPEN_MP3,
     MENU_HOVER_MP3,
@@ -42,39 +34,6 @@ class MenuGeneral extends ViewControls {
          */
         this._options = [];
 
-        // /**
-        //  *
-        //  * @type {*[]}
-        //  */
-        // this.viewOptions = [
-        //     {
-        //         name: 'TEST - 1',
-        //         action: 'test_1',
-        //         block: 'block_test_1',
-        //         icon: 'fa-home',
-        //         subItems: [
-        //             {name: 'Test - 1', action: 'test-1'},
-        //             {name: 'Test - 2', action: 'test-2'},
-        //             {name: 'Test - 3', action: 'test-3'},
-        //             {name: 'Test - 4', action: 'test-4'},
-        //             {name: 'Close Menu', action: 'close'}
-        //         ]
-        //     },
-        //     {
-        //         name: 'Main Menu IronWar',
-        //         action: MenuGeneral.ACTION_OPEN_MENU,
-        //         block: MenuGeneral.BLOCK_MAIN_MENU,
-        //         icon: null,
-        //         subItems: [
-        //             {name: 'Login', action: MenuGeneral.ACTION_LOGIN, lock: HIDE_IF_LOCKED},
-        //             {name: 'Registration', action: MenuGeneral.ACTION_REGISTRATION, lock: HIDE_IF_LOCKED},
-        //             {name: 'Logout', action: MenuGeneral.ACTION_LOGOUT, lock: SHOW_IF_LOCKED},
-        //             {name: 'Settings', action: MenuGeneral.ACTION_SETTINGS, lock: SHOW_IF_LOCKED},
-        //             {name: 'Close Menu', action: MenuGeneral.ACTION_CLOSE_MENU}
-        //         ]
-        //     }
-        // ];
-
         /**
          * It is status of block.
          * Key it is name of block.
@@ -106,6 +65,28 @@ class MenuGeneral extends ViewControls {
             this.rebuildMenu();
             this.lockControls(status);
         });
+    }
+
+    /**
+     * Show block or item if user is logged.
+     * This constant is using to set lock status for block menu or item menu.
+     * Look at method "MenuGeneralItem.setLockStatus | MenuGeneralBlock.setLockStatus | MenuGeneral.lockControls"
+     *
+     * @type {number}
+     */
+    static get SHOW_IF_LOCKED() {
+        return 1;
+    }
+
+    /**
+     * Hide block or item if user is logged.
+     * This constant is using to set lock status for block menu or item menu.
+     * Look at method "MenuGeneralItem.setLockStatus | MenuGeneralBlock.setLockStatus | MenuGeneral.lockControls"
+     *
+     * @type {number}
+     */
+    static get HIDE_IF_LOCKED() {
+        return 2;
     }
 
     /**
@@ -187,18 +168,28 @@ class MenuGeneral extends ViewControls {
      * @returns {MenuGeneral}
      */
     lockControls(status) {
-        for (let item of this.viewOptions) {
-            let subItems = item['subItems'];
-            for (let subItem of subItems) {
-                let lock = subItem['lock'];
-                let action = this.getViewAction(subItem['action']);
+        for (let block of this.viewOptions) {
+            let blockElement = this.getViewBlock(block['block']);
+            let actionElement = this.getViewAction(block['action']);
+            if (block['lock'] === MenuGeneral.SHOW_IF_LOCKED) {
+                status ? blockElement.showElement() : blockElement.remove();
+                status ? actionElement.showElement() : actionElement.remove();
+            }
 
-                if (lock === SHOW_IF_LOCKED) {
-                    status ? action.showElement() : action.remove();
+            if (block['lock'] === MenuGeneral.HIDE_IF_LOCKED) {
+                status ? blockElement.remove() : blockElement.showElement();
+                status ? actionElement.remove() : actionElement.showElement();
+            }
+
+            let subItems = block['subItems'];
+            for (let subItem of subItems) {
+                let itemElement = this.getViewAction(subItem['action']);
+                if (subItem['lock'] === MenuGeneral.SHOW_IF_LOCKED) {
+                    status ? itemElement.showElement() : itemElement.remove();
                 }
 
-                if (lock === HIDE_IF_LOCKED) {
-                    status ? action.remove() : action.showElement();
+                if (subItem['lock'] === MenuGeneral.HIDE_IF_LOCKED) {
+                    status ? itemElement.remove() : itemElement.showElement();
                 }
             }
         }
