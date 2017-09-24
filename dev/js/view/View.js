@@ -281,10 +281,11 @@ class View extends ViewBuffer {
      * Render template EJS
      *
      * @param {string} ejsTemplate
-     * @returns {*}
+     * @param {Object} params
+     * @returns {string}
      */
-    renderEJS(ejsTemplate) {
-        return this.ejs.render(ejsTemplate, this._viewParams);
+    renderEJS(ejsTemplate, params) {
+        return this.ejs.render(ejsTemplate, params);
     }
 
     /**
@@ -330,9 +331,9 @@ class View extends ViewBuffer {
      * @returns {View}
      */
     build(viewName) {
-        let html = this.findInBuffer(viewName);
-        if (html) {
-            this.prepareElement(this.renderEJS(html));
+        let template = this.findInBuffer(viewName);
+        if (template) {
+            this.prepareElement(this.renderEJS(template, this._viewParams));
         } else {
             alert('Template with name "' + viewName + '" doesn\'t exist');
         }

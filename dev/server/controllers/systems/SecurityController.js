@@ -98,8 +98,12 @@ class SecurityController {
 
         this._authorisation(data, false, (status, msg, user, roles) => {
                 if (status) {
+                    let id = user['id'];
+                    if (this._server.checkLock(id)) {
+                        this._server.responseJSON({status: false, msg: 'Probably your account has been opened in other browser'});
+                        return;
+                    }
                     if (user['is_active'] === 1) {
-                        let id = user['id'];
                         this._server.authorization.createSessionUser(id, roles);
                         this._server.responseJSON({status: true, msg: msg, id: id});
                     } else {
@@ -141,7 +145,7 @@ class SecurityController {
                 errors.push('Email must be equal or less than 50 and more than 5 symbols');
             }
 
-            if (password != confirmPassword) {
+            if (password !== confirmPassword) {
                 errors.push('Password does not match the confirm password.');
             }
         }
@@ -183,7 +187,7 @@ class SecurityController {
                 return;
             }
 
-            var userData = {
+            let userData = {
                 email: email,
                 username: username,
                 password: this._server.authorization.hashPassword(password),
@@ -220,7 +224,7 @@ class SecurityController {
                             return;
                         }
 
-                        this._sendMail(userData.email, userData.uuid, (error, info) => {
+                        this._sendMail(userData.email, userData.uuid, (error) => {
                             if (error) {
                                 this.role.deleteRelationship({id: relationshipID}, (error) => {
                                     if (!error) {

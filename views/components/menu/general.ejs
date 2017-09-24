@@ -22,7 +22,7 @@
 
     <% for (let item of options) { %>
 
-    <div class="menu_general__item" data-action="<%= item['action'] %>">
+    <div class="menu_general__item" data-action="<%= item['action'] %>" title="<%= item['name'] %>">
         <% let icon = item['icon'] ? item['icon'] : 'fa-bars'; %>
         <i class="fa <%= icon %>"></i>
     </div>
@@ -31,7 +31,7 @@
         <div class="menu_general__content">
             <div class="menu_general__content_row">
                 <div class="menu_general__content_cell menu_general__header">
-                    <h3><%= item['name'] %></h3>
+                    <h3><%= item['title'] %></h3>
                 </div>
             </div>
 

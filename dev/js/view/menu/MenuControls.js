@@ -13,15 +13,24 @@ class MenuControls {
          */
         this.menuGeneral = new MenuGeneral(VIEW_NAME_MENU_GENERAL);
 
-        this._mainBlock = this.menuGeneral
-            .addBlock('Main Menu IronWar')
-            .setBlockTitle('Main Menu IronWar')
-            .setBlockIcon('fa-gavel');
-
         this._homeBlock = this.menuGeneral
             .addBlock('Home Page')
             .setBlockTitle('Home Page')
             .setBlockIcon('fa-home')
+            .setOrder(10)
+            .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
+
+        this._securityBlock = this.menuGeneral
+            .addBlock('Security')
+            .setBlockTitle('Security')
+            .setBlockIcon('fa-lock')
+            .setOrder(20);
+
+        this._settingsBlock = this.menuGeneral
+            .addBlock('Settings')
+            .setBlockTitle('Settings')
+            .setBlockIcon('fa-wrench')
+            .setOrder(10)
             .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
 
         /**
@@ -42,15 +51,18 @@ class MenuControls {
      * @returns {MenuControls}
      */
     build() {
-        this._mainBlock
+        this._securityBlock
             .addItem('Close Menu')
             .setOrder(100);
         this._homeBlock
             .addItem('Close Menu')
             .setOrder(100);
+        this._settingsBlock
+            .addItem('Close Menu')
+            .setOrder(100);
         this.menuGeneral
             .sortFull()
-            .buildMenu();
+            .initialisationMenu();
         return this;
     }
 
@@ -65,7 +77,7 @@ class MenuControls {
      * @returns {MenuControls}
      */
     openFormLogin(listener) {
-        this._mainBlock
+        this._securityBlock
             .addItem('Login', listener)
             .setOrder(10)
             .setLockStatus(MenuGeneral.HIDE_IF_LOCKED);
@@ -79,7 +91,7 @@ class MenuControls {
      * @returns {MenuControls}
      */
     openFormRegistration(listener) {
-        this._mainBlock
+        this._securityBlock
             .addItem('Registration', listener)
             .setOrder(20)
             .setLockStatus(MenuGeneral.HIDE_IF_LOCKED);
@@ -93,7 +105,7 @@ class MenuControls {
      * @returns {MenuControls}
      */
     logout(listener) {
-        this._mainBlock
+        this._securityBlock
             .addItem('Logout', listener)
             .setOrder(30)
             .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
@@ -120,7 +132,7 @@ class MenuControls {
      * @returns {MenuControls}
      */
     openSettings() {
-        this._mainBlock
+        this._settingsBlock
             .addItem('Settings')
             .setOrder(40)
             .addEvent(() => {

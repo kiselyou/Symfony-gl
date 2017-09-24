@@ -1,4 +1,5 @@
 import Application from '../../system/Application';
+import MenuGeneral from './MenuGeneral';
 
 class MenuGeneralItem {
     constructor(name) {
@@ -23,7 +24,7 @@ class MenuGeneralItem {
          * @type {number}
          * @private
          */
-        this._lock = 0;
+        this._lock = MenuGeneral.SHOW_ANYWAY;
 
         /**
          * UUID of action
@@ -117,7 +118,7 @@ class MenuGeneralItem {
     }
 
     /**
-     * Set lock status. (MenuGeneral.HIDE_IF_LOCKED | MenuGeneral.SHOW_IF_LOCKED)
+     * Set lock status. (MenuGeneral.HIDE_IF_LOCKED | MenuGeneral.SHOW_IF_LOCKED | MenuGeneral.SHOW_ANYWAY)
      *
      * @param {number} status - This are constants of class "MenuGeneral"
      * @returns {MenuGeneralItem}

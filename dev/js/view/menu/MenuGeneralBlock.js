@@ -1,4 +1,5 @@
 
+import MenuGeneral from './MenuGeneral';
 import MenuGeneralItem from './MenuGeneralItem';
 import Application from '../../system/Application';
 
@@ -83,7 +84,7 @@ class MenuGeneralBlock {
          * @type {number}
          * @private
          */
-        this._lock = 0;
+        this._lock = MenuGeneral.SHOW_ANYWAY;
     }
 
     /**
@@ -168,7 +169,7 @@ class MenuGeneralBlock {
     }
 
     /**
-     * Set lock status. (MenuGeneral.HIDE_IF_LOCKED | MenuGeneral.SHOW_IF_LOCKED)
+     * Set lock status. (MenuGeneral.HIDE_IF_LOCKED | MenuGeneral.SHOW_IF_LOCKED | MenuGeneral.SHOW_ANYWAY)
      *
      * @param {number} status - This are constants of class "MenuGeneral"
      * @returns {MenuGeneralBlock}
@@ -247,7 +248,7 @@ class MenuGeneralBlock {
     /**
      *
      * @param {function} listener
-     * @returns {MenuGeneralItem}
+     * @returns {MenuGeneralBlock}
      */
     addBlockEvent(listener) {
         this._events.push(listener);
@@ -255,10 +256,10 @@ class MenuGeneralBlock {
     }
 
     /**
-     * This are items inside block
+     * Add item inside block
      *
      * @param {string} name
-     * @param {function} [listener]
+     * @param {?function} [listener]
      * @returns {MenuGeneralItem}
      */
     addItem(name, listener = null) {
@@ -266,6 +267,17 @@ class MenuGeneralBlock {
         !listener || item.addEvent(listener);
         this._subItems.push(item);
         return item;
+    }
+
+    /**
+     * Set items inside block
+     *
+     * @param {Array.<MenuGeneralItem>} items
+     * @returns {MenuGeneralBlock}
+     */
+    setItems(items) {
+        this._subItems = items;
+        return this;
     }
 
     /**

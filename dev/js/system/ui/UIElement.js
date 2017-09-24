@@ -30,6 +30,14 @@ class UIElement {
          * @type {boolean}
          */
         this._hidden = true;
+
+        /**
+         * Status of element. Enabled by default
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._enabled = true;
     }
 
     /**
@@ -286,7 +294,13 @@ class UIElement {
      * @returns {UIElement}
      */
     addEvent(type, listener, useCapture = false) {
-        this.getElement().addEventListener(type, listener, useCapture);
+        this
+            .getElement()
+            .addEventListener(type, (e) => {
+                if (this.isEnabled()) {
+                    listener.call(this, e);
+                }
+            }, useCapture);
         return this;
     }
 
@@ -372,18 +386,30 @@ class UIElement {
      * @returns {UIElement}
      */
     removeAttribute(attr) {
-        if (!this.getElement().hasAttribute(attr)) {
+        if (this.getElement().hasAttribute(attr)) {
             this.getElement().removeAttribute(attr);
         }
         return this;
     }
 
     /**
-     * Disable element. Add class and attribute "disable"
+     * Check status of element
+     *
+     * @returns {boolean}
+     */
+    isEnabled() {
+        return this._enabled;
+    }
+
+    /**
+     * Disable element.
+     * Add class and attribute "disable"
+     * Switch off events. The events on this element will not work
      *
      * @returns {UIElement}
      */
     disable() {
+        this._enabled = false;
         this
             .addClass(CLASS_DISABLED)
             .addAttribute('disable');
@@ -391,11 +417,14 @@ class UIElement {
     }
 
     /**
-     * Enable element. Remove class and attribute "disable"
+     * Enable element.
+     * Remove class and attribute "disable"
+     * Switch on events. The events on this element will start work
      *
      * @returns {UIElement}
      */
     enable() {
+        this._enabled = true;
         this
             .removeClass(CLASS_DISABLED)
             .removeAttribute('disable');
@@ -412,8 +441,33 @@ class UIElement {
         if (child instanceof UIElement) {
             child = child.getElement();
         }
-        this.getElement().removeChild(child);
+
+        if (this.hasChildren(child)) {
+            this
+                .getElement()
+                .removeChild(child);
+        }
         return this;
+    }
+
+    /**
+     * Check if element has specific children
+     *
+     * @param {(UIElement|Element)} child
+     * @returns {boolean}
+     */
+    hasChildren(child) {
+        if (child instanceof UIElement) {
+            child = child.getElement();
+        }
+
+        let nodes = this.getElement().childNodes;
+        for (let nodeChild of nodes) {
+            if (nodeChild === child) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

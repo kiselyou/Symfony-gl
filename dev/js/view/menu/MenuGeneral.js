@@ -3,8 +3,7 @@ import MenuGeneralBlock from './MenuGeneralBlock';
 
 import {
     MENU_OPEN_MP3,
-    MENU_HOVER_MP3,
-    MENU_CLOSE_MP3
+    MENU_HOVER_MP3
 } from './../../ini/sound-ini';
 
 /**
@@ -60,11 +59,25 @@ class MenuGeneral extends ViewControls {
          * @private
          */
         this.active = {action: null, block: null};
+    }
 
+    initialisationMenu() {
         this.app.lock.addEventChangeStatus((status) => {
-            this.rebuildMenu();
-            this.lockControls(status);
+            this.removeMenu();
+            this.buildMenu(status);
         });
+        return this;
+    }
+
+    /**
+     * It is default status.
+     * This constant is using to set lock status for block menu or item menu.
+     * Look at method "MenuGeneralItem.setLockStatus | MenuGeneralBlock.setLockStatus | MenuGeneral.lockControls"
+     *
+     * @type {number}
+     */
+    static get SHOW_ANYWAY() {
+        return 0;
     }
 
     /**
@@ -132,24 +145,14 @@ class MenuGeneral extends ViewControls {
     /**
      * Build Menu
      *
+     * @param {boolean} status - It is status of user
      * @returns {MenuGeneral}
      */
-    buildMenu() {
-        this.viewOptions = this._options;
+    buildMenu(status = false) {
+        this.lockControls(status);
         this.build(this._viewName);
-        this.showView(false);
         this.initEvents();
-        return this;
-    }
-
-    /**
-     * Rebuild menu
-     *
-     * @returns {MenuGeneral}
-     */
-    rebuildMenu() {
-        this.removeMenu();
-        this.buildMenu();
+        this.showView(false);
         return this;
     }
 
@@ -165,34 +168,38 @@ class MenuGeneral extends ViewControls {
 
     /**
      *
+     * @param {boolean} status
      * @returns {MenuGeneral}
      */
     lockControls(status) {
-        for (let block of this.viewOptions) {
-            let blockElement = this.getViewBlock(block['block']);
-            let actionElement = this.getViewAction(block['action']);
-            if (block['lock'] === MenuGeneral.SHOW_IF_LOCKED) {
-                status ? blockElement.showElement() : blockElement.remove();
-                status ? actionElement.showElement() : actionElement.remove();
+        let options = [];
+        for (let block of this._options) {
+            let newBlock,
+                lock = block.lock;
+
+            if (lock === MenuGeneral.SHOW_IF_LOCKED && status) {
+                newBlock = Object.create(block);
+            } else if (lock === MenuGeneral.HIDE_IF_LOCKED && status) {
+                newBlock = Object.create(block);
+            } else if (lock === MenuGeneral.SHOW_ANYWAY) {
+                newBlock = Object.create(block);
+            } else {
+                continue;
             }
 
-            if (block['lock'] === MenuGeneral.HIDE_IF_LOCKED) {
-                status ? blockElement.remove() : blockElement.showElement();
-                status ? actionElement.remove() : actionElement.showElement();
-            }
+            let newItems = block['subItems'].filter((item) => {
+                let lock = item['lock'];
+                return (lock === MenuGeneral.SHOW_IF_LOCKED && status)
+                    || (lock === MenuGeneral.HIDE_IF_LOCKED && !status)
+                    || (lock === MenuGeneral.SHOW_ANYWAY);
+            });
 
-            let subItems = block['subItems'];
-            for (let subItem of subItems) {
-                let itemElement = this.getViewAction(subItem['action']);
-                if (subItem['lock'] === MenuGeneral.SHOW_IF_LOCKED) {
-                    status ? itemElement.showElement() : itemElement.remove();
-                }
-
-                if (subItem['lock'] === MenuGeneral.HIDE_IF_LOCKED) {
-                    status ? itemElement.remove() : itemElement.showElement();
-                }
+            if (newItems) {
+                newBlock.setItems(newItems);
             }
+            options.push(newBlock);
         }
+        this.viewOptions = options;
         return this;
     }
 
@@ -264,16 +271,6 @@ class MenuGeneral extends ViewControls {
     }
 
     /**
-     * Check if block menu is opened
-     *
-     * @param {string} name Name of block menu
-     * @returns {boolean}
-     */
-    isOpenedBlock(name) {
-        return this.status.hasOwnProperty(name) && this.status[name] === true;
-    }
-
-    /**
      * Show block
      * You need call this method after upload menu
      *
@@ -287,7 +284,8 @@ class MenuGeneral extends ViewControls {
             listener();
         }
         this.getViewBlock(blockName).showElement(true);
-        this.getViewAction(actionName).hideElement();
+        // this.getViewAction(actionName).hideElement();
+        this.getViewAction(actionName).disable();
         return this;
     }
 
@@ -302,7 +300,8 @@ class MenuGeneral extends ViewControls {
     hideBlock(actionName, blockName) {
         this.status[blockName] = false;
         this.getViewBlock(blockName).hideElement(true);
-        this.getViewAction(actionName).showElement();
+        // this.getViewAction(actionName).showElement();
+        this.getViewAction(actionName).enable();
         return this;
     }
 

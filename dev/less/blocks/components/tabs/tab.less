@@ -1,7 +1,7 @@
 .tab {
   width: ~"calc(100% - 20px)";
-  height: ~"calc(100% - 30px)";
-  padding: 20px 10px 10px;
+  height: ~"calc(100% - 65px)";
+  padding: 55px 10px 10px;
   position: absolute;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -15,7 +15,7 @@
     &_item {
       float: left;
       height: 100%;
-      min-width: 140px;
+      min-width: 100px;
       margin: 0 8px;
       position: relative;
 
@@ -36,13 +36,16 @@
 
       & > div span {
         margin-right: 5px;
+        font-size: @font_size_sm;
       }
 
-      & div:hover {
+      & > div:hover,
+      & > div:hover:before,
+      & > div:hover:after {
         cursor: pointer;
       }
 
-      & > div:before, & > div:after {
+      & > div::before, & > div::after {
         width: 25px;
         height: ~"calc(100% - 1px)";
         background: @background_dark_strong;
@@ -53,13 +56,13 @@
         top: 0;
       }
 
-      & > div:before {
+      & > div::before {
         border-left: 1px solid @color_base_dark;
         transform: skewX(-30deg);
         left: -10px;
       }
 
-      & > div:after {
+      & > div::after {
         border-right: 1px solid @color_base_dark;
         transform: skewX(30deg);
         right: -10px;
@@ -77,6 +80,7 @@
         position: absolute;
         right: 4px;
         top: 2px;
+        font-size: @font_size_sm;
 
         & i::after {
           content: "\f00d";
@@ -84,6 +88,7 @@
 
         & i:hover::after {
           content: "\f057";
+          cursor: pointer;
         }
       }
 
@@ -94,8 +99,16 @@
           background: #222;
         }
 
-        & > div:before,
-        & > div:after {
+        & > div:hover,
+        & > div:hover::before,
+        & > div:hover::after {
+          cursor: default;
+          font-size: 14px;
+        }
+
+
+        & > div::before,
+        & > div::after {
           z-index: 1;
           border-color: @color_base;
           background: #222;
@@ -105,7 +118,7 @@
   }
 
   &__content {
-    height: ~"calc(100% - 40px)";
+    height: ~"calc(100% - 45px)";
     padding: 5px;
     background: @background_color_dark;
 

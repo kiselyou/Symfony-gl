@@ -23,7 +23,7 @@ class Users {
 
     /**
      * @param {?string} error
-     * @param {?{}} data
+     * @param {?Object} data
      * @callback completedQuery
      */
 

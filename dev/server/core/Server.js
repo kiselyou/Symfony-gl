@@ -159,7 +159,7 @@ class Server extends Components {
             this._app.get('*', (req, res) => {
                 this.request = req;
                 this.response = res;
-                this.responseView(Server.PATH_404, {code: 400, msg: 'The page "' + this._req.url + '" was not found.'});
+                this.responseView(Server.PATH_404, {code: 400, msg: 'The page "' + this.request.url + '" was not found.'});
             });
         });
     }
@@ -167,7 +167,8 @@ class Server extends Components {
     /**
      * Check the page is locked
      *
-     * @returns {boolean}
+     * @param {string|number} userID
+     * @returns {boolean} - true if the page is locked by specific user
      */
     checkLock(userID) {
         for (let key in this.listActiveUsers) {
@@ -223,7 +224,7 @@ class Server extends Components {
         try {
             let collection = this._controllerCollection.get();
             if (collection.hasOwnProperty(controller)) {
-                collection[controller][method](this._req, this._res, params);
+                collection[controller][method](this.request, this.response, params);
             }
 
         } catch (e) {
@@ -245,7 +246,7 @@ class Server extends Components {
      * @returns {Server}
      */
     responseView(pathView, params = {}) {
-        this._res.render(pathView.replace(/^\/+/, ''), params);
+        this.response.render(pathView.replace(/^\/+/, ''), params);
         return this;
     };
 
@@ -257,8 +258,8 @@ class Server extends Components {
      */
     responseJSON(data) {
         let json = JSON.stringify(data);
-        this._res.writeHead(200, {'Content-Type': 'application/json', 'Content-Length': json.length});
-        this._res.end(json, 'utf-8', true);
+        this.response.writeHead(200, {'Content-Type': 'application/json', 'Content-Length': json.length});
+        this.response.end(json, 'utf-8', true);
         return this;
     };
 

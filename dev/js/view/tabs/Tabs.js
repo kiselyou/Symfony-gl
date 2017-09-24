@@ -36,6 +36,13 @@ class Tabs extends View {
          * @private
          */
         this._app = new Application();
+
+        /**
+         *
+         * @type {Indicators}
+         * @private
+         */
+        this._indicators = this._app.indicators;
     }
 
     /**
@@ -82,9 +89,11 @@ class Tabs extends View {
             return this;
         }
 
+        this._indicators.addIndicator('fa-home');
+
         this.viewOptions = this._options;
         this.autoCleanElement(true);
-        super.build(this._viewName);
+        this.build(this._viewName);
         this._addEventToAction();
         return this;
     }
