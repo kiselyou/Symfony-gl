@@ -43,6 +43,8 @@ class Tabs extends View {
          * @private
          */
         this._indicators = this._app.indicators;
+
+
     }
 
     /**
