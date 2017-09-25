@@ -28,7 +28,7 @@ class MenuControls {
 
         this._settingsBlock = this.menuGeneral
             .addBlock('Settings')
-            .setBlockTitle('Settings')
+            // .setBlockTitle('Settings')
             .setBlockIcon('fa-wrench')
             .setOrder(10)
             .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
@@ -36,12 +36,21 @@ class MenuControls {
         /**
          *
          * @type {Tabs}
+         * @private
          */
-        this.tabs = new Tabs();
+        this._tabsHome = new Tabs();
+
+        /**
+         *
+         * @type {Tabs}
+         * @private
+         */
+        this._tabsSettings = new Tabs();
 
         // Hide tabs before open any block menu
         this.menuGeneral.addEventBeforeOpen(() => {
-            this.tabs.hideView();
+            this._tabsHome.hideTabs(false);
+            this._tabsSettings.hideTabs(false);
         });
     }
 
@@ -54,12 +63,11 @@ class MenuControls {
         this._securityBlock
             .addItem('Close Menu')
             .setOrder(100);
+
         this._homeBlock
             .addItem('Close Menu')
             .setOrder(100);
-        this._settingsBlock
-            .addItem('Close Menu')
-            .setOrder(100);
+
         this.menuGeneral
             .sortFull()
             .initialisationMenu();
@@ -120,7 +128,6 @@ class MenuControls {
      */
     openMenu(listener) {
         this.menuGeneral.addEventBeforeOpen(() => {
-            this.tabs.hideView();
             listener();
         });
         return this;
@@ -132,20 +139,36 @@ class MenuControls {
      * @returns {MenuControls}
      */
     openSettings() {
-        this._settingsBlock
-            .addItem('Settings')
-            .setOrder(40)
-            .addEvent(() => {
-                this.tabs
-                    .addTab('Settings', true)
-                    .setIcon('fa-volume-up')
-                    .setContent('Setting of sound');
 
-                this.tabs
-                    .buildTabs()
-                    .showView();
+        this._tabsSettings
+            .addTab('Settings', true)
+            .setIcon('fa-volume-up')
+            .setContent('Setting of sound');
+
+        this._tabsSettings
+            .addTab('Settings2')
+            .setIcon('fa-volume-up')
+            .setContent('Setting of sound2');
+
+        this._tabsSettings
+            .addTab('Settings3')
+            .setIcon('fa-volume-up')
+            .setContent('Setting of sound3');
+
+        this._tabsSettings
+            .addTab('Settings4')
+            .setIcon('fa-volume-up')
+            .setContent('Setting of sound4');
+
+        this._tabsSettings
+            .addEventHideTabs(() => {
+                this.menuGeneral.reset();
             })
-            .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
+            .buildTabs();
+
+        this._settingsBlock.addBlockEvent(() => {
+            this._tabsSettings.showTabs();
+        });
         return this;
     }
 
@@ -155,19 +178,45 @@ class MenuControls {
      * @returns {MenuControls}
      */
     openHomePage() {
+
+        this._tabsHome
+            .addTab('Home1', true)
+            .setIcon('fa-home')
+            .setContent('1');
+
+        this._tabsHome
+            .addTab('Home2', true)
+            .setIcon('fa-home')
+            .setContent('2');
+
+        this._tabsHome
+            .addTab('Home3', true)
+            .setIcon('fa-home')
+            .setContent('3');
+
+        this._tabsHome
+            .addTab('Home4', true)
+            .setIcon('fa-home')
+            .setContent('4');
+
+        this._tabsHome
+            .addTab('Home5', true)
+            .setIcon('fa-home')
+            .setContent('5');
+
+        this._tabsHome
+            .addTab('Home6', true)
+            .setIcon('fa-home')
+            .setContent('6');
+
+        this._tabsHome.buildTabs();
+
         this._homeBlock
             .addItem('Home Page')
             .setOrder(10)
             .setLockStatus(MenuGeneral.SHOW_IF_LOCKED)
             .addEvent(() => {
-                this.tabs
-                    .addTab('Home', true)
-                    .setIcon('fa-home')
-                    .setContent('ssssssssssssssss');
-
-                this.tabs
-                    .buildTabs()
-                    .showView();
+                this._tabsHome.showTabs();
             });
         return this;
     }

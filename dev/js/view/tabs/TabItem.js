@@ -47,12 +47,30 @@ class TabItem {
         this._active = false;
 
         /**
+         * Close btn
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._close = false;
+
+        /**
          * UUID
          *
          * @type {string|number}
          * @private
          */
         this._uuid = this._app.uuid;
+    }
+
+    /**
+     *
+     * @param {boolean} value
+     * @returns {TabItem}
+     */
+    setCloseBtn(value = true) {
+        this._close = value;
+        return this;
     }
 
     /**
@@ -103,6 +121,14 @@ class TabItem {
     setActive(active = true) {
         this._active = Boolean(active);
         return this;
+    }
+
+    /**
+     *
+     * @returns {boolean}
+     */
+    get close() {
+        return this._close;
     }
 
     /**

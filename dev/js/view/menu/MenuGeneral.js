@@ -28,7 +28,7 @@ class MenuGeneral extends ViewControls {
         /**
          * This is options for menu
          *
-         * @type {Array}
+         * @type {Array.<MenuGeneralBlock>}
          * @private
          */
         this._options = [];
@@ -232,11 +232,11 @@ class MenuGeneral extends ViewControls {
             let blockName = block['block'];
             let actionName = block['action'];
             this._addEventToAction(block['action'], () => {
+                this.toggle(actionName, blockName);
                 let events = block['events'];
                 for (let event of events) {
                     event(blockName);
                 }
-                this.toggle(actionName, blockName);
             });
 
             for (let item of block['subItems']) {
@@ -284,7 +284,6 @@ class MenuGeneral extends ViewControls {
             listener();
         }
         this.getViewBlock(blockName).showElement(true);
-        // this.getViewAction(actionName).hideElement();
         this.getViewAction(actionName).disable();
         return this;
     }
@@ -300,8 +299,20 @@ class MenuGeneral extends ViewControls {
     hideBlock(actionName, blockName) {
         this.status[blockName] = false;
         this.getViewBlock(blockName).hideElement(true);
-        // this.getViewAction(actionName).showElement();
         this.getViewAction(actionName).enable();
+        return this;
+    }
+
+    /**
+     * Reset. Enable disabled items
+     *
+     * @returns {MenuGeneral}
+     */
+    reset() {
+        this.status = {};
+        for (let block of this._options) {
+            this.getViewAction(block.action).enable();
+        }
         return this;
     }
 

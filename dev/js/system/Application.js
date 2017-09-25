@@ -1,7 +1,6 @@
 import Ajax from './Ajax';
 import Lock from './Lock';
 import UIMessage from './ui/UIMessage';
-import Indicators from './../view/panel/Indicators';
 import Sound from './sound/Sound';
 import uuidv4 from 'uuid/v4';
 
@@ -44,12 +43,6 @@ class Application {
          * @type {v4}
          */
         this._uuid = uuidv4;
-
-        /**
-         *
-         * @type {Indicators}
-         */
-        this.indicators = Indicators.get();
     }
 
     /**

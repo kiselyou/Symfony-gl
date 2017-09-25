@@ -1,17 +1,12 @@
 <div class="indicators">
-    <div class="indicators_sign">
-        <i class="fa fa-window-minimize"></i>
-    </div>
 
-    <div class="indicators_sign">
-        <i class="fa fa-window-restore"></i>
-    </div>
+    <% for (let i = 0; i < options.length; i++) { %>
 
-    <div class="indicators_sign">
-        <i class="fa fa-window-restore"></i>
-    </div>
+        <% let icon = options[i]['icon']; %>
+        <% let id = options[i]['id']; %>
 
-    <div class="indicators_sign">
-        <i class="fa fa-window-restore"></i>
-    </div>
+        <div class="indicators_sign" data-action="<%= id %>">
+            <i class="fa <%= icon %>"></i>
+        </div>
+    <% } %>
 </div>

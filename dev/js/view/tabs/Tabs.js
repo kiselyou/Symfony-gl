@@ -2,6 +2,7 @@
 import View from '../../view/View';
 import TabItem from './TabItem';
 import Application from '../../system/Application';
+import Indicators from './../panel/Indicators';
 
 import {
     MENU_CLOSE_MP3
@@ -13,6 +14,7 @@ import {
 
 const ACTIVE_TAB = 'tab__head_item_active';
 const ACTIVE_BLOCK = 'tab__content_item_active';
+const ACTION_INDICATORS = 'indicators';
 
 class Tabs extends View {
     constructor() {
@@ -42,9 +44,21 @@ class Tabs extends View {
          * @type {Indicators}
          * @private
          */
-        this._indicators = this._app.indicators;
+        this._indicators = new Indicators();
 
+        /**
+         *
+         * @type {Array}
+         * @private
+         */
+        this._eventsHide = [];
 
+        /**
+         *
+         * @type {Array}
+         * @private
+         */
+        this._eventsShow = [];
     }
 
     /**
@@ -91,12 +105,80 @@ class Tabs extends View {
             return this;
         }
 
-        this._indicators.addIndicator('fa-home');
-
         this.viewOptions = this._options;
         this.autoCleanElement(true);
         this.build(this._viewName);
         this._addEventToAction();
+        this._addIndicators();
+        return this;
+    }
+
+    /**
+     * Hide tabs
+     *
+     * @param {boolean} [useListener] - In some cases you need hide tabs and don't call listener. Then set it to "false"
+     * @returns {Tabs}
+     */
+    hideTabs(useListener = true) {
+        this.hideView();
+        if (useListener) {
+            for (let listener of this._eventsHide) {
+                listener();
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Show tabs
+     *
+     * @param {boolean} [useListener] - In some cases you need show tabs and don't call listener. Then set it to "false"
+     * @returns {Tabs}
+     */
+    showTabs(useListener = true) {
+        this.showView();
+        if (useListener) {
+            for (let listener of this._eventsShow) {
+                listener();
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Add listener after hide tabs
+     *
+     * @param {function} listener
+     * @returns {Tabs}
+     */
+    addEventHideTabs(listener) {
+        this._eventsHide.push(listener);
+        return this;
+    }
+
+    /**
+     * Add listener after show tabs
+     *
+     * @param {function} listener
+     * @returns {Tabs}
+     */
+    addEventShowTabs(listener) {
+        this._eventsShow.push(listener);
+        return this;
+    }
+
+    /**
+     *
+     *
+     * @returns {Tabs}
+     * @private
+     */
+    _addIndicators() {
+        this._indicators.addIndicator('fa-close', () => {
+            this.hideTabs();
+            this._app.sound.play(MENU_CLOSE_MP3);
+        });
+        this._indicators.buildIndicators(this.getViewBlock(ACTION_INDICATORS));
         return this;
     }
 
@@ -305,11 +387,13 @@ class Tabs extends View {
                 this.toggleTab(key);
             });
 
-            let itemClose = item.getElementByActionName(key);
-            itemClose.addEvent('click', (e) => {
-                e.cancelBubble = true;
-                this.closeTab(key);
-            });
+            if (this._options[i]['close']) {
+                let itemClose = item.getElementByActionName(key);
+                itemClose.addEvent('click', (e) => {
+                    e.cancelBubble = true;
+                    this.closeTab(key);
+                });
+            }
         }
     }
 }

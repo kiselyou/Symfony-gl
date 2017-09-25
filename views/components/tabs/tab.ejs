@@ -1,5 +1,10 @@
 
 <div class="tab">
+
+    <div class="tab__indicators">
+        <div class="tab__indicators_place" data-block="indicators"></div>
+    </div>
+
     <div class="tab__head">
 
         <% for (let i = 0; i < options.length; i++) { %>
@@ -18,9 +23,13 @@
                         <span><%= item['name'] %></span>
                     </div>
 
-                    <div class="tab__head_item_close">
-                        <i class="fa" data-action="<%= uuid %>"></i>
-                    </div>
+                    <% if (item['close']) { %>
+
+                        <div class="tab__head_item_close">
+                            <i class="fa" data-action="<%= uuid %>"></i>
+                        </div>
+
+                    <% } %>
                 </div>
             </div>
 

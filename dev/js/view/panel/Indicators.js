@@ -5,9 +5,8 @@ import {
     VIEW_NAME_INDICATORS
 } from './../../ini/ejs.ini';
 
-let indicators = null;
-
 class Indicators extends View {
+
     constructor() {
         super();
 
@@ -15,32 +14,41 @@ class Indicators extends View {
 
         /**
          *
-         * @type {Array}
+         * @type {Array.<IndicatorsItem>}
          * @private
          */
         this._options = [];
     }
 
     /**
-     *
-     * @returns {Indicators}
-     */
-    static get() {
-        return indicators ? indicators : (indicators = new Indicators())
-    }
-
-    /**
      * Build indicators
      *
+     * @param {Element|UIElement|string} [container]
      * @returns {Indicators}
      */
-    buildIndicators() {
+    buildIndicators(container) {
+        this.updateContainer(container);
         this.viewOptions = this._options;
         this
             .autoCleanContainer()
             .build(VIEW_NAME_INDICATORS);
         this.showIndicators();
+        this._initEvents();
         return this;
+    }
+
+    /**
+     *
+     * @private
+     */
+    _initEvents() {
+        for (let item of this._options) {
+            this.getViewAction(item.id).addEvent('click', () => {
+                for (let listener of item.events) {
+                    listener();
+                }
+            });
+        }
     }
 
     /**
@@ -75,6 +83,19 @@ class Indicators extends View {
         !listener || item.addEvent(listener);
         this._options.push(item);
         return item;
+    }
+
+    /**
+     * Sort Items
+     *
+     * @param {string} [type] - 'ASC' | 'DESC'
+     * @returns {Indicators}
+     */
+    sortItems(type = 'ASC') {
+        this._options.sort(function(a, b) {
+            return type === 'ASC' ? a['order'] - b['order'] : b['order'] - a['order'];
+        });
+        return this;
     }
 
     removeIndicator(id) {
