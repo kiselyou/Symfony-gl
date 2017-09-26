@@ -1,6 +1,9 @@
 
 import MenuGeneral from './MenuGeneral';
 import Tabs from './../tabs/Tabs';
+
+import TabSounds from './../tabs/settings/TabSounds';
+
 import {VIEW_NAME_MENU_GENERAL} from './../../ini/ejs.ini';
 
 class MenuControls {
@@ -13,12 +16,12 @@ class MenuControls {
          */
         this.menuGeneral = new MenuGeneral(VIEW_NAME_MENU_GENERAL);
 
-        this._homeBlock = this.menuGeneral
-            .addBlock('Home Page')
-            .setBlockTitle('Home Page')
-            .setBlockIcon('fa-home')
-            .setOrder(10)
-            .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
+        // this._homeBlock = this.menuGeneral
+        //     .addBlock('Home Page')
+        //     .setBlockTitle('Home Page')
+        //     .setBlockIcon('fa-home')
+        //     .setOrder(10)
+        //     .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
 
         this._securityBlock = this.menuGeneral
             .addBlock('Security')
@@ -64,9 +67,9 @@ class MenuControls {
             .addItem('Close Menu')
             .setOrder(100);
 
-        this._homeBlock
-            .addItem('Close Menu')
-            .setOrder(100);
+        // this._homeBlock
+        //     .addItem('Close Menu')
+        //     .setOrder(100);
 
         this.menuGeneral
             .sortFull()
@@ -140,25 +143,18 @@ class MenuControls {
      */
     openSettings() {
 
+
+        let sound = new TabSounds();
+
         this._tabsSettings
-            .addTab('Settings', true)
+            .addTab('Sounds', true)
             .setIcon('fa-volume-up')
             .setContent('Setting of sound');
 
         this._tabsSettings
-            .addTab('Settings2')
+            .addTab('Sounds - 2', true)
             .setIcon('fa-volume-up')
             .setContent('Setting of sound2');
-
-        this._tabsSettings
-            .addTab('Settings3')
-            .setIcon('fa-volume-up')
-            .setContent('Setting of sound3');
-
-        this._tabsSettings
-            .addTab('Settings4')
-            .setIcon('fa-volume-up')
-            .setContent('Setting of sound4');
 
         this._tabsSettings
             .addEventHideTabs(() => {
@@ -178,46 +174,45 @@ class MenuControls {
      * @returns {MenuControls}
      */
     openHomePage() {
-
-        this._tabsHome
-            .addTab('Home1', true)
-            .setIcon('fa-home')
-            .setContent('1');
-
-        this._tabsHome
-            .addTab('Home2', true)
-            .setIcon('fa-home')
-            .setContent('2');
-
-        this._tabsHome
-            .addTab('Home3', true)
-            .setIcon('fa-home')
-            .setContent('3');
-
-        this._tabsHome
-            .addTab('Home4', true)
-            .setIcon('fa-home')
-            .setContent('4');
-
-        this._tabsHome
-            .addTab('Home5', true)
-            .setIcon('fa-home')
-            .setContent('5');
-
-        this._tabsHome
-            .addTab('Home6', true)
-            .setIcon('fa-home')
-            .setContent('6');
-
-        this._tabsHome.buildTabs();
-
-        this._homeBlock
-            .addItem('Home Page')
-            .setOrder(10)
-            .setLockStatus(MenuGeneral.SHOW_IF_LOCKED)
-            .addEvent(() => {
-                this._tabsHome.showTabs();
-            });
+        // this._tabsHome
+        //     .addTab('Home1', true)
+        //     .setIcon('fa-home')
+        //     .setContent('1');
+        //
+        // this._tabsHome
+        //     .addTab('Home2', true)
+        //     .setIcon('fa-home')
+        //     .setContent('2');
+        //
+        // this._tabsHome
+        //     .addTab('Home3', true)
+        //     .setIcon('fa-home')
+        //     .setContent('3');
+        //
+        // this._tabsHome
+        //     .addTab('Home4', true)
+        //     .setIcon('fa-home')
+        //     .setContent('4');
+        //
+        // this._tabsHome
+        //     .addTab('Home5', true)
+        //     .setIcon('fa-home')
+        //     .setContent('5');
+        //
+        // this._tabsHome
+        //     .addTab('Home6', true)
+        //     .setIcon('fa-home')
+        //     .setContent('6');
+        //
+        // this._tabsHome.buildTabs();
+        //
+        // this._homeBlock
+        //     .addItem('Home Page')
+        //     .setOrder(10)
+        //     .setLockStatus(MenuGeneral.SHOW_IF_LOCKED)
+        //     .addEvent(() => {
+        //         this._tabsHome.showTabs();
+        //     });
         return this;
     }
 }

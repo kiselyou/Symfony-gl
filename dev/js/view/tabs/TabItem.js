@@ -94,8 +94,9 @@ class TabItem {
     }
 
     /**
+     * This is content of tab
      *
-     * @param {string} data
+     * @param {string} data - It is string data
      * @returns {TabItem}
      */
     setContent(data) {

@@ -325,19 +325,30 @@ class View extends ViewBuffer {
     }
 
     /**
-     * Take EJS template from buffer and compile it
+     * This method compile EJS template and create dom element
      *
-     * @param {string} viewName - It is constant. Template name
+     * @param {string} viewName - Template name. It is constant from the file "/ini/ejs.ini.js"
      * @returns {View}
      */
     build(viewName) {
+        this.prepareElement(this.getStrView(viewName));
+        return this;
+    }
+
+    /**
+     * This method compile EJS
+     *
+     * @param {string} viewName - Template name. It is constant from the file "/ini/ejs.ini.js"
+     * @returns {string} - This is template as string
+     */
+    getStrView(viewName) {
         let template = this.findInBuffer(viewName);
         if (template) {
-            this.prepareElement(this.renderEJS(template, this._viewParams));
+            return this.renderEJS(template, this._viewParams);
         } else {
             alert('Template with name "' + viewName + '" doesn\'t exist');
         }
-        return this;
+        return '';
     }
 }
 

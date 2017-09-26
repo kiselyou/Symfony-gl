@@ -9,6 +9,7 @@ export const VIEW_NAME_PROGRESS_AJAX = 'progress-ajax';
 export const VIEW_NAME_WINDOW_ALERT = 'window-alert';
 export const VIEW_NAME_TABS = 'tabs';
 export const VIEW_NAME_INDICATORS = 'indicators';
+export const VIEW_NAME_TAB_SOUNDS = 'tab_sounds';
 
 export const BASE_DIR_VIEW = './views';
 
@@ -24,3 +25,5 @@ VIEW_PATH[VIEW_NAME_PROGRESS_AJAX] = '/components/progress/ajax.ejs';
 VIEW_PATH[VIEW_NAME_WINDOW_ALERT] = '/components/window/alert.ejs';
 VIEW_PATH[VIEW_NAME_TABS] = '/components/tabs/tab.ejs';
 VIEW_PATH[VIEW_NAME_INDICATORS] = '/components/panels/indicators.ejs';
+
+VIEW_PATH[VIEW_NAME_TAB_SOUNDS] = '/components/tabs/settings/sounds.ejs';

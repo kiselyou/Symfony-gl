@@ -59,6 +59,13 @@ class Tabs extends View {
          * @private
          */
         this._eventsShow = [];
+
+        /**
+         *
+         * @type {Array}
+         * @private
+         */
+        this._contents = [];
     }
 
     /**
@@ -380,11 +387,12 @@ class Tabs extends View {
     _addEventToAction() {
         for (let i = 0; i < this._options.length; i++) {
             let key = this._options[i]['uuid'];
-
             let item = this.getViewAction(key);
-
             item.addEvent('click', () => {
-                this.toggleTab(key);
+                if (this._options[i]) {
+
+                }
+                // this.toggleTab(key);
             });
 
             if (this._options[i]['close']) {
