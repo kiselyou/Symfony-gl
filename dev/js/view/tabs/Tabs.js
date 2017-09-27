@@ -47,6 +47,14 @@ class Tabs extends View {
         this._indicators = new Indicators();
 
         /**
+         * If this value is true then container under active tab will rebuild
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._autoRebuildContainer = false;
+
+        /**
          *
          * @type {Array}
          * @private
@@ -66,6 +74,17 @@ class Tabs extends View {
          * @private
          */
         this._contents = [];
+    }
+
+    /**
+     * If set this value as true then container under active tab will rebuild each times
+     *
+     * @param {boolean} status
+     * @returns {Tabs}
+     */
+    autoRebuild(status) {
+        this._autoRebuildContainer = status;
+        return this;
     }
 
     /**
@@ -379,6 +398,20 @@ class Tabs extends View {
     }
 
     /**
+     *
+     * @param {TabItem} tabParams
+     * @returns {void}
+     * @private
+     */
+    _prepareContent(tabParams) {
+        if (tabParams.contentEvent && (!tabParams.statusContentEvent || this._autoRebuildContainer)) {
+            let listener = tabParams.contentEvent;
+            listener(this.getViewBlock(tabParams.uuid));
+            tabParams.setStatusContentEvent(true);
+        }
+    }
+
+    /**
      * Add events to tabs
      *
      * @returns {void}
@@ -386,16 +419,21 @@ class Tabs extends View {
      */
     _addEventToAction() {
         for (let i = 0; i < this._options.length; i++) {
-            let key = this._options[i]['uuid'];
-            let item = this.getViewAction(key);
-            item.addEvent('click', () => {
-                if (this._options[i]) {
 
-                }
-                // this.toggleTab(key);
+            let tabParams = this._options[i];
+            let key = tabParams.uuid;
+            let item = this.getViewAction(key);
+
+            if (tabParams.active) {
+                this._prepareContent(tabParams);
+            }
+
+            item.addEvent('click', () => {
+                this._prepareContent(tabParams);
+                this.toggleTab(key);
             });
 
-            if (this._options[i]['close']) {
+            if (tabParams.close) {
                 let itemClose = item.getElementByActionName(key);
                 itemClose.addEvent('click', (e) => {
                     e.cancelBubble = true;

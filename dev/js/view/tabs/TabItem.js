@@ -31,12 +31,20 @@ class TabItem {
         this._icon = null;
 
         /**
-         * Content
+         * This is string inside a container
          *
          * @type {string}
          * @private
          */
         this._content = '';
+
+        /**
+         * Status of content
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._statusContentEvent = false;
 
         /**
          * Active tab
@@ -94,9 +102,14 @@ class TabItem {
     }
 
     /**
-     * This is content of tab
+     * @param {UIElement} container - This element of container
+     * @callback prepareContainer
+     */
+
+    /**
+     * By this method you can add a object or string data to the container under tab
      *
-     * @param {string} data - It is string data
+     * @param {string|prepareContainer} data - It is string data
      * @returns {TabItem}
      */
     setContent(data) {
@@ -122,6 +135,26 @@ class TabItem {
     setActive(active = true) {
         this._active = Boolean(active);
         return this;
+    }
+
+    /**
+     * Sets status of content.
+     * true - content has already added
+     * false - content has not already added
+     *
+     * @param {boolean} status
+     */
+    setStatusContentEvent(status) {
+        this._statusContentEvent = status;
+        return this;
+    }
+
+    /**
+     *
+     * @returns {boolean}
+     */
+    get statusContentEvent() {
+        return this._statusContentEvent;
     }
 
     /**
@@ -153,7 +186,15 @@ class TabItem {
      * @returns {string}
      */
     get content() {
-        return this._content;
+        return typeof this._content === 'function' ? '' : this._content;
+    }
+
+    /**
+     *
+     * @returns {prepareContainer}
+     */
+    get contentEvent() {
+        return typeof this._content === 'function' ? this._content : null;
     }
 
     /**

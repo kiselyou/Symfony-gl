@@ -45,17 +45,17 @@ Lock.get().addEventChangeStatus((status) => {
 
         sceneControls.remove(text.get());
 
-        Loader.get().load((loader) => {
-            model = loader.getModel('Wraith');
-
-            model.position.y = -300;
-            model.position.z = -1500;
-            model.rotation.x = 0.2;
-            model.rotation.y = Math.PI;
-            sceneControls.add(model);
-            sceneControls.add(tunnel.get());
-
-        }, 'Wraith');
+        // Loader.get().load((loader) => {
+        //     model = loader.getModel('Wraith');
+        //
+        //     model.position.y = -300;
+        //     model.position.z = -1500;
+        //     model.rotation.x = 0.2;
+        //     model.rotation.y = Math.PI;
+        //     sceneControls.add(model);
+        //     sceneControls.add(tunnel.get());
+        //
+        // }, 'Wraith');
     } else {
 
         sceneControls.remove(model);

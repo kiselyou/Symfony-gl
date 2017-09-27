@@ -143,16 +143,16 @@ class MenuControls {
      */
     openSettings() {
 
-
-        let sound = new TabSounds();
-
         this._tabsSettings
             .addTab('Sounds', true)
             .setIcon('fa-volume-up')
-            .setContent('Setting of sound');
+            .setContent((container) => {
+                let sounds = new TabSounds(container);
+                sounds.buildTab();
+            });
 
         this._tabsSettings
-            .addTab('Sounds - 2', true)
+            .addTab('Sounds - 2')
             .setIcon('fa-volume-up')
             .setContent('Setting of sound2');
 
