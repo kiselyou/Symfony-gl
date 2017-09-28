@@ -1,62 +1,47 @@
-input[type="checkbox"] {
+input[type="radio"] {
   vertical-align: top;
-  margin: 0 3px 0 0;
   width: 17px;
   height: 17px;
+  margin: 0 3px 0 0;
 
   & + label {
     cursor: pointer;
   }
-
   &:not(checked) {
     position: absolute;
     opacity: 0;
   }
-
   &:not(checked) + label {
     position: relative;
-    padding: 0 0 0 60px;
+    padding: 0 0 0 35px;
   }
-  /* OFF */
   &:not(checked) + label:before {
     content: '';
     position: absolute;
-    font-size: 10px;
     top: 0;
     left: 0;
-    width: 50px;
+    width: 18px;
     height: 18px;
-    border-radius: 13px;
-    background: @color_base_dark;
     border: 1px solid @color_base;
+    border-radius: 50%;
+    background: @color_base_dark;
   }
-  /* OFF (switch) */
   &:not(checked) + label:after {
     content: '';
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 22px;
-    height: 14px;
-    border-radius: 10px;
+    top: 4px;
+    left: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
     background: @color_base;
-    transition: all .1s;
-    border: 1px solid @color_base_dark;
+    opacity: 0;
+    transition: all .2s;
   }
-  /* ON */
-  &:checked + label:before {
-    background: transparent;
-  }
-  /* ON to right */
   &:checked + label:after {
-    left: 26px;
+    opacity: 1;
   }
-
   &:focus + label:before {
-
-  }
-
-  &:active + label:before {
 
   }
 }
