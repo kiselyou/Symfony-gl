@@ -81,7 +81,7 @@ class Ajax {
      * Send POST data
      *
      * @param {string} url
-     * @param {FormData|{}|Array} [param]
+     * @param {FormData|Object|Array} [param]
      * @param {boolean} [showProgress]
      * @returns {Promise}
      */

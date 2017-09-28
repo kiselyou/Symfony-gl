@@ -3,5 +3,17 @@
     "route": "/",
     "viewPath": "pages/main",
     "method": "GET"
+  },
+
+  "settings_volume_load": {
+    "route": "/settings/volume/load",
+    "method": "POST",
+    "controller": "SettingsController:load"
+  },
+
+  "settings_volume_save": {
+    "route": "/settings/volume/save",
+    "method": "POST",
+    "controller": "SettingsController:save"
   }
 }

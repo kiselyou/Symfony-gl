@@ -212,7 +212,6 @@ class Server extends Components {
     responseController(params) {
         // 0 - name of controller 1 - method
         let data = params['controller'].split(':');
-
         if (data.length !== 2) {
             this.responseView(Server.PATH_404, {code: 404, msg: 'Route configuration is not correct'});
             return this;
@@ -222,10 +221,9 @@ class Server extends Components {
         let controller = data[0];
 
         try {
+
             let collection = this._controllerCollection.get();
-            if (collection.hasOwnProperty(controller)) {
-                collection[controller][method](this.request, this.response, params);
-            }
+            collection[controller][method](this.request, this.response, params);
 
         } catch (e) {
             console.log(e);

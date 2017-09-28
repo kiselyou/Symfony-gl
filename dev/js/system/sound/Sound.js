@@ -21,7 +21,7 @@ class Sound {
      * @param {string} source
      */
     play(source) {
-        var audio = new Audio(source);
+        let audio = new Audio(source);
         audio.volume = this.volume;
         audio.play();
     }

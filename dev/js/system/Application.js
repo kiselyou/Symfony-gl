@@ -1,5 +1,6 @@
 import Ajax from './Ajax';
 import Lock from './Lock';
+import User from './user/User';
 import UIMessage from './ui/UIMessage';
 import Sound from './sound/Sound';
 import uuidv4 from 'uuid/v4';
@@ -17,6 +18,12 @@ class Application {
          * @type {Lock}
          */
         this.lock = Lock.get();
+
+        /**
+         *
+         * @type {User}
+         */
+        this.user = User.get();
 
         /**
          *

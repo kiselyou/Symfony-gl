@@ -32,7 +32,7 @@ class MenuControls {
         this._settingsBlock = this.menuGeneral
             .addBlock('Settings')
             // .setBlockTitle('Settings')
-            .setBlockIcon('fa-wrench')
+            .setBlockIcon('fa-cogs')
             .setOrder(10)
             .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
 

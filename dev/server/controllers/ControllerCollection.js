@@ -4,6 +4,7 @@ import SocketController from './systems/SocketController';
 import SecurityController from './systems/SecurityController';
 
 import OBJController from './loader/OBJController';
+import SettingsController from './user/SettingsController';
 
 class ControllerCollection {
     /**
@@ -17,6 +18,7 @@ class ControllerCollection {
         this._collections['SocketController'] = new SocketController(server);
         this._collections['SecurityController'] = new SecurityController(server);
         this._collections['OBJController'] = new OBJController(server);
+        this._collections['SettingsController'] = new SettingsController(server);
     }
 
     /**
