@@ -26,15 +26,16 @@ CREATE TABLE `iw_volume` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `menu` int(3) DEFAULT NULL,
   `tab` int(3) DEFAULT NULL,
-  `effects` int(3) DEFAULT NULL,
+  `effect` int(3) DEFAULT NULL,
   `environment` int(3) DEFAULT NULL,
   `turn_on` tinyint(1) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `iw_volume_UNIQUE` (`id`),
+  UNIQUE KEY `user_id_UNIQUE` (`user_id`),
   KEY `fk_iw_volume_1_idx` (`user_id`),
   CONSTRAINT `fk_iw_volume_1` FOREIGN KEY (`user_id`) REFERENCES `iw_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,6 +44,7 @@ CREATE TABLE `iw_volume` (
 
 LOCK TABLES `iw_volume` WRITE;
 /*!40000 ALTER TABLE `iw_volume` DISABLE KEYS */;
+INSERT INTO `iw_volume` VALUES (3,19,72,50,85,1,1);
 /*!40000 ALTER TABLE `iw_volume` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-09-29 10:04:01
+-- Dump completed on 2017-09-29 17:39:42

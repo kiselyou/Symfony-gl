@@ -1,6 +1,7 @@
 
 import ViewControls from './../../ViewControls';
 import User from './../../../system/user/User';
+import Lock from './../../../system/Lock';
 import {
     VIEW_NAME_TAB_SOUNDS
 } from './../../../ini/ejs.ini';
@@ -13,12 +14,21 @@ class TabSounds extends ViewControls {
     constructor(container) {
         super(container);
 
+
+
         /**
          *
          * @type {User}
          * @private
          */
         this._user = User.get();
+
+        /**
+         *
+         * @type {Lock}
+         * @private
+         */
+        this._lock = Lock.get();
     }
 
     /**
@@ -52,6 +62,16 @@ class TabSounds extends ViewControls {
                         .saveSettingsVolume();
                 });
             });
+
+        this._lock.addEventChangeStatus((status) => {
+            if (status) {
+                this._user.loadSettings();
+            } else {
+                this._user.resetSettings();
+            }
+            this.removeView();
+            this.buildTab();
+        });
     }
 }
 

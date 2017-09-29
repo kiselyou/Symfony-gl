@@ -6,7 +6,6 @@ HTMLElement.prototype.insertAdjacentElement = HTMLElement.prototype.insertAdjace
 // import Tunnel from './play/tunnel/Tunnel';
 import InitScene from './play/scene/InitScene';
 import ViewBundle from './view/ViewBundle';
-import User from './system/user/User';
 
 // import Loader from './play/loader/Loader';
 import Lock from './system/Lock';
@@ -44,12 +43,9 @@ let start = false;
 
 let model = null;
 
-let user = User.get();
-
 Lock.get().addEventChangeStatus((status) => {
     start = status;
     if (start) {
-        user.loadSettings();
 
         // sceneControls.remove(text.get());
         //
@@ -65,7 +61,6 @@ Lock.get().addEventChangeStatus((status) => {
         //
         // }, 'Wraith');
     } else {
-        user.resetSettings();
 
         // sceneControls.remove(model);
         // sceneControls.remove(tunnel.get());
