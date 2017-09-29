@@ -1,5 +1,6 @@
 
 <div class="row row_sm">
+<% console.log(options); %>
 
     <div class="col_xs_1 col_sm_2 col_md_3 col_lg_4"></div>
 
@@ -13,7 +14,7 @@
                         <i class="fa fa-volume-up" aria-hidden="true"></i>
                         Menu:
                     </label>
-                    <input type="range" min="0" max="100" step="1" value="50" id="menu_volume" name="menu_volume">
+                    <input type="range" min="0" max="100" step="1" value="<%= options['menu'] %>" id="menu_volume" name="menu_volume">
                 </div>
             </div>
 
@@ -23,7 +24,7 @@
                         <i class="fa fa-volume-up" aria-hidden="true"></i>
                         Tab:
                     </label>
-                    <input type="range" min="0" max="100" step="1" value="50" id="tab_volume" name="tab_volume">
+                    <input type="range" min="0" max="100" step="1" value="<%= options['tab'] %>" id="tab_volume" name="tab_volume">
                 </div>
             </div>
 
@@ -33,7 +34,7 @@
                         <i class="fa fa-volume-up" aria-hidden="true"></i>
                         Game Effects:
                     </label>
-                    <input type="range" min="0" max="100" step="1" value="50" id="effects_volume" name="effects_volume">
+                    <input type="range" min="0" max="100" step="1" value="<%= options['effect'] %>" id="effect_volume" name="effect_volume">
                 </div>
             </div>
 
@@ -43,13 +44,13 @@
                         <i class="fa fa-volume-up" aria-hidden="true"></i>
                         Game Environment:
                     </label>
-                    <input type="range" min="0" max="100" step="1" value="50" id="environment_volume" name="environment_volume">
+                    <input type="range" min="0" max="100" step="1" value="<%= options['environment'] %>" id="environment_volume" name="environment_volume">
                 </div>
             </div>
 
             <div class="row row_md">
                 <div class="col_xs_4 col_sm_4 col_md_4 col_lg_4">
-                    <input type="checkbox" name="turn_on" id="turn_on">
+                    <input type="checkbox" name="turn_on" id="turn_on" value="<%= options['turn_on'] %>">
                     <label for="turn_on" class="checkbox">
                         <span>
                             <i class="fa fa-volume-off"></i>

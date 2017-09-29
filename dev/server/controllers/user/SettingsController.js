@@ -28,7 +28,7 @@ class SettingsController {
     load() {
         let userID = this._getUserID();
         if (userID) {
-            this._volume.getUserSettingVolume(userID, (error, data) => {
+            this._volume.getSetting(userID, (error, data) => {
                 if (error) {
                     console.log(error);
                     this._server.responseJSON({});
@@ -48,8 +48,35 @@ class SettingsController {
      * @return {void}
      */
     save() {
-        console.log(this._server.POST);
-        this._server.responseJSON({save: true});
+        let userID = this._getUserID();
+        if (userID) {
+            this._volume.updateOrInsert(this._getDataVolume(), userID, (error, id, action) => {
+                if (error) {
+                    console.log(error);
+                }
+                this._server.responseJSON({action: action});
+            });
+        }
+    }
+
+    /**
+     * Get data to save or update settings
+     *
+     * @return {Object}
+     * @private
+     */
+    _getDataVolume() {
+        let res = {};
+        let data = this._server.POST;
+        let boolean = ['turn_on'];
+        let numbers = ['tab', 'menu', 'effect', 'environment'];
+        for (let key of numbers) {
+            res[key] = isNaN(Number(data[key])) ? 50 : Number(data[key]);
+        }
+        for (let key of boolean) {
+            res[key] = data[key] === '1' ? 1 : 0;
+        }
+        return res;
     }
 
     /**

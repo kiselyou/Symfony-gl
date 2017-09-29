@@ -32,50 +32,40 @@ class SettingVolume {
 
         /**
          *
-         * @type {boolean}
+         * @type {number}
          * @private
          */
-        this._turnOn = true;
+        this._turnOn = 1;
     }
 
     /**
+     * Gets values of setting
      *
-     * @return {number}
+     * @returns {{tab: number, menu: number, turnOn: number, effect: number, environment: number}}
      */
-    get menu() {
-        return this._menu;
+    getSettings() {
+        return {
+            tab: this._tab,
+            menu: this._menu,
+            turn_on: this._turnOn,
+            effect: this._effect,
+            environment: this._environment
+        };
     }
 
     /**
+     * Sets values of setting
      *
-     * @return {number}
+     * @param {{tab: number, menu: number, turnOn: number, effect: number, environment: number}} settings
+     * @returns {SettingVolume}
      */
-    get tab() {
-        return this._tab;
-    }
-
-    /**
-     *
-     * @return {number}
-     */
-    get effect() {
-        return this._effect;
-    }
-
-    /**
-     *
-     * @return {number}
-     */
-    get environment() {
-        return this._environment;
-    }
-
-    /**
-     *
-     * @return {boolean}
-     */
-    get turnOn() {
-        return this._turnOn;
+    setSettings(settings) {
+        this.setTab(settings['tab']);
+        this.setMenu(settings['menu']);
+        this.setTurnOn(settings['turn_on']);
+        this.setEffect(settings['effect']);
+        this.setEnvironment(settings['environment']);
+        return this;
     }
 
     /**
@@ -124,7 +114,34 @@ class SettingVolume {
      * @returns {SettingVolume}
      */
     setTurnOn(value) {
-        this._turnOn = value;
+        this._turnOn = value ? 1 : 0;
+        return this;
+    }
+
+    /**
+     * Sets value to the property by name
+     *
+     * @param {UIElement} field
+     * @returns {SettingVolume}
+     */
+    set(field) {
+        switch (field.getAttribute('name')) {
+            case 'menu_volume':
+                this.setMenu(field.value);
+                break;
+            case 'tab_volume':
+                this.setTab(field.value);
+                break;
+            case 'effect_volume':
+                this.setEffect(field.value);
+                break;
+            case 'environment_volume':
+                this.setEnvironment(field.value);
+                break;
+            case 'turn_on':
+                this.setTurnOn(field.value);
+                break;
+        }
         return this;
     }
 }

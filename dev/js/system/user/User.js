@@ -28,10 +28,6 @@ class User {
          * @private
          */
         this._volume = new SettingVolume();
-
-        this._lock.addEventChangeStatus((status) => {
-            console.log(status, 'status');
-        });
     }
 
     /**
@@ -70,11 +66,16 @@ class User {
         let ajax = new Ajax();
         ajax.post('/user/settings/load', {}, false)
             .then((res) => {
-                console.log(res, 'ss');
+                try {
+                    this._volume.setSettings(JSON.parse(res));
+                } catch (error) {
+                    console.log(error);
+                    this._msg.alert('Cannot get user settings');
+                }
             })
             .catch((error) => {
                 console.log(error);
-                this._msg.alert('Cannot get user data');
+                this._msg.alert('Cannot get user settings');
             });
     }
 
@@ -83,11 +84,11 @@ class User {
      *
      * @returns {void}
      */
-    saveSettings() {
+    saveSettingsVolume() {
         let ajax = new Ajax();
-        ajax.post('/user/settings/save', this._volume, false)
+        ajax.post('/user/settings/save', this._volume.getSettings(), false)
             .then((res) => {
-                console.log(res, 'sssss');
+                console.log(res);
             })
             .catch((error) => {
                 console.log(error);

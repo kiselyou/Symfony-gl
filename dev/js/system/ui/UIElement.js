@@ -201,7 +201,14 @@ class UIElement {
      */
     get value() {
         let el = this.getElement();
-        return this.getElement().value;
+        switch (el.type) {
+            case 'checkbox':
+                return el.checked;
+                break;
+            default:
+                return this.getElement().value;
+                break;
+        }
     }
 
     /**
@@ -401,6 +408,16 @@ class UIElement {
     addAttribute(attr, value = null) {
         this.getElement().setAttribute(attr, value ? value : attr);
         return this;
+    }
+
+    /**
+     * Gets attribute
+     *
+     * @param {string} attr
+     * @returns {string}
+     */
+    getAttribute(attr) {
+        return this.getElement().getAttribute(attr);
     }
 
     /**

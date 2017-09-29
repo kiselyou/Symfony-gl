@@ -26,6 +26,7 @@ class TabSounds extends ViewControls {
      * @returns {TabSounds}
      */
     buildTab() {
+        this.viewOptions = this._user.getSettingVolume().getSettings();
         this
             .autoCleanContainer(true)
             .build(VIEW_NAME_TAB_SOUNDS)
@@ -35,13 +36,20 @@ class TabSounds extends ViewControls {
         return this;
     }
 
+    /**
+     * Set watcher to the fields of volume
+     *
+     * @private
+     */
     _initEvents() {
-        let settingVolume = this._user.getSettingVolume();
         this.getViewBlock('form_volume')
             .formFields((field) => {
                 field.addEvent('change', () => {
-                    settingVolume.setEffect(10);
-                    this._user.saveSettings();
+                    this._user
+                        .getSettingVolume()
+                        .set(field);
+                    this._user
+                        .saveSettingsVolume();
                 });
             });
     }
