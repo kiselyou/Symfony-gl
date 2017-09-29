@@ -62,7 +62,13 @@ class TabSounds extends ViewControls {
                         .saveSettingsVolume();
                 });
             });
+    }
 
+    /**
+     *
+     * @returns {TabSounds}
+     */
+    lockControls() {
         this._lock.addEventChangeStatus((status) => {
             if (status) {
                 this._user.loadSettings();
@@ -72,6 +78,7 @@ class TabSounds extends ViewControls {
             this.removeView();
             this.buildTab();
         });
+        return this;
     }
 }
 
