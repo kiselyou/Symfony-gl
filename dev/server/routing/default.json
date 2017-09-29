@@ -6,13 +6,13 @@
   },
 
   "settings_volume_load": {
-    "route": "/settings/volume/load",
+    "route": "/user/settings/load",
     "method": "POST",
     "controller": "SettingsController:load"
   },
 
   "settings_volume_save": {
-    "route": "/settings/volume/save",
+    "route": "/user/settings/save",
     "method": "POST",
     "controller": "SettingsController:save"
   }

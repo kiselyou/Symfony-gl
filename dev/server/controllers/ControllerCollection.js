@@ -1,5 +1,5 @@
 
-import EJSController from './systems/EJSController';
+import EJSController from './loader/EJSController';
 import SocketController from './systems/SocketController';
 import SecurityController from './systems/SecurityController';
 

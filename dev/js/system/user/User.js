@@ -68,7 +68,7 @@ class User {
      */
     loadSettings() {
         let ajax = new Ajax();
-        ajax.post('/settings/volume/load', {}, false)
+        ajax.post('/user/settings/load', {}, false)
             .then((res) => {
                 console.log(res, 'ss');
             })
@@ -85,9 +85,9 @@ class User {
      */
     saveSettings() {
         let ajax = new Ajax();
-        ajax.post('/settings/volume/save', this._volume, false)
+        ajax.post('/user/settings/save', this._volume, false)
             .then((res) => {
-                console.log(res, 'ss');
+                console.log(res, 'sssss');
             })
             .catch((error) => {
                 console.log(error);

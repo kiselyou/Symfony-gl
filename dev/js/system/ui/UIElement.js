@@ -98,6 +98,30 @@ class UIElement {
     }
 
     /**
+     * @param {UIElement} field
+     * @callback prepareFormFields
+     */
+
+    /**
+     * Gets fields elements of form
+     *
+     * @param {prepareFormFields} [prepare]
+     * @returns {Array}
+     */
+    formFields(prepare) {
+        let fields = [];
+        let elements = this.getElement().elements;
+        for (let field of elements) {
+            let el = new UIElement(field);
+            if (prepare) {
+                prepare(el);
+            }
+            fields.push(el);
+        }
+        return fields;
+    }
+
+    /**
      * Toggle HTML class
      *
      * @param {string} className

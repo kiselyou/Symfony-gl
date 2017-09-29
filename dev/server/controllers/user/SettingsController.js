@@ -48,6 +48,7 @@ class SettingsController {
      * @return {void}
      */
     save() {
+        console.log(this._server.POST);
         this._server.responseJSON({save: true});
     }
 
