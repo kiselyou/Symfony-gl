@@ -1,19 +1,12 @@
 
 import SettingVolume from './SettingVolume';
-import Ajax from './../Ajax';
-import Lock from './../Lock';
 import UIMessage from './../ui/UIMessage';
+import Ajax from './../Ajax';
 
 let user = null;
 
 class User {
     constructor() {
-
-        /**
-         *
-         * @type {Lock}
-         */
-        this._lock = Lock.get();
 
         /**
          *
@@ -58,24 +51,29 @@ class User {
     }
 
     /**
+     * @callback loadSettingsListener
+     */
+
+    /**
      * Load setting of user from the server
      *
+     * @param {loadSettingsListener} listener
      * @returns {void}
      */
-    loadSettings() {
+    loadSettings(listener) {
+        const msg = 'Cannot get user settings';
         let ajax = new Ajax();
         ajax.post('/user/settings/load', {}, false)
             .then((res) => {
                 try {
                     this._volume.setSettings(JSON.parse(res));
+                    listener();
                 } catch (error) {
-                    console.log(error);
-                    this._msg.alert('Cannot get user settings');
+                    this._msg.alert(msg);
                 }
             })
             .catch((error) => {
-                console.log(error);
-                this._msg.alert('Cannot get user settings');
+                this._msg.alert(msg);
             });
     }
 
@@ -87,11 +85,7 @@ class User {
     saveSettingsVolume() {
         let ajax = new Ajax();
         ajax.post('/user/settings/save', this._volume.getSettings(), false)
-            .then((res) => {
-                console.log(res);
-            })
             .catch((error) => {
-                console.log(error);
                 this._msg.alert('Cannot save user data');
             });
     }

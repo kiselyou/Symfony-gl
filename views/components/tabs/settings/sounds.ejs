@@ -50,7 +50,7 @@
 
             <div class="row row_md">
                 <div class="col_xs_4 col_sm_4 col_md_4 col_lg_4">
-                    <input type="checkbox" name="turn_on" id="turn_on" value="<%= options['turn_on'] %>">
+                    <input type="checkbox" name="turn_on" id="turn_on" <%= (options['turn_on'] === 1 ? 'checked' : '') %>>
                     <label for="turn_on" class="checkbox">
                         <span>
                             <i class="fa fa-volume-off"></i>

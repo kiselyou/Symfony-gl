@@ -1,0 +1,17 @@
+.parting {
+  width: 100%;
+  height: 100%;
+  background: @background_color_base;
+  color: @background_color_disabled;
+  left: 0;
+  top: 0;
+  text-align: center;
+  font-size: 78px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  &::after {
+    content: 'Goodbye';
+  }
+}

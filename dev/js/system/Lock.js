@@ -1,4 +1,5 @@
 
+import Parting from './cover/Parting';
 import io from 'socket.io-client';
 import Ajax from './Ajax';
 
@@ -33,6 +34,13 @@ class Lock {
          * @type {boolean}
          */
         this.status = false;
+
+        /**
+         *
+         * @type {Parting}
+         * @private
+         */
+        this._partingCover = new Parting();
 
         this._controls();
     }
@@ -135,6 +143,8 @@ class Lock {
 
             window.addEventListener('beforeunload', () => {
                 this.unlock();
+                this._partingCover.show();
+
             });
         });
     }
