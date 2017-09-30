@@ -242,7 +242,7 @@ class MenuGeneral extends ViewControls {
             for (let item of block['subItems']) {
                 let itemActionName = item['action'];
                 this.getViewAction(itemActionName).addEvent('mouseover', () => {
-                    this.app.sound.play(MENU_HOVER_MP3);
+                    this.app.sound.playMenu(MENU_HOVER_MP3);
                 });
 
                 this._addEventToAction(itemActionName, () => {
@@ -327,8 +327,7 @@ class MenuGeneral extends ViewControls {
     toggle(actionName, blockName) {
 
         if (this.status[blockName]) {
-            // this.app.sound.play(MENU_CLOSE_MP3);
-            this.app.sound.play(MENU_OPEN_MP3);
+            this.app.sound.playMenu(MENU_OPEN_MP3);
             this.hideBlock(actionName, blockName);
         } else {
             // If other block has already opened then closed it
@@ -336,7 +335,7 @@ class MenuGeneral extends ViewControls {
                 this.hideBlock(this.active['action'], this.active['block'])
             }
 
-            this.app.sound.play(MENU_OPEN_MP3);
+            this.app.sound.playMenu(MENU_OPEN_MP3);
             this.showBlock(actionName, blockName);
             this.active['action'] = actionName;
             this.active['block'] = blockName;

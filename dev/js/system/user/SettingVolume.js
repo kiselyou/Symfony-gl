@@ -7,32 +7,32 @@ class SettingVolume {
          * @type {number}
          * @private
          */
-        this._menu = 50;
+        this._menu = 5;
 
         /**
          *
          * @type {number}
          * @private
          */
-        this._tab = 50;
+        this._tab = 20;
 
         /**
          *
          * @type {number}
          * @private
          */
-        this._effect = 50;
+        this._effect = 60;
 
         /**
          *
          * @type {number}
          * @private
          */
-        this._environment = 50;
+        this._environment = 30;
 
         /**
          *
-         * @type {number}
+         * @type {number} possible values (0|1)
          * @private
          */
         this._turnOn = 1;
@@ -41,22 +41,22 @@ class SettingVolume {
     /**
      * Gets values of setting
      *
-     * @returns {{tab: number, menu: number, turnOn: number, effect: number, environment: number}}
+     * @returns {{tab: number, menu: number, turn_on: number, effect: number, environment: number}}
      */
     getSettings() {
         return {
-            tab: this._tab,
-            menu: this._menu,
-            turn_on: this._turnOn,
-            effect: this._effect,
-            environment: this._environment
+            tab: this.tab,
+            menu: this.menu,
+            turn_on: this.turnOn,
+            effect: this.effect,
+            environment: this.environment
         };
     }
 
     /**
      * Sets values of setting
      *
-     * @param {{tab: number, menu: number, turnOn: number, effect: number, environment: number}} settings
+     * @param {{tab: number, menu: number, turn_on: number, effect: number, environment: number}} settings
      * @returns {SettingVolume}
      */
     setSettings(settings) {
@@ -80,12 +80,28 @@ class SettingVolume {
 
     /**
      *
+     * @returns {number}
+     */
+    get menu() {
+        return this._menu;
+    }
+
+    /**
+     *
      * @param {number} volume
      * @returns {SettingVolume}
      */
     setTab(volume) {
         this._tab = volume;
-        return this
+        return this;
+    }
+
+    /**
+     *
+     * @returns {number}
+     */
+    get tab() {
+        return this._tab;
     }
 
     /**
@@ -100,6 +116,14 @@ class SettingVolume {
 
     /**
      *
+     * @returns {number}
+     */
+    get effect() {
+        return this._effect;
+    }
+
+    /**
+     *
      * @param {number} volume
      * @returns {SettingVolume}
      */
@@ -110,12 +134,28 @@ class SettingVolume {
 
     /**
      *
+     * @returns {number}
+     */
+    get environment() {
+        return this._environment;
+    }
+
+    /**
+     *
      * @param {boolean} value
      * @returns {SettingVolume}
      */
     setTurnOn(value) {
         this._turnOn = value ? 1 : 0;
         return this;
+    }
+
+    /**
+     *
+     * @returns {number} - possible values (0|1)
+     */
+    get turnOn() {
+        return this._turnOn;
     }
 
     /**

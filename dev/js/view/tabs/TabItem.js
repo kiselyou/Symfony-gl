@@ -133,7 +133,7 @@ class TabItem {
      * @returns {TabItem}
      */
     setActive(active = true) {
-        this._active = Boolean(active);
+        this._active = active;
         return this;
     }
 

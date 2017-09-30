@@ -202,7 +202,7 @@ class Tabs extends View {
     _addIndicators() {
         this._indicators.addIndicator('fa-close', () => {
             this.hideTabs();
-            this._app.sound.play(MENU_CLOSE_MP3);
+            this._app.sound.playTab(MENU_CLOSE_MP3);
         });
         this._indicators.buildIndicators(this.getViewBlock(ACTION_INDICATORS));
         return this;
@@ -327,7 +327,7 @@ class Tabs extends View {
             this.activeNearestTab(key);
         }
         this.removeTab(key);
-        this._app.sound.play(MENU_CLOSE_MP3);
+        this._app.sound.playTab(MENU_CLOSE_MP3);
         return this;
     }
 
