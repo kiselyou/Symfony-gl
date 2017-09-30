@@ -1,17 +1,16 @@
 import * as THREE from 'three';
+import SceneBackground from './SceneBackground';
+
+let scene = null;
 
 class InitScene {
-    /**
-     *
-     * @param {string} id - Id is id of canvas element
-     */
-    constructor(id) {
+    constructor() {
 
         /**
          *
          * @type {Element}
          */
-        this.container = document.getElementById(id);
+        this.container = document.getElementById('initialisation_main_scene');
 
         /**
          *
@@ -24,7 +23,7 @@ class InitScene {
          * @type {Scene}
          */
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.Fog(0x000000, 250, 3500);
+        // this.scene.fog = new THREE.Fog(0x000000, 250, 3000);
 
         /**
          *
@@ -44,15 +43,15 @@ class InitScene {
          *
          * @type {HemisphereLight|THREE.HemisphereLight}
          */
-        this.hemisphereLight = new THREE.HemisphereLight(0xFFFFFF, 0xFFFFFF, 0.3);
-        this.hemisphereLight.position.set(0, 1000, 1000);
+        this.hemisphereLight = new THREE.HemisphereLight(0x666666, 0x666666, 0.5);
+        this.hemisphereLight.position.set(0, 100, 100);
         this.scene.add(this.hemisphereLight);
 
         /**
          *
          * @type {DirectionalLight|THREE.DirectionalLight}
          */
-        this.directionalLight = new THREE.DirectionalLight(0xffffff, 1.125);
+        this.directionalLight = new THREE.DirectionalLight(0x333333, 1);
         this.directionalLight.position.set(0, 0, 1).normalize();
         this.scene.add(this.directionalLight);
 
@@ -64,18 +63,28 @@ class InitScene {
         this.pointLight.position.set(0, 100, 90);
         this.scene.add(this.pointLight);
 
-
-        // Add two lights in the scene
-        // An hemisphere light, to add different light from sky and ground
-        // var light = new THREE.HemisphereLight(0xffffbb, 0x887979, 0.9);
-        // this.scene.add(light);
-
         /**
          *
          * @type {Array}
          * @private
          */
         this._renderEvents = [];
+
+        /**
+         *
+         * @type {SceneBackground}
+         * @private
+         */
+        this._bg = new SceneBackground(this.scene);
+
+    }
+
+    /**
+     *
+     * @returns {InitScene}
+     */
+    static get() {
+        return scene || (scene = new InitScene());
     }
 
     /**
@@ -118,13 +127,92 @@ class InitScene {
 
     /**
      *
+     * @param {string} imgPath
+     * @returns {InitScene}
+     */
+    setBackground(imgPath) {
+        this._bg.set(imgPath);
+        return this;
+    }
+
+    /**
+     * Remove background
+     *
+     * @returns {InitScene}
+     */
+    removeBackground() {
+        this._bg.remove();
+        return this;
+    }
+
+    /**
+     * Set opacity scene
+     *
+     * @param {number} value
+     * @returns {InitScene}
+     */
+    setOpacity(value) {
+        this.container.style.opacity = value;
+        return this;
+    };
+
+    /**
+     * @callback animationCompleted
+     */
+
+    /**
+     * Show Scene
+     *
+     * @param {animationCompleted} [listener]
+     * @returns {InitScene}
+     */
+    show(listener) {
+        let start = 0;
+        let idInterval = setInterval(() => {
+            start += 0.01;
+            this.setOpacity(start);
+            if (start >= 1) {
+                this.setOpacity(1);
+                clearInterval(idInterval);
+                if (listener) {
+                    listener();
+                }
+            }
+        }, 10);
+        return this;
+    };
+
+    /**
+     * Hide Scene
+     *
+     * @param {animationCompleted} [listener]
+     * @returns {InitScene}
+     */
+    hide(listener) {
+        let start = 1;
+        let idInterval = setInterval(() => {
+            start -= 0.01;
+            this.setOpacity(start);
+            if (start <= 0) {
+                this.setOpacity(0);
+                clearInterval(idInterval);
+                if (listener) {
+                    listener();
+                }
+            }
+        }, 10);
+        return this;
+    };
+
+    /**
+     *
      *
      * @returns {?WebGLRenderer}
      */
     _webGLRenderer() {
         if (InitScene.detectorWebGL()) {
             let renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
-            renderer.setClearColor(this.scene.fog.color);
+            // renderer.setClearColor(this.scene.fog.color);
             renderer.setPixelRatio(window.devicePixelRatio);
             return renderer;
         }
@@ -223,6 +311,7 @@ class InitScene {
             for (let event of this._renderEvents) {
                 event(delta);
             }
+            this._bg.update();
             this._renderControls();
         });
     }

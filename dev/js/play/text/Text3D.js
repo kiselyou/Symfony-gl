@@ -11,21 +11,21 @@ class Text3D extends Font3D {
          *
          * @type {number}
          */
-        this.curveSegments = 8;
+        this.curveSegments = 4;
 
         /**
          * Color front
          *
          * @type {number}
          */
-        this.colorFront = 0xffffff;
+        this.colorFront = 0x666666;
 
         /**
          * Color side
          *
          * @type {number}
          */
-        this.colorSide = 0xffffff;
+        this.colorSide = 0x666666;
 
         /**
          * Mirror text

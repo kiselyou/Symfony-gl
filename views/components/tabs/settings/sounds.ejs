@@ -1,10 +1,16 @@
 
 <div class="row row_sm">
 
-    <div class="col_xs_1 col_sm_2 col_md_3 col_lg_4"></div>
+    <div class="col_xs_1 col_sm_2 col_md_3 col_lg_4">
+        <div class="row row_sm">
+            <span class="visible_md visible_lg">Volume Settings</span>
+        </div>
+    </div>
 
     <div class="col_xs_10 col_sm_8 col_md_6 col_lg_4">
-        <div class="row row_sm">Volume Settings</div>
+        <div class="row row_sm">
+            <span class="hidden_md hidden_lg">Volume Settings</span>
+        </div>
         <form data-block="form_volume">
 
             <div class="row row_md">
@@ -51,10 +57,7 @@
                 <div class="col_xs_4 col_sm_4 col_md_4 col_lg_4">
                     <input type="checkbox" name="turn_on" id="turn_on" <%= (options['turn_on'] === 1 ? 'checked' : '') %>>
                     <label for="turn_on" class="checkbox">
-                        <span>
-                            <i class="fa fa-volume-off"></i>
-                            Torn off
-                        </span>
+                        <i class="fa fa-volume-off"></i>
                     </label>
                 </div>
             </div>
