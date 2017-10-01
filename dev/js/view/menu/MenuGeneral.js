@@ -61,6 +61,11 @@ class MenuGeneral extends ViewControls {
         this.active = {action: null, block: null};
     }
 
+    /**
+     * Initialisation of menu
+     *
+     * @returns {MenuGeneral}
+     */
     initialisationMenu() {
         this.app.lock.addEventChangeStatus((status) => {
             this.removeMenu();
@@ -239,6 +244,14 @@ class MenuGeneral extends ViewControls {
                 }
             });
 
+            if (block['active']) {
+                this.toggle(actionName, blockName);
+                let events = block['events'];
+                for (let event of events) {
+                    event(blockName);
+                }
+            }
+
             for (let item of block['subItems']) {
                 let itemActionName = item['action'];
                 this.getViewAction(itemActionName).addEvent('mouseover', () => {
@@ -247,7 +260,6 @@ class MenuGeneral extends ViewControls {
 
                 this._addEventToAction(itemActionName, () => {
                     this.toggle(actionName, blockName);
-
                     let events = item['events'];
                     for (let event of events) {
                         event(blockName, itemActionName);

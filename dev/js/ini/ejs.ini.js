@@ -10,6 +10,7 @@ export const VIEW_NAME_WINDOW_ALERT = 'window-alert';
 export const VIEW_NAME_TABS = 'tabs';
 export const VIEW_NAME_INDICATORS = 'indicators';
 export const VIEW_NAME_TAB_SOUNDS = 'tab_sounds';
+export const VIEW_NAME_TAB_DOCK = 'tab_dock';
 
 export const BASE_DIR_VIEW = './views';
 
@@ -27,3 +28,4 @@ VIEW_PATH[VIEW_NAME_TABS] = '/components/tabs/tab.ejs';
 VIEW_PATH[VIEW_NAME_INDICATORS] = '/components/panels/indicators.ejs';
 
 VIEW_PATH[VIEW_NAME_TAB_SOUNDS] = '/components/tabs/settings/sounds.ejs';
+VIEW_PATH[VIEW_NAME_TAB_DOCK] = '/components/tabs/dock/dock.ejs';

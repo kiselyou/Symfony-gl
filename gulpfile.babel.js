@@ -110,3 +110,8 @@ gulp.task('watch', function() {
     gulp.watch(['./dev/js/**/*.js', './views/components/**/*.ejs'], ['es6-dev']);
     gulp.watch('./dev/less/**/*.less', ['less']);
 });
+
+gulp.task('watch:ejs', function() {
+    gulp.watch(['./views/components/**/*.ejs'], ['ejs:prepare']);
+    gulp.watch('./dev/less/**/*.less', ['less']);
+});

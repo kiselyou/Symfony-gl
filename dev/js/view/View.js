@@ -16,7 +16,7 @@ class View extends ViewBuffer {
         /**
          * It is name of template
          *
-         * @type {v4}
+         * @type {string}
          */
         this.name = uuidv4();
 
@@ -104,12 +104,22 @@ class View extends ViewBuffer {
     }
 
     /**
-     * Get options of view
+     * Gets options of view
      *
      * @returns {Object}
      */
     get viewOptions() {
         return this._viewParams.options;
+    }
+
+    /**
+     * Gets full parameters to view.
+     * This is almost the same options as is in "viewOptions" only it have parent object
+     *
+     * @returns {Object}
+     */
+    get viewParams() {
+        return this._viewParams;
     }
 
     /**

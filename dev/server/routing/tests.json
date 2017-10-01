@@ -13,5 +13,10 @@
     "route": "/tests/tabs",
     "viewPath": "pages/tests/tabs",
     "method": "GET"
+  },
+  "dock": {
+    "route": "/tests/dock",
+    "viewPath": "pages/tests/dock",
+    "method": "GET"
   }
 }

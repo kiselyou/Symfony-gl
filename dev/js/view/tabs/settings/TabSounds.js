@@ -1,6 +1,5 @@
 
 import ViewControls from './../../ViewControls';
-import User from './../../../system/user/User';
 import {
     VIEW_NAME_TAB_SOUNDS
 } from './../../../ini/ejs.ini';
@@ -12,13 +11,6 @@ class TabSounds extends ViewControls {
      */
     constructor(container) {
         super(container);
-
-        /**
-         *
-         * @type {User}
-         * @private
-         */
-        this._user = User.get();
     }
 
     /**
@@ -28,7 +20,7 @@ class TabSounds extends ViewControls {
      * @returns {TabSounds}
      */
     _buildTab() {
-        this.viewOptions = this._user.getSettingVolume().getSettings();
+        this.viewOptions = this.app.user.getSettingVolume().getSettings();
         this
             .autoCleanContainer(true)
             .build(VIEW_NAME_TAB_SOUNDS)
@@ -47,10 +39,10 @@ class TabSounds extends ViewControls {
         this.getViewBlock('form_volume')
             .formFields((field) => {
                 field.addEvent('change', () => {
-                    this._user
+                    this.app.user
                         .getSettingVolume()
                         .set(field);
-                    this._user
+                    this.app.user
                         .saveSettingsVolume();
                 });
             });
@@ -64,11 +56,11 @@ class TabSounds extends ViewControls {
     buildControls() {
         this.app.lock.addEventChangeStatus((status) => {
             if (status) {
-                this._user.loadSettings(() => {
+                this.app.user.loadSettings(() => {
                     this._buildTab();
                 });
             } else {
-                this._user.resetSettings();
+                this.app.user.resetSettings();
                 this.removeView();
             }
         });

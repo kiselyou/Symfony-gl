@@ -69,15 +69,15 @@ class ViewRender extends ViewControls {
      */
 
     /**
-     * Upload completed template from the server.
-     * If your template have "extend" property you need use only this method to upload template
+     * Upload and compile template on the server.
+     * If your template have "extend" or "include" properties you need use only this method to upload it
      *
      * @param {prepareElement} [success]
      * @returns {ViewRender}
      */
     upload(success) {
         this.app.ajax
-            .post(ViewRender.ROUTE_STR, {name: this._viewName, options: this._viewParams}, false)
+            .post(ViewRender.ROUTE_STR, {name: this._viewName, options: this.viewParams}, false)
             .then((html) => {
                 this.prepareElement(html);
                 if (success) {
@@ -86,21 +86,21 @@ class ViewRender extends ViewControls {
             })
             .catch((error) => {
                 console.log(error);
-                this.msg.alert('View Error', error);
+                this.app.msg.alert('View Error', error);
             });
         return this;
     }
 
     /**
-     * Upload EJS template from the server and compile in the client side
-     * If your template don't have "extend" property you can use this method ao method "upload"
+     * Upload template from the server and compile it on the client
+     * If your template don't have "extend" or "include" property you can use this method
      *
      * @param {prepareElement} [success]
      * @returns {ViewRender}
      */
     render(success) {
         if (this.template) {
-            this.prepareElement(this.renderEJS(this.template));
+            this.prepareElement(this.renderEJS(this.template, this.viewParams));
             if (success) {
                 success(this.viewElement);
             }
@@ -111,18 +111,18 @@ class ViewRender extends ViewControls {
                     try {
                         let data = JSON.parse(res);
                         this.template = data['ejs'];
-                        this.prepareElement(this.renderEJS(this.template));
+                        this.prepareElement(this.renderEJS(this.template, this.viewParams));
                         if (success) {
                             success(this.viewElement);
                         }
                     } catch (error) {
                         console.log(error);
-                        this.msg.alert('Load ejs Error', error);
+                        this.app.msg.alert(error, 'Error Load Template');
                     }
                 })
                 .catch((error) => {
                     console.log(error);
-                    this.msg.alert('View Error', error);
+                    this.app.msg.alert(error, 'Error View');
                 });
         }
         return this;

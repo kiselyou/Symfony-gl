@@ -81,6 +81,13 @@ class MenuGeneralBlock {
 
         /**
          *
+         * @type {boolean}
+         * @private
+         */
+        this._activeByDefault = false;
+
+        /**
+         *
          * @type {number}
          * @private
          */
@@ -88,7 +95,7 @@ class MenuGeneralBlock {
     }
 
     /**
-     * The icon name
+     * Gets icon name
      *
      * @returns {string}
      */
@@ -97,7 +104,7 @@ class MenuGeneralBlock {
     }
 
     /**
-     * Get block name. Can see when mouse over on action
+     * Gets block name. Can see when mouse over on action
      *
      * @returns {string}
      */
@@ -106,7 +113,7 @@ class MenuGeneralBlock {
     }
 
     /**
-     * Get title inside a block
+     * Gets title inside a block
      *
      * @returns {string}
      */
@@ -115,7 +122,7 @@ class MenuGeneralBlock {
     }
 
     /**
-     * Get UUID of action
+     * Gets UUID of action
      *
      * @returns {string|number}
      */
@@ -124,7 +131,7 @@ class MenuGeneralBlock {
     }
 
     /**
-     * Get UUID of block
+     * Gets UUID of block
      *
      * @returns {string|number}
      */
@@ -133,7 +140,7 @@ class MenuGeneralBlock {
     }
 
     /**
-     * Get list items inside block
+     * Gets list items inside block
      *
      * @returns {Array}
      */
@@ -142,7 +149,7 @@ class MenuGeneralBlock {
     }
 
     /**
-     * Get list listeners of block
+     * Gets list listeners of block
      *
      * @returns {Array}
      */
@@ -151,7 +158,7 @@ class MenuGeneralBlock {
     }
 
     /**
-     * Get order
+     * Gets order
      *
      * @returns {number}
      */
@@ -160,12 +167,32 @@ class MenuGeneralBlock {
     }
 
     /**
-     * Get lock status
+     * Gets status of block
+     *
+     * @returns {boolean}
+     */
+    get active() {
+        return this._activeByDefault;
+    }
+
+    /**
+     * Gets lock status
      *
      * @returns {string|number}
      */
     get lock() {
         return this._lock;
+    }
+
+    /**
+     * Sets block active
+     *
+     * @param {boolean} value
+     * @returns {MenuGeneralBlock}
+     */
+    setActiveByDefault(value) {
+        this._activeByDefault = value;
+        return this;
     }
 
     /**

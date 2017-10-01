@@ -3,6 +3,7 @@ import MenuGeneral from './MenuGeneral';
 import Tabs from './../tabs/Tabs';
 
 import TabSounds from './../tabs/settings/TabSounds';
+import TabDock from './../tabs/home/TabDock';
 
 import {VIEW_NAME_MENU_GENERAL} from './../../ini/ejs.ini';
 
@@ -16,25 +17,27 @@ class MenuControls {
          */
         this.menuGeneral = new MenuGeneral(VIEW_NAME_MENU_GENERAL);
 
-        // this._homeBlock = this.menuGeneral
-        //     .addBlock('Home Page')
-        //     .setBlockTitle('Home Page')
-        //     .setBlockIcon('fa-home')
-        //     .setOrder(10)
-        //     .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
+        this._menuHomeBlock =
+            this.menuGeneral
+                .addBlock('Home Page')
+                .setBlockIcon('fa-home')
+                .setActiveByDefault(true)
+                .setOrder(10)
+                .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
 
-        this._securityBlock = this.menuGeneral
-            .addBlock('Security')
-            .setBlockTitle('Security')
-            .setBlockIcon('fa-lock')
-            .setOrder(20);
+        this._menuSecurityBlock =
+            this.menuGeneral
+                .addBlock('Security')
+                .setBlockTitle('Security')
+                .setBlockIcon('fa-lock')
+                .setOrder(30);
 
-        this._settingsBlock = this.menuGeneral
-            .addBlock('Settings')
-            // .setBlockTitle('Settings')
-            .setBlockIcon('fa-cogs')
-            .setOrder(10)
-            .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
+        this._menuSettingsBlock =
+            this.menuGeneral
+                .addBlock('Settings')
+                .setBlockIcon('fa-cogs')
+                .setOrder(20)
+                .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
 
         /**
          *
@@ -63,13 +66,9 @@ class MenuControls {
      * @returns {MenuControls}
      */
     build() {
-        this._securityBlock
+        this._menuSecurityBlock
             .addItem('Close Menu')
             .setOrder(100);
-
-        // this._homeBlock
-        //     .addItem('Close Menu')
-        //     .setOrder(100);
 
         this.menuGeneral
             .sortFull()
@@ -88,7 +87,7 @@ class MenuControls {
      * @returns {MenuControls}
      */
     openFormLogin(listener) {
-        this._securityBlock
+        this._menuSecurityBlock
             .addItem('Login', listener)
             .setOrder(10)
             .setLockStatus(MenuGeneral.HIDE_IF_LOCKED);
@@ -102,7 +101,7 @@ class MenuControls {
      * @returns {MenuControls}
      */
     openFormRegistration(listener) {
-        this._securityBlock
+        this._menuSecurityBlock
             .addItem('Registration', listener)
             .setOrder(20)
             .setLockStatus(MenuGeneral.HIDE_IF_LOCKED);
@@ -116,7 +115,7 @@ class MenuControls {
      * @returns {MenuControls}
      */
     logout(listener) {
-        this._securityBlock
+        this._menuSecurityBlock
             .addItem('Logout', listener)
             .setOrder(30)
             .setLockStatus(MenuGeneral.SHOW_IF_LOCKED);
@@ -152,17 +151,12 @@ class MenuControls {
             });
 
         this._tabsSettings
-            .addTab('Sounds - 2')
-            .setIcon('fa-volume-up')
-            .setContent('Setting of sound2');
-
-        this._tabsSettings
             .addEventHideTabs(() => {
                 this.menuGeneral.reset();
             })
             .buildTabs();
 
-        this._settingsBlock.addBlockEvent(() => {
+        this._menuSettingsBlock.addBlockEvent(() => {
             this._tabsSettings.showTabs();
         });
         return this;
@@ -174,45 +168,25 @@ class MenuControls {
      * @returns {MenuControls}
      */
     openHomePage() {
-        // this._tabsHome
-        //     .addTab('Home1', true)
-        //     .setIcon('fa-home')
-        //     .setContent('1');
-        //
-        // this._tabsHome
-        //     .addTab('Home2', true)
-        //     .setIcon('fa-home')
-        //     .setContent('2');
-        //
-        // this._tabsHome
-        //     .addTab('Home3', true)
-        //     .setIcon('fa-home')
-        //     .setContent('3');
-        //
-        // this._tabsHome
-        //     .addTab('Home4', true)
-        //     .setIcon('fa-home')
-        //     .setContent('4');
-        //
-        // this._tabsHome
-        //     .addTab('Home5', true)
-        //     .setIcon('fa-home')
-        //     .setContent('5');
-        //
-        // this._tabsHome
-        //     .addTab('Home6', true)
-        //     .setIcon('fa-home')
-        //     .setContent('6');
-        //
-        // this._tabsHome.buildTabs();
-        //
-        // this._homeBlock
-        //     .addItem('Home Page')
-        //     .setOrder(10)
-        //     .setLockStatus(MenuGeneral.SHOW_IF_LOCKED)
-        //     .addEvent(() => {
-        //         this._tabsHome.showTabs();
-        //     });
+        this._tabsHome
+            .addTab('Dock', true)
+            .setIcon('fa-home')
+            .setContent((container) => {
+                let dock = new TabDock(container);
+                dock.buildControls();
+            });
+
+        this._tabsHome
+            .addEventHideTabs(() => {
+                this.menuGeneral.reset();
+            })
+            .buildTabs();
+
+        this._menuHomeBlock
+            .addBlockEvent(() => {
+                this._tabsHome.showTabs();
+            });
+
         return this;
     }
 }

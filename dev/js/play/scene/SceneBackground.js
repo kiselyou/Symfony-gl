@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import Text3D from './../../play/text/Text3D';
+import UIMessage from './../../system/ui/UIMessage';
 
 class SceneBackground {
     /**
@@ -42,6 +43,12 @@ class SceneBackground {
          * @private
          */
         this._logoActive = false;
+
+        /**
+         *
+         * @type {UIMessage}
+         */
+        this._msg = new UIMessage();
     }
 
     /**
@@ -94,7 +101,7 @@ class SceneBackground {
             this.setLogo();
             this._backgroundActive = true;
         }, (err) => {
-            console.log('loadasdas', err);
+            this._msg.alert('Cannot load texture "' + imgPath + '"');
         });
         return this;
     }
