@@ -1,22 +1,37 @@
-.panel {
-  &_folding {
-    border: 1px solid @color_base_dark;
-    margin: 4px 0;
+.folding {
+  border: 1px solid @color_base_dark;
+  margin: 6px 0;
 
+  &__title {
+    padding: 5px;
+    background: @background_color_light;
+    overflow: hidden;
 
-    &__title {
-      padding: 5px;
-      background: @background_color_light;
-      overflow: hidden;
-
-      &_icon {
-        margin: 0 5px;
-      }
+    &_icon {
+      margin: 0 5px;
     }
+  }
 
-    &__body {
-      min-height: 50px;
-      background: @background_color_dark;
+  &__body {
+    background: @background_color_dark;
+    overflow: hidden;
+  }
+
+  &__switch:not(checked) + div {
+    height: 0;
+  }
+
+  @keyframes animation2 {
+    0% {
+      height: 0;
     }
+    100% {
+      height: 100%;
+    }
+  }
+
+  &__switch:checked + div {
+    animation: animation2 3s ease-in-out infinite;
+    -webkit-animation: animation2 3s ease-in-out infinite;
   }
 }
