@@ -57,7 +57,9 @@ class PanelFolding extends View {
             let panel = this.getViewBlock(item.uuid);
             let foldingContent = panel.getElementByBlockName('folding_content');
             // Hide by default
-            foldingContent.hideElement(false);
+            if (!item.isOpened) {
+                foldingContent.hideElement(false);
+            }
             // Set content from listener
             if (item.contentEvent) {
                 item.contentEvent(foldingContent);
@@ -65,8 +67,10 @@ class PanelFolding extends View {
             // Set event hide|open panel block
             let foldingSwitch = panel.getElementByActionName('folding_switch');
             foldingSwitch.addEvent('click', () => {
-                foldingContent.toggleShowOrHide(item.status, true);
-                item.setStatus(!item.status);
+                foldingSwitch.toggleClass(PanelFoldingItem.ICON_OPEN);
+                foldingSwitch.toggleClass(PanelFoldingItem.ICON_CLOSE);
+                foldingContent.toggleShowOrHide(item.isOpened, true);
+                item.open(!item.isOpened);
             });
         }
     }

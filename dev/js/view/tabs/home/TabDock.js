@@ -29,6 +29,7 @@ class TabDock extends ViewRender {
 
             panels
                 .addPanel('General', 'fa-info-circle')
+                .open(true)
                 .setContent((panelContent) => {
                     console.log(panelContent);
 

@@ -39,6 +39,25 @@ class PanelFoldingItem {
     }
 
     /**
+     * Gets icon name
+     *
+     * @returns {string}
+     */
+    static get ICON_OPEN() {
+        return 'fa-window-maximize';
+
+    }
+
+    /**
+     * Gets icon name
+     *
+     * @returns {string}
+     */
+    static get ICON_CLOSE() {
+        return 'fa-window-minimize';
+    }
+
+    /**
      * Sets icon
      *
      * @param {string} value
@@ -47,6 +66,15 @@ class PanelFoldingItem {
     setIcon(value) {
         this._icon = value;
         return this;
+    }
+
+    /**
+     * Gets icon action Opened|Closed
+     *
+     * @returns {string}
+     */
+    get iconSwitch() {
+        return this._status ? PanelFoldingItem.ICON_CLOSE : PanelFoldingItem.ICON_OPEN;
     }
 
     /**
@@ -84,7 +112,7 @@ class PanelFoldingItem {
      * @param {boolean} value - true is opened and false is closed
      * @returns {PanelFoldingItem}
      */
-    setStatus(value) {
+    open(value) {
         this._status = value;
         return this;
     }
@@ -94,7 +122,7 @@ class PanelFoldingItem {
      *
      * @returns {boolean}
      */
-    get status() {
+    get isOpened() {
         return this._status;
     }
 
