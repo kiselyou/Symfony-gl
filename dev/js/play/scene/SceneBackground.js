@@ -96,7 +96,7 @@ class SceneBackground {
                 new THREE.MeshBasicMaterial({map: texture})
             );
 
-            this._backgroundMesh.position.setZ(-1150);
+            this._backgroundMesh.position.setZ(-1100);
             this._scene.add(this._backgroundMesh);
             this.setLogo();
             this._backgroundActive = true;
