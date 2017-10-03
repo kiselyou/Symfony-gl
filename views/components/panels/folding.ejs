@@ -1,0 +1,26 @@
+<% for (let item of options) { %>
+
+    <div class="folding" data-block="<%= item['uuid'] %>">
+        <div class="folding__title">
+            <div class="col_xs_11 col_sm_11 col_md_11 col_lg_11">
+
+                <% if (item['icon']) { %>
+                    <i class="fa <%= item['icon']; %> folding__title_icon"></i>
+                <% } %>
+
+                <span><%= item['title']; %></span>
+            </div>
+            <div class="col_xs_1 col_sm_1 col_md_1 col_lg_1 text-c">
+                <label class="fa fa-window-maximize btn btn_xs btn_skin_link" for="<%= item['uuid']; %>" data-action="folding_switch"></label>
+            </div>
+        </div>
+        <div class="folding__body" data-block="folding_content">
+            <% if (item['content'] === '') { %>
+                <span class="folding__body_empty">there is not data ...</span>
+            <% } else { %>
+                <%= item['content']; %>
+            <% } %>
+        </div>
+    </div>
+
+<% } %>

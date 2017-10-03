@@ -5,23 +5,23 @@
     </div>
 </div>
 <div class="row row_md">
-    <!--Station Info-->
     <div class="col_xs_12 col_sm_4 col_md_4 col_lg_4">
         <div class="row">
             <div class="col_xs_12 col_sm_12 col_md_12 col_lg_12">This is dock name</div>
         </div>
-        <div class="row">
-            <%- include ./dock_info.ejs %>
-            <%- include ./dock_info.ejs %>
-            <%- include ./dock_info.ejs %>
-            <%- include ./dock_info.ejs %>
-        </div>
-        <div class="row">
-            <%- include ./dock_params.ejs %>
-        </div>
+        <div class="row"><!-- Some info --></div>
+        <div class="row"><!-- Some info --></div>
     </div>
     <div class="col_xs_12 col_sm_8 col_md_8 col_lg_8">
-        <%- include ./dock_model.ejs %>
+
+        <div class="row">
+            <div class="col_xs_12 col_sm_12 col_md_6 col_lg_7">
+                <div data-block="model"><!-- Model info --></div>
+            </div>
+
+            <div class="col_xs_12 col_sm_12 col_md_6 col_lg_5" data-block="folding"><!-- Panels info --></div>
+        </div>
+
     </div>
 </div>
 

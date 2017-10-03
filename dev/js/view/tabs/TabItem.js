@@ -33,7 +33,7 @@ class TabItem {
         /**
          * This is string inside a container
          *
-         * @type {string}
+         * @type {string|prepareContainer}
          * @private
          */
         this._content = '';
@@ -109,7 +109,7 @@ class TabItem {
     /**
      * By this method you can add a object or string data to the container under tab
      *
-     * @param {string|prepareContainer} data - It is string data
+     * @param {string|prepareContainer} data - It is string data or listener
      * @returns {TabItem}
      */
     setContent(data) {
@@ -191,7 +191,7 @@ class TabItem {
 
     /**
      *
-     * @returns {prepareContainer}
+     * @returns {?prepareContainer}
      */
     get contentEvent() {
         return typeof this._content === 'function' ? this._content : null;
