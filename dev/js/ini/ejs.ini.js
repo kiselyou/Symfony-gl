@@ -42,3 +42,6 @@ VIEW_PATH[VIEW_NAME_TAB_DOCK] = '/components/tabs/dock/dock.ejs';
 
 export const VIEW_NAME_FOLDING = 'panel_folding';
 VIEW_PATH[VIEW_NAME_FOLDING] = '/components/panels/folding.ejs';
+
+export const VIEW_NAME_CUSTOM_RANGE = 'custom_range';
+VIEW_PATH[VIEW_NAME_CUSTOM_RANGE] = '/components/form/custom_range.ejs';

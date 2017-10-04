@@ -1,5 +1,9 @@
 .custom_range {
 
+  &__label {
+    padding-right: 10px;
+  }
+
   &__btn {
     float: left;
     font-size: @font_size_xs;
@@ -19,7 +23,7 @@
       border: @border_xs solid @color_base;
       border-radius: @border_radius_xs;
       margin: 0 @margin_sm;
-      width: 250px;
+      min-width: 120px;
       height: 9px;
 
       &_percent {
@@ -33,8 +37,9 @@
     &_values {
       font-size: @font_size_xxs;
       display: block;
-      height: 15px;
-      margin: -10px @margin_md 0 @margin_md;
+      height: 12px;
+      margin: -@margin_md @margin_md 0 @margin_md;
+      color: @color_base_gray;
 
       &_min {
         width: 50%;
