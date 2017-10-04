@@ -1,22 +1,7 @@
 {
-  "tests_progress": {
-    "route": "/tests/progress",
-    "viewPath": "pages/tests/progress",
-    "method": "GET"
-  },
-  "alert": {
-    "route": "/tests/alert",
-    "viewPath": "pages/tests/alert",
-    "method": "GET"
-  },
-  "tabs": {
-    "route": "/tests/tabs",
-    "viewPath": "pages/tests/tabs",
-    "method": "GET"
-  },
   "dock": {
-    "route": "/tests/dock",
-    "viewPath": "pages/tests/dock",
+    "route": "/test",
+    "viewPath": "pages/test",
     "method": "GET"
   }
 }

@@ -1,0 +1,56 @@
+.custom_range {
+
+  &__btn {
+    float: left;
+    font-size: @font_size_xs;
+    text-align: center;
+    height: 15px;
+    width: 15px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &__scale {
+    float: left;
+
+    &_bulb {
+      border: @border_xs solid @color_base;
+      border-radius: @border_radius_xs;
+      margin: 0 @margin_sm;
+      width: 250px;
+      height: 9px;
+
+      &_percent {
+        width: 50%;
+        height: 100%;
+        background: @color_base_warning;
+        border-radius: @border_radius_xs 0 0 @border_radius_xs;
+      }
+    }
+
+    &_values {
+      font-size: @font_size_xxs;
+      display: block;
+      height: 15px;
+      margin: -10px @margin_md 0 @margin_md;
+
+      &_min {
+        width: 50%;
+        float: left;
+        text-align: left;
+      }
+      &_max {
+        width: 50%;
+        float: right;
+        text-align: right;
+      }
+    }
+  }
+
+  & input {
+    opacity: 0;
+    display: none;
+  }
+}
