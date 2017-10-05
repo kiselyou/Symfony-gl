@@ -1,8 +1,26 @@
 .table {
   display: table;
+  width: 100%;
 
-  &_full {
-    width: 100%;
+  &_head {
+    background: @background_color_light;
+    border-top: 1px solid @color_base_dark;
+    border-left: 1px solid @color_base_dark;
+    border-right: 1px solid @color_base_dark;
+    margin-top: @margin_md;
+  }
+
+  &_body {
+    border: 1px solid @color_base_dark;
+    background: @background_dark_strong;
+  }
+
+  &_foot {
+    background: @background_color_light;
+    border-bottom: 1px solid @color_base_dark;
+    border-left: 1px solid @color_base_dark;
+    border-right: 1px solid @color_base_dark;
+    margin-top: @margin_md;
   }
 
   &__row {

@@ -45,3 +45,6 @@ VIEW_PATH[VIEW_NAME_FOLDING] = '/components/panels/folding.ejs';
 
 export const VIEW_NAME_CUSTOM_RANGE = 'custom_range';
 VIEW_PATH[VIEW_NAME_CUSTOM_RANGE] = '/components/form/custom_range.ejs';
+
+export const VIEW_NAME_CUSTOM_TABLE = 'custom_table';
+VIEW_PATH[VIEW_NAME_CUSTOM_TABLE] = '/components/table/custom_table.ejs';
