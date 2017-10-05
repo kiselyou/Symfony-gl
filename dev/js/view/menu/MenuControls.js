@@ -170,11 +170,21 @@ class MenuControls {
     openHomePage() {
         this._tabsHome
             .addTab('Dock', true)
-            .setIcon('fa-home')
+            .setIcon('fa-cogs')
             .setContent((container) => {
                 let dock = new TabDock(container);
                 dock.buildControls();
             });
+
+        this._tabsHome
+            .addTab('Ship')
+            .setIcon('fa-space-shuttle')
+            .setContent('This is ship information');
+
+        this._tabsHome
+            .addTab('Map')
+            .setIcon('fa-map-marker')
+            .setContent('This is galaxy map');
 
         this._tabsHome
             .addEventHideTabs(() => {
