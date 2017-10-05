@@ -2,19 +2,25 @@
   overflow: hidden;
   border: 1px solid @color_base_dark;
   margin: @margin_md;
+  padding: @margin_md;
   background: @background_color_dark;
 
   &__container {
     text-align: center;
+    border: 1px solid @color_base_dark;
+    margin: 0 @margin_md;
+
+    &_information {
+      padding: @padding_sm;
+    }
 
     &_img {
       width: ~"calc(80% - 16px)";
-      margin: @margin_md;
+      margin-top: @margin_md;
     }
   }
 
   &__information {
-    margin: @margin_md;
     overflow: hidden;
 
     &_item {
