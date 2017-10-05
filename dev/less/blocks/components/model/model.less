@@ -1,14 +1,15 @@
 .model {
   overflow: hidden;
-  border: 1px solid @color_base_dark;
-  margin: @margin_md;
+  //border: 1px solid @color_base_dark;
+  //margin: @margin_md;
   padding: @margin_md;
-  background: @background_color_dark;
+  //background: @background_color_dark;
 
   &__container {
     text-align: center;
+    background: @background_color_dark;
     border: 1px solid @color_base_dark;
-    margin: 0 @margin_md;
+    margin: 0 @margin_xs;
 
     &_information {
       padding: @padding_sm;
@@ -22,8 +23,10 @@
 
   &__information {
     overflow: hidden;
+    margin: 0 @margin_xs;
 
     &_item {
+      background: @background_color_dark;
       border: 1px solid @color_base_dark;
       min-height: 60px;
       margin-bottom: @margin_md;
