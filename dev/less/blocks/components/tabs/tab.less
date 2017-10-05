@@ -36,7 +36,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        margin-right: 10px;
+        margin: 2px 10px;
       }
 
       & > div i,
@@ -108,6 +108,7 @@
 
       &_active {
         & > div {
+          color: @color_base_disabled;
           border-color: @color_base;
           height: ~"calc(100% - 11px)";
           background: @background_color_light;
@@ -117,7 +118,7 @@
         & > div:hover::before,
         & > div:hover::after {
           cursor: default;
-          font-size: 14px;
+          //font-size: @font_size_md;
         }
 
 

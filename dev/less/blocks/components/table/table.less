@@ -1,0 +1,27 @@
+.table {
+  display: table;
+
+  &__row {
+    display: table-row;
+  }
+
+  &__cell {
+    display: table-cell;
+  }
+
+  &_xs &__cell {
+    padding: @padding_xs;
+  }
+
+  &_sm &__cell {
+    padding: @padding_sm;
+  }
+
+  &_md &__cell {
+    padding: @padding_md;
+  }
+
+  &_lg &__cell {
+    padding: @padding_lg;
+  }
+}
