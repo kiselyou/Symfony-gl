@@ -141,10 +141,9 @@ class MenuControls {
      * @returns {MenuControls}
      */
     openSettings() {
-
         this._tabsSettings
             .addTab('Sounds', true)
-            .setIcon('fa-volume-up')
+            .setIcon('fa-file-audio-o')
             .setContent((container) => {
                 let sounds = new TabSounds(container);
                 sounds.buildControls();
@@ -183,7 +182,7 @@ class MenuControls {
 
         this._tabsHome
             .addTab('Map')
-            .setIcon('fa-map-marker')
+            .setIcon('fa-braille')
             .setContent('This is galaxy map');
 
         this._tabsHome
