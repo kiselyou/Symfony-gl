@@ -11,6 +11,14 @@ class UITable extends View {
      */
     constructor(container) {
         super(container);
+
+        /**
+         *
+         * @type {{head: Array, body: Array, foot: Array}}
+         * @private
+         */
+        this._columns = [];
+
         /**
          *
          * @type {Array.<UITableRow>}
@@ -35,10 +43,24 @@ class UITable extends View {
 
     /**
      *
+     * @param {string} name
+     * @param {number} width
+     * @returns {UITable}
+     */
+    addColumn(name, width) {
+        this._columns.push({
+            name: name,
+            width: width
+        });
+        return this;
+    }
+
+    /**
+     *
      * @returns {UITableRow}
      */
     addHeadRow() {
-        let row = new UITableRow();
+        let row = new UITableRow(this._columns['head']);
         this._headRows.push(row);
         return row;
     }
@@ -48,7 +70,7 @@ class UITable extends View {
      * @returns {UITableRow}
      */
     addBodyRow() {
-        let row = new UITableRow();
+        let row = new UITableRow(this._columns['body']);
         this._bodyRows.push(row);
         return row;
     }
@@ -58,7 +80,7 @@ class UITable extends View {
      * @returns {UITableRow}
      */
     addFootRow() {
-        let row = new UITableRow();
+        let row = new UITableRow(this._columns['foot']);
         this._footRows.push(row);
         return row;
     }

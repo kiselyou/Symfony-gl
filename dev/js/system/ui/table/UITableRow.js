@@ -35,6 +35,25 @@ class UITableRow {
     }
 
     /**
+     *
+     * @param {?(string|number|UITableCell)} value
+     * @param {?number} [width]
+     * @returns {UITableRow}
+     */
+    addCellTest(value, width) {
+        let cell = value instanceof UITableCell ? value : new UITableCell();
+        if (value instanceof UITableCell) {
+            cell.setContent(value);
+        }
+
+        if (width) {
+
+        }
+
+        this._cells.push(cell);
+        return this;
+    }
+    /**
      * @param {UIElement} cell - This element of cell
      * @callback prepareContainer
      */
@@ -42,7 +61,7 @@ class UITableRow {
     /**
      * By this method you can add a object or string data to the cell
      *
-     * @param {string} content - It is string data
+     * @param {string|} content - It is string data
      * @param {prepareContainer} [listener] - It is listener to cell
      * @returns {UITableRow}
      */

@@ -4,79 +4,64 @@
 <% let footRows = options['footRows']; %>
 
 <% if (headRows.length > 0) { %>
+    <% for (let row of headRows) { %>
+    <% let cells = row['cells']; %>
 
     <div class="table table_head table_sm">
-
-    <% for (let row of headRows) { %>
-
-        <% let cells = row['cells']; %>
-
-        <div class="table__row" data-action="<%= row['uuid'] %>">
+        <div class="table__row">
 
             <% for (let cell of cells) { %>
 
-                <div class="table__cell" data-action="<%= cell['uuid'] %>">
-                    <span><%= cell['content'] %></span>
+                <div class="table__cell" data-action="<%= cell['uuid']; %>">
+                    <span><%= cell['content']; %></span>
                 </div>
 
             <% } %>
 
         </div>
-
-    <% } %>
-
     </div>
 
+    <% } %>
 <% } %>
 
 <% if (bodyRows.length > 0) { %>
+    <% for (let row of bodyRows) { %>
+    <% let cells = row['cells']; %>
 
     <div class="table table_body table_sm">
-
-        <% for (let row of bodyRows) { %>
-
-        <% let cells = row['cells']; %>
-
-        <div class="table__row" data-action="<%= row['uuid'] %>">
+        <div class="table__row">
 
             <% for (let cell of cells) { %>
 
-            <div class="table__cell" data-action="<%= cell['uuid'] %>">
-                <span><%= cell['content'] %></span>
+            <div class="table__cell" data-action="<%= cell['uuid']; %>">
+                <span><%= cell['content']; %></span>
             </div>
 
             <% } %>
 
         </div>
-
-        <% } %>
-
     </div>
 
+    <% } %>
 <% } %>
 
 <% if (footRows.length > 0) { %>
+    <% for (let row of footRows) { %>
+    <% let cells = row['cells']; %>
 
     <div class="table table_foot table_sm">
-
-        <% for (let row of footRows) { %>
-
-        <% let cells = row['cells']; %>
-
-        <div class="table__row" data-action="<%= row['uuid'] %>">
+        <div class="table__row">
 
             <% for (let cell of cells) { %>
 
-            <div class="table__cell" data-action="<%= cell['uuid'] %>">
-                <span><%= cell['content'] %></span>
+            <div class="table__cell" data-action="<%= cell['uuid']; %>">
+                <span><%= cell['content']; %></span>
             </div>
 
             <% } %>
 
         </div>
-
-        <% } %>
-
     </div>
 
+    <% } %>
 <% } %>

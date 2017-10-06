@@ -16,6 +16,8 @@ class UITableCell {
          */
         this._content = '';
 
+        this._width = null;
+
         /**
          *
          * @type {Array.<prepareContainer>}

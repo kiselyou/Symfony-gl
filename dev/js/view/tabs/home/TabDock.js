@@ -59,7 +59,15 @@ class TabDock extends ViewRender {
 
         dockInfo
             .addHeadRow()
+            .addCell('Informationasdasdasdsa');
+
+        dockInfo
+            .addHeadRow()
+            .addCell('Information')
+            .addCell('Information')
+            .addCell('Information')
             .addCell('Information');
+
 
         dockInfo
             .addBodyRow()
