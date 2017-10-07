@@ -427,3 +427,16 @@ a:focus {
   }
   .build-coll();
 }
+
+.make-width(@name) {
+  @count: 100;
+  .build-width(@i: 1) when (@i =< @count) {
+    .@{name}_@{i} {
+      width: unit(@i, %);
+    }
+    .build-width(@i + 1);
+  }
+  .build-width();
+}
+
+.make-width(w);

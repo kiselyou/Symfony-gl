@@ -16,7 +16,12 @@ class UITableCell {
          */
         this._content = '';
 
-        this._width = null;
+        /**
+         *
+         * @type {number}
+         * @private
+         */
+        this._width = 0;
 
         /**
          *
@@ -52,6 +57,17 @@ class UITableCell {
     }
 
     /**
+     * Set width to specific cell
+     *
+     * @param {number} value
+     * @returns {UITableCell}
+     */
+    setWidth(value) {
+        this._width = value;
+        return this;
+    }
+
+    /**
      * Gets uuid of cell
      *
      * @returns {string}
@@ -74,8 +90,12 @@ class UITableCell {
      *
      * @returns {Array.<prepareContainer>}
      */
-    get contentEvent() {
+    get contentEvents() {
         return this._listener;
+    }
+
+    get width() {
+        return this._width;
     }
 }
 

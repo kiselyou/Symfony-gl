@@ -61,7 +61,7 @@ class UITableRow {
     /**
      * By this method you can add a object or string data to the cell
      *
-     * @param {string|} content - It is string data
+     * @param {string|number} content - It is string data
      * @param {prepareContainer} [listener] - It is listener to cell
      * @returns {UITableRow}
      */

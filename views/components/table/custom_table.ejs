@@ -1,67 +1,97 @@
 
+<% let columns = options['columns']; %>
 <% let headRows = options['headRows']; %>
 <% let bodyRows = options['bodyRows']; %>
 <% let footRows = options['footRows']; %>
 
-<% if (headRows.length > 0) { %>
-    <% for (let row of headRows) { %>
-    <% let cells = row['cells']; %>
+<div class="table <%= options['size']; %> <%= options['skin']; %> <%= options['border']; %>">
+    <% if (headRows.length > 0) { %>
+        <% let rowNumber = 0; %>
+        <% let rowCount = headRows.length; %>
 
-    <div class="table table_head table_sm">
-        <div class="table__row">
+        <% for (let row of headRows) { %>
 
-            <% for (let cell of cells) { %>
+            <% rowNumber++; %>
+            <% let cells = row['cells']; %>
 
-                <div class="table__cell" data-action="<%= cell['uuid']; %>">
-                    <span><%= cell['content']; %></span>
+            <div class="table_head">
+                <div class="table__row">
+
+                    <% for (let i = 0; i < cells.length; i++) { %>
+                        <% let cell = cells[i]; %>
+                        <% let width = cell['width'] === 0 ? '' : ('w_' + cell['width']); %>
+
+                        <% if (rowCount === rowNumber && columns[i]) { %>
+                            <% width = columns[i]['width'] === 0 ? '' : ('w_' + columns[i]['width']); %>
+                        <% } %>
+
+                        <div class="table__cell <%= width; %>" data-action="<%= cell['uuid']; %>">
+                            <!--<span></span>-->
+                            <%= cell['content']; %>
+                        </div>
+
+                    <% } %>
+
                 </div>
-
-            <% } %>
-
-        </div>
-    </div>
-
-    <% } %>
-<% } %>
-
-<% if (bodyRows.length > 0) { %>
-    <% for (let row of bodyRows) { %>
-    <% let cells = row['cells']; %>
-
-    <div class="table table_body table_sm">
-        <div class="table__row">
-
-            <% for (let cell of cells) { %>
-
-            <div class="table__cell" data-action="<%= cell['uuid']; %>">
-                <span><%= cell['content']; %></span>
             </div>
 
-            <% } %>
-
-        </div>
-    </div>
-
+        <% } %>
     <% } %>
-<% } %>
 
-<% if (footRows.length > 0) { %>
-    <% for (let row of footRows) { %>
-    <% let cells = row['cells']; %>
+    <% if (bodyRows.length > 0) { %>
 
-    <div class="table table_foot table_sm">
-        <div class="table__row">
+        <% for (let row of bodyRows) { %>
 
-            <% for (let cell of cells) { %>
+            <% let cells = row['cells']; %>
 
-            <div class="table__cell" data-action="<%= cell['uuid']; %>">
-                <span><%= cell['content']; %></span>
+            <div class="table_body">
+                <div class="table__row">
+
+                    <% for (let i = 0; i < cells.length; i++) { %>
+                        <% let cell = cells[i]; %>
+                        <% let width = cell['width'] === 0 ? '' : ('w_' + cell['width']); %>
+
+                        <% if (columns[i]) { %>
+                            <% width = columns[i]['width'] === 0 ? '' : ('w_' + columns[i]['width']); %>
+                        <% } %>
+
+                        <div class="table__cell <%= width; %>" data-action="<%= cell['uuid']; %>">
+                            <span><%= cell['content']; %></span>
+                        </div>
+
+                    <% } %>
+
+                </div>
             </div>
 
-            <% } %>
-
-        </div>
-    </div>
-
+        <% } %>
     <% } %>
-<% } %>
+
+    <% if (footRows.length > 0) { %>
+
+        <% for (let row of footRows) { %>
+            <% let cells = row['cells']; %>
+
+            <div class="table_foot">
+                <div class="table__row">
+
+                    <% for (let i = 0; i < cells.length; i++) { %>
+                        <% let cell = cells[i]; %>
+                        <% let width = cell['width'] === 0 ? '' : ('w_' + cell['width']); %>
+
+                        <% if (columns[i]) { %>
+                            <% width = columns[i]['width'] === 0 ? '' : ('w_' + columns[i]['width']); %>
+                        <% } %>
+
+                        <div class="table__cell <%= width; %>" data-action="<%= cell['uuid']; %>">
+                            <span><%= cell['content']; %></span>
+                        </div>
+
+                    <% } %>
+
+                </div>
+            </div>
+
+        <% } %>
+    <% } %>
+</div>

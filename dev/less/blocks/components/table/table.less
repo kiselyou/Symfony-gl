@@ -1,24 +1,31 @@
 .table {
-  display: table;
-  width: 100%;
 
-  &_head {
-    background: @background_color_light;
+  &__border {
     border-top: 1px solid @color_base_dark;
     border-left: 1px solid @color_base_dark;
     border-right: 1px solid @color_base_dark;
   }
 
-  &_body {
-    border: 1px solid @color_base_dark;
-    background: @background_dark_strong;
+  &__border > &_head,
+  &__border > &_body,
+  &__border > &_foot {
+    border-bottom: 1px solid @color_base_dark;
   }
 
+  &_head,
+  &_body,
   &_foot {
+    display: table;
+    width: 100%;
+  }
+
+  &__skin_dark > &_head,
+  &__skin_dark > &_foot {
     background: @background_color_light;
-    border-bottom: 1px solid @color_base_dark;
-    border-left: 1px solid @color_base_dark;
-    border-right: 1px solid @color_base_dark;
+  }
+
+  &__skin_dark > &_body {
+    background: @background_dark_strong;
   }
 
   &__row {
@@ -31,21 +38,30 @@
 
   &__cell {
     display: table-cell;
+    overflow: hidden;
   }
 
-  &_xs &__cell {
+  &_xs > &_head > &__row > &__cell,
+  &_xs > &_body > &__row > &__cell,
+  &_xs > &_foot > &__row > &__cell {
     padding: @padding_xs;
   }
 
-  &_sm &__cell {
+  &_sm > &_head > &__row > &__cell,
+  &_sm > &_body > &__row > &__cell,
+  &_sm > &_foot > &__row > &__cell {
     padding: @padding_sm;
   }
 
-  &_md &__cell {
+  &_md > &_head > &__row > &__cell,
+  &_md > &_body > &__row > &__cell,
+  &_md > &_foot > &__row > &__cell {
     padding: @padding_md;
   }
 
-  &_lg &__cell {
+  &_lg > &_head > &__row > &__cell,
+  &_lg > &_body > &__row > &__cell,
+  &_lg > &_foot > &__row > &__cell {
     padding: @padding_lg;
   }
 }

@@ -47,6 +47,7 @@ class TabDock extends ViewRender {
             // panels.buildPanels();
 
             this._prepareDockInformation();
+            this._prepareDockInformation();
             this._preparePanels();
 
             this.showView();
@@ -58,16 +59,13 @@ class TabDock extends ViewRender {
         let dockInfo = new UITable(this.getViewBlock('dock_information'));
 
         dockInfo
+            .setBorder(true)
+            .setSkin(UITable.SKIN_DARK)
+            .addColumnWidth(50)
+            .addColumnWidth(30)
+            .addColumnWidth(10)
             .addHeadRow()
-            .addCell('Informationasdasdasdsa');
-
-        dockInfo
-            .addHeadRow()
-            .addCell('Information')
-            .addCell('Information')
-            .addCell('Information')
             .addCell('Information');
-
 
         dockInfo
             .addBodyRow()
@@ -86,6 +84,29 @@ class TabDock extends ViewRender {
             .addCell('Coordinates:')
             .addCell('', (cell) => {
                 console.log(cell);
+                let coordinates = new UITable(cell);
+
+                coordinates
+                    .setSize(UITable.SIZE_XS)
+                    .addColumnWidth(1);
+
+                coordinates
+                    .addBodyRow()
+                    .addCell('X')
+                    .addCell(25000);
+
+                coordinates
+                    .addBodyRow()
+                    .addCell('Y')
+                    .addCell(12000);
+
+                coordinates
+                    .addBodyRow()
+                    .addCell('Z')
+                    .addCell(100);
+
+                coordinates.buildCustomTable();
+
             })
             .addCell('btn');
 
