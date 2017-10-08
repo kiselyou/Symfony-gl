@@ -24,15 +24,14 @@
   &__head {
     border-bottom: @border_xs solid @color_base_dark;
     overflow: hidden;
-    margin: @margin_xs;
     padding: @padding_md;
     font-size: @font_size_md !important;
   }
 
   &__body {
-    margin: @margin_xs;
     padding: @padding_md;
     overflow: hidden;
+    background: @background_color_dark;
   }
 
   &_animation {
@@ -45,21 +44,23 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: @background_color_light;
   }
 
   &__foot {
     border-top: @border_xs solid @color_base_dark;
     min-height: 12px;
     overflow: hidden;
-    margin: @margin_xs;
-    padding: @padding_md;
+    padding: @padding_sm;
   }
 
   &_skin {
     &_dark {
-      background: @background_color_dark;
       border: @border_xs solid @color_base;
+
+      & .modal__head,
+      & .modal__foot {
+        background: @background_color_light;
+      }
     }
 
     &_hidden {

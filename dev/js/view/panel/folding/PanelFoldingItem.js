@@ -36,6 +36,13 @@ class PanelFoldingItem {
          * @private
          */
         this._status = false;
+
+        /**
+         *
+         * @type {string}
+         * @private
+         */
+        this._margin = 'mg_xs';
     }
 
     /**
@@ -167,6 +174,15 @@ class PanelFoldingItem {
      */
     get uuid() {
         return this._uuid;
+    }
+
+    /**
+     * Gets margin
+     *
+     * @returns {string}
+     */
+    get margin() {
+        return this._margin;
     }
 }
 

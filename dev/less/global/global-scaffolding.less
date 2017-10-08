@@ -440,3 +440,77 @@ a:focus {
 }
 
 .make-width(w);
+
+.make-margin(@name, @key, @size) {
+  .@{name}_@{key} {
+    margin: @size;
+  }
+
+  .@{name}_h_@{key} {
+    margin-left: @size;
+    margin-right: @size;
+  }
+
+  .@{name}_v_@{key} {
+    margin-top: @size;
+    margin-bottom: @size;
+  }
+
+  .@{name}_l_@{key} {
+    margin-left: @size;
+  }
+
+  .@{name}_r_@{key} {
+    margin-right: @size;
+  }
+
+  .@{name}_t_@{key} {
+    margin-top: @size;
+  }
+
+  .@{name}_b_@{key} {
+    margin-bottom: @size;
+  }
+}
+
+.make-margin(mg, xs, @margin_xs);
+.make-margin(mg, sm, @margin_sm);
+.make-margin(mg, md, @margin_md);
+.make-margin(mg, lg, @margin_lg);
+
+.make-padding(@name, @key, @size) {
+  .@{name}_@{key} {
+    padding: @size;
+  }
+
+  .@{name}_h_@{key} {
+    padding-left: @size;
+    padding-right: @size;
+  }
+
+  .@{name}_v_@{key} {
+    padding-top: @size;
+    padding-bottom: @size;
+  }
+
+  .@{name}_l_@{key} {
+    padding-left: @size;
+  }
+
+  .@{name}_r_@{key} {
+    padding-right: @size;
+  }
+
+  .@{name}_t_@{key} {
+    padding-top: @size;
+  }
+
+  .@{name}_b_@{key} {
+    padding-bottom: @size;
+  }
+}
+
+.make-padding(pd, xs, @padding_xs);
+.make-padding(pd, sm, @padding_sm);
+.make-padding(pd, md, @padding_md);
+.make-padding(pd, lg, @padding_lg);

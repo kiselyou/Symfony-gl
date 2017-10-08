@@ -1,6 +1,7 @@
 import ViewRender from './../../ViewRender';
 import PanelFolding from './../../panel/folding/PanelFolding';
 import UITable from './../../../system/ui/table/UITable';
+import UIButton from './../../../system/ui/form/FFButton';
 
 import {
     VIEW_NAME_TAB_DOCK
@@ -47,7 +48,6 @@ class TabDock extends ViewRender {
             // panels.buildPanels();
 
             this._prepareDockInformation();
-            this._prepareDockInformation();
             this._preparePanels();
 
             this.showView();
@@ -61,29 +61,66 @@ class TabDock extends ViewRender {
         dockInfo
             .setBorder(true)
             .setSkin(UITable.SKIN_DARK)
-            .addColumnWidth(50)
+            .addColumnWidth(55)
             .addColumnWidth(30)
-            .addColumnWidth(10)
+            .addColumnWidth(5)
             .addHeadRow()
             .addCell('Information');
 
         dockInfo
             .addBodyRow()
-            .addCell('Space station name:')
-            .addCell('MyName')
-            .addCell('btn');
-
-        dockInfo
-            .addBodyRow()
-            .addCell('Located in sector:')
-            .addCell('Sector I')
-            .addCell('btn');
-
-        dockInfo
-            .addBodyRow()
-            .addCell('Coordinates:')
             .addCell('', (cell) => {
-                console.log(cell);
+                let btn = new UIButton(cell);
+                btn
+                    .setType(UIButton.TYPE_INFO)
+                    .setSize(UIButton.SIZE_XS)
+                    .setName('Space station name:')
+                    .setTitle('The name of your station')
+                    .buildBtn();
+            })
+            .addCell('MyName')
+            .addCell('', (cell) => {
+                let btn = new UIButton(cell);
+                btn
+                    .setType(UIButton.TYPE_ICON)
+                    .setSize(UIButton.SIZE_XS)
+                    .setIcon('fa-edit')
+                    .buildBtn();
+            });
+
+        dockInfo
+            .addBodyRow()
+            .addCell('', (cell) => {
+                let btn = new UIButton(cell);
+                btn
+                    .setType(UIButton.TYPE_INFO)
+                    .setSize(UIButton.SIZE_XS)
+                    .setName('Located in sector:')
+                    .setTitle('The sector where station is based')
+                    .buildBtn();
+            })
+            .addCell('Sector I')
+            .addCell('', (cell) => {
+                let btn = new UIButton(cell);
+                btn
+                    .setType(UIButton.TYPE_ICON)
+                    .setSize(UIButton.SIZE_XS)
+                    .setIcon('fa-edit')
+                    .buildBtn();
+            });
+
+        dockInfo
+            .addBodyRow()
+            .addCell('', (cell) => {
+                let btn = new UIButton(cell);
+                btn
+                    .setType(UIButton.TYPE_INFO)
+                    .setSize(UIButton.SIZE_XS)
+                    .setName('Coordinates:')
+                    .setTitle('The coordinates of station in the sector')
+                    .buildBtn();
+            })
+            .addCell('', (cell) => {
                 let coordinates = new UITable(cell);
 
                 coordinates
@@ -108,7 +145,7 @@ class TabDock extends ViewRender {
                 coordinates.buildCustomTable();
 
             })
-            .addCell('btn');
+            .addCell('');
 
         dockInfo.buildCustomTable();
     }

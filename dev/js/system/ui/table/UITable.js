@@ -60,6 +60,13 @@ class UITable extends View {
          * @private
          */
         this._size = UITable.SIZE_SM;
+
+        /**
+         *
+         * @type {string}
+         * @private
+         */
+        this._margin = 'mg_xs';
     }
 
     /**
@@ -211,6 +218,7 @@ class UITable extends View {
             skin: this._skin,
             size: this._size,
             border: this._border,
+            margin: this._margin,
             columns: this._columns,
             headRows: this._headRows,
             bodyRows: this._bodyRows,

@@ -26,6 +26,7 @@ class Volume {
      *
      * @param {number} user_id - This is user ID
      * @param {completedQuery} completedQuery
+     * @returns {Volume}
      */
     getSetting(user_id, completedQuery) {
         let sql = `
@@ -38,7 +39,9 @@ class Volume {
               FROM iw_volume 
              WHERE user_id = ?
         `;
+
         this._db.queryRow(sql, [user_id], completedQuery);
+        return this;
     }
 
     /**
