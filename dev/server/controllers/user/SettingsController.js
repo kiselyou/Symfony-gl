@@ -35,8 +35,7 @@ class SettingsController {
                     return;
                 }
 
-                this._server.responseJSON(data ? data : {});
-                return this;
+                // this._server.responseJSON(data ? data : {});
             });
         } else {
             this._server.responseJSON({});

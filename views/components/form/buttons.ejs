@@ -2,20 +2,22 @@
 <% let icon = options['icon'] !== '' ? options['icon'] : null; %>
 <% let name = options['name'] !== '' ? options['name'] : null; %>
 <% let size = options['size'] !== '' ? options['size'] : null; %>
+<% let value = options['value'] !== '' ? options['value'] : null; %>
+<% let id = options['id']; %>
 <% let link = options['link']; %>
 <% let title = options['title'] !== '' ? ('title="' + options['title'] + '"') : ''; %>
 
 <% if (options['type'] === 'link') { %>
 
-    <div class="btn <%= size; %>" <%- title; %>>
+    <div class="btn <%= size; %>" <%- title; %> id="<%= id; %>">
         <a href="<%= link; %>">
 
             <% if (icon) { %>
-                <i><%= icon; %></i>
+                <i class="fa <%= icon; %>"></i>
             <% } %>
 
-            <% if (name) { %>
-                <span><%= name; %></span>
+            <% if (value) { %>
+                <span><%= value; %></span>
             <% } %>
         </a>
     </div>
@@ -23,37 +25,37 @@
 <% } else if (options['type'] === 'info') { %>
 
     <% let iconInfo = icon ? icon : 'fa-info-circle'; %>
-    <div>
+    <div id="<%= id; %>">
         <i class="fa btn_skin_info <%= iconInfo; %> <%= size; %>" <%- title; %>></i>
 
-        <% if (name) { %>
-            <span><%= name; %></span>
+        <% if (value) { %>
+            <span><%= value; %></span>
         <% } %>
 
     </div>
 
 <% } else if (options['type'] === 'icon') { %>
 
-    <div>
+    <div id="<%= id; %>">
         <i class="fa <%= icon ? icon : 'fa-edit'; %> btn btn_skin_link <%= size; %>" <%- title; %>></i>
 
-        <% if (name) { %>
-            <span><%= name; %></span>
+        <% if (value) { %>
+            <span><%= value; %></span>
         <% } %>
 
     </div>
 
 <% } else { %>
 
-    <div class="btn <%= size; %>" <%- title; %>>
+    <div class="btn <%= size; %>" <%- title; %> id="<%= id; %>">
 
         <% if (icon) { %>
-            <i><%= icon; %></i>
+            <i class="fa <%= icon; %>"></i>
         <% } %>
 
 
-        <% if (name) { %>
-            <span><%= name; %></span>
+        <% if (value) { %>
+            <span><%= value; %></span>
         <% } %>
     </div>
 

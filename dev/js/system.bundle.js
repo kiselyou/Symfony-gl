@@ -2,15 +2,12 @@
 import { insertAdjacentElement } from './libs/polyfill/insertAdjacentHTML.polyfill';
 HTMLElement.prototype.insertAdjacentElement = HTMLElement.prototype.insertAdjacentElement || insertAdjacentElement;
 
-import InitScene from './play/scene/InitScene';
 import ViewBundle from './view/ViewBundle';
+import User from './system/user/User';
 
 let view = new ViewBundle();
 view.initSecurityForm();
 
-let sceneControls = InitScene.get();
-
-sceneControls
+User.get()
     .setBackground('/src/img/background/default.jpg')
-    .render()
-    .show();
+    .initScene();

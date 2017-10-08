@@ -1,0 +1,40 @@
+<% let formClass = 'form'; %>
+<% formClass += options['size'] !== '' ? (' ' + options['size']) : ''; %>
+<% formClass += options['skin'] !== '' ? (' ' + options['skin']) : ''; %>
+<% formClass += options['hidden'] ? ' hidden' : ''; %>
+
+
+<div class="<%= formClass; %>">
+
+    <% if (options['label']) { %>
+        <label for="<%= options['id']; %>">
+            <span><%= options['label']; %>:</span>
+
+            <% if (options['required']) { %>
+                <span class="star">*</span>
+            <% } %>
+
+        </label>
+    <% } %>
+
+    <% if (options['readOnly']) { %>
+
+        <span id="<%= options['id']; %>"><%= options['value']; %></span>
+
+    <% } else { %>
+
+        <% if (options['hidden']) { %>
+
+            <input type="hidden" id="<%= options['id']; %>" name="<%= options['name']; %>" value="<%= options['value']; %>">
+
+        <% } else { %>
+
+            <% let placeholder = options['placeholder'] !== '' ? ('placeholder="' + options['placeholder'] + '"') : '' %>
+            <% let req =  options['required'] ? 'required' : ''; %>
+
+            <input type="text" id="<%= options['id']; %>" name="<%= options['name']; %>" value="<%= options['value']; %>" <%- placeholder; %> <%- req; %>>
+
+        <% } %>
+
+    <% } %>
+</div>

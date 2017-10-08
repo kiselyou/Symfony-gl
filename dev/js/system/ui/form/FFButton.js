@@ -1,4 +1,5 @@
 import View from './../../../view/View';
+import uuidv4 from 'uuid/v4';
 import {
     VIEW_NAME_BUTTONS
 } from './../../../ini/ejs.ini';
@@ -10,6 +11,8 @@ class FFButton extends View {
      */
     constructor(container) {
         super(container);
+
+        const ID = uuidv4();
 
         /**
          *
@@ -23,7 +26,21 @@ class FFButton extends View {
          * @type {string}
          * @private
          */
-        this._name = '';
+        this._name = ID;
+
+        /**
+         *
+         * @type {string}
+         * @private
+         */
+        this._id = ID;
+
+        /**
+         *
+         * @type {string}
+         * @private
+         */
+        this._value = '';
 
         /**
          *
@@ -120,11 +137,31 @@ class FFButton extends View {
 
     /**
      *
+     * @param {string} value
+     * @returns {FFButton}
+     */
+    setID(value) {
+        this._id = value;
+        return this;
+    }
+
+    /**
+     *
      * @param {string} name
      * @returns {FFButton}
      */
     setName(name) {
         this._name = name;
+        return this;
+    }
+
+    /**
+     *
+     * @param {string} value
+     * @returns {FFButton}
+     */
+    setValue(value) {
+        this._value = value;
         return this;
     }
 
@@ -178,8 +215,23 @@ class FFButton extends View {
         return this;
     }
 
+    /**
+     *
+     * @returns {FFButton}
+     */
     buildBtn() {
         this._startBuild();
+        return this;
+    }
+
+    /**
+     *
+     * @param {string} event
+     * @param {function} listener
+     * @returns {FFButton}
+     */
+    addEvent(event, listener) {
+        this.getView().addEvent(event, listener);
         return this;
     }
 
@@ -202,11 +254,13 @@ class FFButton extends View {
      */
     _prepareOptions() {
         this.viewOptions = {
+            id: this._id,
             type: this._type,
             name: this._name,
             icon: this._icon,
             link: this._link,
             size: this._size,
+            value: this._value,
             title: this._title
         };
     }

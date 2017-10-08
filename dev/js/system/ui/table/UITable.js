@@ -45,14 +45,14 @@ class UITable extends View {
          * @type {?string}
          * @private
          */
-        this._border = null;
+        this._border = '';
 
         /**
          *
          * @type {?string}
          * @private
          */
-        this._skin = null;
+        this._skin = '';
 
         /**
          *

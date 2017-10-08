@@ -2,23 +2,23 @@
 import ejs from 'ejs';
 import uuidv4 from 'uuid/v4';
 import UIElement from './../system/ui/UIElement';
+import UIMainElement from './../system/ui/UIMainElement';
+
 import ViewBuffer from './ViewBuffer';
 
-class View extends ViewBuffer {
+class View {
     /**
      *
      * @param {Element|UIElement|string} [container] - It can be Element or selector of container
      */
     constructor(container) {
 
-        super();
-
         /**
          * It is name of template
          *
          * @type {string}
          */
-        this.name = uuidv4();
+        this._nameView = uuidv4();
 
         /**
          * It is element which will have templates
@@ -91,7 +91,7 @@ class View extends ViewBuffer {
      * @constructor
      */
     static get MAIN_CONTAINER_ID() {
-        return '#initialisation_main_elements';
+        return UIMainElement.MAIN_CONTAINER_ID;
     }
 
     /**
@@ -305,7 +305,7 @@ class View extends ViewBuffer {
      * @private
      */
     _createElement() {
-        return new UIElement().hideElement().setNameElement(this.name);
+        return new UIElement().hideElement().setNameElement(this._nameView);
     }
 
     /**
@@ -352,7 +352,7 @@ class View extends ViewBuffer {
      * @returns {string} - This is template as string
      */
     getStrView(viewName) {
-        let template = this.findInBuffer(viewName);
+        let template = ViewBuffer.get(viewName);
         if (template) {
             return this.renderEJS(template, this._viewParams);
         } else {

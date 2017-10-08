@@ -2,6 +2,7 @@ import ViewRender from './../../ViewRender';
 import PanelFolding from './../../panel/folding/PanelFolding';
 import UITable from './../../../system/ui/table/UITable';
 import UIButton from './../../../system/ui/form/FFButton';
+import FFInputText from './../../../system/ui/form/FFInputText';
 
 import {
     VIEW_NAME_TAB_DOCK
@@ -27,31 +28,17 @@ class TabDock extends ViewRender {
         this.autoCleanContainer(true);
         this.upload(() => {
 
-            // let panels = new PanelFolding(this.getViewBlock('folding'));
-            //
-            // panels
-            //     .addPanel('General', 'fa-info-circle')
-            //     .open(true)
-            //     .setContent((panelContent) => {
-            //         console.log(panelContent);
-            //
-            //     });
-            //
-            // panels
-            //     .addPanel('Attack', 'fa-rocket')
-            //     .setContent('asdasd');
-            //
-            // panels
-            //     .addPanel('Armor', 'fa-shield')
-            //     .setContent('asdasd');
-            //
-            // panels.buildPanels();
-
+            this._playBtn();
             this._prepareDockInformation();
             this._preparePanels();
 
             this.showView();
         });
+        return this;
+    }
+
+    _playBtn() {
+        this.app.user.addBtnPlay(this.getViewBlock('dock_panel_buttons'));
         return this;
     }
 
@@ -62,7 +49,7 @@ class TabDock extends ViewRender {
             .setBorder(true)
             .setSkin(UITable.SKIN_DARK)
             .addColumnWidth(55)
-            .addColumnWidth(30)
+            .addColumnWidth(40)
             .addColumnWidth(5)
             .addHeadRow()
             .addCell('Information');
@@ -74,11 +61,19 @@ class TabDock extends ViewRender {
                 btn
                     .setType(UIButton.TYPE_INFO)
                     .setSize(UIButton.SIZE_XS)
-                    .setName('Space station name:')
+                    .setValue('Space station name:')
                     .setTitle('The name of your station')
                     .buildBtn();
             })
-            .addCell('MyName')
+            .addCell('', (cell) => {
+                let field = new FFInputText(cell);
+
+                field
+                    .setReadOnly(true)
+                    .setName('station_name')
+                    .setValue('MyName')
+                    .buildField();
+            })
             .addCell('', (cell) => {
                 let btn = new UIButton(cell);
                 btn
@@ -95,11 +90,19 @@ class TabDock extends ViewRender {
                 btn
                     .setType(UIButton.TYPE_INFO)
                     .setSize(UIButton.SIZE_XS)
-                    .setName('Located in sector:')
+                    .setValue('Located in sector:')
                     .setTitle('The sector where station is based')
                     .buildBtn();
             })
-            .addCell('Sector I')
+            .addCell('', (cell) => {
+                let field = new FFInputText(cell);
+
+                field
+                    .setReadOnly(true)
+                    .setName('sector_name')
+                    .setValue('Sector I')
+                    .buildField();
+            })
             .addCell('', (cell) => {
                 let btn = new UIButton(cell);
                 btn
@@ -116,7 +119,7 @@ class TabDock extends ViewRender {
                 btn
                     .setType(UIButton.TYPE_INFO)
                     .setSize(UIButton.SIZE_XS)
-                    .setName('Coordinates:')
+                    .setValue('Coordinates:')
                     .setTitle('The coordinates of station in the sector')
                     .buildBtn();
             })

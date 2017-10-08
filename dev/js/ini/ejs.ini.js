@@ -51,3 +51,6 @@ VIEW_PATH[VIEW_NAME_CUSTOM_TABLE] = '/components/table/custom_table.ejs';
 
 export const VIEW_NAME_BUTTONS = 'buttons';
 VIEW_PATH[VIEW_NAME_BUTTONS] = '/components/form/buttons.ejs';
+
+export const VIEW_NAME_INPUT_TEXT = 'input_text';
+VIEW_PATH[VIEW_NAME_INPUT_TEXT] = '/components/form/input_text.ejs';

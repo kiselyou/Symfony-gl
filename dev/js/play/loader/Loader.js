@@ -168,6 +168,7 @@ class Loader extends Application {
 
     /**
      *
+     * @param {Loader}
      * @callback loadCompleted
      */
 

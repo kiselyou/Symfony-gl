@@ -1,4 +1,7 @@
-
+import InitScene from './../../play/scene/InitScene';
+import UIMainElement from './../ui/UIMainElement';
+// import Load from './../../play/loader/Loader';
+import UIButton from './../ui/form/FFButton';
 import SettingVolume from './SettingVolume';
 import UIMessage from './../ui/UIMessage';
 import Ajax from './../Ajax';
@@ -21,6 +24,20 @@ class User {
          * @private
          */
         this._volume = new SettingVolume();
+
+        /**
+         *
+         * @type {InitScene}
+         * @private
+         */
+        this._scene = InitScene.get();
+
+        /**
+         *
+         * @type {Loader}
+         * @private
+         */
+        // this._loaderModels = Load.get();
     }
 
     /**
@@ -88,6 +105,59 @@ class User {
             .catch((error) => {
                 this._msg.alert('Cannot save user data');
             });
+    }
+
+    /**
+     *
+     * @param {UIElement} container
+     * @returns {User}
+     */
+    addBtnPlay(container) {
+        let btn = new UIButton(container);
+        btn
+            .setValue('Start')
+            .setIcon('fa-play')
+            .addEvent('click', (e) => {
+                UIMainElement.get().container.hideElement(true);
+                // this._loaderModels.load((loader) => {
+                //
+                    console.log('+++++');
+                //     // loader.
+                // });
+                this.getScene().removeBackground();
+            })
+            .buildBtn();
+        return this;
+    }
+
+    /**
+     *
+     * @returns {InitScene}
+     */
+    getScene() {
+        return this._scene;
+    }
+
+    /**
+     *
+     * @returns {User}
+     */
+    setBackground(url) {
+        this
+            .getScene()
+            .setBackground(url);
+        return this;
+    }
+
+    /**
+     *
+     * @returns {User}
+     */
+    initScene() {
+        this.getScene()
+            .render()
+            .show();
+        return this;
     }
 }
 
