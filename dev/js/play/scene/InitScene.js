@@ -181,10 +181,11 @@ class InitScene {
     /**
      * Remove background
      *
+     * @param {function} [listener]
      * @returns {InitScene}
      */
-    removeBackground() {
-        this._bg.remove();
+    removeBackground(listener) {
+        this._bg.remove(listener);
         return this;
     }
 
@@ -257,6 +258,12 @@ class InitScene {
             let renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
             // renderer.setClearColor(this.scene.fog.color);
             renderer.setPixelRatio(window.devicePixelRatio);
+            // renderer.setClearColor(0x242a34);
+            // renderer.shadowMap.enabled = true;
+            // renderer.shadowMap.renderReverseSided = false;
+            // renderer.autoClear = false;
+            // renderer.gammaInput = true;
+            // renderer.gammaOutput = true;
             return renderer;
         }
         return null;

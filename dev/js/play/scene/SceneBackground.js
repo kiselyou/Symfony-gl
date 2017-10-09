@@ -109,14 +109,18 @@ class SceneBackground {
     /**
      * Remove background
      *
+     * @param {function} [listener] - Call this function when background is removed
      * @returns {SceneBackground}
      */
-    remove() {
+    remove(listener) {
         this.removeLogo();
         if (this._backgroundActive) {
             this.hide(this._backgroundMesh, () => {
                 this._scene.remove(this._backgroundMesh);
                 this._backgroundActive = false;
+                if (listener) {
+                    listener();
+                }
             });
         }
         return this;
@@ -139,7 +143,7 @@ class SceneBackground {
                     listener();
                 }
             }
-        }, 25);
+        }, 15);
     }
 
     /**
