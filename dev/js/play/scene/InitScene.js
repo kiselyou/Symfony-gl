@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import SceneBackground from './SceneBackground';
 import OrbitControls from './../controls/OrbitControls';
+import PlayerModel from './../player/PlayerModel';
 
 let scene = null;
 
@@ -84,7 +85,31 @@ class InitScene {
          * @private
          */
         this._orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+        this._orbitControls.mouseButtons = {
+            ORBIT: THREE.MOUSE.RIGHT,
+            ZOOM: THREE.MOUSE.MIDDLE,
+            PAN: THREE.MOUSE.LEFT
+        };
         this._orbitControls.enabled = false;
+        this._orbitControls.enablePan = false;
+        this._orbitControls.enableKeys = false;
+        this._orbitControls.minDistance = 1000;
+        this._orbitControls.maxDistance = 3600;
+
+        /**
+         *
+         * @type {PlayerModel}
+         * @private
+         */
+        this._playerModel = new PlayerModel(this.scene);
+    }
+
+    /**
+     *
+     * @returns {PlayerModel}
+     */
+    playerModel() {
+        return this._playerModel;
     }
 
     /**
@@ -331,6 +356,11 @@ class InitScene {
             }
             this._bg.update();
             this._renderControls();
+
+            if (this._playerModel.position) {
+                this._orbitControls.target = this._playerModel.position;
+            }
+
             this._orbitControls.update();
         });
     }

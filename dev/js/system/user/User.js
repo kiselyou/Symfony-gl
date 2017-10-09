@@ -124,15 +124,16 @@ class User {
             .addEvent('click', (e) => {
                 this._loaderModels.load((loader) => {
 
-                    let model = loader.getModel(MODEL_DEFAULT);
-                    model.position.y = -200;
-                    model.position.z = -2500;
-                    model.rotation.x = 0.3;
+                    let mesh = loader.getModel(MODEL_DEFAULT);
+                    mesh.position.set(0, -200, -2500);
+                    mesh.rotation.set(0.3, 0, 0);
+
                     this.getScene()
                         .controlsEnabled(true)
-                        .add(model);
-                    UIMainElement.get().container.hideElement(true);
+                        .playerModel()
+                        .setModel(mesh);
 
+                    UIMainElement.get().container.hideElement(true);
                 });
                 this.getScene().removeBackground();
             })
