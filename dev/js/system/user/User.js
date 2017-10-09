@@ -1,10 +1,14 @@
 import InitScene from './../../play/scene/InitScene';
 import UIMainElement from './../ui/UIMainElement';
-// import Load from './../../play/loader/Loader';
+import Load from './../../play/loader/Loader';
 import UIButton from './../ui/form/FFButton';
 import SettingVolume from './SettingVolume';
 import UIMessage from './../ui/UIMessage';
 import Ajax from './../Ajax';
+
+import {
+    MODEL_DEFAULT
+} from './../../ini/obj.ini';
 
 let user = null;
 
@@ -37,7 +41,7 @@ class User {
          * @type {Loader}
          * @private
          */
-        // this._loaderModels = Load.get();
+        this._loaderModels = Load.get();
     }
 
     /**
@@ -118,12 +122,16 @@ class User {
             .setValue('Start')
             .setIcon('fa-play')
             .addEvent('click', (e) => {
-                UIMainElement.get().container.hideElement(true);
-                // this._loaderModels.load((loader) => {
-                //
-                    console.log('+++++');
-                //     // loader.
-                // });
+                this._loaderModels.load((loader) => {
+
+                    let model = loader.getModel(MODEL_DEFAULT);
+                    model.position.y = -200;
+                    model.position.z = -1500;
+                    model.rotation.x = 0.3;
+                    this.getScene().add(model);
+                    UIMainElement.get().container.hideElement(true);
+
+                });
                 this.getScene().removeBackground();
             })
             .buildBtn();

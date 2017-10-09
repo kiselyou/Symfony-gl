@@ -1,14 +1,14 @@
 import * as THREE from 'three';
+import Ajax from './../../system/Ajax';
+import ProgressAjax from './../../system/progress/ProgressAjax';
+import UIMessage from './../../system/ui/UIMessage';
 import MTLLoader from './MTLLoader';
 import OBJLoader from './OBJLoader';
-import ProgressAjax from './../../system/progress/ProgressAjax';
-import Application from './../../system/Application';
 
 let loader = null;
 
-class Loader extends Application {
+class Loader {
     constructor() {
-        super();
 
         /**
          *
@@ -69,6 +69,20 @@ class Loader extends Application {
          * @private
          */
         this._tempNames = [];
+
+        /**
+         *
+         * @type {Ajax}
+         * @private
+         */
+        this._ajax = new Ajax();
+
+        /**
+         *
+         * @type {UIMessage}
+         * @private
+         */
+        this._msg = new UIMessage();
 
         this._iniManager();
     }
@@ -180,7 +194,7 @@ class Loader extends Application {
      */
     _start(params) {
         this._cleanTempOptions();
-        this.ajax
+        this._ajax
             .post('/load/obj', params)
             .then((json) => {
                 try {
@@ -191,12 +205,12 @@ class Loader extends Application {
 
                 } catch (e) {
                     console.log(e);
-                    this.msg.alert('Cannot load models');
+                    this._msg.alert('Cannot load models');
                 }
             })
             .catch((e) => {
                 console.log(e);
-                this.msg.alert('Cannot load models');
+                this._msg.alert('Cannot load models');
             });
         return this;
     }
@@ -223,7 +237,7 @@ class Loader extends Application {
                 });
             } else {
                 this._addModel(name, this._obj.parse(model));
-                this.msg.alert('The path to MTL file is not correct');
+                this._msg.alert('The path to MTL file is not correct');
             }
         } else {
             this._addModel(name, this._obj.parse(model));
