@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import SceneBackground from './SceneBackground';
+import OrbitControls from './../controls/OrbitControls';
 
 let scene = null;
 
@@ -77,6 +78,23 @@ class InitScene {
          */
         this._bg = new SceneBackground(this.scene);
 
+        /**
+         *
+         * @type {OrbitControls}
+         * @private
+         */
+        this._orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+        this._orbitControls.enabled = false;
+    }
+
+    /**
+     *
+     * @param {boolean} enabled
+     * @returns {InitScene}
+     */
+    controlsEnabled(enabled) {
+        this._orbitControls.enabled = enabled;
+        return this;
     }
 
     /**
@@ -313,6 +331,7 @@ class InitScene {
             }
             this._bg.update();
             this._renderControls();
+            this._orbitControls.update();
         });
     }
 }

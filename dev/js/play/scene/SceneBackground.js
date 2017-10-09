@@ -114,9 +114,43 @@ class SceneBackground {
     remove() {
         this.removeLogo();
         if (this._backgroundActive) {
-            this._scene.remove(this._backgroundMesh);
-            this._backgroundActive = false;
+            this.hide(this._backgroundMesh, () => {
+                this._scene.remove(this._backgroundMesh);
+                this._backgroundActive = false;
+            });
         }
+        return this;
+    }
+
+    /**
+     *
+     * @param {Mesh|Group} mesh
+     * @param {function} listener
+     */
+    hide(mesh, listener) {
+        let start = 1;
+        let idInterval = setInterval(() => {
+            start -= 0.01;
+            this.setOpacity(mesh, start);
+            if (start <= 0) {
+                this.setOpacity(mesh, 0);
+                clearInterval(idInterval);
+                if (listener) {
+                    listener();
+                }
+            }
+        }, 25);
+    }
+
+    /**
+     *
+     * @param {Mesh|Group} mesh
+     * @param {number} value
+     * @returns {SceneBackground}
+     */
+    setOpacity(mesh, value) {
+        mesh.material.transparent = true;
+        mesh.material.opacity = value;
         return this;
     }
 

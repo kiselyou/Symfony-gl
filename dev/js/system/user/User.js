@@ -126,9 +126,11 @@ class User {
 
                     let model = loader.getModel(MODEL_DEFAULT);
                     model.position.y = -200;
-                    model.position.z = -1500;
+                    model.position.z = -2500;
                     model.rotation.x = 0.3;
-                    this.getScene().add(model);
+                    this.getScene()
+                        .controlsEnabled(true)
+                        .add(model);
                     UIMainElement.get().container.hideElement(true);
 
                 });
