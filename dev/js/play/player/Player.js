@@ -51,8 +51,8 @@ class Player extends PlayerSettings {
 	    this._orbitControls.enabled = false;
 	    this._orbitControls.enablePan = false;
 	    this._orbitControls.enableKeys = false;
-	    this._orbitControls.minDistance = 300;
-	    this._orbitControls.maxDistance = 3000;
+	    this._orbitControls.minDistance = 500;
+	    this._orbitControls.maxDistance = 2500;
     }
 
 	/**

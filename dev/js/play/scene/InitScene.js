@@ -24,14 +24,14 @@ class InitScene {
          * @type {Scene}
          */
         this._scene = new THREE.Scene();
-        this._scene.fog = new THREE.Fog(0xffffff, 2500, 3500);
+        // this._scene.fog = new THREE.Fog(0xffffff, 2500, 3500);
 
         /**
          *
          * @type {PerspectiveCamera}
          */
-        this._camera = new THREE.PerspectiveCamera(30, InitScene.aspect, 0.1, 10000);
-        this._camera.position.set(0, 0, 700);
+        this._camera = new THREE.PerspectiveCamera(40, InitScene.aspect, 0.1, 150000);
+        this._camera.position.set(0, 0, 1000);
         this._camera.lookAt(this._scene.position);
 
         /**
@@ -45,7 +45,7 @@ class InitScene {
          * @type {HemisphereLight|THREE.HemisphereLight}
          */
         this.hemisphereLight = new THREE.HemisphereLight(0x666666, 0x666666, 0.5);
-        this.hemisphereLight.position.set(0, 500, 0);
+        this.hemisphereLight.position.set(0, 1500, 0);
         this._scene.add(this.hemisphereLight);
 
         /**
@@ -61,7 +61,7 @@ class InitScene {
          * @type {PointLight|THREE.PointLight}
          */
         this.pointLight = new THREE.PointLight(0xffffff, 1);
-        this.pointLight.position.set(0, 500, 0);
+        this.pointLight.position.set(0, 1500, 0);
         this._scene.add(this.pointLight);
 
         /**
@@ -173,11 +173,12 @@ class InitScene {
     /**
      * Remove background
      *
+     * @param {boolean} animate
      * @param {function} [listener]
      * @returns {InitScene}
      */
-    removeBackground(listener) {
-        this._bg.remove(listener);
+    removeBackground(animate, listener) {
+        this._bg.remove(animate, listener);
         return this;
     }
 
