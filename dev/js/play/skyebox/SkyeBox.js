@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import Shader from './../../shaders/Shader';
+import IMGLoader from '../loader/IMGLoader';
 
 
 class SkyeBox {
@@ -21,21 +22,21 @@ class SkyeBox {
          * @type {number}
          * @private
          */
-        this._width = 5000;
+        this._size = 3000;
 
-        /**
-         *
-         * @type {number}
-         * @private
-         */
-        this._height = 5000;
+	    /**
+	     *
+	     * @type {number}
+	     * @private
+	     */
+	    this._wSegments = 25;
 
-        /**
-         *
-         * @type {number}
-         * @private
-         */
-        this._depth = 5000;
+	    /**
+	     *
+	     * @type {number}
+	     * @private
+	     */
+	    this._hSegments = 25;
 
         /**
          *
@@ -44,28 +45,27 @@ class SkyeBox {
          */
         this._environment = null;
 
-        /**
-         *
-         * @type {Array}
-         * @private
-         */
-        this._sides = [
-            './src/img/background/default.jpg',
-            './src/img/background/default.jpg',
-            './src/img/background/default.jpg',
-            './src/img/background/default.jpg',
-            './src/img/background/default.jpg',
-            './src/img/background/default.jpg'
-        ];
+	    /**
+	     *
+	     * @type {IMGLoader}
+	     * @private
+	     */
+	    this._textureLoader = IMGLoader.get();
 
-        /**
-         *
-         * @type {Vector3}
-         * @private
-         */
-        this._position = new THREE.Vector3();
+	    /**
+	     *
+	     * @type {boolean}
+	     * @private
+	     */
+	    this._isEnv = false;
+    }
 
-        this._skyCover = null;
+	/**
+	 *
+	 * @return {boolean}
+	 */
+	get isEnv() {
+    	return this._isEnv;
     }
 
     /**
@@ -74,25 +74,21 @@ class SkyeBox {
      * @returns {SkyeBox}
      */
     setPosition(value) {
-        this._environment.position.x = value.x;// / 2;
-        this._environment.position.y = value.y;// / 2;
-        this._environment.position.z = value.z;// / 2;
+	    this._environment.position.copy(value);
         return this;
     }
 
     /**
+     * Build environment and add to scene
      *
+     * @param {string} path
      * @returns {SkyeBox}
      */
-    buildEnvironment() {
-
-	    let skyGeo = new THREE.SphereGeometry(3000, 25, 25);
-	    let loader  = new THREE.TextureLoader(),
-		    texture = loader.load('./src/img/skybox/005_space.jpg');
-
+    buildEnv(path) {
+	    this.removeEnv();
 	    let material = new THREE.ShaderMaterial({
 		    uniforms: {
-			    texture: {type: 't', value: texture}
+			    texture: {type: 't', value: this._textureLoader.find(path)}
 		    },
 		    vertexShader: Shader.get().add(`
 		        varying vec2 vUV;
@@ -114,48 +110,26 @@ class SkyeBox {
 		    `).getContent()
 	    });
 
-	    this._environment = new THREE.Mesh(skyGeo, material);
+	    this._environment = new THREE.Mesh(new THREE.SphereGeometry(this._size, this._wSegments, this._hSegments), material);
 	    this._environment.scale.set(-1, 1, 1);
 	    this._environment.rotation.order = 'XZY';
-	    this._environment.renderDepth = 5000.0;
+	    this._environment.renderDepth = this._size;
 	    this._scene.add(this._environment);
-
-
-
-
-
-
-        // let material = new THREE.MeshPhongMaterial({map: texture});
-        // this._environment = new THREE.Mesh(skyGeo, material);
-        // this._environment.material.side = THREE.BackSide;
-        // this._scene.add(this._environment);
-
-
-
-
-        // let materials = [];
-        // for (let side of this._sides) {
-        //     let texture = new THREE.TextureLoader().load(side);
-        //     texture.wrapS = THREE.RepeatWrapping;
-        //     texture.wrapT = THREE.RepeatWrapping;
-        //     // texture.repeat.set(3, 3);
-        //
-        //     let material = new THREE.MeshBasicMaterial();
-        //     material.map = texture;
-        //     material.side = THREE.BackSide;
-        //     materials.push(material);
-        // }
-        //
-        // let geometry = new THREE.BoxGeometry(this._width, this._height, this._depth, 1, 1, 1);
-        // this._environment = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
-        // this._scene.add(this._environment);
+	    this._isEnv = true;
         return this;
     }
 
-    update() {
-        // if (this._skyCover) {
-        //     this._skyCover.rotation.y += 0.00001;
-        // }
+	/**
+	 * Remove SkyBox from the scene
+	 *
+	 * @returns {SkyeBox}
+	 */
+	removeEnv() {
+    	if (this._isEnv) {
+		    this._scene.remove(this._environment);
+		    this._isEnv = false;
+	    }
+	    return this;
     }
 }
 

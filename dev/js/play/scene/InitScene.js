@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import SceneBackground from './SceneBackground';
 import OrbitControls from './../controls/OrbitControls';
 import PlayerModel from './../player/PlayerModel';
-import SkyBox from './../skyebox/SkyeBox';
 
 let scene = null;
 
@@ -94,8 +93,8 @@ class InitScene {
         this._orbitControls.enabled = false;
         this._orbitControls.enablePan = false;
         this._orbitControls.enableKeys = false;
-        this._orbitControls.minDistance = 100;
-        this._orbitControls.maxDistance = 1000;
+        this._orbitControls.minDistance = 300;
+        this._orbitControls.maxDistance = 3000;
 
         /**
          *
@@ -104,8 +103,8 @@ class InitScene {
          */
         this._playerModel = new PlayerModel(this.scene);
 
-        this._sky = new SkyBox(this.scene);
-        this._sky.buildEnvironment();
+        this._grid = new THREE.GridHelper(1500, 50, 0xcccccc, 0xcccccc);
+	    this.scene.add(this._grid);
     }
 
     /**
@@ -368,10 +367,9 @@ class InitScene {
             this._bg.update();
             this._renderControls();
 
-            if (this._playerModel.position) {
+            if (this._playerModel.isModel) {
                 this._orbitControls.target = this._playerModel.position;
-                this._sky.setPosition(this._playerModel.position);
-                this._sky.update();
+	            this._playerModel.update();
             }
 
             this._orbitControls.update();

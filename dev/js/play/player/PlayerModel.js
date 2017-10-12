@@ -1,4 +1,6 @@
 
+import SkyBox from './../skyebox/SkyeBox';
+
 class PlayerModel {
     /**
      *
@@ -27,6 +29,13 @@ class PlayerModel {
          * @private
          */
         this._isModelOnScene = false;
+
+	    /**
+         *
+	     * @type {SkyeBox}
+	     * @private
+	     */
+	    this._sky = new SkyBox(this._scene);
     }
 
     /**
@@ -38,7 +47,11 @@ class PlayerModel {
         return this._model;
     }
 
-    get position() {
+	/**
+     *
+	 * @return {?Vector3}
+	 */
+	get position() {
         return this._isModelOnScene ? this._model.position : null;
     }
 
@@ -52,7 +65,7 @@ class PlayerModel {
     }
 
     /**
-     * Set model and add it to scene
+     * Set model and add it to the scene
      *
      * @param {Mesh|Group} mesh
      * @returns {PlayerModel}
@@ -76,6 +89,36 @@ class PlayerModel {
         this._scene.remove(this._model);
         this._isModelOnScene = false;
         return this;
+    }
+
+	/**
+     * Set Environment to the scene
+     *
+	 * @param {string} path
+	 * @returns {PlayerModel}
+	 */
+	setEnv(path) {
+	    this._sky.buildEnv(path);
+	    return this;
+    }
+
+	/**
+	 * Remove Environment from the scene
+	 *
+	 * @returns {PlayerModel}
+	 */
+	removeEnv() {
+		this._sky.removeEnv();
+		return this;
+	}
+
+	/**
+     * @returns {void}
+	 */
+	update() {
+	    if (this._model) {
+		    this._sky.setPosition(this._model.position);
+	    }
     }
 }
 
