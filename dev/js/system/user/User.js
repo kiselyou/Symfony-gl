@@ -1,14 +1,9 @@
-import InitScene from './../../play/scene/InitScene';
+import PlayerControls from './../../play/player/PlayerControls';
 import UIMainElement from './../ui/UIMainElement';
-import Load from './../../play/loader/Loader';
 import UIButton from './../ui/form/FFButton';
 import SettingVolume from './SettingVolume';
 import UIMessage from './../ui/UIMessage';
 import Ajax from './../Ajax';
-
-import {
-    MODEL_DEFAULT
-} from './../../ini/obj.ini';
 
 let user = null;
 
@@ -29,19 +24,12 @@ class User {
          */
         this._volume = new SettingVolume();
 
-        /**
+	    /**
          *
-         * @type {InitScene}
-         * @private
-         */
-        this._scene = InitScene.get();
-
-        /**
-         *
-         * @type {Loader}
-         * @private
-         */
-        this._loaderModels = Load.get();
+	     * @type {PlayerControls}
+	     * @private
+	     */
+        this._player = new PlayerControls();
     }
 
     /**
@@ -122,26 +110,12 @@ class User {
             .setValue('Start')
             .setIcon('fa-play')
             .addEvent('click', (e) => {
-                this._loaderModels.load((loader) => {
 
-                    let mesh = loader.getModel(MODEL_DEFAULT);
-                    mesh.position.set(0, 0, 0);
-                    mesh.scale.set(0.2, 0.2, 0.2);
+	            this._player.load(() => {
 
-                    let scene = this.getScene();
-                    scene.controlsEnabled(true);
+		            UIMainElement.get().container.hideElement(true);
 
-	                let player = scene.playerModel();
-
-	                player
-                        .setEnv('./src/img/skybox/004_space.jpg')
-		                .setModel(mesh);
-
-                    UIMainElement.get().container.hideElement(true);
-
-                    this
-                        .getScene()
-                        .removeBackground();
+		            this._player.initScene.removeBackground();
                 });
             })
             .buildBtn();
@@ -150,20 +124,10 @@ class User {
 
     /**
      *
-     * @returns {InitScene}
-     */
-    getScene() {
-        return this._scene;
-    }
-
-    /**
-     *
      * @returns {User}
      */
-    setBackground(url) {
-        this
-            .getScene()
-            .setBackground(url);
+    setBackground() {
+	    this._player.initScene.setBackground(this._player.background);
         return this;
     }
 
@@ -172,9 +136,7 @@ class User {
      * @returns {User}
      */
     initScene() {
-        this.getScene()
-            .render()
-            .show();
+	    this._player.initScene.render().show();
         return this;
     }
 }

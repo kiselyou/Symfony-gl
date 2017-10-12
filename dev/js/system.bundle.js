@@ -9,5 +9,5 @@ let view = new ViewBundle();
 view.initSecurityForm();
 
 User.get()
-    .setBackground('/src/img/background/default.jpg')
+    .setBackground()
     .initScene();

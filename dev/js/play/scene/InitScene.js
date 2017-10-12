@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import SceneBackground from './SceneBackground';
-import OrbitControls from './../controls/OrbitControls';
-import PlayerModel from './../player/PlayerModel';
+// import OrbitControls from './../controls/OrbitControls';
 
 let scene = null;
 
@@ -24,22 +23,22 @@ class InitScene {
          *
          * @type {Scene}
          */
-        this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.Fog(0xffffff, 2500, 3500);
+        this._scene = new THREE.Scene();
+        this._scene.fog = new THREE.Fog(0xffffff, 2500, 3500);
 
         /**
          *
          * @type {PerspectiveCamera}
          */
-        this.camera = new THREE.PerspectiveCamera(30, InitScene.aspect, 0.1, 10000);
-        this.camera.position.set(0, 0, 700);
-        this.camera.lookAt(this.scene.position);
+        this._camera = new THREE.PerspectiveCamera(30, InitScene.aspect, 0.1, 10000);
+        this._camera.position.set(0, 0, 700);
+        this._camera.lookAt(this._scene.position);
 
         /**
          *
          * @type {?WebGLRenderer}
          */
-        this.renderer = this._webGLRenderer();
+        this._renderer = this._webGLRenderer();
 
         /**
          *
@@ -47,7 +46,7 @@ class InitScene {
          */
         this.hemisphereLight = new THREE.HemisphereLight(0x666666, 0x666666, 0.5);
         this.hemisphereLight.position.set(0, 500, 0);
-        this.scene.add(this.hemisphereLight);
+        this._scene.add(this.hemisphereLight);
 
         /**
          *
@@ -55,7 +54,7 @@ class InitScene {
          */
         this.directionalLight = new THREE.DirectionalLight(0x333333, 1);
         this.directionalLight.position.set(0, 0, 1).normalize();
-        this.scene.add(this.directionalLight);
+        this._scene.add(this.directionalLight);
 
         /**
          *
@@ -63,7 +62,7 @@ class InitScene {
          */
         this.pointLight = new THREE.PointLight(0xffffff, 1);
         this.pointLight.position.set(0, 500, 0);
-        this.scene.add(this.pointLight);
+        this._scene.add(this.pointLight);
 
         /**
          *
@@ -77,52 +76,42 @@ class InitScene {
          * @type {SceneBackground}
          * @private
          */
-        this._bg = new SceneBackground(this.scene);
-
-        /**
-         *
-         * @type {OrbitControls}
-         * @private
-         */
-        this._orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
-        this._orbitControls.mouseButtons = {
-            ORBIT: THREE.MOUSE.RIGHT,
-            ZOOM: THREE.MOUSE.MIDDLE,
-            PAN: THREE.MOUSE.LEFT
-        };
-        this._orbitControls.enabled = false;
-        this._orbitControls.enablePan = false;
-        this._orbitControls.enableKeys = false;
-        this._orbitControls.minDistance = 300;
-        this._orbitControls.maxDistance = 3000;
-
-        /**
-         *
-         * @type {PlayerModel}
-         * @private
-         */
-        this._playerModel = new PlayerModel(this.scene);
+        this._bg = new SceneBackground(this._scene);
 
         this._grid = new THREE.GridHelper(1500, 50, 0xcccccc, 0xcccccc);
-	    this.scene.add(this._grid);
+	    this._scene.add(this._grid);
     }
 
-    /**
+	/**
      *
-     * @returns {PlayerModel}
-     */
-    playerModel() {
-        return this._playerModel;
+	 * @returns {*}
+	 */
+	get domElement() {
+        return this._renderer.domElement;
     }
 
-    /**
+	/**
+	 *
+	 * @returns {?WebGLRenderer}
+	 */
+	get renderer() {
+		return this._renderer;
+	}
+
+	/**
+	 *
+	 * @returns {Camera}
+	 */
+	get camera() {
+		return this._camera;
+	}
+
+	/**
      *
-     * @param {boolean} enabled
-     * @returns {InitScene}
-     */
-    controlsEnabled(enabled) {
-        this._orbitControls.enabled = enabled;
-        return this;
+	 * @return {Scene}
+	 */
+	get scene() {
+        return this._scene;
     }
 
     /**
@@ -259,7 +248,7 @@ class InitScene {
     _webGLRenderer() {
         if (InitScene.detectorWebGL()) {
             let renderer = new THREE.WebGLRenderer({antialias: true});
-            // renderer.setClearColor(this.scene.fog.color);
+            // renderer.setClearColor(this._scene.fog.color);
             renderer.setPixelRatio(window.devicePixelRatio);
             // renderer.setClearColor(0x242a34);
             // renderer.shadowMap.enabled = true;
@@ -279,7 +268,7 @@ class InitScene {
      * @returns {InitScene}
      */
     add(element) {
-        this.scene.add(element);
+        this._scene.add(element);
         return this;
     }
 
@@ -289,7 +278,7 @@ class InitScene {
      * @returns {InitScene}
      */
     remove(element) {
-        this.scene.remove(element);
+        this._scene.remove(element);
         return this;
     }
 
@@ -317,7 +306,7 @@ class InitScene {
      */
     helper() {
         let axisHelper = new THREE.AxisHelper(50);
-        this.scene.add(axisHelper);
+        this._scene.add(axisHelper);
         return this;
     }
 
@@ -345,8 +334,8 @@ class InitScene {
      */
     _resizeControls() {
         window.addEventListener('resize', () => {
-            this.camera.aspect = InitScene.aspect;
-            this.camera.updateProjectionMatrix();
+            this._camera.aspect = InitScene.aspect;
+            this._camera.updateProjectionMatrix();
             this.renderer.setSize(InitScene.width, InitScene.height);
         });
         return this;
@@ -359,20 +348,13 @@ class InitScene {
      */
     _renderControls() {
         let delta = this.clock.getDelta();
-        this.renderer.render(this.scene, this.camera);
+        this.renderer.render(this._scene, this._camera);
         requestAnimationFrame(() => {
             for (let event of this._renderEvents) {
                 event(delta);
             }
             this._bg.update();
             this._renderControls();
-
-            if (this._playerModel.isModel) {
-                this._orbitControls.target = this._playerModel.position;
-	            this._playerModel.update();
-            }
-
-            this._orbitControls.update();
         });
     }
 }
