@@ -37,6 +37,31 @@ class PlayerSettings {
 		 * @private
 		 */
 		this._enableOrbitControls = true;
+
+        /**
+		 *
+         * @type {boolean}
+         * @private
+         */
+		this._enableHelper = false;
+	}
+
+    /**
+	 *
+     * @returns {boolean}
+     */
+	get isEnabledHelper() {
+		return this._enableHelper;
+	}
+
+    /**
+	 *
+     * @param {boolean} value
+     * @returns {PlayerSettings}
+     */
+	enableHelper(value = true) {
+        this._enableHelper = value;
+        return this;
 	}
 
 	/**

@@ -41,7 +41,7 @@ class SettingVolume {
     /**
      * Gets values of setting
      *
-     * @returns {{tab: number, menu: number, turn_on: number, effect: number, environment: number}}
+     * @returns {{tab: number, menu: number, turn_on: number, effect: number, scene: number}}
      */
     getSettings() {
         return {
@@ -56,7 +56,7 @@ class SettingVolume {
     /**
      * Sets values of setting
      *
-     * @param {{tab: number, menu: number, turn_on: number, effect: number, environment: number}} settings
+     * @param {{tab: number, menu: number, turn_on: number, effect: number, scene: number}} settings
      * @returns {SettingVolume}
      */
     setSettings(settings) {

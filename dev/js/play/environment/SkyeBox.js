@@ -60,6 +60,14 @@ class SkyeBox {
 	    this._isEnv = false;
     }
 
+    /**
+	 *
+     * @returns {number}
+     */
+    get size() {
+    	return this._size;
+	}
+
 	/**
 	 *
 	 * @return {boolean}
@@ -79,7 +87,7 @@ class SkyeBox {
     }
 
     /**
-     * Build environment and add to scene
+     * Build scene and add to scene
      *
      * @param {string} path
      * @returns {SkyeBox}

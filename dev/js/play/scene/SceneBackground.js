@@ -49,6 +49,23 @@ class SceneBackground {
          * @type {UIMessage}
          */
         this._msg = new UIMessage();
+
+        /**
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._useAnimation = true;
+    }
+
+    /**
+     *
+     * @param {boolean} value
+     * @returns {SceneBackground}
+     */
+    useAnimation(value = true) {
+        this._useAnimation = value;
+        return this;
     }
 
     /**
@@ -60,7 +77,7 @@ class SceneBackground {
     setLogo() {
         this._logo
             .setSize(40)
-            .setFar(-1000)
+            .setFar(-50)
             .showMirror(true)
             .write('IronWar');
 
@@ -96,7 +113,7 @@ class SceneBackground {
                 new THREE.MeshBasicMaterial({map: texture})
             );
 
-            this._backgroundMesh.position.setZ(-1100);
+            this._backgroundMesh.position.setZ(-300);
             this._scene.add(this._backgroundMesh);
             this.setLogo();
             this._backgroundActive = true;
@@ -132,18 +149,25 @@ class SceneBackground {
      * @param {function} listener
      */
     hide(mesh, listener) {
-        let start = 1;
-        let idInterval = setInterval(() => {
-            start -= 0.01;
-            this.setOpacity(mesh, start);
-            if (start <= 0) {
-                this.setOpacity(mesh, 0);
-                clearInterval(idInterval);
-                if (listener) {
-                    listener();
+        if (this._useAnimation) {
+            let start = 1;
+            let idInterval = setInterval(() => {
+                start -= 0.01;
+                this.setOpacity(mesh, start);
+                if (start <= 0) {
+                    this.setOpacity(mesh, 0);
+                    clearInterval(idInterval);
+                    if (listener) {
+                        listener();
+                    }
                 }
+            }, 15);
+        } else {
+            this.setOpacity(mesh, 0);
+            if (listener) {
+                listener();
             }
-        }, 15);
+        }
     }
 
     /**

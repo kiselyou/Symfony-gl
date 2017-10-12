@@ -30,6 +30,8 @@ class User {
 	     * @private
 	     */
         this._player = new PlayerControls();
+
+        this._ssss = 9;
     }
 
     /**
@@ -112,7 +114,7 @@ class User {
             .addEvent('click', (e) => {
 	            this._player.load(() => {
 		            UIMainElement.get().container.hideElement(true);
-		            this._player.initScene.removeBackground();
+		            this._player.initScene.removeBackground(false);
                 });
             })
             .buildBtn();
@@ -133,7 +135,14 @@ class User {
      * @returns {User}
      */
     initScene() {
-	    this._player.initScene.render().show();
+        this._player.initEvents();
+	    this._player
+            .initScene
+            .addRenderEvent(() => {
+                this._player.update();
+            })
+            .render()
+            .show();
         return this;
     }
 }

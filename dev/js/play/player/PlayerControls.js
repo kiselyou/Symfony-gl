@@ -1,4 +1,4 @@
-
+import * as THREE from 'three';
 import Player from './Player';
 import Loader from './../../play/loader/Loader';
 
@@ -21,14 +21,7 @@ class PlayerControls extends Player {
 	 */
 	load(listener) {
 		this._loader.load((loader) => {
-			this.orbitControlsInitialisation();
-			let model = loader.getModel(this.modelShipName);
-			model.position.copy(this.modelShipPosition);
-
-			this
-				.setEnv(this.envPath)
-				.setModel(model);
-
+			this.setShip(loader.getModel(this.modelShipName));
 			if (listener) {
 				listener();
 			}
@@ -36,12 +29,16 @@ class PlayerControls extends Player {
 		return this;
 	}
 
-	/**
-	 * @returns {void}
-	 */
-	update() {
-		super.update();
-	}
+    /**
+     *
+     * @returns {PlayerControls}
+     */
+    initEvents() {
+        this.initScene.domElement.addEventListener('click', (e) => {
+            console.log(this.initScene.getClickPosition(e), '----');
+        });
+        return this;
+    }
 }
 
 export default PlayerControls;

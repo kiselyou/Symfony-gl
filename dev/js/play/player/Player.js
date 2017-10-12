@@ -1,8 +1,9 @@
 import * as THREE from 'three';
-import SkyBox from './../skyebox/SkyeBox';
+import SkyBox from './../environment/SkyeBox';
 import PlayerSettings from './PlayerSettings';
 import OrbitControls from './../controls/OrbitControls';
-import InitScene from './../../play/scene/InitScene';
+import InitScene from '../scene/InitScene';
+import Ship from '../model/Ship';
 
 class Player extends PlayerSettings {
     constructor() {
@@ -11,10 +12,10 @@ class Player extends PlayerSettings {
         /**
          * This is mesh of model
          *
-         * @type {?Mesh|Group}
+         * @type {Ship}
          * @private
          */
-        this._model = null;
+        this._ship = new Ship();
 
         /**
          *
@@ -64,29 +65,11 @@ class Player extends PlayerSettings {
     }
 
 	/**
-	 *
-	 * @returns {Player}
-	 */
-	orbitControlsInitialisation() {
-	    this._orbitControls.enabled = this.isEnabledOrbitControls;
-	    return this;
-	}
-
-    /**
-     * Get mesh of model
-     *
-     * @returns {Mesh|Group}
-     */
-    getModel() {
-        return this._model;
-    }
-
-	/**
      *
 	 * @return {?Vector3}
 	 */
 	get modelPosition() {
-        return this._isModelOnScene ? this._model.position : null;
+        return this._isModelOnScene ? this._ship.getPosition() : null;
     }
 
     /**
@@ -104,12 +87,20 @@ class Player extends PlayerSettings {
      * @param {Mesh|Group} mesh
      * @returns {Player}
      */
-    setModel(mesh) {
+    setShip(mesh) {
         if (this.isModel) {
-            this.removeModel();
+            this.removeShip();
         }
-        this._model = mesh;
-        this._initScene.scene.add(this._model);
+
+        this.setEnv(this.envPath);
+        this._ship
+            .setObject(mesh)
+            .setPosition(this.modelShipPosition);
+
+        this._initScene.showGridHelper(this.isEnabledHelper);
+        this._initScene.scene.add(this._ship.getObject());
+
+        this._orbitControls.enabled = this.isEnabledOrbitControls;
         this._isModelOnScene = true;
         return this;
     }
@@ -119,8 +110,8 @@ class Player extends PlayerSettings {
      *
      * @returns {Player}
      */
-    removeModel() {
-        this._initScene.scene.remove(this._model);
+    removeShip() {
+        this._initScene.scene.remove(this._ship.getObject());
         this._isModelOnScene = false;
         return this;
     }

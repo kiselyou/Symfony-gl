@@ -78,8 +78,32 @@ class InitScene {
          */
         this._bg = new SceneBackground(this._scene);
 
-        this._grid = new THREE.GridHelper(1500, 50, 0xcccccc, 0xcccccc);
-	    this._scene.add(this._grid);
+        /**
+         *
+         * @type {GridHelper}
+         * @private
+         */
+        this._gridHelper = new THREE.GridHelper(1500, 50, 0xcccccc, 0xcccccc);
+    }
+
+    /**
+     *
+     * @returns {InitScene}
+     */
+    showGridHelper(value = true) {
+        if (value) {
+            this._scene.add(this._gridHelper);
+        }
+        return this;
+    }
+
+    /**
+     *
+     * @returns {InitScene}
+     */
+    removeGridHelper() {
+        this._scene.remove(this._gridHelper);
+        return this;
     }
 
 	/**
@@ -173,12 +197,13 @@ class InitScene {
     /**
      * Remove background
      *
-     * @param {boolean} animate
+     * @param {boolean} useAnimation
      * @param {function} [listener]
      * @returns {InitScene}
      */
-    removeBackground(animate, listener) {
-        this._bg.remove(animate, listener);
+    removeBackground(useAnimation, listener) {
+        this._bg.useAnimation(useAnimation);
+        this._bg.remove(listener);
         return this;
     }
 
@@ -298,6 +323,24 @@ class InitScene {
         this._renderControls();
         this._resizeControls();
         return this;
+    }
+
+    /**
+     *
+     * @param {MouseEvent} event
+     * @returns {Vector3}
+     */
+    getClickPosition(event) {
+        let vector = new THREE.Vector3();
+        vector.set(
+            (event.clientX / this.domElement.width) * 2 - 1,
+            - (event.clientY / this.domElement.height) * 2 + 1,
+            0.5
+        );
+        vector.unproject(this.camera);
+        let dir = vector.sub(this.camera.position).normalize();
+        let distance = - this.camera.position.z / dir.z;
+        return this.camera.position.clone().add(dir.multiplyScalar(distance));
     }
 
     /**
