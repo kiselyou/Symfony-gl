@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import Shader from './../../shaders/Shader';
+
 
 class SkyeBox {
     /**
@@ -72,10 +74,9 @@ class SkyeBox {
      * @returns {SkyeBox}
      */
     setPosition(value) {
-        this._environment.position.x = value.x / 2;
-        this._environment.position.y = value.y / 2;
-        this._environment.position.z = value.z / 2;
-        // this._environment.position.set(value);
+        this._environment.position.x = value.x;// / 2;
+        this._environment.position.y = value.y;// / 2;
+        this._environment.position.z = value.z;// / 2;
         return this;
     }
 
@@ -85,13 +86,49 @@ class SkyeBox {
      */
     buildEnvironment() {
 
-        let skyGeo = new THREE.SphereGeometry(7000, 25, 25);
-        let loader  = new THREE.TextureLoader(),
-            texture = loader.load('./src/img/skybox/005_space.jpg');
-        let material = new THREE.MeshPhongMaterial({map: texture});
-        this._environment = new THREE.Mesh(skyGeo, material);
-        this._environment.material.side = THREE.BackSide;
-        this._scene.add(this._environment);
+	    let skyGeo = new THREE.SphereGeometry(3000, 25, 25);
+	    let loader  = new THREE.TextureLoader(),
+		    texture = loader.load('./src/img/skybox/005_space.jpg');
+
+	    let material = new THREE.ShaderMaterial({
+		    uniforms: {
+			    texture: {type: 't', value: texture}
+		    },
+		    vertexShader: Shader.get().add(`
+		        varying vec2 vUV;
+                
+                void main() {  
+                  vUV = uv;
+                  vec4 pos = vec4(position, 1.0);
+                  gl_Position = projectionMatrix * modelViewMatrix * pos;
+                }
+		    `).getContent(),
+		    fragmentShader: Shader.get().add(`
+		        uniform sampler2D texture;  
+                varying vec2 vUV;
+                
+                void main() {  
+                  vec4 sample = texture2D(texture, vUV);
+                  gl_FragColor = vec4(sample.xyz, sample.w);
+                }
+		    `).getContent()
+	    });
+
+	    this._environment = new THREE.Mesh(skyGeo, material);
+	    this._environment.scale.set(-1, 1, 1);
+	    this._environment.rotation.order = 'XZY';
+	    this._environment.renderDepth = 5000.0;
+	    this._scene.add(this._environment);
+
+
+
+
+
+
+        // let material = new THREE.MeshPhongMaterial({map: texture});
+        // this._environment = new THREE.Mesh(skyGeo, material);
+        // this._environment.material.side = THREE.BackSide;
+        // this._scene.add(this._environment);
 
 
 

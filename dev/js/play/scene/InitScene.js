@@ -26,7 +26,7 @@ class InitScene {
          * @type {Scene}
          */
         this.scene = new THREE.Scene();
-        // this.scene.fog = new THREE.Fog(0x000000, 250, 3000);
+        this.scene.fog = new THREE.Fog(0xffffff, 2500, 3500);
 
         /**
          *
@@ -47,7 +47,7 @@ class InitScene {
          * @type {HemisphereLight|THREE.HemisphereLight}
          */
         this.hemisphereLight = new THREE.HemisphereLight(0x666666, 0x666666, 0.5);
-        this.hemisphereLight.position.set(0, 100, 100);
+        this.hemisphereLight.position.set(0, 500, 0);
         this.scene.add(this.hemisphereLight);
 
         /**
@@ -62,8 +62,8 @@ class InitScene {
          *
          * @type {PointLight|THREE.PointLight}
          */
-        this.pointLight = new THREE.PointLight(0xffffff, 0.5);
-        this.pointLight.position.set(0, 100, 90);
+        this.pointLight = new THREE.PointLight(0xffffff, 1);
+        this.pointLight.position.set(0, 500, 0);
         this.scene.add(this.pointLight);
 
         /**
@@ -259,7 +259,7 @@ class InitScene {
      */
     _webGLRenderer() {
         if (InitScene.detectorWebGL()) {
-            let renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
+            let renderer = new THREE.WebGLRenderer({antialias: true});
             // renderer.setClearColor(this.scene.fog.color);
             renderer.setPixelRatio(window.devicePixelRatio);
             // renderer.setClearColor(0x242a34);

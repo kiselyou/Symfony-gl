@@ -126,8 +126,8 @@ class User {
 
                     let mesh = loader.getModel(MODEL_DEFAULT);
                     mesh.position.set(0, -200, -2500);
-                    mesh.rotation.set(0.3, 0, 0);
-                    mesh.scale.set(0.1, 0.1, 0.1);
+                    // mesh.rotation.set(0.3, 0, 0);
+                    mesh.scale.set(0.2, 0.2, 0.2);
 
                     this.getScene()
                         .controlsEnabled(true)
