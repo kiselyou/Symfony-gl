@@ -16,7 +16,7 @@ class CalculateMoving {
 		 * @type {number}
 		 * @private
 		 */
-		this._r = 150;
+		this._r = 50;
 
 		/**
 		 * Angle direction
@@ -57,6 +57,20 @@ class CalculateMoving {
 		 * @private
 		 */
 		this._pq = new THREE.Vector3();
+
+		/**
+		 *
+		 * @type {number}
+		 * @private
+		 */
+		this._theta = 0;
+
+		/**
+		 *
+		 * @type {number}
+		 * @private
+		 */
+		this._tempRadius = 0;
 	}
 
 	/**
@@ -111,25 +125,26 @@ class CalculateMoving {
 	}
 
 	/**
+	 * Start calculate
 	 *
-	 * @private
+	 * @returns {CalculateMoving}
 	 */
-	_calculate() {
+	startCalculate() {
 		let rLeft = this._r;
-		let pLeft = this._calculatePositionP(90, rLeft);
+		let pLeft = this._calculatePositionP(- 90, rLeft);
 		let hLeft = this._calculateLengthH(pLeft);
 		if (hLeft < rLeft) {
 			rLeft = hLeft / 2;
-			pLeft = this._calculatePositionP(90, rLeft);
+			pLeft = this._calculatePositionP(- 90, rLeft);
 			hLeft = this._calculateLengthH(pLeft);
 		}
 
 		let rRight = this._r;
-		let pRight = this._calculatePositionP(- 90, rRight);
+		let pRight = this._calculatePositionP(+ 90, rRight);
 		let hRight = this._calculateLengthH(pRight);
 		if (hRight < rRight) {
 			rRight = hRight / 2;
-			pRight = this._calculatePositionP(90, rRight);
+			pRight = this._calculatePositionP(+ 90, rRight);
 			hRight = this._calculateLengthH(pRight);
 		}
 
@@ -137,12 +152,18 @@ class CalculateMoving {
 		let dRight = Math.sqrt(hRight * hRight - rRight * rRight);
 
 		if (dLeft < dRight) {
+			this._tempRadius = rLeft;
+			this._theta = Math.acos(rLeft / hLeft);
 			this._pq.copy(this._calculatePositionQ(pLeft, hLeft, rLeft));
 			this._pp.copy(pLeft);
 		} else {
+			this._tempRadius = rRight;
+			this._theta = Math.acos(rRight / hRight);
 			this._pq.copy(this._calculatePositionQ(pRight, hRight, rRight));
 			this._pp.copy(pRight);
 		}
+
+		return this;
 	}
 
 	/**
@@ -186,8 +207,27 @@ class CalculateMoving {
 		return this;
 	}
 
-	update() {
+	/**
+	 *
+	 * @returns {Vector3}
+	 */
+	get pp() {
+		return this._pp;
+	}
 
+	/**
+	 *
+	 * @param {number} deltaTime
+	 * @returns {void}
+	 */
+	update(deltaTime) {
+		let distance = this._speed * deltaTime;
+
+		let position = {
+			x: this._pp.x + this._tempRadius * Math.cos(this._theta),
+			y: 0,
+			z: this._pp.y + this._tempRadius * Math.sin(this._theta)
+		};
 	}
 }
 

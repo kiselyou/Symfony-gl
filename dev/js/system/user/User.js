@@ -30,8 +30,6 @@ class User {
 	     * @private
 	     */
         this._player = new PlayerControls();
-
-        this._ssss = 9;
     }
 
     /**
@@ -138,8 +136,8 @@ class User {
         this._player.initEvents();
 	    this._player
             .initScene
-            .addRenderEvent(() => {
-                this._player.update();
+            .addRenderEvent((deltaTime) => {
+                this._player.update(deltaTime);
             })
             .render()
             .show();

@@ -7,22 +7,6 @@ class ShipControls extends Ship {
         super();
 
 		/**
-		 * The ship will follow to target
-		 *
-		 * @type {Vector3}
-		 * @private
-		 */
-		this._target = new THREE.Vector3();
-
-		/**
-		 * This is radius of turn
-		 *
-		 * @type {number}
-		 * @private
-		 */
-		this._radiusTurn = 50;
-
-		/**
 		 * To enable moving set it to true
 		 *
 		 * @type {boolean}
@@ -36,6 +20,25 @@ class ShipControls extends Ship {
 		 * @private
 		 */
 		this._calculateMoving = new CalculateMoving();
+    }
+
+	/**
+	 * Calculate
+	 *
+	 * @param {Vector3} target
+	 * @returns {ShipControls}
+	 */
+	moveShip(target, sceneTest) {
+		//TODO sceneTest remove
+		this.pointTest(target, sceneTest);
+
+		this._calculateMoving
+			.setPositionDestination(target)
+			.setAngleDirection(this.getDirection())
+	        .setPositionOriginal(this.getPosition())
+			.startCalculate();
+		this.startMove();
+	    return this;
     }
 
 	/**
@@ -58,27 +61,42 @@ class ShipControls extends Ship {
 
 	/**
 	 *
-	 * @param {Vector3} value
+	 * @param {number} value
+	 * @returns {ShipControls}
 	 */
-	setTarget(value) {
-		this._target.copy(value);
+	setRadiusTurn(value) {
+		this._calculateMoving.setRadius(value);
 		return this;
 	}
 
 	/**
 	 *
-	 * @param {number} value
-	 * @returns {ShipControls}
+	 * @param {number} deltaTime
+	 * @returns {void}
 	 */
-	setRadiusTurn(value) {
-		this._radiusTurn = value;
-		return this;
+	update(deltaTime, sceneTest) {
+		//TODO sceneTest remove
+		if (this._enableMoving) {
+			// console.log(deltaTime, this.getObject());
+			console.log(this._calculateMoving.pp);
+			this.stopMove();
+
+
+
+
+
+
+			this.pointTest(this._calculateMoving.pp, sceneTest);
+		}
 	}
 
-	update() {
-		if (this._enableMoving) {
-
-		}
+	//TODO remove
+	pointTest(position, sceneTest) {
+		let geometry = new THREE.SphereGeometry(2, 15, 15);
+		let material = new THREE.MeshBasicMaterial({color: 0xffffff});
+		let mesh = new THREE.Mesh(geometry, material);
+		mesh.position.copy(position);
+		sceneTest.add(mesh);
 	}
 }
 

@@ -52,8 +52,24 @@ class Player extends PlayerSettings {
 	    this._orbitControls.enabled = false;
 	    this._orbitControls.enablePan = false;
 	    this._orbitControls.enableKeys = false;
-	    this._orbitControls.minDistance = 500;
-	    this._orbitControls.maxDistance = 2500;
+	    this._orbitControls.minDistance = 50;
+	    this._orbitControls.maxDistance = 300;
+    }
+
+	/**
+	 *
+	 * @return {SkyeBox}
+	 */
+	get sky() {
+    	return this._sky;
+    }
+
+	/**
+	 *
+	 * @returns {ShipControls}
+	 */
+	get ship() {
+		return this._ship;
     }
 
 	/**
@@ -96,7 +112,6 @@ class Player extends PlayerSettings {
         this._ship
             .setObject(mesh)
             .setPosition(this.modelShipPosition);
-
         this._initScene.showGridHelper(this.isEnabledHelper);
         this._initScene.scene.add(this._ship.getObject());
 
@@ -146,13 +161,16 @@ class Player extends PlayerSettings {
 	}
 
 	/**
+	 *
+	 * @param {number} deltaTime
      * @returns {void}
 	 */
-	update() {
+	update(deltaTime) {
 		if (this.isModel) {
 			this._sky.setPosition(this.modelPosition);
 			this._orbitControls.target = this.modelPosition;
 			this._orbitControls.update();
+			this._ship.update(deltaTime, this.initScene.scene);
 		}
     }
 }

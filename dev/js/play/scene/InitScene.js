@@ -31,7 +31,7 @@ class InitScene {
          * @type {PerspectiveCamera}
          */
         this._camera = new THREE.PerspectiveCamera(40, InitScene.aspect, 0.1, 150000);
-        this._camera.position.set(0, 0, 1000);
+        this._camera.position.set(0, 0, 250);
         this._camera.lookAt(this._scene.position);
 
         /**
@@ -84,6 +84,20 @@ class InitScene {
          * @private
          */
         this._gridHelper = new THREE.GridHelper(1500, 50, 0xcccccc, 0xcccccc);
+
+	    /**
+         *
+	     * @type {Raycaster}
+	     * @private
+	     */
+	    this._raycaster = new THREE.Raycaster();
+
+	    /**
+         *
+	     * @type {Vector2}
+	     * @private
+	     */
+	    this._mouse = new THREE.Vector2();
     }
 
     /**
@@ -325,24 +339,31 @@ class InitScene {
         return this;
     }
 
-    /**
+	/**
+     * Gets intersections
      *
      * @param {MouseEvent} event
-     * @returns {Vector3}
-     */
-    getClickPosition(event) {
-        let vector = new THREE.Vector3();
-        vector.set(
-            (event.clientX / this.domElement.width) * 2 - 1,
-            - (event.clientY / this.domElement.height) * 2 + 1,
-            0.5
-        );
-        vector.unproject(this.camera);
-        let dir = vector.sub(this.camera.position).normalize();
-        let distance = - this.camera.position.z / dir.z;
-        let p = this.camera.position.clone().add(dir.multiplyScalar(distance));
-        return new THREE.Vector3(p.x, 0, p.y);
+	 * @param {Array.<Mesh|Group>} objects
+	 * @param {boolean} [recursive]
+	 */
+	getClickIntersections(event, objects, recursive = false) {
+		this._mouse.x = (event.clientX / this.domElement.clientWidth) * 2 - 1;
+		this._mouse.y = - (event.clientY / this.domElement.clientHeight) * 2 + 1;
+	    this._raycaster.setFromCamera(this._mouse, this._camera);
+	    return this._raycaster.intersectObjects(objects, recursive);
     }
+
+	/**
+	 * Gets intersections
+	 *
+	 * @param {MouseEvent} event
+	 * @param {Mesh|Group} object
+     * @returns {Object}
+	 */
+	getClickIntersection(event, object) {
+		let intersection = this.getClickIntersections(event, [object], false);
+		return intersection[0] ? intersection[0] : {};
+	}
 
     /**
      * Add helper to scene
@@ -363,7 +384,7 @@ class InitScene {
 
     /**
      *
-     * @param event
+     * @param {renderEvent} event
      * @returns {InitScene}
      */
     addRenderEvent(event) {
