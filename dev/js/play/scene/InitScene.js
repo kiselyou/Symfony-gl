@@ -340,7 +340,8 @@ class InitScene {
         vector.unproject(this.camera);
         let dir = vector.sub(this.camera.position).normalize();
         let distance = - this.camera.position.z / dir.z;
-        return this.camera.position.clone().add(dir.multiplyScalar(distance));
+        let p = this.camera.position.clone().add(dir.multiplyScalar(distance));
+        return new THREE.Vector3(p.x, 0, p.y);
     }
 
     /**

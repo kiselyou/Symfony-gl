@@ -3,7 +3,7 @@ import SkyBox from './../environment/SkyeBox';
 import PlayerSettings from './PlayerSettings';
 import OrbitControls from './../controls/OrbitControls';
 import InitScene from '../scene/InitScene';
-import Ship from '../model/Ship';
+import ShipControls from '../model/ShipControls';
 
 class Player extends PlayerSettings {
     constructor() {
@@ -12,10 +12,10 @@ class Player extends PlayerSettings {
         /**
          * This is mesh of model
          *
-         * @type {Ship}
+         * @type {ShipControls}
          * @private
          */
-        this._ship = new Ship();
+        this._ship = new ShipControls();
 
         /**
          *
@@ -104,6 +104,14 @@ class Player extends PlayerSettings {
         this._isModelOnScene = true;
         return this;
     }
+
+	/**
+	 *
+	 * @returns {ShipControls}
+	 */
+	getShip() {
+    	return this._ship;
+	}
 
     /**
      * Remove model from the scene

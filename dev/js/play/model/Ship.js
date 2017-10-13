@@ -1,8 +1,6 @@
-import ShipControls from './ShipControls';
 
-class Ship extends ShipControls {
+class Ship {
     constructor() {
-        super();
 
         /**
          * This is mesh of model
