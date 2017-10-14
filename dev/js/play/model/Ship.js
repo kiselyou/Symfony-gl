@@ -18,15 +18,12 @@ class Ship {
      */
     setObject(value) {
         this._obj = value;
-	    // var direction = new THREE.Vector3( 0, 0, 1 );
-	    // direction = matrix.multiplyVector3( direction );
-	    // this.lookAt(this.getDirection());
         return this;
     }
 
 	/**
 	 *
-	 * @param {Vector3} value
+	 * @param {(Vector3|{x: number, y: number, z: number})} value
 	 * @returns {Ship}
 	 */
 	lookAt(value) {
@@ -44,7 +41,7 @@ class Ship {
 
     /**
      *
-     * @param {Vector3|{x: number, y: number, z: number}} position
+     * @param {(Vector3|{x: number, y: number, z: number})} position
      * @returns {Ship}
      */
     setPosition(position) {
@@ -59,14 +56,6 @@ class Ship {
     getPosition() {
         return this._obj.position;
     }
-
-	/**
-	 *
-	 * @returns {Vector3}
-	 */
-	getDirection() {
-		return this._obj.getWorldDirection();
-	}
 }
 
 export default Ship;

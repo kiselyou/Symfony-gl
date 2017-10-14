@@ -37,8 +37,7 @@ class PlayerControls extends Player {
         this.initScene.domElement.addEventListener('click', (e) => {
 			let destination = this.initScene.getClickIntersection(e, this.sky.plane);
 			if (destination.hasOwnProperty('point')) {
-				//TODO remove this.initScene.scene
-				this.ship.moveShip(destination['point'], this.initScene.scene);
+				this.ship.moveShip(destination['point']);
 			}
         });
         return this;

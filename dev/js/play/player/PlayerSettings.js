@@ -1,5 +1,5 @@
 import {
-	MODEL_DEFAULT
+	MODEL_EXPLORER
 } from './../../ini/obj.ini';
 
 class PlayerSettings {
@@ -29,7 +29,7 @@ class PlayerSettings {
 		/**
 		 * @type {string}
 		 */
-		this._modelShipName = MODEL_DEFAULT;
+		this._modelShipName = MODEL_EXPLORER;
 
 		/**
 		 *

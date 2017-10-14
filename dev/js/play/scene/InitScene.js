@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import SceneBackground from './SceneBackground';
-// import OrbitControls from './../controls/OrbitControls';
 
 let scene = null;
 

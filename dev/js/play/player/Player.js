@@ -168,9 +168,9 @@ class Player extends PlayerSettings {
 	update(deltaTime) {
 		if (this.isModel) {
 			this._sky.setPosition(this.modelPosition);
-			this._orbitControls.target = this.modelPosition;
-			this._orbitControls.update();
-			this._ship.update(deltaTime, this.initScene.scene);
+			// this._orbitControls.target = this.modelPosition;
+			// this._orbitControls.update();
+			this._ship.update(deltaTime);
 		}
     }
 }
