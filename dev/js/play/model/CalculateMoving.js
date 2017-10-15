@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import HelperPoints from './../helpers/HelperPoints';
+import HelperLineDash from '../helpers/HelperLineDash';
 
 /**
  * Distance to calculate next position
@@ -17,7 +18,7 @@ class CalculateMoving {
 		 * @type {number}
 		 * @private
 		 */
-		this._speed = 20;
+		this._speed = 10;
 
 		/**
 		 * Radius
@@ -88,16 +89,46 @@ class CalculateMoving {
 		 */
 		this._po1 = new THREE.Vector3(0, 0, -10);
 
-		HelperPoints.get().add(this._po1, 1, 0x0F00FF);
+		// HelperPoints.get().add(this._po1, 1, 0x0F00FF);
+
+		/**
+		 * TODO: move it to another class
+		 *
+		 * @type {HelperLineDash}
+		 * @private
+		 */
+		this._helperLine = new HelperLineDash();
+
 	}
 
+	/**
+	 *
+	 * @returns {string}\
+	 */
 	static get SIDE_LEFT() {
 		return 'left';
 	}
 
+	/**
+	 *
+	 * @returns {string}
+	 */
 	static get SIDE_RIGHT() {
 		return 'right';
 	}
+
+	/**
+	 * Get angle of model
+	 *
+	 * @param {Vector3} a - It is previous position
+	 * @param {Vector3} b - It is current position
+	 * @returns {number}
+	 */
+	static calculateAngle(a, b) {
+		let v = new THREE.Vector3();
+		v.subVectors(b, a);
+		return Math.atan2(v.z, v.x);
+	};
 
 	/**
 	 *
@@ -221,22 +252,26 @@ class CalculateMoving {
 		let angle;
 		if (dLeft < dRight) {
 
-			this._tempAngle = Math.acos(rLeft / hLeft);
+			this._tempAngle = direction + rad;
+
+			let theta = Math.acos(rLeft / hLeft);
 			let x = this._pd.x - pLeft.x,
 				z = this._pd.z - pLeft.z;
 
-			angle = Math.atan(z / x) + this._tempAngle;
+			angle = Math.atan(z / x) + theta;
 			this._tempSide = CalculateMoving.SIDE_LEFT;
 			this._tempRadius = rLeft;
 			this._pp.copy(pLeft);
 
 		} else {
 
-			this._tempAngle = Math.acos(rRight / hRight);
+			this._tempAngle = direction - rad;
+
+			let theta = Math.acos(rRight / hRight);
 			let x = this._pd.x - pRight.x,
 				z = this._pd.z - pRight.z;
 
-			angle = Math.atan(z / x) - this._tempAngle;
+			angle = Math.atan(z / x) - theta;
 			this._tempSide = CalculateMoving.SIDE_RIGHT;
 			this._tempRadius = rRight;
 			this._pp.copy(pRight);
@@ -244,9 +279,18 @@ class CalculateMoving {
 
 		this._pq.copy(this._calculatePositionQ(this._pp, this._tempRadius, angle));
 
-		HelperPoints.get().add(this._pp, 1, 0xFFFFFF);
-		HelperPoints.get().add(this._pd, 1, 0xFFFF00);
-		HelperPoints.get().add(this._pq, 1, 0x0000FF);
+		// HelperPoints.get().add(this._po2, 1, 0xFFFFFF);
+		// HelperPoints.get().add(this._pd, 1, 0xFFFF00);
+		// HelperPoints.get().add(this._pq, 1, 0x0000FF);
+
+
+		this._helperLine
+			.remove()
+			.add(this._po2)
+			.add(this._pp)
+			.add(this._pq)
+			.add(this._pd)
+			.draw();
 
 		return this;
 	}
@@ -278,7 +322,7 @@ class CalculateMoving {
 	 * @returns {CalculateMoving}
 	 */
 	setPositionOriginal(value) {
-		// this._po2 = value;
+		this._po2 = value;
 		return this;
 	}
 
@@ -316,43 +360,60 @@ class CalculateMoving {
 
 	/**
 	 *
+	 * @param {number} angle
+	 * @param {number} angleStep
+	 * @returns {{curr: { x: number, y: number, z: number }, next: { x: number, y: number, z: number }, side: (CalculateMoving.SIDE_LEFT|CalculateMoving.SIDE_RIGHT)}}
+	 * @private
+	 */
+	_calculateCircleStep(angle, angleStep) {
+		switch (this._tempSide) {
+			case CalculateMoving.SIDE_LEFT:
+				return {
+					curr: CalculateMoving.calcNextPosition(this._pp, angle - angleStep, this._tempRadius),
+					next: CalculateMoving.calcNextPosition(this._pp, angle - angleStep * 2, this._tempRadius),
+					side: CalculateMoving.SIDE_LEFT
+				};
+				break;
+			case CalculateMoving.SIDE_RIGHT:
+				return {
+					curr: CalculateMoving.calcNextPosition(this._pp, angle + angleStep, this._tempRadius),
+					next: CalculateMoving.calcNextPosition(this._pp, angle + angleStep * 2, this._tempRadius),
+					side: CalculateMoving.SIDE_RIGHT
+				};
+				break;
+		}
+	}
+
+	_updateTempAngle(side, speed) {
+		side === CalculateMoving.SIDE_LEFT ? this._tempAngle -= speed : this._tempAngle += speed;
+		return this;
+	}
+
+	/**
+	 *
 	 * @param {number} deltaTime
 	 * @param {(Mesh|Group)} object
 	 * @returns {void}
 	 */
 	update(deltaTime, object) {
 		let distance = this._speed * deltaTime;
+		let angleStep = distance / this._tempRadius;
 
-		this._tempAngle += 0.01;
-		let angle, angleAim;
-		switch (this._tempSide) {
-			case CalculateMoving.SIDE_LEFT:
-				angle = - this._tempAngle;
-				angleAim = angle - 0.02;
-				break;
-			case CalculateMoving.SIDE_RIGHT:
-				angle = this._tempAngle;
-				angleAim = angle + 0.02;
-				break;
-		}
+		// remember last position
+		this._po1.x = object.position.x;
+		this._po1.z = object.position.z;
 
-		let a = CalculateMoving.calcNextPosition(this._pp, angle, this._tempRadius);
-		let b = CalculateMoving.calcNextPosition(this._pp, angleAim, this._tempRadius);
+		let circleStep = this._calculateCircleStep(this._tempAngle, angleStep);
+		this._updateTempAngle(circleStep['side'], angleStep);
 
-		HelperPoints.get().add(a, 1, 0xFFFFFF);
-		HelperPoints.get().add(b, 1, 0xFF00FF);
+
+		object.position.copy(circleStep['curr']);
+		object.lookAt(circleStep['next']);
 
 
 
 
-
-		// object.position.x = this._pp.x + this._tempRadius * Math.cos(angle);
-		// object.position.z = this._pp.z + this._tempRadius * Math.sin(angle);
-
-		// let p = CalculateMoving.calcNextPosition(this._pp, angle += 0.01, FAR);
-
-		object.position.copy(a);
-		object.lookAt(b);
+		// HelperPoints.get().add(object.position, 1, 0xFF00FF);
 
 
 	}
