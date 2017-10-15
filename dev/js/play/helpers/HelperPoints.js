@@ -8,10 +8,10 @@ class HelperPoints {
 	constructor() {
 		/**
 		 *
-		 * @type {Array.<Mesh>}
+		 * @type {Array.<{name: (string|number), points: Array.<Mesh>}>}
 		 * @private
 		 */
-		this._points = [];
+		this._groups = [];
 
 		/**
 		 *
@@ -53,13 +53,13 @@ class HelperPoints {
 	 * @returns {HelperPoints}
 	 */
 	remove(groupName) {
-		for (let i = 0; i < this._points.length; i++) {
-			let group = this._points[i];
+		for (let i = 0; i < this._groups.length; i++) {
+			let group = this._groups[i];
 			if (group['name'] === groupName) {
-				for (let mesh of group['elements']) {
+				for (let mesh of group['points']) {
 					this._initScene.remove(mesh);
 				}
-				this._points.splice(i, 1);
+				this._groups.splice(i, 1);
 				break;
 			}
 		}
@@ -73,15 +73,15 @@ class HelperPoints {
 	 * @private
 	 */
 	_addToGroup(groupName, mesh) {
-		let group = this._points.find((item) => {
+		let group = this._groups.find((item) => {
 			return item['name'] === groupName;
 		});
 		if (group) {
-			group['elements'].push(mesh);
+			group['points'].push(mesh);
 		} else {
-			this._points.push({
+			this._groups.push({
 				name: groupName,
-				elements: [mesh]
+				points: [mesh]
 			});
 		}
 	}

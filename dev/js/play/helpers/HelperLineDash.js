@@ -14,17 +14,10 @@ class HelperLineDash {
 
 		/**
 		 *
-		 * @type {?Line}
+		 * @type {Array.<{name: (string|number), lien: Line, points: Array.<Vector>}>}
 		 * @private
 		 */
-		this._line = null;
-
-		/**
-		 *
-		 * @type {Array}
-		 * @private
-		 */
-		this._points = [];
+		this._groups = [];
 
 		/**
 		 *
@@ -79,48 +72,103 @@ class HelperLineDash {
 	}
 
 	/**
+	 * Add point
 	 *
 	 * @param {Vector3} point
+	 * @param {number|string} groupName
 	 * @returns {HelperLineDash}
 	 */
-	add(point) {
-		this._points.push(point);
+	addPoint(point, groupName = 1) {
+		this._addToGroup(groupName, point);
 		return this;
 	}
 
 	/**
+	 * Remove lines
 	 *
+	 * @param {(string|number)} groupName
 	 * @returns {HelperLineDash}
 	 */
-	remove() {
-		if (this._line) {
-			this._initScene.scene.remove(this._line);
-			this._points.splice(0, this._points.length);
-			this._line = null;
+	remove(groupName) {
+		for (let i = 0; i < this._groups.length; i++) {
+			let group = this._groups[i];
+			if (group['name'] === groupName && group['line']) {
+				this._initScene.remove(group['line']);
+				this._groups.splice(i, 1);
+				break;
+			}
 		}
 		return this;
 	}
 
 	/**
+	 * Draw lines
 	 *
+	 * @param {(string|number)} groupName
 	 * @returns {HelperLineDash}
 	 */
-	draw() {
+	draw(groupName) {
+
+		let group = this._groups.find((item) => {
+			return item['name'] === groupName;
+		});
+
+		if (!group) {
+			this._createGroup(groupName);
+			group = this._groups.find((item) => {
+				return item['name'] === groupName;
+			})
+		}
+
 		let material = new THREE.LineDashedMaterial({
 			color: this._color,
 			dashSize: this._dashSize,
 			gapSize: this._gapSize
 		});
+
 		let geometry = new THREE.Geometry();
 
-		for (let point of this._points) {
+		for (let point of group['points']) {
 			geometry.vertices.push(point);
 		}
 
 		geometry.computeLineDistances();
-		this._line = new THREE.Line(geometry, material);
-		this._initScene.scene.add(this._line);
+		group['line'] = new THREE.Line(geometry, material);
+		this._initScene.scene.add(group['line']);
 		return this;
+	}
+
+	/**
+	 * Add point to group
+	 *
+	 * @param {(string|number)} groupName
+	 * @param {Vector3} point
+	 * @private
+	 */
+	_addToGroup(groupName, point) {
+		let group = this._groups.find((item) => {
+			return item['name'] === groupName;
+		});
+		if (group) {
+			group['points'].push(point);
+		} else {
+			this._createGroup(groupName, point);
+		}
+	}
+
+	/**
+	 * Create group lines
+	 *
+	 * @param {(string|number)} groupName
+	 * @param {Vector3} [point]
+	 * @private
+	 */
+	_createGroup(groupName, point = null) {
+		this._groups.push({
+			name: groupName,
+			line: null,
+			points: point ? [point] : []
+		});
 	}
 }
 

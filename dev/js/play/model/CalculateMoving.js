@@ -18,7 +18,7 @@ class CalculateMoving {
 		 * @type {number}
 		 * @private
 		 */
-		this._speed = 10;
+		this._speed = 50;
 
 		/**
 		 * Radius
@@ -74,6 +74,13 @@ class CalculateMoving {
 		this._tempAngle = 0;
 
 		/**
+		 *
+		 * @type {number}
+		 * @private
+		 */
+		this._tempLineAngle = 0;
+
+		/**
 		 * Point O (Original position)
 		 *
 		 * @type {Vector3}
@@ -89,6 +96,16 @@ class CalculateMoving {
 		 */
 		this._po1 = new THREE.Vector3(0, 0, -10);
 
+		/**
+		 *
+		 * @type {number} - Possible values (CalculateMoving.ACTION_STOP|CalculateMoving.ACTION_ARC|CalculateMoving.ACTION_DIRECT)
+		 *                  0 - Stop
+		 *                  1 - moving around arc
+		 *                  2 - moving direct
+		 * @private
+		 */
+		this._action = 0;
+
 		// HelperPoints.get().add(this._po1, 1, 0x0F00FF);
 
 		/**
@@ -99,6 +116,33 @@ class CalculateMoving {
 		 */
 		this._helperLine = new HelperLineDash();
 
+	}
+
+	/**
+	 * Stop
+	 *
+	 * @returns {number}
+	 */
+	static get ACTION_STOP() {
+		return 0;
+	}
+
+	/**
+	 * Moving around arc
+	 *
+	 * @returns {number}
+	 */
+	static get ACTION_ARC() {
+		return 1;
+	}
+
+	/**
+	 * Moving direct
+	 *
+	 * @returns {number}
+	 */
+	static get ACTION_DIRECT() {
+		return 2;
 	}
 
 	/**
@@ -221,6 +265,9 @@ class CalculateMoving {
 	 * @returns {CalculateMoving}
 	 */
 	startCalculate() {
+
+		this._action = CalculateMoving.ACTION_ARC;
+
 		HelperPoints.get().remove(1);
 
 		let rad = Math.PI / 2;
@@ -279,18 +326,24 @@ class CalculateMoving {
 
 		this._pq.copy(this._calculatePositionQ(this._pp, this._tempRadius, angle));
 
+
+		let x = this._pd.x - this._pq.x;
+		let z = this._pd.z - this._pq.z;
+		this._tempLineAngle = Math.atan2(z, x);
+
 		// HelperPoints.get().add(this._po2, 1, 0xFFFFFF);
 		// HelperPoints.get().add(this._pd, 1, 0xFFFF00);
 		// HelperPoints.get().add(this._pq, 1, 0x0000FF);
 
 
+		let groupName = 1;
 		this._helperLine
-			.remove()
-			.add(this._po2)
-			.add(this._pp)
-			.add(this._pq)
-			.add(this._pd)
-			.draw();
+			.remove(groupName)
+			.addPoint(this._po2, groupName)
+			.addPoint(this._pp, groupName)
+			.addPoint(this._pq, groupName)
+			.addPoint(this._pd, groupName)
+			.draw(groupName);
 
 		return this;
 	}
@@ -396,26 +449,54 @@ class CalculateMoving {
 	 * @returns {void}
 	 */
 	update(deltaTime, object) {
-		let distance = this._speed * deltaTime;
-		let angleStep = distance / this._tempRadius;
+		let distance;
+		switch (this._action) {
+			case CalculateMoving.ACTION_ARC:
+				// remember last position
+				this._po1.x = object.position.x;
+				this._po1.z = object.position.z;
 
-		// remember last position
-		this._po1.x = object.position.x;
-		this._po1.z = object.position.z;
+				distance = this._speed * deltaTime;
+				let angleStep = distance / this._tempRadius;
 
-		let circleStep = this._calculateCircleStep(this._tempAngle, angleStep);
-		this._updateTempAngle(circleStep['side'], angleStep);
+				let circleStep = this._calculateCircleStep(this._tempAngle, angleStep);
+				this._updateTempAngle(circleStep['side'], angleStep);
 
+				object.position.copy(circleStep['curr']);
 
-		object.position.copy(circleStep['curr']);
-		object.lookAt(circleStep['next']);
+				if (this._pq.distanceTo(circleStep['next']) >= this._pq.distanceTo(circleStep['curr'])) {
+					this._action = CalculateMoving.ACTION_DIRECT;
+					object.lookAt(this._pd);
+				} else {
+					object.lookAt(circleStep['next']);
+				}
 
+				break;
 
+			case CalculateMoving.ACTION_DIRECT:
 
+				// remember last position
+				this._po1.x = object.position.x;
+				this._po1.z = object.position.z;
 
-		// HelperPoints.get().add(object.position, 1, 0xFF00FF);
+				distance = this._speed * deltaTime;
 
+				object.position.x = object.position.x + distance * Math.cos(this._tempLineAngle);
+				object.position.z = object.position.z + distance * Math.sin(this._tempLineAngle);
 
+				let next = {
+					x: object.position.x + (distance * 2) * Math.cos(this._tempLineAngle),
+					y: 0,
+					z: object.position.z + (distance * 2) * Math.sin(this._tempLineAngle)
+				};
+
+				if (this._pd.distanceTo(next) > this._pd.distanceTo(object.position)) {
+					this._action = CalculateMoving.ACTION_STOP;
+				}
+
+				break;
+
+		}
 	}
 }
 
