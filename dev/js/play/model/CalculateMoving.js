@@ -338,6 +338,8 @@ class CalculateMoving {
 
 		let groupName = 1;
 		this._helperLine
+			.setGapSize(4)
+			.setDashSize(0.2)
 			.remove(groupName)
 			.addPoint(this._po2, groupName)
 			.addPoint(this._pp, groupName)
@@ -464,7 +466,15 @@ class CalculateMoving {
 
 				object.position.copy(circleStep['curr']);
 
-				if (this._pq.distanceTo(circleStep['next']) >= this._pq.distanceTo(circleStep['curr'])) {
+				let distanceToAim = this._pq.distanceTo(circleStep['next']);
+				if (distanceToAim >= this._pq.distanceTo(circleStep['curr']) && distanceToAim < this._tempRadius) {
+					console.log(
+						1,
+						this._pq.distanceTo(circleStep['next']),
+						this._pq.distanceTo(circleStep['curr']),
+						CalculateMoving.radiansToDegrees(this._tempAngle),
+
+					);
 					this._action = CalculateMoving.ACTION_DIRECT;
 					object.lookAt(this._pd);
 				} else {
