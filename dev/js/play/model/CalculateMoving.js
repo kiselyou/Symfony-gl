@@ -1,18 +1,8 @@
 import * as THREE from 'three';
-
-import HelperPoints from './../helpers/HelperPoints';
-import HelperLineDash from '../helpers/HelperLineDash';
-
-/**
- * Distance to calculate next position
- *
- * @type {number}
- */
-const FAR = 20;
+import HelperLineDash from './../helpers/HelperLineDash';
 
 class CalculateMoving {
 	constructor() {
-
 		/**
 		 *
 		 * @type {number}
@@ -106,16 +96,19 @@ class CalculateMoving {
 		 */
 		this._action = 0;
 
-		// HelperPoints.get().add(this._po1, 1, 0x0F00FF);
+		/**
+		 *
+		 * @type {boolean}
+		 * @private
+		 */
+		this._enableMoving = false;
 
 		/**
-		 * TODO: move it to another class
 		 *
 		 * @type {HelperLineDash}
 		 * @private
 		 */
 		this._helperLine = new HelperLineDash();
-
 	}
 
 	/**
@@ -197,10 +190,8 @@ class CalculateMoving {
 	 * @returns {number}
 	 * @private
 	 */
-	_calculateAngleDirection() {
-		let x = this._po2.x - this._po1.x;
-		let z = this._po2.z - this._po1.z;
-		return Math.atan2(z, x);
+	static angleDirection(a, b) {
+		return Math.atan2(b.z - a.z, b.x - a.x);
 	}
 
 	/**
@@ -265,17 +256,14 @@ class CalculateMoving {
 	 * @returns {CalculateMoving}
 	 */
 	startCalculate() {
-
 		this._action = CalculateMoving.ACTION_ARC;
 
-		HelperPoints.get().remove(1);
+		let rad = Math.PI / 2,
+			direction = CalculateMoving.angleDirection(this._po1, this._po2);
 
-		let rad = Math.PI / 2;
-		let direction = this._calculateAngleDirection();
-
-		let rLeft = this._r;
-		let pLeft = this._calculatePositionP(direction - rad, rLeft);
-		let hLeft = this._calculateLengthH(pLeft);
+		let rLeft = this._r,
+			pLeft = this._calculatePositionP(direction - rad, rLeft),
+			hLeft = this._calculateLengthH(pLeft);
 
 		if (hLeft < rLeft) {
 			rLeft = hLeft / 2;
@@ -283,9 +271,9 @@ class CalculateMoving {
 			hLeft = this._calculateLengthH(pLeft);
 		}
 
-		let rRight = this._r;
-		let pRight = this._calculatePositionP(direction + rad, rRight);
-		let hRight = this._calculateLengthH(pRight);
+		let rRight = this._r,
+			pRight = this._calculatePositionP(direction + rad, rRight),
+			hRight = this._calculateLengthH(pRight);
 
 		if (hRight < rRight) {
 			rRight = hRight / 2;
@@ -293,14 +281,13 @@ class CalculateMoving {
 			hRight = this._calculateLengthH(pRight);
 		}
 
-		let dLeft = Math.sqrt(hLeft * hLeft - rLeft * rLeft);
-		let dRight = Math.sqrt(hRight * hRight - rRight * rRight);
+		let dLeft = Math.sqrt(hLeft * hLeft - rLeft * rLeft),
+			dRight = Math.sqrt(hRight * hRight - rRight * rRight),
+			angle;
 
-		let angle;
 		if (dLeft < dRight) {
 
 			this._tempAngle = direction + rad;
-
 			let theta = Math.acos(rLeft / hLeft);
 			let x = this._pd.x - pLeft.x,
 				z = this._pd.z - pLeft.z;
@@ -313,7 +300,6 @@ class CalculateMoving {
 		} else {
 
 			this._tempAngle = direction - rad;
-
 			let theta = Math.acos(rRight / hRight);
 			let x = this._pd.x - pRight.x,
 				z = this._pd.z - pRight.z;
@@ -325,28 +311,51 @@ class CalculateMoving {
 		}
 
 		this._pq.copy(this._calculatePositionQ(this._pp, this._tempRadius, angle));
+		this._tempLineAngle = CalculateMoving.angleDirection(this._pq, this._pd);
+		return this;
+	}
 
-
-		let x = this._pd.x - this._pq.x;
-		let z = this._pd.z - this._pq.z;
-		this._tempLineAngle = Math.atan2(z, x);
-
-		// HelperPoints.get().add(this._po2, 1, 0xFFFFFF);
-		// HelperPoints.get().add(this._pd, 1, 0xFFFF00);
-		// HelperPoints.get().add(this._pq, 1, 0x0000FF);
-
-
+	/**
+	 * Use this method after "startCalculate" to get correct line
+	 *
+	 * @returns {CalculateMoving}
+	 */
+	drawDashLine() {
 		let groupName = 1;
 		this._helperLine
-			.setGapSize(4)
-			.setDashSize(0.2)
 			.remove(groupName)
-			.addPoint(this._po2, groupName)
-			.addPoint(this._pp, groupName)
-			.addPoint(this._pq, groupName)
+			.addPoint(this._po2, groupName);
+
+		this.calculateCirclePoints((point) => {
+			this._helperLine.addPoint(new THREE.Vector3(point.x, point.y, point.z), groupName);
+		});
+
+		this._helperLine
 			.addPoint(this._pd, groupName)
 			.draw(groupName);
 
+		return this;
+	}
+
+	/**
+	 * Start move object. Use this method after "startCalculate" to get correct path
+	 * To set moving of object you need use method "update" inside render
+	 *
+	 * @returns {CalculateMoving}
+	 */
+	startMoving() {
+		this._enableMoving = true;
+		return this;
+	}
+
+	/**
+	 * Stop move object.
+	 * To set moving of object you need use method "update" inside render
+	 *
+	 * @returns {CalculateMoving}
+	 */
+	stopMoving() {
+		this._enableMoving = false;
 		return this;
 	}
 
@@ -414,10 +423,13 @@ class CalculateMoving {
 	}
 
 	/**
+	 * side: CalculateMoving.SIDE_LEFT|CalculateMoving.SIDE_RIGHT
+	 * curr: Current position
+	 * next: Next Position
 	 *
 	 * @param {number} angle
 	 * @param {number} angleStep
-	 * @returns {{curr: { x: number, y: number, z: number }, next: { x: number, y: number, z: number }, side: (CalculateMoving.SIDE_LEFT|CalculateMoving.SIDE_RIGHT)}}
+	 * @returns {{curr: { x: number, y: number, z: number }, next: { x: number, y: number, z: number }, side: (string|number)}}
 	 * @private
 	 */
 	_calculateCircleStep(angle, angleStep) {
@@ -439,28 +451,84 @@ class CalculateMoving {
 		}
 	}
 
+	/**
+	 *
+	 * @param {(string|number)} side - (CalculateMoving.SIDE_LEFT|CalculateMoving.SIDE_RIGHT)
+	 * @param {number} speed
+	 * @returns {CalculateMoving}
+	 * @private
+	 */
 	_updateTempAngle(side, speed) {
 		side === CalculateMoving.SIDE_LEFT ? this._tempAngle -= speed : this._tempAngle += speed;
 		return this;
 	}
 
 	/**
+	 * Gets calculated circle point
 	 *
-	 * @param {number} deltaTime
-	 * @param {(Mesh|Group)} object
+	 * @param {{ x: number, y: number, z: number }}
+	 * @callback pointCircleListener
+	 */
+
+	/**
+	 * Calculate circle points
+	 *
+	 * @param {pointCircleListener} listener
+	 * @param {number} [intensity]
+	 * @param {number} [maxIteration]
+	 * @returns {void}
+	 */
+	calculateCirclePoints(listener, intensity = 0.1, maxIteration = 1000) {
+		let distance = this._speed * intensity,
+			angleStep = distance / this._tempRadius,
+			tempAngle = this._tempAngle,
+			circleStep,
+			distanceToAim;
+
+		let i = 0;
+
+		do {
+			circleStep = this._calculateCircleStep(tempAngle, angleStep);
+			circleStep.side === CalculateMoving.SIDE_LEFT ? tempAngle -= angleStep : tempAngle += angleStep;
+			distanceToAim = this._pq.distanceTo(circleStep.next);
+
+			i++;
+			if (i === maxIteration) {
+				console.warn('The number of points of a circle is exceeded. Look at class CalculateMoving method calculateCirclePoints()');
+				break;
+			}
+
+			if (distanceToAim >= this._pq.distanceTo(circleStep.curr) && distanceToAim < this._tempRadius) {
+				break;
+			} else {
+				listener(circleStep.curr);
+			}
+
+		} while (1 === 1);
+	}
+
+	/**
+	 * User this method to move object
+	 *
+	 * @param {number} deltaTime - This spent time
+	 * @param {Object} object - This is (Mesh|Group) of object
 	 * @returns {void}
 	 */
 	update(deltaTime, object) {
-		let distance;
+		if (!this._enableMoving) {
+			return;
+		}
+
+		let distance = this._speed * deltaTime;
 		switch (this._action) {
 			case CalculateMoving.ACTION_ARC:
 				// remember last position
 				this._po1.x = object.position.x;
 				this._po1.z = object.position.z;
 
-				distance = this._speed * deltaTime;
+				//TODO rewrite this data to calculated points from method "calculateCirclePoints()"
+				// calculate arc
 				let angleStep = distance / this._tempRadius;
-
 				let circleStep = this._calculateCircleStep(this._tempAngle, angleStep);
 				this._updateTempAngle(circleStep['side'], angleStep);
 
@@ -468,13 +536,6 @@ class CalculateMoving {
 
 				let distanceToAim = this._pq.distanceTo(circleStep['next']);
 				if (distanceToAim >= this._pq.distanceTo(circleStep['curr']) && distanceToAim < this._tempRadius) {
-					console.log(
-						1,
-						this._pq.distanceTo(circleStep['next']),
-						this._pq.distanceTo(circleStep['curr']),
-						CalculateMoving.radiansToDegrees(this._tempAngle),
-
-					);
 					this._action = CalculateMoving.ACTION_DIRECT;
 					object.lookAt(this._pd);
 				} else {
@@ -484,13 +545,10 @@ class CalculateMoving {
 				break;
 
 			case CalculateMoving.ACTION_DIRECT:
-
 				// remember last position
 				this._po1.x = object.position.x;
 				this._po1.z = object.position.z;
-
-				distance = this._speed * deltaTime;
-
+				// calculate straight
 				object.position.x = object.position.x + distance * Math.cos(this._tempLineAngle);
 				object.position.z = object.position.z + distance * Math.sin(this._tempLineAngle);
 
@@ -502,6 +560,7 @@ class CalculateMoving {
 
 				if (this._pd.distanceTo(next) > this._pd.distanceTo(object.position)) {
 					this._action = CalculateMoving.ACTION_STOP;
+					this.stopMoving();
 				}
 
 				break;

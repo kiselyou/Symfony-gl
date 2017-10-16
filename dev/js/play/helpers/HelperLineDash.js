@@ -38,7 +38,7 @@ class HelperLineDash {
 		 * @type {number}
 		 * @private
 		 */
-		this._gapSize = 3;
+		this._gapSize = 6;
 	}
 
 	/**
@@ -123,7 +123,8 @@ class HelperLineDash {
 		let material = new THREE.LineDashedMaterial({
 			color: this._color,
 			dashSize: this._dashSize,
-			gapSize: this._gapSize
+			gapSize: this._gapSize,
+			linewidth: 1,
 		});
 
 		let geometry = new THREE.Geometry();

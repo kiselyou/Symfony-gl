@@ -32,7 +32,9 @@ class ShipControls extends Ship {
 		this._calculateMoving
 			.setPositionDestination(target)
 	        .setPositionOriginal(this.getPosition())
-			.startCalculate();
+			.startCalculate()
+			.drawDashLine();
+
 		this.startMove();
 	    return this;
     }
@@ -43,6 +45,7 @@ class ShipControls extends Ship {
 	 */
 	startMove() {
 		this._enableMoving = true;
+		this._calculateMoving.startMoving();
 		return this;
 	}
 
@@ -52,6 +55,7 @@ class ShipControls extends Ship {
 	 */
 	stopMove() {
 		this._enableMoving = false;
+		this._calculateMoving.stopMoving();
 		return this;
 	}
 
@@ -73,7 +77,6 @@ class ShipControls extends Ship {
 	update(deltaTime) {
 		if (this._enableMoving) {
 			this._calculateMoving.update(deltaTime, this.getObject());
-			// this.stopMove();
 		}
 	}
 }
