@@ -157,10 +157,10 @@ class SkyeBox {
 	_buildPlane() {
 		let geometry = new THREE.RingGeometry(1, this._size, this._wSegments);
 		let material = new THREE.MeshBasicMaterial({
-			color: 0xffffff,
+			color: 0xFFFFFF,
 			side: THREE.DoubleSide,
 			transparent: true,
-			opacity: 0.2
+			opacity: 0
 		});
 		this._plane = new THREE.Mesh(geometry, material);
 		this._plane.rotation.x = Math.PI / 2;

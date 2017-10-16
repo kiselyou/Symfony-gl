@@ -24,7 +24,7 @@ class HelperLineDash {
 		 * @type {number}
 		 * @private
 		 */
-		this._color = 0xFFFFFF;
+		this._color = 0xFF0000;
 
 		/**
 		 *

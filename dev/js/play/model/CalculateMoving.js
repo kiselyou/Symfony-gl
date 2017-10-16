@@ -525,8 +525,6 @@ class CalculateMoving {
 				// remember last position
 				this._po1.x = object.position.x;
 				this._po1.z = object.position.z;
-
-				//TODO rewrite this data to calculated points from method "calculateCirclePoints()"
 				// calculate arc
 				let angleStep = distance / this._tempRadius;
 				let circleStep = this._calculateCircleStep(this._tempAngle, angleStep);
