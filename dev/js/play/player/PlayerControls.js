@@ -36,14 +36,39 @@ class PlayerControls extends Player {
     initEvents() {
         this.initScene.domElement.addEventListener('click', (e) => {
 			let destination = this.initScene.getClickIntersection(e, this.sky.plane);
-			if (destination.hasOwnProperty('point')) {
-				this.ship.moveShip(destination['point']);
+			if (destination.hasOwnProperty('point') && !this.ship.isEnabledMove()) {
+				this.ship.setTarget(destination['point']);
+				if (this.showTargetPath) {
+					this.ship.setDashPath();
+				}
 			}
         });
 
-		// this.initScene.domElement.addEventListener('keydown', (e) => {
-		// 	console.log(e, e.keyCode);
-		// });
+		window.addEventListener('keydown', (e) => {
+			switch (e.keyCode) {
+				case this.keyBoard.startOrStopMoveShip.code:
+					if (!this.ship.isEnabledMove()) {
+						this.ship.startMove();
+						this.ship.removeDashPath();
+					} else {
+						this.ship.stopMove();
+						if (this.showTargetPath) {
+							this.ship.setDashPath();
+						}
+					}
+					break;
+				case this.keyBoard.targetPath.code:
+					this.showTargetPath = !this.showTargetPath;
+					if (!this.showTargetPath) {
+						this.ship.removeDashPath();
+					}
+					break;
+			}
+		});
+
+	    window.addEventListener('keyup', (e) => {
+
+	    });
 
         return this;
     }

@@ -2,6 +2,8 @@ import {
 	MODEL_EXPLORER
 } from './../../ini/obj.ini';
 
+import PlayerKeyBoard from './PlayerKeyBoard';
+
 class PlayerSettings {
 	constructor() {
 
@@ -44,6 +46,28 @@ class PlayerSettings {
          * @private
          */
 		this._enableHelper = false;
+
+		/**
+		 * Show path to aim
+		 *
+		 * @type {boolean}
+		 */
+		this.showTargetPath = true;
+
+		/**
+		 *
+		 * @type {PlayerKeyBoard}
+		 * @private
+		 */
+		this._keyBoard = new PlayerKeyBoard();
+	}
+
+	/**
+	 *
+	 * @returns {PlayerKeyBoard}
+	 */
+	get keyBoard() {
+		return this._keyBoard;
 	}
 
     /**

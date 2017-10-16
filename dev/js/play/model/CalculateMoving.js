@@ -110,7 +110,12 @@ class CalculateMoving {
 		 */
 		this._helperLine = new HelperLineDash();
 
-		this._test = 0;
+		/**
+		 *
+		 * @type {number}
+		 * @private
+		 */
+		this._helperLineGroupName = 1;
 	}
 
 	/**
@@ -318,23 +323,30 @@ class CalculateMoving {
 	}
 
 	/**
+	 *
+	 * @returns {CalculateMoving}
+	 */
+	removeDashLine() {
+		this._helperLine.remove(this._helperLineGroupName);
+		return this;
+	}
+
+	/**
 	 * Use this method after "startCalculate" to get correct line
 	 *
 	 * @returns {CalculateMoving}
 	 */
 	drawDashLine() {
-		let groupName = 1;
-		this._helperLine
-			.remove(groupName)
-			.addPoint(this._po2, groupName);
+		this.removeDashLine();
+		this._helperLine.addPoint(this._po2, this._helperLineGroupName);
 
 		this.calculateCirclePoints((point) => {
-			this._helperLine.addPoint(new THREE.Vector3(point.x, point.y, point.z), groupName);
+			this._helperLine.addPoint(new THREE.Vector3(point.x, point.y, point.z), this._helperLineGroupName);
 		});
 
 		this._helperLine
-			.addPoint(this._pd, groupName)
-			.draw(groupName);
+			.addPoint(this._pd, this._helperLineGroupName)
+			.draw(this._helperLineGroupName);
 
 		return this;
 	}
@@ -348,6 +360,14 @@ class CalculateMoving {
 	startMoving() {
 		this._enableMoving = true;
 		return this;
+	}
+
+	/**
+	 *
+	 * @returns {boolean}
+	 */
+	isEnabledMove() {
+		return this._enableMoving;
 	}
 
 	/**

@@ -25,27 +25,35 @@ class ShipControls extends Ship {
 	/**
 	 * Calculate
 	 *
-	 * @param {Vector3} target
+	 * @param {Vector3} value
 	 * @returns {ShipControls}
 	 */
-	moveShip(target) {
+	setTarget(value) {
 		this._calculateMoving
-			.setPositionDestination(target)
+			.setPositionDestination(value)
 	        .setPositionOriginal(this.getPosition())
-			.startCalculate()
-			.drawDashLine();
-
-		this.startMove();
+			.startCalculate();
 	    return this;
     }
 
 	/**
+	 * Set path to target.
+	 * Use this method after "startTarget()"
 	 *
 	 * @returns {ShipControls}
 	 */
-	startMove() {
-		this._enableMoving = true;
-		this._calculateMoving.startMoving();
+	setDashPath() {
+	    this._calculateMoving.drawDashLine();
+	    return this;
+    }
+
+	/**
+	 * Remove path to target.
+	 *
+	 * @returns {ShipControls}
+	 */
+	removeDashPath() {
+		this._calculateMoving.removeDashLine();
 		return this;
 	}
 
@@ -53,8 +61,24 @@ class ShipControls extends Ship {
 	 *
 	 * @returns {ShipControls}
 	 */
+	startMove() {
+		this._calculateMoving.startMoving();
+		return this;
+	}
+
+	/**
+	 *
+	 * @returns {boolean}
+	 */
+	isEnabledMove() {
+		return this._calculateMoving.isEnabledMove();
+	}
+
+	/**
+	 *
+	 * @returns {ShipControls}
+	 */
 	stopMove() {
-		this._enableMoving = false;
 		this._calculateMoving.stopMoving();
 		return this;
 	}
@@ -75,7 +99,7 @@ class ShipControls extends Ship {
 	 * @returns {void}
 	 */
 	update(deltaTime) {
-		if (this._enableMoving) {
+		if (this.isEnabledMove()) {
 			this._calculateMoving.update(deltaTime, this.getObject());
 		}
 	}
