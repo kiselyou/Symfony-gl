@@ -40,6 +40,11 @@ class PlayerControls extends Player {
 				this.ship.moveShip(destination['point']);
 			}
         });
+
+		// this.initScene.domElement.addEventListener('keydown', (e) => {
+		// 	console.log(e, e.keyCode);
+		// });
+
         return this;
     }
 }

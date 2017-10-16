@@ -109,6 +109,8 @@ class CalculateMoving {
 		 * @private
 		 */
 		this._helperLine = new HelperLineDash();
+
+		this._test = 0;
 	}
 
 	/**

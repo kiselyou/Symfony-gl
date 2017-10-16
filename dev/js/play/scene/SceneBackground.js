@@ -56,6 +56,34 @@ class SceneBackground {
          * @private
          */
         this._useAnimation = true;
+
+		/**
+		 *
+		 * @type {number}
+		 * @private
+		 */
+		this._farBacground = - 1000;
+
+		/**
+		 *
+		 * @type {number}
+		 * @private
+		 */
+		this._farLogo = - 800;
+
+		/**
+		 *
+		 * @type {number}
+		 * @private
+		 */
+		this._sizeLogo = 20;
+
+		/**
+		 *
+		 * @type {string}
+		 * @private
+		 */
+		this._logoText = 'IronWar';
     }
 
     /**
@@ -76,10 +104,10 @@ class SceneBackground {
      */
     setLogo() {
         this._logo
-            .setSize(40)
-            .setFar(-50)
+            .setSize(this._sizeLogo)
+            .setFar(this._farLogo)
             .showMirror(true)
-            .write('IronWar');
+            .write(this._logoText);
 
         this._scene.add(this._logo.get());
         this._logoActive = true;
@@ -113,7 +141,7 @@ class SceneBackground {
                 new THREE.MeshBasicMaterial({map: texture})
             );
 
-            this._backgroundMesh.position.setZ(-300);
+            this._backgroundMesh.position.setZ(this._farBacground);
             this._scene.add(this._backgroundMesh);
             this.setLogo();
             this._backgroundActive = true;
