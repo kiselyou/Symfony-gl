@@ -32,6 +32,13 @@ class PlayerKeyBoard {
 			code: 80,
 			name: 'p'
 		};
+
+		/**
+		 * Start move ship by double click
+		 *
+		 * @type {boolean}
+		 */
+		this.moveByDoubleClick = true;
 	}
 }
 

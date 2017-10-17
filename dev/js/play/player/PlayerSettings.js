@@ -12,7 +12,7 @@ class PlayerSettings {
 		 * @type {string}
 		 * @private
 		 */
-		this._envPath = './src/img/skybox/004_space.jpg';
+		this._envPath = './src/img/skybox/003_space.jpg';
 
 		/**
 		 *
