@@ -39,7 +39,7 @@ class PlayerControls extends Player {
     initEvents() {
         this.initScene.domElement.addEventListener('click', (e) => {
 			let destination = this.initScene.getClickIntersection(e, this.sky.plane);
-			this._aim.setAim();
+			this._aim.setAim(destination['point']);
 			if (destination.hasOwnProperty('point') && !this.ship.isEnabledMove()) {
 				this.ship.setTarget(destination['point']);
 				if (this.showTargetPath) {
