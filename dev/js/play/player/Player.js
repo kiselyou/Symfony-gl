@@ -4,6 +4,7 @@ import PlayerSettings from './PlayerSettings';
 import OrbitControls from './../controls/OrbitControls';
 import InitScene from '../scene/InitScene';
 import ShipControls from '../model/ShipControls';
+import PlayerAim from './PlayerAim';
 
 class Player extends PlayerSettings {
     constructor() {
@@ -31,6 +32,13 @@ class Player extends PlayerSettings {
 	     */
 	    this._initScene = InitScene.get();
 
+		/**
+		 *
+		 * @type {PlayerAim}
+		 * @private
+		 */
+		this._aim = new PlayerAim();
+
 	    /**
          *
 	     * @type {SkyeBox}
@@ -55,6 +63,14 @@ class Player extends PlayerSettings {
 	    this._orbitControls.minDistance = 50;
 	    this._orbitControls.maxDistance = 300;
     }
+
+	/**
+	 *
+	 * @returns {PlayerAim}
+	 */
+	get aim() {
+    	return this._aim;
+	}
 
 	/**
 	 *
@@ -171,6 +187,7 @@ class Player extends PlayerSettings {
 			// this._orbitControls.target = this.modelPosition;
 			// this._orbitControls.update();
 			this._ship.update(deltaTime);
+			this._aim.update();
 		}
     }
 }

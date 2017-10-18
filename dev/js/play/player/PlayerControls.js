@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import Player from './Player';
 import Loader from './../../play/loader/Loader';
-import PlayerAim from './PlayerAim';
 
 class PlayerControls extends Player {
 	constructor() {
@@ -13,8 +12,6 @@ class PlayerControls extends Player {
 		 * @private
 		 */
 		this._loader = Loader.get();
-
-		this._aim = new PlayerAim();
 	}
 
 	/**
@@ -39,7 +36,7 @@ class PlayerControls extends Player {
     initEvents() {
         this.initScene.domElement.addEventListener('click', (e) => {
 			let destination = this.initScene.getClickIntersection(e, this.sky.plane);
-			this._aim.setAim(destination['point']);
+			this.aim.setAim(destination['point']);
 			if (destination.hasOwnProperty('point') && !this.ship.isEnabledMove()) {
 				this.ship.setTarget(destination['point']);
 				if (this.showTargetPath) {

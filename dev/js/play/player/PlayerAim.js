@@ -63,6 +63,38 @@ class PlayerAim {
 		 * @private
 		 */
 		this._isAim = false;
+
+		/**
+		 * This is min size of aim
+		 *
+		 * @type {number}
+		 * @private
+		 */
+		this._min = 0.02;
+
+		/**
+		 * This is max size of aim
+		 *
+		 * @type {number}
+		 * @private
+		 */
+		this._max = 0.05;
+
+		/**
+		 * This is current size of aim
+		 *
+		 * @type {number}
+		 * @private
+		 */
+		this._scale = 0.05;
+
+		/**
+		 * It is direction scale
+		 *
+		 * @type {number} - possible values (0|1)
+		 * @private
+		 */
+		this._directionScale = 0;
 	}
 
 	/**
@@ -121,29 +153,26 @@ class PlayerAim {
 			i++;
 		}
 
-		let min = 0.02,
-			max = 0.05;
+		this._aim.scale.set(this._scale, this._scale, this._scale);
+	}
 
-		this._aim.scale.set(max, max, max);
-		let size = max,
-			side = 0;
+	/**
+	 * @returns {void}
+	 */
+	update() {
+		if (this._directionScale === 0) {
+			this._scale -= 0.001;
+		} else {
+			this._scale += 0.001;
+		}
+		if (this._scale > this._max) {
+			this._directionScale = 0;
+		}
 
-		setInterval(() => {
-			if (side === 0) {
-				size -= 0.002;
-			} else {
-				size += 0.002;
-			}
-			if (size > max) {
-				side = 0;
-			}
-
-			if (size <= min) {
-				side = 1;
-			}
-			this._aim.scale.set(size, size, size);
-		}, 20);
-
+		if (this._scale <= this._min) {
+			this._directionScale = 1;
+		}
+		this._aim.scale.set(this._scale, this._scale, this._scale);
 	}
 
 	/**
@@ -173,9 +202,7 @@ class PlayerAim {
 		let material = new THREE.MeshBasicMaterial({
 			color: 0xFF0000,
 			overdraw: 0.5,
-			side: THREE.DoubleSide,
-			// transparent: true,
-			// opacity: 0.8
+			side: THREE.DoubleSide
 		});
 		return new THREE.Mesh(geometry, material);
 	}
