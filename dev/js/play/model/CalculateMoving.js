@@ -116,6 +116,45 @@ class CalculateMoving {
 		 * @private
 		 */
 		this._helperLineGroupName = 1;
+
+		/**
+		 *
+		 * @type {Array.<listenerMoving>}
+		 * @private
+		 */
+		this._eventsStop = [];
+
+		/**
+		 *
+		 * @type {Array.<listenerMoving>}
+		 * @private
+		 */
+		this._eventsDirect = [];
+	}
+
+	/**
+	 *
+	 * @param {Vector3} position
+	 * @callback listenerMoving
+	 */
+
+	/**
+	 * This is constants of current class
+	 *
+	 * @param {string} event possible values ('stop'|'direct')
+	 * @param {listenerMoving} listener
+	 * @returns {CalculateMoving}
+	 */
+	addEventListener(event, listener) {
+		switch (event) {
+			case 'stop':
+				this._eventsStop.push(listener);
+				break;
+			case 'direct':
+				this._eventsDirect.push(listener);
+				break;
+		}
+		return this;
 	}
 
 	/**
@@ -557,6 +596,9 @@ class CalculateMoving {
 				let distanceToAim = this._pq.distanceTo(circleStep['next']);
 				if (distanceToAim >= this._pq.distanceTo(circleStep['curr']) && distanceToAim < this._tempRadius) {
 					this._action = CalculateMoving.ACTION_DIRECT;
+					for (let listenerStop of this._eventsDirect) {
+						listenerStop(this._pq);
+					}
 					object.lookAt(this._pd);
 				} else {
 					object.lookAt(circleStep['next']);
@@ -581,6 +623,9 @@ class CalculateMoving {
 				if (this._pd.distanceTo(next) > this._pd.distanceTo(object.position)) {
 					this._action = CalculateMoving.ACTION_STOP;
 					this.stopMoving();
+					for (let listenerStop of this._eventsStop) {
+						listenerStop(this._pd);
+					}
 				}
 
 				break;

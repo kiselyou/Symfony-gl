@@ -37,6 +37,24 @@ class ShipControls extends Ship {
     }
 
 	/**
+	 *
+	 * @param {Vector3} position
+	 * @callback listenerMoving
+	 */
+
+	/**
+	 * This is constants of current class
+	 *
+	 * @param {string} event possible values ('stop'|'direct')
+	 * @param {listenerMoving} listener
+	 * @returns {ShipControls}
+	 */
+    addEvent(event, listener) {
+	    this._calculateMoving.addEventListener(event, listener);
+	    return this;
+    }
+
+	/**
 	 * Set path to target.
 	 * Use this method after "startTarget()"
 	 *

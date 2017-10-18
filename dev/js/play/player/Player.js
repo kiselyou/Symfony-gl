@@ -187,7 +187,6 @@ class Player extends PlayerSettings {
 			// this._orbitControls.target = this.modelPosition;
 			// this._orbitControls.update();
 			this._ship.update(deltaTime);
-			this._aim.update();
 		}
     }
 }

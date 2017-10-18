@@ -20,6 +20,13 @@ class PlayerAim {
 
 		/**
 		 *
+		 * @type {Group}
+		 * @private
+		 */
+		this._flag = new THREE.Group();
+
+		/**
+		 *
 		 * @type {number}
 		 * @private
 		 */
@@ -54,7 +61,15 @@ class PlayerAim {
 		 * @type {boolean}
 		 * @private
 		 */
-		this._isPrepared = false;
+		this._isPreparedAim = false;
+
+		/**
+		 * If is true the flag is prepared
+		 *
+		 * @type {boolean}
+		 * @private
+		 */
+		this._isPreparedFlag = false;
 
 		/**
 		 * If is true the aim is on the scene
@@ -65,36 +80,19 @@ class PlayerAim {
 		this._isAim = false;
 
 		/**
-		 * This is min size of aim
-		 *
-		 * @type {number}
-		 * @private
-		 */
-		this._min = 0.02;
-
-		/**
-		 * This is max size of aim
-		 *
-		 * @type {number}
-		 * @private
-		 */
-		this._max = 0.05;
-
-		/**
 		 * This is current size of aim
 		 *
 		 * @type {number}
 		 * @private
 		 */
-		this._scale = 0.05;
+		this._scale = 0.03;
 
 		/**
-		 * It is direction scale
 		 *
-		 * @type {number} - possible values (0|1)
+		 * @type {boolean}
 		 * @private
 		 */
-		this._directionScale = 0;
+		this._isFlag = false;
 	}
 
 	/**
@@ -111,6 +109,19 @@ class PlayerAim {
 	}
 
 	/**
+	 * Remove aim from scene
+	 *
+	 * @returns {PlayerAim}
+	 */
+	removeFlag() {
+		if (this._isFlag) {
+			this._initScene.remove(this._flag);
+			this._isFlag = false;
+		}
+		return this;
+	}
+
+	/**
 	 * Sets aim
 	 *
 	 * @param {Vector3} position
@@ -119,12 +130,29 @@ class PlayerAim {
 	setAim(position) {
 		this.removeAim();
 		this._aim.position.copy(position);
-		if (!this._isPrepared) {
+		if (!this._isPreparedAim) {
 			this._drawAim();
-			this._isPrepared = true;
+			this._isPreparedAim = true;
 		}
 		this._initScene.add(this._aim);
 		this._isAim = true;
+		return this;
+	}
+
+	/**
+	 *
+	 * @param {Vector3} position
+	 * @returns {PlayerAim}
+	 */
+	setFlag(position) {
+		this.removeFlag();
+		this._flag.position.copy(position);
+		if (!this._isPreparedFlag) {
+			this._drawFlag();
+			this._isPreparedFlag = true;
+		}
+		this._initScene.add(this._flag);
+		this._isFlag = true;
 		return this;
 	}
 
@@ -156,23 +184,41 @@ class PlayerAim {
 		this._aim.scale.set(this._scale, this._scale, this._scale);
 	}
 
-	/**
-	 * @returns {void}
-	 */
-	update() {
-		if (this._directionScale === 0) {
-			this._scale -= 0.001;
-		} else {
-			this._scale += 0.001;
-		}
-		if (this._scale > this._max) {
-			this._directionScale = 0;
-		}
+	_drawFlag() {
+		let geometryCylinder = new THREE.CylinderGeometry(0.2, 0.2, 8, 8);
+		let materialCylinder = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+		let cylinder = new THREE.Mesh(geometryCylinder, materialCylinder);
+		cylinder.position.y = 4;
+		this._flag.add(cylinder);
 
-		if (this._scale <= this._min) {
-			this._directionScale = 1;
-		}
-		this._aim.scale.set(this._scale, this._scale, this._scale);
+		let geometry = new THREE.SphereGeometry(1, 8, 8);
+		let material = new THREE.MeshBasicMaterial({color: 0xffffff});
+		let sphere = new THREE.Mesh(geometry, material);
+		this._flag.add(sphere);
+
+		this._flag.add(PlayerAim._drawFlag());
+		this._flag.scale.set(0.5, 0.5, 0.5);
+	}
+
+	static _drawFlag() {
+		let triangleShape = new THREE.Shape();
+		let x = 0,
+			y = 5.7;
+
+		triangleShape.moveTo(x, y);
+		triangleShape.lineTo(x + 3.5, y);
+		triangleShape.lineTo(x + 5, y + 1);
+		triangleShape.lineTo(x + 3.5, y + 2);
+		triangleShape.lineTo(x, y + 2);
+		triangleShape.lineTo(x, y);
+
+		let geometry = new THREE.ShapeGeometry(triangleShape);
+		let material = new THREE.MeshBasicMaterial({
+			color: 0xffffff,
+			overdraw: 0.5,
+			side: THREE.DoubleSide
+		});
+		return new THREE.Mesh(geometry, material);
 	}
 
 	/**

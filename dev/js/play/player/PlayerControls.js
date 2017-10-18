@@ -34,11 +34,18 @@ class PlayerControls extends Player {
      * @returns {PlayerControls}
      */
     initEvents() {
+
+    	this.ship.addEvent('stop', () => {
+		    this.aim.removeFlag();
+	    });
+
         this.initScene.domElement.addEventListener('click', (e) => {
 			let destination = this.initScene.getClickIntersection(e, this.sky.plane);
 			this.aim.setAim(destination['point']);
 			if (destination.hasOwnProperty('point') && !this.ship.isEnabledMove()) {
 				this.ship.setTarget(destination['point']);
+				this.aim.setFlag(destination['point']);
+
 				if (this.showTargetPath) {
 					this.ship.setDashPath();
 				}
@@ -53,6 +60,10 @@ class PlayerControls extends Player {
 						.setTarget(destination['point'])
 						.removeDashPath()
 						.startMove();
+
+					this.aim
+						.removeAim()
+						.setFlag(destination['point']);
 				}
 			}
 		});
@@ -61,10 +72,12 @@ class PlayerControls extends Player {
 			switch (e.keyCode) {
 				case this.keyBoard.startOrStopMoveShip.code:
 					if (!this.ship.isEnabledMove()) {
-						this.ship.startMove();
-						this.ship.removeDashPath();
+						this.ship
+							.startMove()
+							.removeDashPath();
 					} else {
 						this.ship.stopMove();
+						this.aim.removeAim();
 						if (this.showTargetPath) {
 							this.ship.setDashPath();
 						}
