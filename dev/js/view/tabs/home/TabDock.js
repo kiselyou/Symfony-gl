@@ -69,7 +69,8 @@ class TabDock extends ViewRender {
                 let field = new FFInputText(cell);
 
                 field
-                    .setReadOnly(true)
+                    // .setReadOnly(true)
+					.setSkin(FFInputText.SKIN_STR)
                     .setName('station_name')
                     .setValue('MyName')
                     .buildField();
@@ -98,7 +99,8 @@ class TabDock extends ViewRender {
                 let field = new FFInputText(cell);
 
                 field
-                    .setReadOnly(true)
+                    // .setReadOnly(true)
+					.setSkin(FFInputText.SKIN_STR)
                     .setName('sector_name')
                     .setValue('Sector I')
                     .buildField();

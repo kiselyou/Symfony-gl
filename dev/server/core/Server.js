@@ -219,7 +219,6 @@ class Server extends Components {
 
         let method = data[1];
         let controller = data[0];
-
         try {
 
             let collection = this._controllerCollection.get();
@@ -241,24 +240,35 @@ class Server extends Components {
      *
      * @param {string} pathView - it is path to template ejs
      * @param {Object} params
-     * @returns {Server}
+     * @returns {void}
      */
     responseView(pathView, params = {}) {
         this.response.render(pathView.replace(/^\/+/, ''), params);
-        return this;
+        return;
     };
 
     /**
      * Send json to client
      *
      * @param {{}|[]} data
-     * @returns {Server}
+     * @returns {void}
      */
     responseJSON(data) {
-        let json = JSON.stringify(data);
-        this.response.writeHead(200, {'Content-Type': 'application/json', 'Content-Length': json.length});
-        this.response.end(json, 'utf-8', true);
-        return this;
+        let str = JSON.stringify(data);
+
+        if (this.response.headersSent) {
+        	// TODO it is temp solution need check problem "SettingsController.load()"
+			console.log(
+				'WARNING:',
+				this.response.headersSent,
+				this.response.getHeader('content-type'),
+				this.response.getHeader('content-length')
+			);
+		} else {
+			this.response.writeHead(200, {'Content-Type': 'application/json', 'Content-Length': str.length});
+			this.response.end(str, 'utf-8', true);
+		}
+        return;
     };
 
     /**

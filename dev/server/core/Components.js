@@ -125,7 +125,7 @@ class Components {
 
     /**
      *
-     * @returns {*}
+     * @returns {Object}
      */
     get response() {
         return this._res;

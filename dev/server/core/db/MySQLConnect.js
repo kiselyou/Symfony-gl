@@ -20,6 +20,13 @@ class MySQLConnect {
          * @type {?Connection}
          */
         this.connection = null;
+
+		/**
+		 *
+		 * @type {boolean}
+		 * @private
+		 */
+		this._isOpened = false;
     }
 
     /**
@@ -27,10 +34,14 @@ class MySQLConnect {
      * @returns {?Connection}
      */
     open() {
+    	if (this._isOpened) {
+			return this.connection;
+		}
         this.connection = mysql.createConnection(this._conf);
         this.connection.connect();
         mysqlUtilities.upgrade(this.connection);
         mysqlUtilities.introspection(this.connection);
+		this._isOpened = true;
         return this.connection;
     }
 
@@ -39,7 +50,10 @@ class MySQLConnect {
      * @returns {MySQLConnect}
      */
     close() {
-        this.connection.end();
+		if (this._isOpened) {
+        	this.connection.end();
+			this._isOpened = false;
+		}
         return this;
     }
 }
