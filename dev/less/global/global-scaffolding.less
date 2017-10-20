@@ -12,7 +12,8 @@ html, body, canvas {
 
 }
 body {
-  background: @background_color_base;
+	background: url(@path_background) no-repeat @background_color_base;
+	background-size: cover;
 }
 .absolute {
   position: absolute;

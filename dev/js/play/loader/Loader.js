@@ -122,7 +122,7 @@ class Loader {
      * @returns {Mesh|Group}
      */
     getModel(name) {
-        return this._listModels.hasOwnProperty(name) ? this._listModels[name] : null;
+        return this._listModels.hasOwnProperty(name) ? this._listModels[name].clone() : null;
     }
 
     /**
@@ -146,11 +146,11 @@ class Loader {
     /**
      * Load specific or all models
      *
+	 * @param {(Array|string)} [names] - If is empty array that need load all models
      * @param {loadCompleted} [listener]
-     * @param {(Array|string)} [names] - If is empty array that need load all models
      * @returns {Loader}
      */
-    load(listener, names = []) {
+    load(names, listener) {
         /**
          * @type {Array}
          */

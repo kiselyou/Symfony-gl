@@ -8,6 +8,4 @@ import User from './system/user/User';
 let view = new ViewBundle();
 view.initSecurityForm();
 
-User.get()
-    .setBackground()
-    .initScene();
+User.get().initScene();

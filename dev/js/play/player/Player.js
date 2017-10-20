@@ -3,7 +3,8 @@ import SkyBox from './../environment/SkyeBox';
 import PlayerSettings from './PlayerSettings';
 import OrbitControls from './../controls/OrbitControls';
 import InitScene from '../scene/InitScene';
-import ShipControls from '../model/ShipControls';
+import ShipControls from './../model/ShipControls';
+import StationControls from './../station/StationControls';
 import PlayerAim from './PlayerAim';
 
 class Player extends PlayerSettings {
@@ -18,12 +19,27 @@ class Player extends PlayerSettings {
          */
         this._ship = new ShipControls();
 
+		/**
+		 * This is mesh of station
+		 *
+		 * @type {StationControls}
+		 * @private
+		 */
+		this._station = new StationControls();
+
         /**
          *
          * @type {boolean}
          * @private
          */
         this._isModelOnScene = false;
+
+		/**
+		 *
+		 * @type {boolean}
+		 * @private
+		 */
+		this._isStationOnScene = false;
 
 	    /**
 	     *
@@ -88,6 +104,14 @@ class Player extends PlayerSettings {
 		return this._ship;
     }
 
+    /**
+	 *
+	 * @returns {StationControls}
+	 */
+	get station() {
+		return this._station;
+    }
+
 	/**
 	 *
 	 * @returns {InitScene}
@@ -104,14 +128,31 @@ class Player extends PlayerSettings {
         return this._isModelOnScene ? this._ship.getPosition() : null;
     }
 
+	/**
+	 *
+	 * @return {?Vector3}
+	 */
+	get stationPosition() {
+		return this._isStationOnScene ? this._station.getPosition() : null;
+	}
+
     /**
-     * Check status of model. Added it to the scene
+     * Check status of model. Added it to the scene or not
      *
      * @returns {boolean}
      */
     get isModel() {
         return this._isModelOnScene;
     }
+
+	/**
+	 * Check status of station. Added it to the scene or not
+	 *
+	 * @returns {boolean}
+	 */
+	get isStation() {
+		return this._isStationOnScene;
+	}
 
     /**
      * Set model and add it to the scene
@@ -120,40 +161,59 @@ class Player extends PlayerSettings {
      * @returns {Player}
      */
     setShip(mesh) {
-        if (this.isModel) {
-            this.removeShip();
-        }
-
+		this.removeShip();
         this.setEnv(this.envPath);
         this._ship
             .setObject(mesh)
             .setPosition(this.modelShipPosition);
-        this._initScene.showGridHelper(this.isEnabledHelper);
         this._initScene.scene.add(this._ship.getObject());
-
+		this._initScene.showGridHelper(this.isEnabledHelper);
         this._orbitControls.enabled = this.isEnabledOrbitControls;
         this._isModelOnScene = true;
         return this;
     }
 
 	/**
+	 * Set model and add it to the scene
 	 *
-	 * @returns {ShipControls}
+	 * @param {Mesh|Group} mesh
+	 * @returns {Player}
 	 */
-	getShip() {
-    	return this._ship;
+	setStation(mesh) {
+		this.removeStation();
+		this._station
+			.setObject(mesh)
+			.setPosition(this.modelStationPosition);
+		this._initScene.scene.add(this._station.getObject());
+		this._isStationOnScene = true;
+		return this;
 	}
 
     /**
-     * Remove model from the scene
+     * Remove model ship from the scene
      *
      * @returns {Player}
      */
     removeShip() {
-        this._initScene.scene.remove(this._ship.getObject());
-        this._isModelOnScene = false;
+		if (this.isModel) {
+			this._initScene.scene.remove(this._ship.getObject());
+			this._isModelOnScene = false;
+		}
         return this;
     }
+
+	/**
+	 * Remove model station from the scene
+	 *
+	 * @returns {Player}
+	 */
+	removeStation() {
+		if (this.isStation) {
+			this._initScene.scene.remove(this._station.getObject());
+			this._isStationOnScene = false;
+		}
+		return this;
+	}
 
 	/**
      * Set Environment to the scene

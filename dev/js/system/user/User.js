@@ -110,10 +110,12 @@ class User {
             .setValue('Start')
             .setIcon('fa-play')
             .addEvent('click', (e) => {
-	            this._player.load(() => {
-		            UIMainElement.get().container.hideElement(true);
-		            this._player.initScene.removeBackground(false);
-                });
+	            this._player.initScene.show();
+				this._player
+					.load(() => {
+						UIMainElement.get().container.hideElement(true);
+						this._player.initScene.removeBackground(false);
+					});
             })
             .buildBtn();
         return this;
@@ -139,8 +141,8 @@ class User {
             .addRenderEvent((deltaTime) => {
                 this._player.update(deltaTime);
             })
-            .render()
-            .show();
+			.setOpacity(0)
+            .render();
         return this;
     }
 }

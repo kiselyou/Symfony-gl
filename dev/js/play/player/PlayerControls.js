@@ -20,12 +20,13 @@ class PlayerControls extends Player {
 	 * @return {PlayerControls}
 	 */
 	load(listener) {
-		this._loader.load((loader) => {
+		this._loader.load([], (loader) => {
 			this.setShip(loader.getModel(this.modelShipName));
+			this.setStation(loader.getModel(this.modelStationName));
 			if (listener) {
 				listener();
 			}
-		}, this.modelShipName);
+		});
 		return this;
 	}
 
