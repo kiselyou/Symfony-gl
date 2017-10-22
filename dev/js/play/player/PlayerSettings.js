@@ -1,6 +1,7 @@
 import {
 	MODEL_EXPLORER,
-	MODEL_DOCK_USER
+	MODEL_DOCK_OA1,
+	MODEL_DOCK_IA1
 } from './../../ini/obj.ini';
 
 import PlayerKeyBoard from './PlayerKeyBoard';
@@ -46,7 +47,7 @@ class PlayerSettings {
 		/**
 		 * @type {string}
 		 */
-		this._modelStationName = MODEL_DOCK_USER;
+		this._modelStationName = MODEL_DOCK_IA1;
 
 		/**
 		 *
