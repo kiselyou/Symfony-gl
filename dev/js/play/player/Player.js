@@ -168,7 +168,14 @@ class Player extends PlayerSettings {
             .setPosition(this.modelShipPosition);
         this._initScene.scene.add(this._ship.getObject());
 		this._initScene.showGridHelper(this.isEnabledHelper);
+
         this._orbitControls.enabled = this.isEnabledOrbitControls;
+		this._orbitControls.autoRotate = false;
+		this._orbitControls.minDistance = 0;
+		this._orbitControls.maxDistance = Infinity;
+		this._orbitControls.minPolarAngle = 0;
+		this._orbitControls.maxPolarAngle = Math.PI;
+
         this._isModelOnScene = true;
         return this;
     }
@@ -187,6 +194,39 @@ class Player extends PlayerSettings {
 		this._initScene.scene.add(this._station.getObject());
 		this._isStationOnScene = true;
 		return this;
+	}
+
+	buildDock(listener) {
+		this._loader.load([this.modelStationName, this.modelShipName], (loader) => {
+			console.log(
+				loader.getModel(this.modelStationName),
+				loader.getModel(this.modelShipName)
+			);
+			this.setStation(loader.getModel(this.modelStationName));
+			this._station
+				.setScale(new THREE.Vector3(45, 45, 45))
+				.setPosition(new THREE.Vector3(0, 0, 0));
+
+			this.setShip(loader.getModel(this.modelShipName));
+			this._ship
+				.setScale(new THREE.Vector3(25, 25, 25))
+				.setPosition(new THREE.Vector3(0, 0, 0));
+
+			this._initScene.showGridHelper(false);
+
+			this._orbitControls.target = new THREE.Vector3(0, 0, 0);
+			this._orbitControls.enabled = true;
+			this._orbitControls.autoRotate = true;
+			this._orbitControls.autoRotateSpeed = 0.1;
+			this._orbitControls.minDistance = 800;
+			this._orbitControls.maxDistance = 800;
+			this._orbitControls.maxPolarAngle = Math.PI / 3;
+			this._orbitControls.minPolarAngle = Math.PI / 3;
+
+			if (listener) {
+				listener();
+			}
+		});
 	}
 
     /**
@@ -244,9 +284,12 @@ class Player extends PlayerSettings {
 	update(deltaTime) {
 		if (this.isModel) {
 			this._sky.setPosition(this.modelPosition);
-			// this._orbitControls.target = this.modelPosition;
-			// this._orbitControls.update();
 			this._ship.update(deltaTime);
+		}
+
+		if (this.isModel || this.isStation) {
+			// this._orbitControls.target = this.modelPosition;
+			this._orbitControls.update();
 		}
     }
 }

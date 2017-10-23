@@ -50,6 +50,16 @@ class Station {
 
 	/**
 	 *
+	 * @param {(Vector3|{x: number, y: number, z: number})} scale
+	 * @returns {Station}
+	 */
+	setScale(scale) {
+		this._obj.scale.copy(scale);
+		return this;
+	}
+
+	/**
+	 *
 	 * @returns {Vector3}
 	 */
 	getPosition() {

@@ -30,6 +30,7 @@ class OBJController {
         } catch (e) {
             console.log(e);
         }
+
         this._server.responseJSON(models);
     }
 

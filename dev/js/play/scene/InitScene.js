@@ -106,7 +106,9 @@ class InitScene {
     showGridHelper(value = true) {
         if (value) {
             this._scene.add(this._gridHelper);
-        }
+        } else {
+			this._scene.remove(this._gridHelper);
+		}
         return this;
     }
 

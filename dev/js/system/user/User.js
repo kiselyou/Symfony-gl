@@ -4,6 +4,7 @@ import UIButton from './../ui/form/FFButton';
 import SettingVolume from './SettingVolume';
 import UIMessage from './../ui/UIMessage';
 import Ajax from './../Ajax';
+import Lock from './../../system/Lock';
 
 let user = null;
 
@@ -104,7 +105,7 @@ class User {
      * @param {UIElement} container
      * @returns {User}
      */
-    addBtnPlay(container) {
+	toSpace(container) {
         let btn = new UIButton(container);
         btn
             .setValue('Start')
@@ -114,21 +115,44 @@ class User {
 				this._player
 					.load(() => {
 						UIMainElement.get().container.hideElement(true);
-						this._player.initScene.removeBackground(false);
+						// this._player.initScene.removeBackground(false);
 					});
             })
             .buildBtn();
         return this;
     }
 
-    /**
-     *
-     * @returns {User}
-     */
-    setBackground() {
-	    this._player.initScene.setBackground(this._player.background);
-        return this;
-    }
+	/**
+	 *
+	 * @returns {User}
+	 */
+	toDock() {
+		// TODO create dock
+		// console.log('create dock');
+		this._player.buildDock(() => {
+			this._player.initScene.show();
+		});
+		return this;
+	}
+
+	/**
+	 *
+	 * @returns {User}
+	 */
+	removeDock() {
+		// TODO remove dock
+		console.log('remove dock');
+		return this;
+	}
+
+    // /**
+    //  *
+    //  * @returns {User}
+    //  */
+    // setBackground() {
+	 //    this._player.initScene.setBackground(this._player.background);
+    //     return this;
+    // }
 
     /**
      *
@@ -143,6 +167,15 @@ class User {
             })
 			.setOpacity(0)
             .render();
+
+		Lock.get().addEventChangeStatus((status) => {
+			if (status) {
+				this.toDock();
+			} else {
+				this.removeDock();
+			}
+		});
+
         return this;
     }
 }
