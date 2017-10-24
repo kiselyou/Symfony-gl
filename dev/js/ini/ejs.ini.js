@@ -54,3 +54,6 @@ VIEW_PATH[VIEW_NAME_BUTTONS] = '/components/form/buttons.ejs';
 
 export const VIEW_NAME_INPUT_TEXT = 'input_text';
 VIEW_PATH[VIEW_NAME_INPUT_TEXT] = '/components/form/input_text.ejs';
+
+export const VIEW_NAME_DROP_DOWN = 'drop_down';
+VIEW_PATH[VIEW_NAME_DROP_DOWN] = '/components/form/drop_down.ejs';

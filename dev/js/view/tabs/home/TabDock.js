@@ -3,6 +3,7 @@ import PanelFolding from './../../panel/folding/PanelFolding';
 import UITable from './../../../system/ui/table/UITable';
 import UIButton from './../../../system/ui/form/FFButton';
 import FFInputText from './../../../system/ui/form/FFInputText';
+import FFDropDown from './../../../system/ui/form/dropdown/FFDropDown';
 
 import {
     VIEW_NAME_TAB_DOCK
@@ -71,6 +72,7 @@ class TabDock extends ViewRender {
                 field
                     // .setReadOnly(true)
 					.setSkin(FFInputText.SKIN_STR)
+					.setPlaceholder('...')
                     .setName('station_name')
                     .setValue('MyName')
                     .buildField();
@@ -96,14 +98,24 @@ class TabDock extends ViewRender {
                     .buildBtn();
             })
             .addCell('', (cell) => {
-                let field = new FFInputText(cell);
 
-                field
-                    // .setReadOnly(true)
-					.setSkin(FFInputText.SKIN_STR)
-                    .setName('sector_name')
-                    .setValue('Sector I')
-                    .buildField();
+            	let field = new FFDropDown(cell);
+				field
+					.addItem(1, 'Sector-1')
+					.addItem(2, 'Sector-2', true)
+					.addItem(3, 'Sector-3')
+					.setName('sector_name')
+					.buildField()
+
+                // let field = new FFInputText(cell);
+                //
+                // field
+                //     //.setReadOnly(true)
+					// .setSkin(FFInputText.SKIN_STR)
+					// .setPlaceholder('...')
+                //     .setName('sector_name')
+                //     .setValue('Sector I')
+                //     .buildField();
             })
             .addCell('', (cell) => {
                 let btn = new UIButton(cell);

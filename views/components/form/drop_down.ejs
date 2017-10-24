@@ -1,0 +1,41 @@
+<% let formClass = 'form'; %>
+<% formClass += options['size'] !== '' ? (' ' + options['size']) : ''; %>
+<% formClass += options['skin'] !== '' ? (' ' + options['skin']) : ''; %>
+
+
+
+<div class="<%= formClass; %>">
+
+    <% if (options['label']) { %>
+        <label for="<%= options['id']; %>">
+            <span><%= options['label']; %>:</span>
+
+            <% if (options['required']) { %>
+                <span class="star">*</span>
+            <% } %>
+
+        </label>
+    <% } %>
+
+    <% if (options['readOnly']) { %>
+
+        <span id="<%= options['id']; %>"><%= options['value']; %></span>
+
+    <% } else { %>
+
+        <% let req =  options['required'] ? 'required' : ''; %>
+
+        <select id="<%= options['id']; %>" name="<%= options['name']; %>" <%- req; %>>
+
+            <% for (var item of options['options']) { %>
+
+                <% let selected =  item['selected'] ? 'selected' : ''; %>
+
+                <option value="<%= item['value']; %>" <%- selected; %>><%= item['text']; %></option>
+
+            <% } %>
+
+        </select>
+
+    <% } %>
+</div>
