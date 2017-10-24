@@ -11,7 +11,6 @@ class OBJController {
      */
     constructor(server) {
         this._server = server;
-        this._objFiles = MODELS_PATH;
     }
 
 	/**
@@ -44,7 +43,6 @@ class OBJController {
      */
 	loadSpecificObjects() {
         let list = OBJController.prepareList(this.post('load'));
-		console.log(list);
 		this._server.responseJSON({
 			obj: this._server.fileLoader.getModels(list['obj']),
 			mtl: list['mtl']

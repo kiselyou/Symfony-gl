@@ -105,7 +105,7 @@ class User {
      * @param {UIElement} container
      * @returns {User}
      */
-	toSpace(container) {
+	goToSpace(container) {
         let btn = new UIButton(container);
         btn
             .setValue('Start')
@@ -113,7 +113,7 @@ class User {
             .addEvent('click', (e) => {
 	            this._player.initScene.show();
 				this._player
-					.startPlay(() => {
+					.goToSpace(() => {
 						UIMainElement.get().container.hideElement(true);
 					});
             })
@@ -125,23 +125,25 @@ class User {
 	 *
 	 * @returns {User}
 	 */
-	toDock() {
-		// TODO create dock
-		// console.log('create dock');
-		this._player.buildDock(() => {
+	goToDock() {
+		this._player.goToDock(() => {
 			this._player.initScene.show();
 		});
 		return this;
 	}
 
 	/**
+	 * Remove all elements from the scene and hide it
 	 *
-	 * @returns {User}
+	 * @returns {void}
 	 */
-	removeDock() {
-		// TODO remove dock
-		console.log('remove dock');
-		return this;
+	destroyScene() {
+		this._player.initScene.hide(() => {
+			this._player
+				.removeEnv()
+				.removeShip()
+				.removeDock();
+		});
 	}
 
     /**
@@ -152,7 +154,7 @@ class User {
         this._player.initEvents();
 	    this._player
             .initScene
-            .addRenderEvent((deltaTime) => {
+            .addCalculateEvent((deltaTime) => {
                 this._player.update(deltaTime);
             })
 			.setOpacity(0)
@@ -160,9 +162,9 @@ class User {
 
 		Lock.get().addEventChangeStatus((status) => {
 			if (status) {
-				this.toDock();
+				this.goToDock();
 			} else {
-				this.removeDock();
+				this.destroyScene();
 			}
 		});
 

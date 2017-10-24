@@ -4,7 +4,7 @@ import PlayerSettings from './PlayerSettings';
 import OrbitControls from './../controls/OrbitControls';
 import InitScene from '../scene/InitScene';
 import ShipControls from './../model/ShipControls';
-import StationControls from './../station/StationControls';
+import DockControls from './../station/DockControls';
 import PlayerAim from './PlayerAim';
 import Loader from './../../play/loader/Loader';
 
@@ -19,28 +19,6 @@ class Player extends PlayerSettings {
          * @private
          */
         this._ship = new ShipControls();
-
-		/**
-		 * This is mesh of station
-		 *
-		 * @type {StationControls}
-		 * @private
-		 */
-		this._station = new StationControls();
-
-        /**
-         *
-         * @type {boolean}
-         * @private
-         */
-        this._isModelOnScene = false;
-
-		/**
-		 *
-		 * @type {boolean}
-		 * @private
-		 */
-		this._isStationOnScene = false;
 
 	    /**
 	     *
@@ -64,11 +42,25 @@ class Player extends PlayerSettings {
 	    this._sky = new SkyBox(this._initScene.scene);
 
 		/**
+		 * This is mesh of station
+		 *
+		 * @type {DockControls}
+		 * @private
+		 */
+		this._dock = new DockControls(this._initScene.scene);
+
+		/**
 		 *
 		 * @type {Loader}
 		 * @private
 		 */
 		this._loader = Loader.get();
+
+		/**
+		 *
+		 * @type {boolean}
+		 */
+		this.isSpace = false;
 
 	    /**
 	     *
@@ -76,16 +68,7 @@ class Player extends PlayerSettings {
 	     * @private
 	     */
 	    this._orbitControls = new OrbitControls(this._initScene.camera, this._initScene.domElement);
-	    this._orbitControls.mouseButtons = {
-		    ORBIT: THREE.MOUSE.RIGHT,
-		    ZOOM: THREE.MOUSE.MIDDLE,
-		    PAN: THREE.MOUSE.LEFT
-	    };
-	    this._orbitControls.enabled = false;
-	    this._orbitControls.enablePan = false;
-	    this._orbitControls.enableKeys = false;
-	    this._orbitControls.minDistance = 50;
-	    this._orbitControls.maxDistance = 300;
+	    this._orbitControls.mouseButtons = {ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT};
     }
 
 	/**
@@ -112,14 +95,6 @@ class Player extends PlayerSettings {
 		return this._ship;
     }
 
-    /**
-	 *
-	 * @returns {StationControls}
-	 */
-	get station() {
-		return this._station;
-    }
-
 	/**
 	 *
 	 * @returns {InitScene}
@@ -128,40 +103,6 @@ class Player extends PlayerSettings {
     	return this._initScene;
     }
 
-	/**
-     *
-	 * @return {?Vector3}
-	 */
-	get modelPosition() {
-        return this._isModelOnScene ? this._ship.getPosition() : null;
-    }
-
-	/**
-	 *
-	 * @return {?Vector3}
-	 */
-	get stationPosition() {
-		return this._isStationOnScene ? this._station.getPosition() : null;
-	}
-
-    /**
-     * Check status of model. Added it to the scene or not
-     *
-     * @returns {boolean}
-     */
-    get isModel() {
-        return this._isModelOnScene;
-    }
-
-	/**
-	 * Check status of station. Added it to the scene or not
-	 *
-	 * @returns {boolean}
-	 */
-	get isStation() {
-		return this._isStationOnScene;
-	}
-
     /**
      * Set model and add it to the scene
      *
@@ -169,88 +110,81 @@ class Player extends PlayerSettings {
      * @returns {Player}
      */
     setShip(mesh) {
-		this.removeShip();
-        this.setEnv(this.envPath);
+        this
+			.removeShip()
+			.removeEnv()
+			.setEnv(this.envPath);
+
         this._ship
             .setObject(mesh)
             .setPosition(this.modelShipPosition);
+
         this._initScene.scene.add(this._ship.getObject());
 		this._initScene.showGridHelper(this.isEnabledHelper);
-
-        this._orbitControls.enabled = this.isEnabledOrbitControls;
-		this._orbitControls.autoRotate = false;
-		this._orbitControls.minDistance = 0;
-		this._orbitControls.maxDistance = Infinity;
-		this._orbitControls.minPolarAngle = 0;
-		this._orbitControls.maxPolarAngle = Math.PI;
-
-        this._isModelOnScene = true;
+        this._orbitControls.enabled = this.orbitEnabled;
+		this._orbitControls.enablePan = this.orbitEnablePan;
+		this._orbitControls.enableKeys = this.orbitEnableKeys;
+		this._orbitControls.autoRotate = this.orbitAutoRotate;
+		this._orbitControls.minDistance = this.orbitMinDistance;
+		this._orbitControls.maxDistance = this.orbitMaxDistance;
+		this._orbitControls.minPolarAngle = this.orbitMinPolarAngle;
+		this._orbitControls.maxPolarAngle = this.orbitMaxPolarAngle;
+		this._orbitControls.update();
+		this.isSpace = true;
         return this;
     }
 
 	/**
-	 * Set model and add it to the scene
+	 * Build environment of space
 	 *
-	 * @param {Mesh|Group} mesh
+	 * @param {function} listener
+	 * @return {PlayerControls}
+	 */
+	goToSpace(listener) {
+		this._loader.loadAllObjects((loader) => {
+			this.setShip(loader.getModel(this.modelShipName));
+			this._dock.remove();
+			if (listener) {
+				listener();
+			}
+		});
+		return this;
+	}
+
+	/**
+	 * Build dock and ship of user
+	 *
+	 * @param {function} [listener]
 	 * @returns {Player}
 	 */
-	setStation(mesh) {
-		this.removeStation();
-		this._station
-			.setObject(mesh)
-			.setPosition(this.modelStationPosition);
-		this._initScene.scene.add(this._station.getObject());
-		this._isStationOnScene = true;
+	goToDock(listener) {
+		this._loader.loadSpecificObjects([this._dock.name, this.modelShipName], (loader) => {
+			this._dock.remove();
+			this._dock.set(loader.getModel(this._dock.name), loader.getModel(this.modelShipName));
+			this._initScene.showGridHelper(false);
+			this._orbitControls.target = this._dock.position;
+			this._orbitControls.enabled = this._dock.orbitEnabled;
+			this._orbitControls.autoRotate = this._dock.orbitAutoRotate;
+			this._orbitControls.autoRotateSpeed = this._dock.orbitAutoRotateSpeed;
+			this._orbitControls.minDistance = this._dock.orbitMinDistance;
+			this._orbitControls.maxDistance = this._dock.orbitMaxDistance;
+			this._orbitControls.maxPolarAngle = this._dock.orbitMaxPolarAngle;
+			this._orbitControls.minPolarAngle = this._dock.orbitMinPolarAngle;
+			this._orbitControls.update();
+			if (listener) {
+				listener();
+			}
+		});
 		return this;
 	}
 
 	/**
 	 *
-	 * @param {function} listener
-	 * @return {PlayerControls}
+	 * @returns {Player}
 	 */
-	startPlay(listener) {
-		this._loader.loadAllObjects((loader) => {
-			this.setShip(loader.getModel(this.modelShipName));
-			this.setStation(loader.getModel(this.modelStationName));
-			if (listener) {
-				listener();
-			}
-		});
+	removeDock() {
+		this._dock.remove();
 		return this;
-	}
-
-	buildDock(listener) {
-		this._loader.loadSpecificObjects([this.modelStationName, this.modelShipName], (loader) => {
-			// console.log(
-			// 	loader.getModel(this.modelStationName),
-			// 	loader.getModel(this.modelShipName)
-			// );
-			this.setStation(loader.getModel(this.modelStationName));
-			this._station
-				.setScale(new THREE.Vector3(45, 45, 45))
-				.setPosition(new THREE.Vector3(0, 0, 0));
-
-			this.setShip(loader.getModel(this.modelShipName));
-			this._ship
-				.setScale(new THREE.Vector3(25, 25, 25))
-				.setPosition(new THREE.Vector3(0, 0, 0));
-
-			this._initScene.showGridHelper(false);
-
-			this._orbitControls.target = new THREE.Vector3(0, 0, 0);
-			this._orbitControls.enabled = true;
-			this._orbitControls.autoRotate = true;
-			this._orbitControls.autoRotateSpeed = 0.1;
-			this._orbitControls.minDistance = 800;
-			this._orbitControls.maxDistance = 800;
-			this._orbitControls.maxPolarAngle = Math.PI / 3;
-			this._orbitControls.minPolarAngle = Math.PI / 3;
-
-			if (listener) {
-				listener();
-			}
-		});
 	}
 
     /**
@@ -259,25 +193,12 @@ class Player extends PlayerSettings {
      * @returns {Player}
      */
     removeShip() {
-		if (this.isModel) {
+    	if (this.isSpace) {
 			this._initScene.scene.remove(this._ship.getObject());
-			this._isModelOnScene = false;
+			this.isSpace = false;
 		}
         return this;
     }
-
-	/**
-	 * Remove model station from the scene
-	 *
-	 * @returns {Player}
-	 */
-	removeStation() {
-		if (this.isStation) {
-			this._initScene.scene.remove(this._station.getObject());
-			this._isStationOnScene = false;
-		}
-		return this;
-	}
 
 	/**
      * Set Environment to the scene
@@ -306,13 +227,12 @@ class Player extends PlayerSettings {
      * @returns {void}
 	 */
 	update(deltaTime) {
-		if (this.isModel) {
-			this._sky.setPosition(this.modelPosition);
+		if (this.isSpace) {
+			this._sky.setPosition(this._ship.getPosition());
 			this._ship.update(deltaTime);
 		}
 
-		if (this.isModel || this.isStation) {
-			// this._orbitControls.target = this.modelPosition;
+		if (this._dock.isDock) {
 			this._orbitControls.update();
 		}
     }

@@ -1,7 +1,5 @@
 import {
 	MODEL_EXPLORER,
-	MODEL_DOCK_OA1,
-	MODEL_DOCK_IA1
 } from './../../ini/obj.ini';
 
 import PlayerKeyBoard from './PlayerKeyBoard';
@@ -32,29 +30,9 @@ class PlayerSettings {
 		this._modelShipPosition = {x: 0, y: 0, z: 0};
 
 		/**
-		 * This is position of model station
-		 *
-		 * @type {{x: number, y: number, z: number}|Vector3}
-		 * @private
-		 */
-		this._modelStationPosition = {x: 0, y: 0, z: 40};
-
-		/**
 		 * @type {string}
 		 */
 		this._modelShipName = MODEL_EXPLORER;
-
-		/**
-		 * @type {string}
-		 */
-		this._modelStationName = MODEL_DOCK_IA1;
-
-		/**
-		 *
-		 * @type {boolean}
-		 * @private
-		 */
-		this._enableOrbitControls = true;
 
         /**
 		 *
@@ -76,6 +54,54 @@ class PlayerSettings {
 		 * @private
 		 */
 		this._keyBoard = new PlayerKeyBoard();
+
+		/**
+		 *
+		 * @type {boolean}
+		 */
+		this.orbitEnabled = true;
+
+		/**
+		 *
+		 * @type {boolean}
+		 */
+		this.orbitEnablePan = false;
+
+		/**
+		 *
+		 * @type {boolean}
+		 */
+		this.orbitEnableKeys = false;
+
+		/**
+		 *
+		 * @type {boolean}
+		 */
+		this.orbitAutoRotate = false;
+
+		/**
+		 *
+		 * @type {number}
+		 */
+		this.orbitMinDistance = 50;
+
+		/**
+		 *
+		 * @type {Number}
+		 */
+		this.orbitMaxDistance = 300;
+
+		/**
+		 *
+		 * @type {number}
+		 */
+		this.orbitMinPolarAngle = 0;
+
+		/**
+		 *
+		 * @type {number}
+		 */
+		this.orbitMaxPolarAngle = Math.PI;
 	}
 
 	/**
@@ -124,24 +150,6 @@ class PlayerSettings {
 
 	/**
 	 *
-	 * @return {boolean}
-	 */
-	get isEnabledOrbitControls() {
-		return this._enableOrbitControls;
-	}
-
-	/**
-	 *
-	 * @param {boolean} value
-	 * @return {PlayerSettings}
-	 */
-	enableOrbitControls(value) {
-		this._enableOrbitControls = value;
-		return this;
-	}
-
-	/**
-	 *
 	 * @return {string}
 	 */
 	get envPath() {
@@ -178,24 +186,6 @@ class PlayerSettings {
 
 	/**
 	 *
-	 * @return {{x: number, y: number, z: number}|Vector3}
-	 */
-	get modelStationPosition() {
-		return this._modelStationPosition;
-	}
-
-	/**
-	 *
-	 * @param {string} position
-	 * @return {PlayerSettings}
-	 */
-	setModelStationPosition(position) {
-		this._modelStationPosition = position;
-		return this;
-	}
-
-	/**
-	 *
 	 * @return {string}
 	 */
 	get modelShipName() {
@@ -209,24 +199,6 @@ class PlayerSettings {
 	 */
 	setModelShipName(name) {
 		this._modelShipName = name;
-		return this;
-	}
-
-	/**
-	 *
-	 * @return {string}
-	 */
-	get modelStationName() {
-		return this._modelStationName;
-	}
-
-	/**
-	 *
-	 * @param {string} name
-	 * @return {PlayerSettings}
-	 */
-	setModelStationName(name) {
-		this._modelStationName = name;
 		return this;
 	}
 }

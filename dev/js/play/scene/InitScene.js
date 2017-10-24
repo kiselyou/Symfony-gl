@@ -3,6 +3,8 @@ import SceneBackground from './SceneBackground';
 
 let scene = null;
 
+const NUMBER_OF_FRAMES = 1000 / 30;
+
 class InitScene {
     constructor() {
 
@@ -12,11 +14,19 @@ class InitScene {
          */
         this.container = document.getElementById('initialisation_main_scene');
 
-        /**
-         *
-         * @type {Clock}
-         */
-        this.clock = new THREE.Clock();
+		/**
+		 *
+		 * @type {Clock}
+		 * @private
+		 */
+		this._clockRender = new THREE.Clock();
+
+		/**
+		 *
+		 * @type {Clock}
+		 * @private
+		 */
+		this._clockCalculate = new THREE.Clock();
 
         /**
          *
@@ -69,6 +79,13 @@ class InitScene {
          * @private
          */
         this._renderEvents = [];
+
+        /**
+         *
+         * @type {Array}
+         * @private
+         */
+        this._calculateEvents = [];
 
         /**
          *
@@ -336,6 +353,7 @@ class InitScene {
         this.renderer.setSize(InitScene.width, InitScene.height);
         this.container.appendChild(this.renderer.domElement);
         this._renderControls();
+        this._calculateControls();
         this._resizeControls();
         return this;
     }
@@ -393,6 +411,16 @@ class InitScene {
         return this;
     }
 
+	/**
+	 *
+	 * @param {renderEvent} event
+	 * @returns {InitScene}
+	 */
+	addCalculateEvent(event) {
+		this._calculateEvents.push(event);
+		return this;
+	}
+
     /**
      * Add event "resize" and rebuild scene when it was happened
      *
@@ -408,13 +436,28 @@ class InitScene {
         return this;
     }
 
+	/**
+	 * Set calculations
+	 *
+	 * @private
+	 */
+	_calculateControls() {
+    	setTimeout(() => {
+			let delta = this._clockCalculate.getDelta();
+			for (let event of this._calculateEvents) {
+				event(delta);
+			}
+			this._calculateControls();
+		}, NUMBER_OF_FRAMES);
+	}
+
     /**
      * Render scene
      *
      * @private
      */
     _renderControls() {
-        let delta = this.clock.getDelta();
+        let delta = this._clockRender.getDelta();
         this.renderer.render(this._scene, this._camera);
         requestAnimationFrame(() => {
             for (let event of this._renderEvents) {

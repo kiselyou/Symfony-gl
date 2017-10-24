@@ -38,7 +38,7 @@ class TabDock extends ViewRender {
     }
 
     _playBtn() {
-        this.app.user.toSpace(this.getViewBlock('dock_panel_buttons'));
+        this.app.user.goToSpace(this.getViewBlock('dock_panel_buttons'));
         return this;
     }
 

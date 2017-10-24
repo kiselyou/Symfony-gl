@@ -21,7 +21,6 @@ class PlayerControls extends Player {
 			if (destination.hasOwnProperty('point') && !this.ship.isEnabledMove()) {
 				this.ship.setTarget(destination['point']);
 				this.aim.setFlag(destination['point']);
-
 				if (this.showTargetPath) {
 					this.ship.setDashPath();
 				}
