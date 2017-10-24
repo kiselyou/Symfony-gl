@@ -103,47 +103,37 @@ class Player extends PlayerSettings {
     	return this._initScene;
     }
 
-    /**
-     * Set model and add it to the scene
-     *
-     * @param {Mesh|Group} mesh
-     * @returns {Player}
-     */
-    setShip(mesh) {
-        this
-			.removeShip()
-			.removeEnv()
-			.setEnv(this.envPath);
-
-        this._ship
-            .setObject(mesh)
-            .setPosition(this.modelShipPosition);
-
-        this._initScene.scene.add(this._ship.getObject());
-		this._initScene.showGridHelper(this.isEnabledHelper);
-        this._orbitControls.enabled = this.orbitEnabled;
-		this._orbitControls.enablePan = this.orbitEnablePan;
-		this._orbitControls.enableKeys = this.orbitEnableKeys;
-		this._orbitControls.autoRotate = this.orbitAutoRotate;
-		this._orbitControls.minDistance = this.orbitMinDistance;
-		this._orbitControls.maxDistance = this.orbitMaxDistance;
-		this._orbitControls.minPolarAngle = this.orbitMinPolarAngle;
-		this._orbitControls.maxPolarAngle = this.orbitMaxPolarAngle;
-		this._orbitControls.update();
-		this.isSpace = true;
-        return this;
-    }
-
 	/**
 	 * Build environment of space
 	 *
 	 * @param {function} listener
-	 * @return {PlayerControls}
+	 * @return {Player}
 	 */
 	goToSpace(listener) {
 		this._loader.loadAllObjects((loader) => {
-			this.setShip(loader.getModel(this.modelShipName));
 			this._dock.remove();
+			this
+				.removeShip()
+				.removeEnv()
+				.setEnv(this.envPath);
+
+			this._ship
+				.setObject(loader.getModel(this.shipName))
+				.setPosition(this.startPositionShip);
+
+			this._initScene.scene.add(this._ship.getObject());
+			this._initScene.showGridHelper(this.girdHelperEnable);
+			this._orbitControls.enabled = this.orbitEnabled;
+			this._orbitControls.enablePan = this.orbitEnablePan;
+			this._orbitControls.enableKeys = this.orbitEnableKeys;
+			this._orbitControls.autoRotate = this.orbitAutoRotate;
+			this._orbitControls.minDistance = this.orbitMinDistance;
+			this._orbitControls.maxDistance = this.orbitMaxDistance;
+			this._orbitControls.minPolarAngle = this.orbitMinPolarAngle;
+			this._orbitControls.maxPolarAngle = this.orbitMaxPolarAngle;
+			this._orbitControls.update();
+			this.isSpace = true;
+
 			if (listener) {
 				listener();
 			}
@@ -158,11 +148,11 @@ class Player extends PlayerSettings {
 	 * @returns {Player}
 	 */
 	goToDock(listener) {
-		this._loader.loadSpecificObjects([this._dock.name, this.modelShipName], (loader) => {
+		this._loader.loadSpecificObjects([this._dock.name, this.shipName], (loader) => {
 			this._dock.remove();
-			this._dock.set(loader.getModel(this._dock.name), loader.getModel(this.modelShipName));
+			this._dock.set(loader.getModel(this._dock.name), loader.getModel(this.shipName));
 			this._initScene.showGridHelper(false);
-			this._orbitControls.target = this._dock.position;
+			this._orbitControls.target = this.startPositionShip;
 			this._orbitControls.enabled = this._dock.orbitEnabled;
 			this._orbitControls.autoRotate = this._dock.orbitAutoRotate;
 			this._orbitControls.autoRotateSpeed = this._dock.orbitAutoRotateSpeed;

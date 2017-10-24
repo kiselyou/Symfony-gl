@@ -18,19 +18,13 @@ class DockSettings {
 		 *
 		 * @type {Vector3}
 		 */
-		this.position = new THREE.Vector3(0, 0, 0);
-
-		/**
-		 *
-		 * @type {Vector3}
-		 */
 		this.scale = new THREE.Vector3(45, 45, 45);
 
 		/**
 		 *
 		 * @type {Vector3}
 		 */
-		this.scaleShip = new THREE.Vector3(0.4, 0.4, 0.4);
+		this.scaleShip = new THREE.Vector3(0.5, 0.5, 0.5);
 
 		/**
 		 *

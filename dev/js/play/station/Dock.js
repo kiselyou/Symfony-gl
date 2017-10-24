@@ -47,11 +47,9 @@ class Dock extends DockSettings {
 	set(meshDock, meshShip) {
 		this._ship = meshShip;
 		this._ship.scale.copy(this.scaleShip);
-		this._ship.position.copy(this.position);
 		this._dock = meshDock;
 		this._dock.add(this._ship);
 		this._dock.scale.copy(this.scale);
-		this._dock.position.copy(this.position);
 		this.isDock = true;
 		this._scene.add(this._dock);
 		return this;
