@@ -1,7 +1,12 @@
 {
-  "loader_obj": {
-    "route": "/load/obj",
-    "method": "POST",
-    "controller": "OBJController:load"
-  }
+	"load_specific": {
+		"route": "/load/specific",
+		"method": "POST",
+		"controller": "OBJController:loadSpecificObjects"
+	},
+	"load_all": {
+		"route": "/load/all",
+		"method": "POST",
+		"controller": "OBJController:loadAllObjects"
+	}
 }

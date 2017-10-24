@@ -1,10 +1,6 @@
 import fs from 'fs';
 
 import {
-    BASE_DIR_OBJ
-} from './../../js/ini/obj.ini';
-
-import {
     BASE_DIR_VIEW
 } from './../../js/ini/ejs.ini';
 
@@ -45,13 +41,13 @@ class FileLoader {
      * @returns {string}
      */
     getModel(path) {
-        return this._fs.readFileSync(FileLoader.preparePath(BASE_DIR_OBJ + path), 'utf-8');
+        return this._fs.readFileSync(FileLoader.preparePath(path), 'utf-8');
     }
 
     /**
      *
-     * @param {Object} files
-     * @returns {Object}
+     * @param {Object} files - example {keyName: path, keyName2: path2}
+     * @returns {Object} - example {keyName: Object, keyName2: Object}
      */
     getModels(files) {
         let data = {};

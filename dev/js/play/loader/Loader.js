@@ -44,7 +44,7 @@ class Loader {
          * @type {Array}
          * @private
          */
-        this._listNamesModel = [];
+        this._keysModels = [];
 
         /**
          * Events after load
@@ -134,14 +134,16 @@ class Loader {
         return this._listModels;
     }
 
-    /**
-     * Get names of loaded model
-     *
-     * @returns {Array}
-     */
-    getNamesModel() {
-        return this._listNamesModel;
-    }
+	/**
+	 *
+	 * @param {loadCompleted} [listener]
+	 * @returns {Loader}
+	 */
+	loadAllObjects(listener) {
+		this._loadListener = listener;
+		this._start('/load/all', {except: this._keysModels});
+		return this;
+	}
 
     /**
      * Load specific or all models
@@ -150,33 +152,15 @@ class Loader {
      * @param {loadCompleted} [listener]
      * @returns {Loader}
      */
-    load(names, listener) {
-        /**
-         * @type {Array}
-         */
+    loadSpecificObjects(names, listener) {
         let loadNames = Array.isArray(names) ? names : (names ? [names] : []);
         for (let i = 0; i < loadNames.length; i++) {
-            let name = loadNames[i];
-            if (this._listNamesModel.indexOf(name) >= 0) {
-                // remove names of models which have already loaded
+            if (this._keysModels.indexOf(loadNames[i]) >= 0) {
                 loadNames.splice(i, 1);
             }
         }
-
-        this._loadListener = listener;
-
-        let uniqueNames = loadNames.filter((elem, index, self) => {
-            return index === self.indexOf(elem);
-        });
-
-        if (names.length > 0 && uniqueNames.length === 0) {
-            this._addListener();
-        } else {
-            this._start({
-                load: uniqueNames,
-                except: this._listNamesModel
-            });
-        }
+		this._loadListener = listener;
+		this._start('/load/specific', {load: loadNames});
         return this;
     }
 
@@ -189,28 +173,26 @@ class Loader {
     /**
      * Start load.
      *
-     * @param {{load: Array, except: Array}} params
+	 * @param {string} path
+     * @param {Object} names
      * @returns {Loader}
      */
-    _start(params) {
+    _start(path, names) {
         this._cleanTempOptions();
+        let msg = 'Was not able to load models';
         this._ajax
-            .post('/load/obj', params)
+            .post(path, names)
             .then((json) => {
                 try {
                     let data = JSON.parse(json);
-                    let models = data['obj'];
-                    this._tempNames = Object.keys(models);
-                    this._startLoadMTL(models, data['mtl']);
-
+                    this._tempNames = Object.keys(data['obj']);
+                    this._startLoadMTL(data['obj'], data['mtl']);
                 } catch (e) {
-                    console.log(e);
-                    this._msg.alert('Cannot load models');
+                    this._msg.alert(msg);
                 }
             })
-            .catch((e) => {
-                console.log(e);
-                this._msg.alert('Cannot load models');
+            .catch(() => {
+                this._msg.alert(msg);
             });
         return this;
     }
@@ -281,7 +263,7 @@ class Loader {
      */
     _addModel(name, model) {
         this._listModels[name] = model;
-        this._listNamesModel.push(name);
+        this._keysModels.push(name);
         return this;
     }
 

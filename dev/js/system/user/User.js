@@ -113,9 +113,8 @@ class User {
             .addEvent('click', (e) => {
 	            this._player.initScene.show();
 				this._player
-					.load(() => {
+					.startPlay(() => {
 						UIMainElement.get().container.hideElement(true);
-						// this._player.initScene.removeBackground(false);
 					});
             })
             .buildBtn();
@@ -144,15 +143,6 @@ class User {
 		console.log('remove dock');
 		return this;
 	}
-
-    // /**
-    //  *
-    //  * @returns {User}
-    //  */
-    // setBackground() {
-	 //    this._player.initScene.setBackground(this._player.background);
-    //     return this;
-    // }
 
     /**
      *

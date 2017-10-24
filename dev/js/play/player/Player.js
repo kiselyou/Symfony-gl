@@ -6,6 +6,7 @@ import InitScene from '../scene/InitScene';
 import ShipControls from './../model/ShipControls';
 import StationControls from './../station/StationControls';
 import PlayerAim from './PlayerAim';
+import Loader from './../../play/loader/Loader';
 
 class Player extends PlayerSettings {
     constructor() {
@@ -61,6 +62,13 @@ class Player extends PlayerSettings {
 	     * @private
 	     */
 	    this._sky = new SkyBox(this._initScene.scene);
+
+		/**
+		 *
+		 * @type {Loader}
+		 * @private
+		 */
+		this._loader = Loader.get();
 
 	    /**
 	     *
@@ -196,12 +204,28 @@ class Player extends PlayerSettings {
 		return this;
 	}
 
+	/**
+	 *
+	 * @param {function} listener
+	 * @return {PlayerControls}
+	 */
+	startPlay(listener) {
+		this._loader.loadAllObjects((loader) => {
+			this.setShip(loader.getModel(this.modelShipName));
+			this.setStation(loader.getModel(this.modelStationName));
+			if (listener) {
+				listener();
+			}
+		});
+		return this;
+	}
+
 	buildDock(listener) {
-		this._loader.load([this.modelStationName, this.modelShipName], (loader) => {
-			console.log(
-				loader.getModel(this.modelStationName),
-				loader.getModel(this.modelShipName)
-			);
+		this._loader.loadSpecificObjects([this.modelStationName, this.modelShipName], (loader) => {
+			// console.log(
+			// 	loader.getModel(this.modelStationName),
+			// 	loader.getModel(this.modelShipName)
+			// );
 			this.setStation(loader.getModel(this.modelStationName));
 			this._station
 				.setScale(new THREE.Vector3(45, 45, 45))
