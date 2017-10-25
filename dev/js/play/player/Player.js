@@ -107,6 +107,8 @@ class Player extends PlayerSettings {
 			this.sector.init(this.sectorKey);
 
 			this._ship
+				.setSpeed(this.speed)
+				.setRadius(this.radius)
 				.setObject(loader.getModel(this.shipName))
 				.setPosition(this.startPositionShip);
 

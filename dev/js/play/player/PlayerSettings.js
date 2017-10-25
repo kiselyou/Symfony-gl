@@ -30,11 +30,23 @@ class PlayerSettings {
 		 */
 		this.shipName = MODEL_EXPLORER;
 
+		/**
+		 *
+		 * @type {number}
+		 */
+		this.speed = 100;
+
+		/**
+		 *
+		 * @type {number}
+		 */
+		this.radius = 30;
+
         /**
 		 *
          * @type {boolean}
          */
-		this.girdHelperEnable = true;
+		this.girdHelperEnable = false;
 
 		/**
 		 * Show path to aim
@@ -77,13 +89,13 @@ class PlayerSettings {
 		 *
 		 * @type {number}
 		 */
-		this.orbitMinDistance = 50;
+		this.orbitMinDistance = 300;
 
 		/**
 		 *
 		 * @type {Number}
 		 */
-		this.orbitMaxDistance = 300;
+		this.orbitMaxDistance = 800;
 
 		/**
 		 *

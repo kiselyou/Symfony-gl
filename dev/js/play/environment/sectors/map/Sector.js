@@ -30,6 +30,20 @@ class Sector {
 		 * @type {Array.<Planet>}
 		 */
 		this.planets = [];
+
+		/**
+		 *
+		 * @type {Array.<PointLight|DirectionalLight|HemisphereLight>}
+		 */
+		this.lights = [];
+	}
+
+	/**
+	 *
+	 * @returns {Sector}
+	 */
+	prepare() {
+		return this;
 	}
 }
 

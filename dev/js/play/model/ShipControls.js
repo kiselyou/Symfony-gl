@@ -23,6 +23,28 @@ class ShipControls extends Ship {
     }
 
 	/**
+	 * Sets radius of speed
+	 *
+	 * @param {number} speed
+	 * @returns {ShipControls}
+	 */
+	setSpeed(speed) {
+		this._calculateMoving.speed = speed;
+		return this;
+	}
+
+	/**
+	 * Sets radius of radius
+	 *
+	 * @param {number} radius
+	 * @returns {ShipControls}
+	 */
+	setRadius(radius) {
+		this._calculateMoving.radius = radius;
+		return this;
+	}
+
+	/**
 	 * Calculate
 	 *
 	 * @param {Vector3} value

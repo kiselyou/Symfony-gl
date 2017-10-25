@@ -6,17 +6,15 @@ class CalculateMoving {
 		/**
 		 *
 		 * @type {number}
-		 * @private
 		 */
-		this._speed = 50;
+		this.speed = 50;
 
 		/**
 		 * Radius
 		 *
 		 * @type {number}
-		 * @private
 		 */
-		this._r = 20;
+		this.radius = 20;
 
 		/**
 		 * Point P (90 degree from Original position)
@@ -307,7 +305,7 @@ class CalculateMoving {
 		let rad = Math.PI / 2,
 			direction = CalculateMoving.angleDirection(this._po1, this._po2);
 
-		let rLeft = this._r,
+		let rLeft = this.radius,
 			pLeft = this._calculatePositionP(direction - rad, rLeft),
 			hLeft = this._calculateLengthH(pLeft);
 
@@ -317,7 +315,7 @@ class CalculateMoving {
 			hLeft = this._calculateLengthH(pLeft);
 		}
 
-		let rRight = this._r,
+		let rRight = this.radius,
 			pRight = this._calculatePositionP(direction + rad, rRight),
 			hRight = this._calculateLengthH(pRight);
 
@@ -427,7 +425,7 @@ class CalculateMoving {
 	 * @returns {CalculateMoving}
 	 */
 	setRadius(value) {
-		this._r = value;
+		this.radius = value;
 		return this;
 	}
 
@@ -540,7 +538,7 @@ class CalculateMoving {
 	 * @returns {void}
 	 */
 	calculateCirclePoints(listener, intensity = 0.1, maxIteration = 1000) {
-		let distance = this._speed * intensity,
+		let distance = this.speed * intensity,
 			angleStep = distance / this._tempRadius,
 			tempAngle = this._tempAngle,
 			circleStep,
@@ -580,7 +578,7 @@ class CalculateMoving {
 			return;
 		}
 
-		let distance = this._speed * deltaTime;
+		let distance = this.speed * deltaTime;
 		switch (this._action) {
 			case CalculateMoving.ACTION_ARC:
 				// remember last position

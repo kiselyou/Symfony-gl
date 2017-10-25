@@ -50,13 +50,21 @@ class SectorControls {
 	 * @returns {SectorControls}
 	 */
 	init(key) {
+
 		this.sector = this.setors.find((sector) => {
 			return sector.key === key;
 		});
 
 		this.sky.initEnv(this.sector.skyBoxPath);
+
+		this.sector.prepare();
+
 		for (let planet of this.sector.planets) {
 			this._scene.add(planet.get());
+		}
+
+		for (let light of this.sector.lights) {
+			this._scene.add(light);
 		}
 
 		return this;

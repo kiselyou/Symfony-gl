@@ -105,7 +105,13 @@ class Planet {
 		 *
 		 * @type {number}
 		 */
-		this.cloudsSize = 1;
+		this.cloudsSize = 0.5;
+
+		/**
+		 *
+		 * @type {number}
+		 */
+		this.y = 10;
 	}
 
 	/**
@@ -114,7 +120,7 @@ class Planet {
 	 * @returns {Planet}
 	 */
 	setPosition(v) {
-		this._planet.position.set(v.x, v.y - this.radius, v.z);
+		this._planet.position.set(v.x, v.y - (this.radius + this.y), v.z);
 		return this;
 	}
 
@@ -158,7 +164,6 @@ class Planet {
 
 		this._planet = new THREE.Mesh(geometry, material);
 		this._planet.receiveShadow	= true;
-		this._planet.castShadow = true;
 		this._planet.add(this._planetClouds);
 		this.setPosition(this.defaultPosition);
 	}
@@ -177,14 +182,21 @@ class Planet {
 			canvasResult.height	= 512;
 			let contextResult = canvasResult.getContext('2d');
 
+			let material = new THREE.MeshPhongMaterial({
+				map: new THREE.Texture(canvasResult),
+				side: THREE.DoubleSide,
+				transparent: true,
+				opacity: 0.8
+			});
+
 			let imageMap = new Image();
 			imageMap.addEventListener('load', () => {
 
 				// create dataMap ImageData for cloud map
-				let canvasMap	= document.createElement('canvas');
+				let canvasMap = document.createElement('canvas');
 				canvasMap.width	= imageMap.width;
-				canvasMap.height= imageMap.height;
-				let contextMap	= canvasMap.getContext('2d');
+				canvasMap.height = imageMap.height;
+				let contextMap = canvasMap.getContext('2d');
 				contextMap.drawImage(imageMap, 0, 0);
 				let dataMap	= contextMap.getImageData(0, 0, canvasMap.width, canvasMap.height);
 
@@ -192,14 +204,14 @@ class Planet {
 				let imageTrans = new Image();
 				imageTrans.addEventListener('load', () => {
 					// create dataTrans ImageData for cloud map trans
-					let canvasTrans		= document.createElement('canvas');
-					canvasTrans.width	= imageTrans.width;
-					canvasTrans.height	= imageTrans.height;
-					let contextTrans	= canvasTrans.getContext('2d');
+					let canvasTrans	= document.createElement('canvas');
+					canvasTrans.width = imageTrans.width;
+					canvasTrans.height = imageTrans.height;
+					let contextTrans = canvasTrans.getContext('2d');
 					contextTrans.drawImage(imageTrans, 0, 0);
-					let dataTrans		= contextTrans.getImageData(0, 0, canvasTrans.width, canvasTrans.height);
+					let dataTrans = contextTrans.getImageData(0, 0, canvasTrans.width, canvasTrans.height);
 					// merge dataMap + dataTrans into dataResult
-					let dataResult		= contextMap.createImageData(canvasMap.width, canvasMap.height);
+					let dataResult = contextMap.createImageData(canvasMap.width, canvasMap.height);
 					for(let y = 0, offset = 0; y < imageMap.height; y++) {
 						for(let x = 0; x < imageMap.width; x++, offset += 4) {
 							dataResult.data[offset]	= dataMap.data[offset];
@@ -210,23 +222,14 @@ class Planet {
 					}
 					// update texture with result
 					contextResult.putImageData(dataResult, 0, 0);
-					// material.map.needsUpdate = true;
+					material.map.needsUpdate = true;
 				});
 				imageTrans.src = this._planetPathCloudMapTrans;
 			}, false);
 
 			imageMap.src = this._planetPathCloudMap;
-
-
 			let radius = this.radius + (this.radius / 100 * this.cloudsSize);
 			let geometry = new THREE.SphereGeometry(radius, this.widthSegments, this.heightSegments);
-			let material = new THREE.MeshPhongMaterial({
-				map: new THREE.Texture(canvasResult),
-				side: THREE.DoubleSide,
-				transparent: true,
-				opacity: 0.8,
-			});
-
 			this._planetClouds = new THREE.Mesh(geometry, material);
 		}
 	}
