@@ -99,7 +99,7 @@ class InitScene {
          * @type {GridHelper}
          * @private
          */
-        this._gridHelper = new THREE.GridHelper(1500, 50, 0xcccccc, 0xcccccc);
+        this._gridHelper = new THREE.GridHelper(1500, 25, 0xcccccc, 0xcccccc);
 
 	    /**
          *

@@ -55,6 +55,10 @@ class SectorControls {
 		});
 
 		this.sky.initEnv(this.sector.skyBoxPath);
+		for (let planet of this.sector.planets) {
+			this._scene.add(planet.get());
+		}
+
 		return this;
 	}
 
@@ -64,7 +68,12 @@ class SectorControls {
 	 */
 	remove() {
 		this.sky.removeEnv();
-		this.sector = null;
+		if (this.sector) {
+			for (let planet of this.sector.planets) {
+				this._scene.remove(planet.get());
+			}
+			this.sector = null;
+		}
 		return this;
 	}
 
@@ -85,6 +94,10 @@ class SectorControls {
 	update(skyBoxPos, deltaTime) {
 		if (this.sector) {
 			this.sky.setPosition(skyBoxPos);
+
+			for (let planet of this.sector.planets) {
+				planet.update(deltaTime);
+			}
 		}
 	}
 }

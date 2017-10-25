@@ -5,12 +5,13 @@ import {SECTOR_A} from './map';
 class SectorA extends Sector {
 	constructor() {
 		super(SECTOR_A);
+
+		this._prepare();
 	}
 
 	_prepare() {
-		this.planets.push(
-			new PlanetEarth()
-		);
+		let earth = new PlanetEarth();
+		this.planets.push(earth);
 	}
 }
 
