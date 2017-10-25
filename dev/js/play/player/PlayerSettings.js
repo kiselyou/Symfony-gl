@@ -4,16 +4,19 @@ import {
 	MODEL_EXPLORER,
 } from './../../ini/obj.ini';
 
+import {
+	SECTOR_A
+} from './../environment/sectors/map/map';
+
 import PlayerKeyBoard from './PlayerKeyBoard';
 
 class PlayerSettings {
 	constructor() {
 
 		/**
-		 *
-		 * @type {string}
+		 * @type {number}
 		 */
-		this.envPath = './src/img/skybox/003_space.jpg';
+		this.sectorKey = SECTOR_A;
 
 		/**
 		 * This is position of model ship
@@ -43,7 +46,6 @@ class PlayerSettings {
 		/**
 		 *
 		 * @type {PlayerKeyBoard}
-		 * @private
 		 */
 		this.keyBoard = new PlayerKeyBoard();
 

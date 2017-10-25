@@ -16,7 +16,7 @@ class PlayerControls extends Player {
 	    });
 
         this.initScene.domElement.addEventListener('click', (e) => {
-			let destination = this.initScene.getClickIntersection(e, this.sky.plane);
+			let destination = this.initScene.getClickIntersection(e, this.sector.plane);
 			this.aim.setAim(destination['point']);
 			if (destination.hasOwnProperty('point') && !this.ship.isEnabledMove()) {
 				this.ship.setTarget(destination['point']);
@@ -29,7 +29,7 @@ class PlayerControls extends Player {
 
 		this.initScene.domElement.addEventListener('dblclick', (e) => {
 			if (this.keyBoard.moveByDoubleClick) {
-				let destination = this.initScene.getClickIntersection(e, this.sky.plane);
+				let destination = this.initScene.getClickIntersection(e, this.sector.plane);
 				if (destination.hasOwnProperty('point')) {
 					this.ship
 						.setTarget(destination['point'])

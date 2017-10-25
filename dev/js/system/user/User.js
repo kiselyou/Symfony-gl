@@ -3,8 +3,8 @@ import UIMainElement from './../ui/UIMainElement';
 import UIButton from './../ui/form/FFButton';
 import SettingVolume from './SettingVolume';
 import UIMessage from './../ui/UIMessage';
-import Ajax from './../Ajax';
 import Lock from './../../system/Lock';
+import Ajax from './../Ajax';
 
 let user = null;
 
@@ -31,6 +31,13 @@ class User {
 	     * @private
 	     */
         this._player = new PlayerControls();
+
+		/**
+		 *
+		 * @type {number}
+		 * @private
+		 */
+		this._counterSignIn = 0;
     }
 
     /**
@@ -140,7 +147,6 @@ class User {
 	destroyScene() {
 		this._player.initScene.hide(() => {
 			this._player
-				.removeEnv()
 				.removeShip()
 				.removeDock();
 		});
@@ -161,10 +167,13 @@ class User {
             .render();
 
 		Lock.get().addEventChangeStatus((status) => {
+			this._counterSignIn++;
 			if (status) {
 				this.goToDock();
 			} else {
-				this.destroyScene();
+				if (this._counterSignIn > 1) {
+					this.destroyScene();
+				}
 			}
 		});
 

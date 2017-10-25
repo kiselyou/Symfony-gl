@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import SkyBox from './../environment/SkyeBox';
 import PlayerSettings from './PlayerSettings';
 import OrbitControls from './../controls/OrbitControls';
 import InitScene from '../scene/InitScene';
@@ -7,6 +6,7 @@ import ShipControls from './../model/ShipControls';
 import DockControls from './../station/DockControls';
 import PlayerAim from './PlayerAim';
 import Loader from './../../play/loader/Loader';
+import SectorControls from './../environment/sectors/SectorControls';
 
 class Player extends PlayerSettings {
     constructor() {
@@ -34,12 +34,11 @@ class Player extends PlayerSettings {
 		 */
 		this._aim = new PlayerAim();
 
-	    /**
-         *
-	     * @type {SkyeBox}
-	     * @private
-	     */
-	    this._sky = new SkyBox(this._initScene.scene);
+		/**
+		 *
+		 * @type {SectorControls}
+		 */
+		this.sector = new SectorControls(this._initScene.scene);
 
 		/**
 		 * This is mesh of station
@@ -81,14 +80,6 @@ class Player extends PlayerSettings {
 
 	/**
 	 *
-	 * @return {SkyeBox}
-	 */
-	get sky() {
-    	return this._sky;
-    }
-
-	/**
-	 *
 	 * @returns {ShipControls}
 	 */
 	get ship() {
@@ -112,10 +103,8 @@ class Player extends PlayerSettings {
 	goToSpace(listener) {
 		this._loader.loadAllObjects((loader) => {
 			this._dock.remove();
-			this
-				.removeShip()
-				.removeEnv()
-				.setEnv(this.envPath);
+			this.removeShip();
+			this.sector.init(this.sectorKey);
 
 			this._ship
 				.setObject(loader.getModel(this.shipName))
@@ -149,6 +138,7 @@ class Player extends PlayerSettings {
 	 */
 	goToDock(listener) {
 		this._loader.loadSpecificObjects([this._dock.name, this.shipName], (loader) => {
+			this.sector.remove();
 			this._dock.remove();
 			this._dock.set(loader.getModel(this._dock.name), loader.getModel(this.shipName));
 			this._initScene.showGridHelper(false);
@@ -185,31 +175,11 @@ class Player extends PlayerSettings {
     removeShip() {
     	if (this.isSpace) {
 			this._initScene.scene.remove(this._ship.getObject());
+			this.sector.remove();
 			this.isSpace = false;
 		}
         return this;
     }
-
-	/**
-     * Set Environment to the scene
-     *
-	 * @param {string} path
-	 * @returns {Player}
-	 */
-	setEnv(path) {
-	    this._sky.buildEnv(path);
-	    return this;
-    }
-
-	/**
-	 * Remove Environment from the scene
-	 *
-	 * @returns {Player}
-	 */
-	removeEnv() {
-		this._sky.removeEnv();
-		return this;
-	}
 
 	/**
 	 *
@@ -218,7 +188,7 @@ class Player extends PlayerSettings {
 	 */
 	update(deltaTime) {
 		if (this.isSpace) {
-			this._sky.setPosition(this._ship.getPosition());
+			this.sector.update(this._ship.getPosition(), deltaTime);
 			this._ship.update(deltaTime);
 		}
 

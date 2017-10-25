@@ -94,12 +94,12 @@ class SkyeBox {
 	}
 
 	/**
-	 * Build scene and add to scene
+	 * Build sky box and add it to scene.
 	 *
 	 * @param {string} path
 	 * @returns {SkyeBox}
 	 */
-	buildEnv(path) {
+	initEnv(path) {
 		this.removeEnv();
 		let material = new THREE.ShaderMaterial({
 			uniforms: {
