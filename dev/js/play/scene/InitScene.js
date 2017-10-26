@@ -272,7 +272,7 @@ class InitScene {
                     listener();
                 }
             }
-        }, 10);
+        }, 16);
         return this;
     };
 

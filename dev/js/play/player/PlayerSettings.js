@@ -34,7 +34,7 @@ class PlayerSettings {
 		 *
 		 * @type {number}
 		 */
-		this.speed = 100;
+		this.speed = 30;
 
 		/**
 		 *

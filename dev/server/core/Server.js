@@ -48,9 +48,9 @@ class Server extends Components {
 	    /**
 	     * It is connect mongodb
 	     *
-	     * @type {MySQLConnect}
+	     * @type {MongoDBConnect}
 	     */
-	    this.mongodb = new MongoDBConnect(this.config.mongodb);
+	    this.mdb = new MongoDBConnect(this.config.mongodb);
 
         /**
          *
@@ -129,43 +129,38 @@ class Server extends Components {
      * @private
      */
     _createRoutes() {
-
         this._routes.load((routes) => {
-
             this._app.use('/src', express.static(path.join(__dirname, '/../../../src')));
             this._app.use('/temp', express.static(path.join(__dirname, '/../../../temp')));
 
-	        this.mongodb.open((dbm) => {
-	            this.dbm = dbm;
-		        for (let route of routes) {
-			        switch (route['method']) {
-				        case 'POST':
-					        this._app.post(route['route'], this._upload.array(), (req, res) => {
-						        this.request = req;
-						        this.response = res;
-						        this.sendResponse(route);
-					        });
-					        break;
-				        case 'GET':
-					        this._app.get(route['route'], (req, res) => {
-						        this.request = req;
-						        this.response = res;
-						        this.sendResponse(route);
-					        });
-					        break;
-				        case 'SOCKET':
-					        this._socket.listen(route['route'], route['port'], route['host']);
-					        break;
-				        default:
-					        this._app.all(route['route'], (req, res) => {
-						        this.request = req;
-						        this.response = res;
-						        this.sendResponse(route);
-					        });
-					        break;
-			        }
-		        }
-            });
+            for (let route of routes) {
+                switch (route['method']) {
+                    case 'POST':
+                        this._app.post(route['route'], this._upload.array(), (req, res) => {
+                            this.request = req;
+                            this.response = res;
+                            this.sendResponse(route);
+                        });
+                        break;
+                    case 'GET':
+                        this._app.get(route['route'], (req, res) => {
+                            this.request = req;
+                            this.response = res;
+                            this.sendResponse(route);
+                        });
+                        break;
+                    case 'SOCKET':
+                        this._socket.listen(route['route'], route['port'], route['host']);
+                        break;
+                    default:
+                        this._app.all(route['route'], (req, res) => {
+                            this.request = req;
+                            this.response = res;
+                            this.sendResponse(route);
+                        });
+                        break;
+                }
+            }
 
             this._app.get('*', (req, res) => {
                 this.request = req;
@@ -300,7 +295,9 @@ class Server extends Components {
 
         this._app.use(bodyParser.urlencoded({extended: false}));
         this._app.use(bodyParser.json());
-        this._createRoutes();
+	    this.mdb.open(() => {
+		    this._createRoutes();
+        });
         this._app.listen(this.config.server.port, this.config.server.host);
         return this;
     }

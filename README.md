@@ -78,3 +78,24 @@ vim .bashrc
 # ctrl + b -> n
 # ctrl + b -> arrows
 ```
+
+
+		// db.collection('test_scheme').insert({a:1}, (err, res) => {
+			// 	// console.log(err, res);
+			// });
+			//
+			// db.collection('test_scheme').findOne({a:1}, (err, item) => {
+			// 	console.log(err, item);
+			// });
+
+			// const details = { '_id': this.getObjectID('59f246b4ada98917af7121fc') };
+			// db.collection('test_scheme').remove(details, (err, item) => {
+			// 	console.log(err, item);
+			// });
+
+
+			// const details = { '_id': this.getObjectID('59f246d35ba2f817dee27abd') };
+			// const note = { a: 23232 };
+			// db.collection('test_scheme').update(details, note, (err, result) => {
+			// 	console.log(err, result);
+			// });
