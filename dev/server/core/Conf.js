@@ -22,7 +22,7 @@ class Conf {
         this.database = require('../config/database.json');
 
         /**
-         * @type {{sender: string, transporter: {host: string, port: number, secure: bool, auth: {user: string, pass: string}}}}
+         * @type {{sender: string, transporter: {host: string, port: number, secure: boolean, auth: {user: string, pass: string}}}}
          */
         this._mailer = require('../config/mailer.json');
 
@@ -70,7 +70,7 @@ class Conf {
 
     /**
      *
-     * @returns {{sender: string, transporter: {host: string, port: number, secure: bool, auth: {user: string, pass: string}}}}
+     * @returns {{sender: string, transporter: {host: string, port: number, secure: boolean, auth: {user: string, pass: string}}}}
      */
     get mailer() {
         return this._mailer;
@@ -91,6 +91,14 @@ class Conf {
     get mysql() {
         return this.database.mysql;
     }
+
+	/**
+	 *
+	 * @returns {{host: string, port: number, user: string, password: string, database: string}}
+	 */
+	get mongodb() {
+		return this.database.mongodb;
+	}
 
     /**
      *

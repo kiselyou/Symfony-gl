@@ -5,7 +5,7 @@ import mysqlUtilities from 'mysql-utilities';
 class MySQLConnect {
     /**
      *
-     * @param {Conf} config
+     * @param {{host: string, port: number, user: string, password: string, database: string}} config
      */
     constructor(config) {
         /**
@@ -13,7 +13,7 @@ class MySQLConnect {
          * @type {{host: string, port: number, user: string, password: string, database: string}}
          * @private
          */
-        this._conf = config.mysql;
+        this._conf = config;
 
         /**
          *

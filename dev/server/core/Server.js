@@ -10,6 +10,7 @@ import Routes from './Routes';
 import Socket from './Socket';
 import SocketLock from './SocketLock';
 import MySQLConnect from './db/MySQLConnect';
+import MongoDBConnect from './db/MongoDBConnect';
 
 import Components from './Components';
 import EntityCollection from '../entity/EntityCollection';
@@ -38,11 +39,18 @@ class Server extends Components {
         this._upload = multer();
 
         /**
-         * It is db connect
+         * It is connect MsSQL
          *
          * @type {MySQLConnect}
          */
-        this.db = new MySQLConnect(this.config).open();
+        this.db = new MySQLConnect(this.config.mysql).open();
+
+	    /**
+	     * It is connect mongodb
+	     *
+	     * @type {MySQLConnect}
+	     */
+	    this.mongodb = new MongoDBConnect(this.config.mongodb);
 
         /**
          *
@@ -127,34 +135,37 @@ class Server extends Components {
             this._app.use('/src', express.static(path.join(__dirname, '/../../../src')));
             this._app.use('/temp', express.static(path.join(__dirname, '/../../../temp')));
 
-            for (let route of routes) {
-                switch (route['method']) {
-                    case 'POST':
-                        this._app.post(route['route'], this._upload.array(), (req, res) => {
-                            this.request = req;
-                            this.response = res;
-                            this.sendResponse(route);
-                        });
-                        break;
-                    case 'GET':
-                        this._app.get(route['route'], (req, res) => {
-                            this.request = req;
-                            this.response = res;
-                            this.sendResponse(route);
-                        });
-                        break;
-                    case 'SOCKET':
-                        this._socket.listen(route['route'], route['port'], route['host']);
-                        break;
-                    default:
-                        this._app.all(route['route'], (req, res) => {
-                            this.request = req;
-                            this.response = res;
-                            this.sendResponse(route);
-                        });
-                        break;
-                }
-            }
+	        this.mongodb.open((dbm) => {
+	            this.dbm = dbm;
+		        for (let route of routes) {
+			        switch (route['method']) {
+				        case 'POST':
+					        this._app.post(route['route'], this._upload.array(), (req, res) => {
+						        this.request = req;
+						        this.response = res;
+						        this.sendResponse(route);
+					        });
+					        break;
+				        case 'GET':
+					        this._app.get(route['route'], (req, res) => {
+						        this.request = req;
+						        this.response = res;
+						        this.sendResponse(route);
+					        });
+					        break;
+				        case 'SOCKET':
+					        this._socket.listen(route['route'], route['port'], route['host']);
+					        break;
+				        default:
+					        this._app.all(route['route'], (req, res) => {
+						        this.request = req;
+						        this.response = res;
+						        this.sendResponse(route);
+					        });
+					        break;
+			        }
+		        }
+            });
 
             this._app.get('*', (req, res) => {
                 this.request = req;
@@ -220,9 +231,8 @@ class Server extends Components {
         let method = data[1];
         let controller = data[0];
         try {
-
             let collection = this._controllerCollection.get();
-            collection[controller][method](this.request, this.response, params);
+            collection[controller][method](this.request, this.response, this.dbm);
 
         } catch (e) {
             console.log(e);
