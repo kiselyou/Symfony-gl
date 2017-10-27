@@ -50,7 +50,7 @@ class Server extends Components {
 	     *
 	     * @type {MongoDBConnect}
 	     */
-	    this.mdb = new MongoDBConnect(this.config.mongodb);
+	    this.mongodb = new MongoDBConnect(this.config.mongodb);
 
         /**
          *
@@ -227,7 +227,7 @@ class Server extends Components {
         let controller = data[0];
         try {
             let collection = this._controllerCollection.get();
-            collection[controller][method](this.request, this.response, this.dbm);
+            collection[controller][method](this.request, this.response);
 
         } catch (e) {
             console.log(e);
@@ -264,10 +264,11 @@ class Server extends Components {
         if (this.response.headersSent) {
         	// TODO it is temp solution need check problem "SettingsController.load()"
 			console.log(
-				'WARNING:',
-				this.response.headersSent,
-				this.response.getHeader('content-type'),
-				this.response.getHeader('content-length')
+				// 'WARNING:',
+				// this.response.headersSent,
+				// this.response.getHeader('content-type'),
+				// this.response.getHeader('content-length'),
+				// this.response.getHeaders()
 			);
 		} else {
 			this.response.writeHead(200, {'Content-Type': 'application/json', 'Content-Length': str.length});
@@ -295,9 +296,7 @@ class Server extends Components {
 
         this._app.use(bodyParser.urlencoded({extended: false}));
         this._app.use(bodyParser.json());
-	    this.mdb.open(() => {
-		    this._createRoutes();
-        });
+		this._createRoutes();
         this._app.listen(this.config.server.port, this.config.server.host);
         return this;
     }

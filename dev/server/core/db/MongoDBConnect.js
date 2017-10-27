@@ -3,32 +3,15 @@ import mongodb from 'mongodb';
 class MongoDBConnect {
 	/**
 	 *
-	 * @param {{host: string, port: number, user: string, password: string, database: string}} config
+	 * @param {string} url
 	 */
-	constructor(config) {
-		/**
-		 *
-		 * @type {{host: string, port: number, user: string, password: string, database: string}}
-		 * @private
-		 */
-		this._conf = config;
-
-		/**
-		 *
-		 * @type {?Db}
-		 */
-		this.dbm = null;
-
-		/**
-		 *
-		 */
-		this._ObjectID = mongodb.ObjectID;
-
+	constructor(url) {
 		/**
 		 *
 		 * @type {string}
+		 * @private
 		 */
-		this._url = 'mongodb://' + this._conf.host + ':' + this._conf.port + '/' + this._conf.database;
+		this._url = url;
 	}
 
 	/**
@@ -37,12 +20,10 @@ class MongoDBConnect {
 	 * @returns {ObjectID}
 	 */
 	getObjectID(str) {
-		return new this._ObjectID(str);
+		return new mongodb.ObjectID(str);
 	}
 
 	/**
-	 * @param {?Object} error
-	 * @param {Db} db
 	 * @callback openConnection
 	 */
 
@@ -54,10 +35,9 @@ class MongoDBConnect {
 	open(listener) {
 		mongodb.MongoClient.connect(this._url, (error, db) => {
 			if (error) {
-				console.log('MongoDB: Can not set connection', error);
+				console.log('MongoDB connection is not correct', error);
 				return;
 			}
-			this.dbm = db;
 			listener(db);
 		});
 		return this;

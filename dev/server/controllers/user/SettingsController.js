@@ -18,6 +18,8 @@ class SettingsController {
          * @private
          */
         this._volume = this._server.getEntity('Volume');
+
+        this.mongodb = this._server.mongodb;
     }
 
     /**
@@ -26,20 +28,32 @@ class SettingsController {
      * @return {void}
      */
     load() {
+
         let userID = this._getUserID();
         if (userID) {
-            this._volume.getSetting(userID, (error, data) => {
-                if (error) {
-                    console.log(error);
-                    this._server.responseJSON({});
-                    return;
-                }
 
-                this._server.responseJSON(data ? data : {});
-            });
-        } else {
-            this._server.responseJSON({});
+			this.mongodb.open((db) => {
+				let d = db.collection('volume').findOne({user_id: userID});
+				d.then((item) => {
+					// console.log(item);
+					this._server.responseJSON(item);
+				});
+			});
+
+            // this._volume.getSetting(userID, (error, data) => {
+            //     if (error) {
+            //         console.log(error);
+            //         this._server.responseJSON({});
+            //         return;
+            //     }
+            //     console.log(data);
+            //
+            //     this._server.responseJSON(data ? data : {});
+            // });
+			return;
         }
+
+		this._server.responseJSON({});
     }
 
     /**
@@ -50,12 +64,13 @@ class SettingsController {
     save() {
         let userID = this._getUserID();
         if (userID) {
-            this._volume.updateOrInsert(this._getDataVolume(), userID, (error, id, action) => {
-                if (error) {
-                    console.log(error);
-                }
-                this._server.responseJSON({action: action});
-            });
+			this.mongodb.open((db) => {
+				let data = this._server.POST;
+				data['user_id'] = userID;
+				db.collection('volume').update({user_id: userID}, data, {upsert: true}, (err) => {
+					this._server.responseJSON({action: err ? 0 : 1});
+				});
+			});
         }
     }
 

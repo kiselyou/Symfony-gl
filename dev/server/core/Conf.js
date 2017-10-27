@@ -94,10 +94,12 @@ class Conf {
 
 	/**
 	 *
-	 * @returns {{host: string, port: number, user: string, password: string, database: string}}
+	 * @returns {string}
 	 */
 	get mongodb() {
-		return this.database.mongodb;
+		let cong = this.database.mongodb;
+		let user = (cong.user && cong.password) ? (cong.user + ':' + cong.password + '@') : '';
+		return 'mongodb://' + user + cong.host + ':' + cong.port + '/' + cong.database;
 	}
 
     /**

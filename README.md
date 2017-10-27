@@ -61,6 +61,31 @@ npm-check-updates -u
 npm install
 ```
 
+MongoDB settings
+-------
+
+```
+# create user
+mongo
+# take use database
+use admin
+# run command to create user
+db.createUser(
+  {
+    user: "admin",
+    pwd: "root",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  }
+)
+# open file
+sudo vim /etc/mongod.conf
+# uncomment
+security:
+  authorization: "enabled"
+# restart db
+sudo systemctl restart mongod
+```
+
 Commands of tmux:
 -----------------
 
