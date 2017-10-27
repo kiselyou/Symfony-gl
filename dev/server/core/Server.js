@@ -1,20 +1,26 @@
-
+import http from 'http';
 import path from 'path';
 import express from 'express';
+import socket from 'socket.io';
 import expressSession from 'express-session';
 import express_ejs_extend from 'express-ejs-extend';
+import expressSessionSocket from 'express-socket.io-session';
 import bodyParser from 'body-parser';
 import multer from 'multer';
 
+import Lock from './../../js/system/Lock';
+
 import Routes from './Routes';
 import Socket from './Socket';
-import SocketLock from './SocketLock';
+import AppLock from './AppLock';
 import MySQLConnect from './db/MySQLConnect';
 import MongoDBConnect from './db/MongoDBConnect';
+
 
 import Components from './Components';
 import EntityCollection from '../entity/EntityCollection';
 import ControllerCollection from '../controllers/ControllerCollection';
+import ServerHttp from "./ServerHttp";
 
 class Server extends Components {
 
@@ -73,12 +79,12 @@ class Server extends Components {
          */
         this._routes = new Routes();
 
-        /**
-         *
-         * @type {Socket}
-         * @private
-         */
-        this._socket = new Socket(this);
+        // /**
+        //  *
+        //  * @type {Socket}
+        //  * @private
+        //  */
+        // this._socket = new Socket(this);
 
         /**
          * It is list IDs of current users in system
@@ -86,13 +92,23 @@ class Server extends Components {
          * @type {Object}
          */
         this.listActiveUsers = {};
-
+	
+	    /**
+	     * Socket Server
+	     */
+	    this.ss = http.createServer(this._app);
+	
+	    /**
+	     * Socket connect
+	     */
+	    this.io = socket(this.ss);
+        
         /**
          *
-         * @type {SocketLock}
+         * @type {AppLock}
          * @private
          */
-        this._socketLock = new SocketLock(this);
+        this._appLock = new AppLock(this);
     }
 
     /**
@@ -103,14 +119,6 @@ class Server extends Components {
      */
     static get PATH_404() {
         return 'error/404';
-    }
-
-    /**
-     *
-     * @returns {*}
-     */
-    getApp() {
-        return this._app;
     }
 
     /**
@@ -133,39 +141,38 @@ class Server extends Components {
             this._app.use('/src', express.static(path.join(__dirname, '/../../../src')));
             this._app.use('/temp', express.static(path.join(__dirname, '/../../../temp')));
 
-            for (let route of routes) {
-                switch (route['method']) {
+            for (let params of routes) {
+	            let path = params['route'];
+                switch (params['method']) {
                     case 'POST':
-                        this._app.post(route['route'], this._upload.array(), (req, res) => {
-                            this.request = req;
-                            this.response = res;
-                            this.sendResponse(route);
+                        this._app.post(path, this._upload.array(), (req, res) => {
+                            this.startAction(params, req, res);
                         });
                         break;
                     case 'GET':
-                        this._app.get(route['route'], (req, res) => {
-                            this.request = req;
-                            this.response = res;
-                            this.sendResponse(route);
+                        this._app.get(path, (req, res) => {
+                            this.startAction(params, req, res);
                         });
                         break;
                     case 'SOCKET':
-                        this._socket.listen(route['route'], route['port'], route['host']);
+                        // this._socket.listen(path, params['port'], params['host']);
                         break;
                     default:
-                        this._app.all(route['route'], (req, res) => {
-                            this.request = req;
-                            this.response = res;
-                            this.sendResponse(route);
+                        this._app.all(path, (req, res) => {
+                            this.startAction(params, req, res);
                         });
                         break;
                 }
             }
 
             this._app.get('*', (req, res) => {
-                this.request = req;
-                this.response = res;
-                this.responseView(Server.PATH_404, {code: 400, msg: 'The page "' + this.request.url + '" was not found.'});
+	            const serverHttp = new ServerHttp(req, res);
+	            serverHttp.responseView(
+	            	Server.PATH_404, {
+	            		code: 400,
+			            msg: 'The page "' + serverHttp.getCurrentUrl() + '" was not found.'
+	            	}
+                );
             });
         });
     }
@@ -188,24 +195,27 @@ class Server extends Components {
     /**
      *
      * @param {{method: string, route: string, viewPath: string}} params
+     * @param {Http.Request} req
+     * @param {Http.Response} res
      * @returns {void}
      */
-    sendResponse(params) {
-        if (this.security.isGranted(this.request.url, this.authorization.getSessionUserRoles())) {
+    startAction(params, req, res) {
+	    const serverHttp = new ServerHttp(req, res);
+        if (this.security.isGranted(serverHttp.getCurrentUrl(), serverHttp.getSessionUserRoles())) {
             // Check the page is locked
-            if (this.checkLock(this.session.setSessionUserID()) && !this.request.xhr) {
+            if (this.checkLock(serverHttp.getSessionUserID()) && !serverHttp.getXHR()) {
                 let msg = 'Page is locked. Probably this page has already opened in another tab!';
-                this.responseView(Server.PATH_404, {code: 423, msg: msg});
+	            serverHttp.responseView(Server.PATH_404, {code: 423, msg: msg});
                 return;
             }
 
             if (params.hasOwnProperty('viewPath')) {
-                this.responseView(params['viewPath']);
+	            serverHttp.responseView(params['viewPath']);
             } else {
-                this.responseController(params);
+                this.callController(params, serverHttp);
             }
         } else {
-            this.responseView(Server.PATH_404, {code: 423, msg: 'Permission denied!'});
+	        serverHttp.responseView(Server.PATH_404, {code: 423, msg: 'Permission denied!'});
         }
     }
 
@@ -213,25 +223,25 @@ class Server extends Components {
      * Call to controller
      *
      * @param {{method: string, route: string, viewPath: string, controller: string}} params
+     * @param {ServerHttp} serverHttp
      * @returns {Server}
      */
-    responseController(params) {
+    callController(params, serverHttp) {
         // 0 - name of controller 1 - method
         let data = params['controller'].split(':');
         if (data.length !== 2) {
-            this.responseView(Server.PATH_404, {code: 404, msg: 'Route configuration is not correct'});
+	        serverHttp.responseView(Server.PATH_404, {code: 404, msg: 'Route configuration is not correct'});
             return this;
         }
 
         let method = data[1];
         let controller = data[0];
         try {
-            let collection = this._controllerCollection.get();
-            collection[controller][method](this.request, this.response);
-
+            let obj = this._controllerCollection.get(controller);
+	        obj[method](serverHttp);
         } catch (e) {
-            console.log(e);
-            this.responseView(Server.PATH_404, {
+        	console.log(e);
+	        serverHttp.responseView(Server.PATH_404, {
                 code: 404,
                 msg: 'Call to controller failed! Controller: ' + controller + '. Method: ' + method,
                 detail: e
@@ -241,63 +251,37 @@ class Server extends Components {
     };
 
     /**
-     * Send view to client
-     *
-     * @param {string} pathView - it is path to template ejs
-     * @param {Object} params
-     * @returns {void}
-     */
-    responseView(pathView, params = {}) {
-        this.response.render(pathView.replace(/^\/+/, ''), params);
-        return;
-    };
-
-    /**
-     * Send json to client
-     *
-     * @param {{}|[]} data
-     * @returns {void}
-     */
-    responseJSON(data) {
-        let str = JSON.stringify(data);
-
-        if (this.response.headersSent) {
-        	// TODO it is temp solution need check problem "SettingsController.load()"
-			console.log(
-				// 'WARNING:',
-				// this.response.headersSent,
-				// this.response.getHeader('content-type'),
-				// this.response.getHeader('content-length'),
-				// this.response.getHeaders()
-			);
-		} else {
-			this.response.writeHead(200, {'Content-Type': 'application/json', 'Content-Length': str.length});
-			this.response.end(str, 'utf-8', true);
-		}
-        return;
-    };
-
-    /**
      *
      * @returns {Server}
      */
     init() {
         this._app.engine('ejs', express_ejs_extend);
         this._app.set('view engine', 'ejs');
-
-        let session = expressSession({
+        
+        let sessionMiddleware = expressSession({
             secret: this.config.secret,
             resave: true,
             saveUninitialized: true
         });
-
-        this._app.use(session);
-        this._socketLock.listen();
+	    
+	    this._app.use(sessionMiddleware);
 
         this._app.use(bodyParser.urlencoded({extended: false}));
         this._app.use(bodyParser.json());
 		this._createRoutes();
         this._app.listen(this.config.server.port, this.config.server.host);
+	
+	    this.io.use(function(socket, next) {
+		    sessionMiddleware(socket.request, socket.request.res, next);
+	    });
+	    
+	    this.io.of(Lock.NAMESPACE).use(expressSessionSocket(sessionMiddleware, {
+		    autoSave:true
+	    }));
+	
+	    this._appLock.listen();
+	    
+	    this.ss.listen(this.config.socket.port, this.config.socket.host);
         return this;
     }
 }

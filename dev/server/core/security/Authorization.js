@@ -1,34 +1,20 @@
 
 import passwordHash from 'password-hash';
+import Session from "./Session";
 
-class Authorization {
-
-    /**
-     *
-     * @param {Session} session
-     */
+class Authorization extends Session {
+	/**
+	 *
+	 * @param {?Object} session
+	 */
     constructor(session) {
+		super(session);
 
         /**
          *
          * @type {passwordHash}
          */
         this._passwordHash = passwordHash;
-
-        /**
-         *
-         * @type {Session}
-         */
-        this._session = session;
-    }
-
-    /**
-     * Get session
-     *
-     * @returns {Session}
-     */
-    get session() {
-        return this._session;
     }
 
     /**
@@ -41,17 +27,8 @@ class Authorization {
      */
     createSessionUser(id, roles, info = {}) {
         info['roles'] = roles;
-        this._session.setSessionUser(id, info);
+        this.setSessionUser(id, info);
         return this;
-    };
-
-    /**
-     * Get session of user
-     *
-     * @returns {Object}
-     */
-    getSessionUser() {
-        return this._session.getSessionUser();
     };
 
 
@@ -61,7 +38,7 @@ class Authorization {
      * @returns {Array}
      */
     getSessionUserRoles() {
-        let user = this._session.getSessionUser();
+        let user = this.getSessionUser();
         return user ? user['roles'] : ['ROLE_ANONYMOUSLY'];
     };
 

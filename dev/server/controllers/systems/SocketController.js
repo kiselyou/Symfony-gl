@@ -2,7 +2,6 @@
 class SocketController {
 
     /**
-     * @constructor
      * @param {Server} server
      */
     constructor(server) {
@@ -11,12 +10,11 @@ class SocketController {
 
     /**
      *
-     * @param req
-     * @param res
+     * @param {ServerHttp} http
      * @returns {void}
      */
-    configuration(req, res) {
-        this._server.responseJSON(this._server.config.socket);
+    configuration(http) {
+	    http.responseJSON(this._server.config.socket);
     }
 }
 

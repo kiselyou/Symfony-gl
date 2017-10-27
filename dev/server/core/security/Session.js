@@ -3,15 +3,18 @@ class Session {
 
     /**
      *
-     * @param {{}} [session]
+     * @param {Object} [session]
      */
     constructor(session) {
         /**
          *
-         * @type {{}}
+         * @type {Object}
          * @private
          */
-        this._session = session ? session : {};
+        this._userSession = session ? session : {};
+        
+        
+        // console.log(this._userSession);
     }
 
     /**
@@ -19,7 +22,7 @@ class Session {
      * @param {Object} session
      */
     update(session) {
-        this._session = session ? session : {};
+        this._userSession = session ? session : {};
     }
 
     /**
@@ -38,7 +41,10 @@ class Session {
      * @returns {Session}
      */
     addSession(key, value = null) {
-        this._session[key] = value;
+        this._userSession[key] = value;
+        // this._userSession.save(function (err) {
+	     //    console.log(err, "+++================");
+        // });
         return this;
     }
 
@@ -49,7 +55,7 @@ class Session {
      */
     getSessionUser() {
         if (this.isSessionUser()) {
-            return this._session[Session.KEY_USER_INFO];
+            return this._userSession[Session.KEY_USER_INFO];
         }
         return null;
     }
@@ -72,7 +78,7 @@ class Session {
      *
      * @returns {?(string|number)}
      */
-    setSessionUserID() {
+    getSessionUserID() {
         let user  = this.getSessionUser();
         return user ? user['id'] : null;
     }
@@ -82,7 +88,7 @@ class Session {
      * @returns {boolean}
      */
     isSessionUser() {
-        return (this._session && this._session[Session.KEY_USER_INFO]) ? true : false;
+        return (this._userSession && this._userSession[Session.KEY_USER_INFO]);
     }
 
     /**
@@ -91,9 +97,9 @@ class Session {
      * @returns {Session}
      */
     destroySession() {
-        if (this._session) {
-            this._session.destroy();
-            delete this._session[Session.KEY_USER_INFO];
+        if (this._userSession) {
+            this._userSession.destroy();
+            delete this._userSession[Session.KEY_USER_INFO];
         }
         return this;
     }

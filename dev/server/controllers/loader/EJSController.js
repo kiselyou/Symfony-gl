@@ -9,29 +9,32 @@ class EJSController {
      */
     constructor(server) {
         this._server = server;
-        this.viewPaths = VIEW_PATH;
     }
 
     /**
      * Render template. Send completed template to client
      *
+     * @param {ServerHttp} http
      * @returns {void}
      */
-    render() {
-        let data = this._server.POST;
-        this._server.responseView(this._getViewPath(data['name']), this._server.parseData(data['options']));
+    render(http) {
+	    http.responseView(
+		    EJSController._getViewPath(http.POST['name']),
+            http.parseData(http.POST['options'])
+        );
     }
 
     /**
      * Upload template. Send EJS template to client
      *
+     * @param {ServerHttp} http
      * @returns {string}
      */
-    template() {
-        let data = this._server.POST;
-        let path = this._getViewPath(data['name']);
-        let tmp = this._server.fileLoader.getTemplate(path);
-        this._server.responseJSON({ejs: tmp});
+    template(http) {
+        let path = EJSController._getViewPath(http.POST['name']);
+	    http.POST.responseJSON({
+            ejs: this._server.fileLoader.getTemplate(path)
+	    });
     }
 
     /**
@@ -41,9 +44,9 @@ class EJSController {
      * @returns {string}
      * @private
      */
-    _getViewPath(name) {
-        return this.viewPaths.hasOwnProperty(name) ? this.viewPaths[name] : '';
-    }
+    static _getViewPath(name) {
+        return VIEW_PATH.hasOwnProperty(name) ? VIEW_PATH[name] : '';
+	}
 }
 
 export default EJSController;

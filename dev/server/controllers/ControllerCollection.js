@@ -26,8 +26,8 @@ class ControllerCollection {
      *
      * @returns {{}|*}
      */
-    get() {
-        return this._collections;
+    get(controller) {
+        return this._collections[controller];
     }
 }
 

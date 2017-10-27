@@ -1,9 +1,9 @@
 import FileLoader from './FileLoader';
 import Conf from './Conf';
 import Mailer from './Mailer';
-import Session from './security/Session';
+// import Session from './security/Session';
 import Security from './security/Security';
-import Authorization from './security/Authorization';
+// import Authorization from './security/Authorization';
 import uuidv4 from 'uuid/v4';
 import qs from 'qs';
 
@@ -15,58 +15,56 @@ class Components {
      */
     constructor(env) {
 
-        /**
-         * Request of server
-         *
-         * @type {Object|Request}
-         * @private
-         */
-        this._req = {};
-
-        /**
-         * Response of server
-         *
-         * @type {Object}
-         * @private
-         */
-        this._res = {};
-
-        /**
-         *
-         * @type {Conf}
-         * @private
-         */
-        this._conf = new Conf(env);
+        // /**
+        //  * Request of server
+        //  *
+        //  * @type {Object|Request}
+        //  * @private
+        //  */
+        // this._req = {};
+        //
+        // /**
+        //  * Response of server
+        //  *
+        //  * @type {Object}
+        //  * @private
+        //  */
+        // this._res = {};
 
         /**
          * @type qs
          */
         this.qs = qs;
 
+	    /**
+	     *
+	     * @type {Conf}
+	     */
+	    this.config = new Conf(env);
+
         /**
          *
          * @type {Mailer}
-         * @private
          */
-        this._mailer = new Mailer(this._conf);
+        this.mailer = new Mailer(this.config);
 
         /**
          *
          * @type {Security}
          */
-        this._security = new Security(this._conf);
+        this.security = new Security(this.config);
 
-        /**
-         *
-         * @type {Session}
-         */
-        this._session = new Session();
-
-        /**
-         *
-         * @type {Authorization}
-         */
-        this._auth = new Authorization(this.session);
+        // /**
+        //  *
+        //  * @type {Session}
+        //  */
+        // this._session = new Session();
+        //
+        // /**
+        //  *
+        //  * @type {Authorization}
+        //  */
+        // this._auth = new Authorization(this.session);
 
         /**
          *
@@ -81,149 +79,149 @@ class Components {
         this.fileLoader = new FileLoader();
     }
 
-    /**
-     * Mailer
-     *
-     * @returns {Mailer}
-     */
-    get mailer() {
-        return this._mailer;
-    }
+    // /**
+    //  * Mailer
+    //  *
+    //  * @returns {Mailer}
+    //  */
+    // get mailer() {
+    //     return this._mailer;
+    // }
 
-    /**
-     * Security
-     *
-     * @returns {Security}
-     */
-    get security() {
-        return this._security;
-    }
+    // /**
+    //  * Security
+    //  *
+    //  * @returns {Security}
+    //  */
+    // get security() {
+    //     return this._security;
+    // }
 
-    /**
-     *
-     * @returns {Authorization}
-     */
-    get authorization() {
-        return this._auth;
-    }
+    // /**
+    //  *
+    //  * @returns {Authorization}
+    //  */
+    // get authorization() {
+    //     return this._auth;
+    // }
+    //
+    // /**
+    //  *
+    //  * @returns {Session}
+    //  */
+    // get session() {
+    //     return this._session;
+    // }
 
-    /**
-     *
-     * @returns {Session}
-     */
-    get session() {
-        return this._session;
-    }
+    // /**
+    //  *
+    //  * @returns {Request}
+    //  */
+    // get request() {
+    //     return this._req;
+    // }
+    //
+    // /**
+    //  *
+    //  * @returns {Object}
+    //  */
+    // get response() {
+    //     return this._res;
+    // }
 
-    /**
-     *
-     * @returns {Request}
-     */
-    get request() {
-        return this._req;
-    }
+    // /**
+    //  *
+    //  * @param {Request} req
+    //  * @returns {void}
+    //  */
+    // set request(req) {
+    //     this._req = req;
+    //     this._session.update(this._req.session);
+    // }
+    //
+    // /**
+    //  *
+    //  * @param {*} res
+    //  * @returns {void}
+    //  */
+    // set response(res) {
+    //     this._res = res;
+    // }
+    //
+    // /**
+    //  *
+    //  * @returns {Conf}
+    //  */
+    // get config() {
+    //     return this._conf;
+    // }
 
-    /**
-     *
-     * @returns {Object}
-     */
-    get response() {
-        return this._res;
-    }
+    // /**
+    //  * Get server host
+    //  *
+    //  * @returns {string}
+    //  */
+    // get host() {
+    //     return this.headers.host;
+    // }
+    //
+    // /**
+    //  * Get headers
+    //  *
+    //  * @returns {Object}
+    //  */
+    // get headers() {
+    //     return this._req.headers;
+    // }
 
-    /**
-     *
-     * @param {Request} req
-     * @returns {void}
-     */
-    set request(req) {
-        this._req = req;
-        this._session.update(this._req.session);
-    }
+    // /**
+    //  * Get POST data
+    //  *
+    //  * @returns {Object}
+    //  */
+    // get POST() {
+    //     return this._req.body;
+    // }
+    //
+    // /**
+    //  * Get GET data
+    //  *
+    //  * @returns {{}}
+    //  */
+    // get GET() {
+    //     let data = {};
+    //     for (let key in this._req.params) {
+    //         if (this._req.params.hasOwnProperty(key)) {
+    //             data[key] = this._req.params[key];
+    //         }
+    //     }
+    //     for (let key in this._req.query) {
+    //         if (this._req.query.hasOwnProperty(key)) {
+    //             data[key] = this._req.query[key];
+    //         }
+    //     }
+    //     return data;
+    // }
 
-    /**
-     *
-     * @param {*} res
-     * @returns {void}
-     */
-    set response(res) {
-        this._res = res;
-    }
-
-    /**
-     *
-     * @returns {Conf}
-     */
-    get config() {
-        return this._conf;
-    }
-
-    /**
-     * Get server host
-     *
-     * @returns {string}
-     */
-    get host() {
-        return this.headers.host;
-    }
-
-    /**
-     * Get headers
-     *
-     * @returns {Object}
-     */
-    get headers() {
-        return this._req.headers;
-    }
-
-    /**
-     * Get POST data
-     *
-     * @returns {Object}
-     */
-    get POST() {
-        return this._req.body;
-    }
-
-    /**
-     * Get GET data
-     *
-     * @returns {{}}
-     */
-    get GET() {
-        let data = {};
-        for (let key in this._req.params) {
-            if (this._req.params.hasOwnProperty(key)) {
-                data[key] = this._req.params[key];
-            }
-        }
-        for (let key in this._req.query) {
-            if (this._req.query.hasOwnProperty(key)) {
-                data[key] = this._req.query[key];
-            }
-        }
-        return data;
-    }
-
-    /**
-     * Redirect
-     *
-     * @param {string} [path]
-     * @returns {Components}
-     */
-    redirect(path) {
-        this.response.redirect(path ? path : '/');
-        return this;
-    }
-
-    /**
-     *
-     * @param {string} data
-     * @returns {Object|Array}
-     */
-    parseData(data) {
-        return this.qs.parse(data);
-    }
+    // /**
+    //  * Redirect
+    //  *
+    //  * @param {string} [path]
+    //  * @returns {Components}
+    //  */
+    // redirect(path) {
+    //     this.response.redirect(path ? path : '/');
+    //     return this;
+    // }
+    //
+    // /**
+    //  *
+    //  * @param {string} data
+    //  * @returns {Object|Array}
+    //  */
+    // parseData(data) {
+    //     return this.qs.parse(data);
+    // }
 }
 
 export default Components;
