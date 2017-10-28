@@ -56,6 +56,7 @@
     "qs": "^6.5.1",
     "session-file-store": "0.0.20",
     "session-memory-store": "^0.2.2",
+    "sessionstore": "^1.2.18",
     "socket.io": "^1.7.4",
     "socket.io-client": "^2.0.4",
     "three": "^0.87.1",

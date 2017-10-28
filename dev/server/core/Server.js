@@ -3,7 +3,6 @@ import multer from 'multer';
 import express from 'express';
 import expressSession from 'express-session';
 import expressEJSExtend from 'express-ejs-extend';
-import sessionFileStore from 'session-file-store';
 
 import Routes from "./Routes";
 import Components from './Components';
@@ -15,16 +14,6 @@ import ControllerCollection from "../controllers/ControllerCollection";
 import ServerIO from "./ServerIO";
 import SocketAppLock from "./socket/SocketAppLock";
 
-let SessionStore = sessionFileStore(expressSession);
-let session = expressSession({
-	store: new SessionStore({
-		path: path.join(__dirname, '/../../../temp/sessions'),
-		retries: 0
-	}),
-	secret: 'pass',
-	resave: true,
-	saveUninitialized: true
-});
 let app = express();
 
 class Server extends Components {
@@ -245,6 +234,13 @@ class Server extends Components {
 		
 		app.engine('ejs', expressEJSExtend);
 		app.set('view engine', 'ejs');
+		
+		let session = expressSession({
+			//TODO add store
+			secret: this.config.secret,
+			resave: true,
+			saveUninitialized: true
+		});
 		
 		app.use(session);
 		
