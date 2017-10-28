@@ -16,21 +16,23 @@ class OBJController {
 	/**
 	 * Get post data
 	 *
+	 * @param {ServerHttp} http
 	 * @param {string} key
 	 * @returns {Array}
 	 */
-	post(key) {
-    	return Object.values(this._server.parseData(this._server.POST[key]));
+	post(http, key) {
+    	return Object.values(http.parseData(http.POST[key]));
 	}
 
 	/**
 	 * Upload all objects except specific
 	 *
+	 * @param {ServerHttp} http
 	 * @returns {void}
 	 */
-	loadAllObjects() {
-		let list = OBJController.prepareList(Object.keys(MODELS_PATH), this.post('except'));
-		this._server.responseJSON({
+	loadAllObjects(http) {
+		let list = OBJController.prepareList(Object.keys(MODELS_PATH), this.post(http, 'except'));
+		http.responseJSON({
 			obj: this._server.fileLoader.getModels(list['obj']),
 			mtl: list['mtl']
 		});
@@ -39,11 +41,12 @@ class OBJController {
     /**
      * Upload specific objects
      *
+     * @param {ServerHttp} http
      * @returns {void}
      */
-	loadSpecificObjects() {
-        let list = OBJController.prepareList(this.post('load'));
-		this._server.responseJSON({
+	loadSpecificObjects(http) {
+        let list = OBJController.prepareList(this.post(http, 'load'));
+	    http.responseJSON({
 			obj: this._server.fileLoader.getModels(list['obj']),
 			mtl: list['mtl']
 		});

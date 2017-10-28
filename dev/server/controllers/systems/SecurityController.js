@@ -161,16 +161,16 @@ class SecurityController {
 	 * @returns {void}
 	 */
 	registration(http) {
-		if (this._server.authorization.getSessionUser()) {
-			this._server.responseJSON({status: false, msg: 'User has already authenticated'});
+		if (http.getSessionUser()) {
+			http.responseJSON({status: false, msg: 'User has already authenticated'});
 			return;
 		}
 		
-		let data = this._server.POST;
+		let data = http.POST;
 		let errors = SecurityController.validation(data, true);
 		
 		if (errors.length > 0) {
-			this._server.responseJSON({status: false, msg: errors});
+			http.responseJSON({status: false, msg: errors});
 			return;
 		}
 		
@@ -180,19 +180,19 @@ class SecurityController {
 		
 		this.user.findByName(username, (error, user) => {
 			if (error) {
-				this._server.responseJSON({status: false, msg: 'Server error'});
+				http.responseJSON({status: false, msg: 'Server error'});
 				return;
 			}
 			
 			if (user) {
-				this._server.responseJSON({status: false, msg: 'Username "' + username + '" has already exists'});
+				http.responseJSON({status: false, msg: 'Username "' + username + '" has already exists'});
 				return;
 			}
 			
 			let userData = {
 				email: email,
 				username: username,
-				password: this._server.authorization.hashPassword(password),
+				password: http.hashPassword(password),
 				uuid: this._server.uuid(),
 				is_active: 0,
 				deleted: 0
@@ -200,18 +200,18 @@ class SecurityController {
 			
 			this.user.insertRecord(userData, (error, userID) => {
 				if (error) {
-					this._server.responseJSON({status: false, msg: 'Server error'});
+					http.responseJSON({status: false, msg: 'Server error'});
 					return;
 				}
 				
 				this.role.findDefaultRole((error, role) => {
 					if (error) {
-						this._server.responseJSON({status: false, msg: 'Server error'});
+						http.responseJSON({status: false, msg: 'Server error'});
 						return;
 					}
 					
 					if (!role) {
-						this._server.responseJSON({status: false, msg: 'Cannot find role by default'});
+						http.responseJSON({status: false, msg: 'Cannot find role by default'});
 						return;
 					}
 					
@@ -222,16 +222,16 @@ class SecurityController {
 					
 					this.role.insertRelationship(dataRelationship, (error, relationshipID) => {
 						if (error) {
-							this._server.responseJSON({status: false, msg: 'Server error'});
+							http.responseJSON({status: false, msg: 'Server error'});
 							return;
 						}
 						
-						this._sendMail(userData.email, userData.uuid, (error) => {
+						this._sendMail(http, userData.email, userData.uuid, (error) => {
 							if (error) {
 								this.role.deleteRelationship({id: relationshipID}, (error) => {
 									if (!error) {
 										this.user.deleteRecord({id: userID}, () => {
-											this._server.responseJSON({
+											http.responseJSON({
 												status: false,
 												msg: 'Probably you set not correct email. Check it and try again'
 											});
@@ -246,7 +246,7 @@ class SecurityController {
                                 To activate the subscription follow by link in message.
                             `;
 							
-							this._server.responseJSON({status: true, msg: msg});
+							http.responseJSON({status: true, msg: msg});
 						});
 					});
 				});
@@ -257,29 +257,31 @@ class SecurityController {
 	/**
 	 * Send info about logged user
 	 *
-	 * @returns {void}
+	 * @param {ServerHttp} http
+	 * @returns {SecurityController}
 	 */
-	isLogged() {
-		this._server.responseJSON({user: this._server.authorization.session.isSessionUser()});
+	isLogged(http) {
+		http.responseJSON({user: http.isSessionUser()});
+		return this;
 	}
 	
 	/**
 	 * Activate profile of user and redirect to main page in anyway
 	 *
+	 * @param {ServerHttp} http
 	 * @returns {void}
 	 */
-	activation() {
-		
-		if (this._server.authorization.getSessionUser()) {
-			this._server.redirect('/');
+	activation(http) {
+		if (http.getSessionUser()) {
+			http.redirect('/');
 			return;
 		}
 		
-		let data = this._server.GET;
+		let data = http.GET;
 		
 		this.user.findNotActive(data['key'], (error, userData) => {
 			if (error) {
-				this._server.redirect('/');
+				http.redirect('/');
 			}
 			
 			let updateFields = {uuid: null, is_active: 1};
@@ -287,14 +289,14 @@ class SecurityController {
 			
 			this.user.updateRecord(updateFields, where, (error) => {
 				if (error) {
-					this._server.redirect('/');
+					http.redirect('/');
 				}
 				
 				this._authorisation(userData, true, (status, msg, user, roles) => {
 					if (status) {
-						this._server.authorization.createSessionUser(user['id'], roles);
+						http.createSessionUser(user['id'], roles);
 					}
-					this._server.redirect('/');
+					http.redirect('/');
 				});
 			});
 		});
@@ -303,25 +305,28 @@ class SecurityController {
 	/**
 	 * Logout user
 	 *
-	 * @returns {void}
+	 * @param {ServerHttp} http
+	 * @returns {SecurityController}
 	 */
-	logout() {
-		this._server.authorization.session.destroySession();
-		this._server.responseJSON({user: this._server.authorization.session.isSessionUser()});
+	logout(http) {
+		http.destroySession();
+		http.responseJSON({user: http.isSessionUser()});
+		return this;
 	}
 	
 	/**
 	 *
+	 * @param {ServerHttp} http
 	 * @param {string} userEmail
 	 * @param {string} uuid
 	 * @param {function} [callback]
 	 * @private
 	 */
-	_sendMail(userEmail, uuid, callback) {
+	_sendMail(http, userEmail, uuid, callback) {
 		let msg = `
             You was registered successfully.
             To activate the profile you need follow by link
-            <a href="http://` + this._server.host + `/iw/activation?key=` + uuid + `">Confirm subscription</a>
+            <a href="http://` + http.host + `/iw/activation?key=` + uuid + `">Confirm subscription</a>
         `;
 		
 		this._server.mailer

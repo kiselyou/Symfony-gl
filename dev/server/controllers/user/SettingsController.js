@@ -25,18 +25,18 @@ class SettingsController {
     /**
      * Gets settings
      *
+     * @param {ServerHttp} http
      * @return {void}
      */
-    load() {
+    load(http) {
 
-        let userID = this._getUserID();
+        let userID = SettingsController.getUserID(http);
         if (userID) {
 
 			this.mongodb.open((db) => {
 				let d = db.collection('volume').findOne({user_id: userID});
 				d.then((item) => {
-					// console.log(item);
-					this._server.responseJSON(item);
+					http.responseJSON(item ? item : {});
 				});
 			});
 
@@ -50,59 +50,61 @@ class SettingsController {
             //
             //     this._server.responseJSON(data ? data : {});
             // });
-			return;
+            return;
         }
-
-		this._server.responseJSON({});
+	
+	    http.responseJSON({});
     }
 
     /**
      * Gets settings
      *
+     * @param {ServerHttp} http
      * @return {void}
      */
-    save() {
-        let userID = this._getUserID();
+    save(http) {
+        let userID = SettingsController.getUserID(http);
         if (userID) {
 			this.mongodb.open((db) => {
-				let data = this._server.POST;
+				let data = http.POST;
 				data['user_id'] = userID;
 				db.collection('volume').update({user_id: userID}, data, {upsert: true}, (err) => {
-					this._server.responseJSON({action: err ? 0 : 1});
+					http.responseJSON({action: err ? 0 : 1});
 				});
 			});
         }
     }
 
-    /**
-     * Get data to save or update settings
-     *
-     * @return {Object}
-     * @private
-     */
-    _getDataVolume() {
-        let res = {};
-        let data = this._server.POST;
-        let boolean = ['turn_on'];
-        let numbers = ['tab', 'menu', 'effect', 'environment'];
-        for (let key of numbers) {
-            res[key] = isNaN(Number(data[key])) ? 50 : Number(data[key]);
-        }
-        for (let key of boolean) {
-            res[key] = data[key] === '1' ? 1 : 0;
-        }
-        return res;
-    }
+    // /**
+    //  * Get data to save or update settings
+    //  *
+    //  * @return {Object}
+    //  * @private
+    //  */
+    // _getDataVolume() {
+    //     let res = {};
+    //     let data = this._server.POST;
+    //     let boolean = ['turn_on'];
+    //     let numbers = ['tab', 'menu', 'effect', 'environment'];
+    //     for (let key of numbers) {
+    //         res[key] = isNaN(Number(data[key])) ? 50 : Number(data[key]);
+    //     }
+    //     for (let key of boolean) {
+    //         res[key] = data[key] === '1' ? 1 : 0;
+    //     }
+    //     return res;
+    // }
 
     /**
      * Gets ID of user
      *
+     * @param {ServerHttp} http
      * @returns {?number}
      * @private
      */
-    _getUserID() {
-        if (this._server.authorization.getSessionUser()) {
-            let user = this._server.authorization.getSessionUser();
+    static getUserID(http) {
+        if (http.getSessionUser()) {
+            let user = http.getSessionUser();
             return user['id'];
         }
         return null;

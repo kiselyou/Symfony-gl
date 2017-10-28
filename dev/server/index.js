@@ -1,3 +1,6 @@
+// let Server = require('./core/Server');
+// let s = new Server();
+// s.init();
 
 import Server from './core/Server';
 import Conf from './core/Conf';
