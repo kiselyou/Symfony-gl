@@ -22,7 +22,7 @@ class SkyeBox {
 		 * @type {number}
 		 * @private
 		 */
-		this._size = 50000;
+		this._size = 100000;
 
 		/**
 		 *

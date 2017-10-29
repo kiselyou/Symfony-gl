@@ -129,6 +129,8 @@ vim .bashrc
 REDIS 4.0.2
 ===========
 
+######https://redis.io/topics/quickstart
+
 ```
 cd Downloads
 wget http://download.redis.io/redis-stable.tar.gz

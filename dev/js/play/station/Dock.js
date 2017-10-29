@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import DockSettings from './DockSettings';
 
 class Dock extends DockSettings {
@@ -48,6 +49,13 @@ class Dock extends DockSettings {
 		this._ship = meshShip;
 		this._ship.scale.copy(this.scaleShip);
 		this._dock = meshDock;
+		
+		
+		let directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
+		directionalLight.position.set(0, 0, 1).normalize();
+		this._dock.add(directionalLight);
+		
+		
 		this._dock.add(this._ship);
 		this._dock.scale.copy(this.scale);
 		this.isDock = true;

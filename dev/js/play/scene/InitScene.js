@@ -48,22 +48,23 @@ class InitScene {
          * @type {?WebGLRenderer}
          */
         this._renderer = this._webGLRenderer();
+	    
+        // /**
+        //  *
+        //  * @type {HemisphereLight|THREE.HemisphereLight}
+        //  */
+        // this.hemisphereLight = new THREE.HemisphereLight(0xFFFFFF, 0x000000, 0.1);
+        // // this.hemisphereLight.position.set(0, 1500, 0);
+        // this.hemisphereLight.position.set(2500, 200, -2000);
+        // this._scene.add(this.hemisphereLight);
 
-        /**
-         *
-         * @type {HemisphereLight|THREE.HemisphereLight}
-         */
-        this.hemisphereLight = new THREE.HemisphereLight(0xFFFFFF, 0xFFFFFF, 0.6);
-        this.hemisphereLight.position.set(0, 1500, 0);
-        this._scene.add(this.hemisphereLight);
-
-        /**
-         *
-         * @type {DirectionalLight|THREE.DirectionalLight}
-         */
-        this.directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
-        this.directionalLight.position.set(0, 0, 1).normalize();
-        this._scene.add(this.directionalLight);
+        // /**
+        //  *
+        //  * @type {DirectionalLight|THREE.DirectionalLight}
+        //  */
+        // this.directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
+        // this.directionalLight.position.set(0, 0, 1).normalize();
+        // this._scene.add(this.directionalLight);
 
         // /**
         //  *

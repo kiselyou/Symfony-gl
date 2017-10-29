@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import Sector from './Sector';
+import PlanetSun from './planets/PlanetSun';
 import PlanetEarth from './planets/PlanetEarth';
+import PlanetMoon from './planets/PlanetMoon';
 import {SECTOR_A} from './map';
 
 class SectorA extends Sector {
@@ -34,8 +36,13 @@ class SectorA extends Sector {
 	 * @returns {void}
 	 */
 	_prepareLight() {
-		let pointLight = new THREE.PointLight(0xFFFFFF, 1);
-		pointLight.position.set(0, 200, -2000);
+		let hemisphereLight = new THREE.HemisphereLight(0xFFFFFF, 0x000000, 0.8);
+		hemisphereLight.position.set(2500, 200, -2000);
+		this.lights.push(hemisphereLight);
+		
+		
+		let pointLight = new THREE.PointLight(0xFFFFFF, 0.5);
+		pointLight.position.set(2500, 200, -2000);
 		this.lights.push(pointLight);
 	}
 
@@ -45,7 +52,17 @@ class SectorA extends Sector {
 	 * @returns {void}
 	 */
 	_preparePlanets() {
+		
+		
 		let earth = new PlanetEarth();
+		
+		let moon = new PlanetMoon();
+		earth.addChildren(moon);
+		
+		// let sun = new PlanetSun();
+		// sun.addChildren(earth);
+		//
+		// this.planets.push(sun);
 		this.planets.push(earth);
 	}
 }
