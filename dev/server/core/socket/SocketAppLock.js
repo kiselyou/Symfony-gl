@@ -38,10 +38,6 @@ class SocketAppLock {
 	listen() {
 		this.io.connect(Lock.NAMESPACE, (socket) => {
 			let auth = new Authorization(socket.handshake.session);
-			
-			console.log(socket.handshake.session, 'start');
-			
-			
 			this._addUserToList(socket.id, auth);
 			socket.emit(
 				Lock.EVENT_LOCK,
@@ -49,9 +45,6 @@ class SocketAppLock {
 			);
 			
 			socket.on(Lock.EVENT_LOCK, () => {
-				
-				console.log(socket.handshake.session, 'lock');
-				
 				this._addUserToList(socket.id, auth);
 				socket.emit(
 					Lock.EVENT_LOCK,
@@ -60,9 +53,6 @@ class SocketAppLock {
 			});
 			
 			socket.on(Lock.EVENT_UNLOCK, () => {
-				
-				console.log(socket.handshake.session, 'unlock');
-				
 				this._removeUserFromList(socket.id);
 				socket.emit(
 					Lock.EVENT_UNLOCK,
@@ -71,9 +61,6 @@ class SocketAppLock {
 			});
 			
 			socket.on('disconnect', () => {
-				
-				console.log(socket.handshake.session, 'disconnect');
-				
 				this._removeUserFromList(socket.id);
 			});
 		});
