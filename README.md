@@ -124,3 +124,47 @@ vim .bashrc
 			// db.collection('test_scheme').update(details, note, (err, result) => {
 			// 	console.log(err, result);
 			// });
+			
+			
+REDIS 4.0.2
+===========
+
+```
+cd Downloads
+wget http://download.redis.io/redis-stable.tar.gz
+cd ../Programs
+tar xvzf redis-stable.tar.gz
+cd redis-stable
+make
+make test
+sudo cp src/redis-server /usr/local/bin/
+sudo cp src/redis-cli /usr/local/bin/
+sudo mkdir /etc/redis
+sudo mkdir /var/redis
+sudo cp utils/redis_init_script /etc/init.d/redis_6379
+sudo vim /etc/init.d/redis_6379
+#   Make sure to modify REDISPORT accordingly to the port you are using. 
+#   Both the pid file path and the configuration file name depend on the port number.
+sudo cp redis.conf /etc/redis/6379.conf
+sudo mkdir /var/redis/6379
+sudo vim /etc/redis/6379.conf
+#   Edit the configuration file, making sure to perform the following changes:
+#       Set daemonize to yes (by default it is set to no).
+#       Set the pidfile to /var/run/redis_6379.pid (modify the port if needed).
+#       Change the port accordingly. In our example it is not needed as the default port is already 6379.
+#       Set your preferred loglevel.
+#       Set the logfile to /var/log/redis_6379.log
+#       Set the dir to /var/redis/6379 (very important step!)
+sudo update-rc.d redis_6379 defaults
+```
+
+Starting Redis
+--------------
+
+```
+# custom start
+redis-server
+redis-server /etc/redis.conf
+# auto start
+sudo /etc/init.d/redis_6379 start
+```

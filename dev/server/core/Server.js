@@ -235,8 +235,9 @@ class Server extends Components {
 		app.engine('ejs', expressEJSExtend);
 		app.set('view engine', 'ejs');
 		
+		let RedisStore = require('connect-redis')(expressSession);
 		let session = expressSession({
-			//TODO add store
+			store: new RedisStore({}),
 			secret: this.config.secret,
 			resave: true,
 			saveUninitialized: true
