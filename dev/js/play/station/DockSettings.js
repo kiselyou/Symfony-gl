@@ -42,7 +42,7 @@ class DockSettings {
 		 *
 		 * @type {number}
 		 */
-		this.orbitAutoRotateSpeed = 0.1;
+		this.orbitAutoRotateSpeed = 0.2;
 
 		/**
 		 *

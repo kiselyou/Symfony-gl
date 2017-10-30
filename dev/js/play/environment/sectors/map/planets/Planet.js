@@ -285,7 +285,7 @@ class Planet {
 	 */
 	buildPlanet() {
 		let geometry = new THREE.SphereGeometry(this.size, this.widthSegments, this.heightSegments);
-		let material = new THREE.MeshPhongMaterial({
+		let material = new THREE.MeshStandardMaterial({
 			map: this._textureLoader.find(this._planetPathMap),
 			bumpScale: this._planetPathBump ? this.bumpScale : null,
 			bumpMap: this._planetPathBump ? this._textureLoader.find(this._planetPathBump) : null,
@@ -294,7 +294,6 @@ class Planet {
 		});
 		
 		this._planet = new THREE.Mesh(geometry, material);
-		this._planet.receiveShadow = true;
 		
 		if (this._planetPathCloudMap && this._planetPathCloudMapTrans) {
 			this._planetClouds = this._buildClouds();
@@ -324,7 +323,7 @@ class Planet {
 			canvasResult.height = 512;
 			let contextResult = canvasResult.getContext('2d');
 			
-			let material = new THREE.MeshPhongMaterial({
+			let material = new THREE.MeshStandardMaterial({
 				map: new THREE.Texture(canvasResult),
 				side: THREE.DoubleSide,
 				transparent: true,

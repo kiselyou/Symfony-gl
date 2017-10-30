@@ -49,12 +49,18 @@ class Dock extends DockSettings {
 		this._ship = meshShip;
 		this._ship.scale.copy(this.scaleShip);
 		this._dock = meshDock;
-		
-		
-		let directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
-		directionalLight.position.set(0, 0, 1).normalize();
+
+		let directionalLight = new THREE.DirectionalLight(0x000000, 1);
+		directionalLight.position.set(0, 1, 0).normalize();
 		this._dock.add(directionalLight);
-		
+
+		let pointLight = new THREE.PointLight(0xFFFFFF, 1);
+		pointLight.position.set(0, 200, -2000);
+		this._dock.add(pointLight);
+
+		let hemisphereLight = new THREE.HemisphereLight(0xFFFFFF, 0x000000, 0.8);
+		hemisphereLight.position.set(1500, 1500, -1500);
+		this._dock.add(hemisphereLight);
 		
 		this._dock.add(this._ship);
 		this._dock.scale.copy(this.scale);

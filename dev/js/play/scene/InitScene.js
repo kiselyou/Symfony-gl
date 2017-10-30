@@ -307,14 +307,14 @@ class InitScene {
     _webGLRenderer() {
         if (InitScene.detectorWebGL()) {
             let renderer = new THREE.WebGLRenderer({antialias: true});
-            // renderer.setClearColor(this._scene.fog.color);
             renderer.setPixelRatio(window.devicePixelRatio);
-            // renderer.setClearColor(0x242a34);
-            // renderer.shadowMap.enabled = true;
-            // renderer.shadowMap.renderReverseSided = false;
-            // renderer.autoClear = false;
-            // renderer.gammaInput = true;
-            // renderer.gammaOutput = true;
+			renderer.toneMappingExposure = 1;
+			renderer.physicallyCorrectLights = true;
+			renderer.shadowMap.enabled = true;
+			renderer.toneMapping = THREE.ReinhardToneMapping;
+			renderer.gammaInput = true;
+			renderer.gammaOutput = true;
+
             return renderer;
         }
         return null;
