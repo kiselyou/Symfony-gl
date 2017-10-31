@@ -196,6 +196,14 @@ class Planet {
 		this._children.push(planet);
 		return this;
 	}
+
+	/**
+	 *
+	 * @returns {Array.<Planet>}
+	 */
+	getChildren() {
+		return this._children;
+	}
 	
 	/**
 	 *
@@ -216,6 +224,36 @@ class Planet {
 			this.buildPlanet();
 		}
 		return this._planet;
+	}
+
+	/**
+	 * Add planets to element
+	 *
+	 * @param {Scene|Mesh|Group} element
+	 * @returns {Planet}
+	 */
+	addTo(element) {
+		element.add(this.get());
+		let children = this.getChildren();
+		for (let planet of children) {
+			planet.addTo(element);
+		}
+		return this;
+	}
+
+	/**
+	 * Remove planets from element
+	 *
+	 * @param {Scene|Mesh|Group} element
+	 * @returns {Planet}
+	 */
+	removeFrom(element) {
+		element.remove(this.get());
+		let children = this.getChildren();
+		for (let planet of children) {
+			planet.removeFrom(element);
+		}
+		return this;
 	}
 	
 	/**
@@ -262,6 +300,11 @@ class Planet {
 			
 			if (this._isParent) {
 				if (!this._direction) {
+					this._planet.position.set(
+						this._planet.position.x + this.parentPosition.x,
+						this._planet.position.y + this.parentPosition.y,
+						this._planet.position.z + this.parentPosition.z
+					);
 					this._direction = Planet.angleDirection(this.parentPosition, this._planet.position);
 					this._distance = this.parentPosition.distanceTo(this._planet.position);
 				}
@@ -298,10 +341,6 @@ class Planet {
 		if (this._planetPathCloudMap && this._planetPathCloudMapTrans) {
 			this._planetClouds = this._buildClouds();
 			this._planet.add(this._planetClouds);
-		}
-		
-		for (let planetChildren of this._children) {
-			this._planet.add(planetChildren.get());
 		}
 		
 		this._planet.position.set(

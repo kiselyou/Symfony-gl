@@ -39,6 +39,44 @@ class Sector {
 	}
 
 	/**
+	 * Add planets to scene
+	 *
+	 * @param {Scene|Mesh|Group} element
+	 * @returns {Sector}
+	 */
+	addTo(element) {
+		for (let planet of this.planets) {
+			planet.addTo(element);
+		}
+		return this;
+	}
+
+	/**
+	 * Add planets to scene
+	 *
+	 * @param {Scene|Mesh|Group} element
+	 * @returns {Sector}
+	 */
+	removeFrom(element) {
+		for (let planet of this.planets) {
+			planet.removeFrom(element);
+		}
+		return this;
+	}
+
+	/**
+	 *
+	 * @param {number} deltaTime
+	 * @returns {void}
+	 */
+	update(deltaTime) {
+		for (let planet of this.planets) {
+			planet.update(deltaTime);
+		}
+	}
+
+	/**
+	 * Abstract method
 	 *
 	 * @returns {Sector}
 	 */

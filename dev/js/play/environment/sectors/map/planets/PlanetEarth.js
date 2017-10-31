@@ -7,8 +7,10 @@ class PlanetEarth extends Planet {
 		
 		this.bumpScale = 2;
 		
-		this.setPosition({x: 0, y: 0, z: 0});
+		this.setPosition({x: 1000, y: 0, z: 2500});
 		this.size = 6.371 * 10;
+
+		this.speed = 10;
 	}
 }
 

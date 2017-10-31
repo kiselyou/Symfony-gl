@@ -36,9 +36,9 @@ class SectorA extends Sector {
 	 * @returns {void}
 	 */
 	_prepareLight() {
-		let hemisphereLight = new THREE.HemisphereLight(0xddeeff, 0x0f0e0d, 0.2);
+		let hemisphereLight = new THREE.HemisphereLight(0xddeeff, 0x0f0e0d, 0.6);
 
-		hemisphereLight.intensity = 0.3;
+		// hemisphereLight.intensity = 0.3;
 		hemisphereLight.position.set(2500, 200, -2000);
 		this.lights.push(hemisphereLight);
 		
@@ -56,18 +56,17 @@ class SectorA extends Sector {
 	 * @returns {void}
 	 */
 	_preparePlanets() {
-		
-		
+
 		let earth = new PlanetEarth();
 		
 		let moon = new PlanetMoon();
 		earth.addChildren(moon);
 		
-		// let sun = new PlanetSun();
-		// sun.addChildren(earth);
-		//
-		// this.planets.push(sun);
-		this.planets.push(earth);
+		let sun = new PlanetSun();
+		sun.addChildren(earth);
+
+		this.planets.push(sun);
+		// this.planets.push(earth);
 	}
 }
 

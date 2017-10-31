@@ -40,7 +40,6 @@ class InitScene {
          * @type {PerspectiveCamera}
          */
         this._camera = new THREE.PerspectiveCamera(40, InitScene.aspect, 0.1, 150000);
-        this._camera.position.set(0, 0, 250);
         this._camera.lookAt(this._scene.position);
 
         /**
@@ -48,6 +47,7 @@ class InitScene {
          * @type {?WebGLRenderer}
          */
         this._renderer = this._webGLRenderer();
+
 	    
         // /**
         //  *
