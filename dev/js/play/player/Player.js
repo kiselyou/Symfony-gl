@@ -68,6 +68,8 @@ class Player extends PlayerSettings {
 	     */
 	    this._orbitControls = new OrbitControls(this._initScene.camera, this._initScene.domElement);
 	    this._orbitControls.mouseButtons = {ORBIT: THREE.MOUSE.RIGHT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.LEFT};
+
+	    this.p = new THREE.Vector3();
     }
 
 	/**
@@ -108,9 +110,12 @@ class Player extends PlayerSettings {
 
 			this._ship
 				.setSpeed(this.speed)
+				.setSpeedRadius(this.speedRadius)
 				.setRadius(this.radius)
 				.setObject(loader.getModel(this.shipName))
 				.setPosition(this.startPositionShip);
+
+			this.p.copy(this._ship.getPosition());
 
 			this._initScene.scene.add(this._ship.getObject());
 			this._initScene.showGridHelper(this.girdHelperEnable);
@@ -150,8 +155,8 @@ class Player extends PlayerSettings {
 			this._orbitControls.autoRotateSpeed = this._dock.orbitAutoRotateSpeed;
 			this._orbitControls.minDistance = this._dock.orbitMinDistance;
 			this._orbitControls.maxDistance = this._dock.orbitMaxDistance;
-			this._orbitControls.maxPolarAngle = this._dock.orbitMaxPolarAngle;
 			this._orbitControls.minPolarAngle = this._dock.orbitMinPolarAngle;
+			this._orbitControls.maxPolarAngle = this._dock.orbitMaxPolarAngle;
 			this._orbitControls.update();
 			if (listener) {
 				listener();
@@ -190,8 +195,17 @@ class Player extends PlayerSettings {
 	 */
 	update(deltaTime) {
 		if (this.isSpace) {
-			this.sector.update(this._ship.getPosition(), deltaTime);
+			// console.log(this._initScene.camera.position);
+
 			this._ship.update(deltaTime);
+
+			let p = this._ship.getPosition();
+
+			this.sector.update(this._initScene.camera.position, deltaTime);
+
+			// this._initScene.camera.position.copy(p);
+			// this._orbitControls.target.copy(this._ship.getPosition());
+			// this._orbitControls.update();
 		}
 
 		if (this._dock.isDock) {

@@ -328,7 +328,7 @@ class Planet {
 	 */
 	buildPlanet() {
 		let geometry = new THREE.SphereGeometry(this.size, this.widthSegments, this.heightSegments);
-		let material = new THREE.MeshStandardMaterial({
+		let material = new THREE.MeshPhongMaterial({
 			map: this._textureLoader.find(this._planetPathMap),
 			bumpScale: this._planetPathBump ? this.bumpScale : null,
 			bumpMap: this._planetPathBump ? this._textureLoader.find(this._planetPathBump) : null,

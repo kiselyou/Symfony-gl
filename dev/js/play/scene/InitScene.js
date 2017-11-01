@@ -33,13 +33,12 @@ class InitScene {
          * @type {Scene}
          */
         this._scene = new THREE.Scene();
-        // this._scene.fog = new THREE.Fog(0xffffff, 2500, 3500);
 
         /**
          *
          * @type {PerspectiveCamera}
          */
-        this._camera = new THREE.PerspectiveCamera(40, InitScene.aspect, 0.1, 150000);
+        this._camera = new THREE.PerspectiveCamera(40, InitScene.aspect, 0.1, 15000);
         this._camera.lookAt(this._scene.position);
 
         /**
@@ -47,32 +46,6 @@ class InitScene {
          * @type {?WebGLRenderer}
          */
         this._renderer = this._webGLRenderer();
-
-	    
-        // /**
-        //  *
-        //  * @type {HemisphereLight|THREE.HemisphereLight}
-        //  */
-        // this.hemisphereLight = new THREE.HemisphereLight(0xFFFFFF, 0x000000, 0.1);
-        // // this.hemisphereLight.position.set(0, 1500, 0);
-        // this.hemisphereLight.position.set(2500, 200, -2000);
-        // this._scene.add(this.hemisphereLight);
-
-        // /**
-        //  *
-        //  * @type {DirectionalLight|THREE.DirectionalLight}
-        //  */
-        // this.directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
-        // this.directionalLight.position.set(0, 0, 1).normalize();
-        // this._scene.add(this.directionalLight);
-
-        // /**
-        //  *
-        //  * @type {PointLight|THREE.PointLight}
-        //  */
-        // this.pointLight = new THREE.PointLight(0xFFFFFF, 1);
-        // this.pointLight.position.set(0, 200, -2000);
-        // this._scene.add(this.pointLight);
 
         /**
          *
@@ -262,18 +235,10 @@ class InitScene {
      * @returns {InitScene}
      */
     show(listener) {
-        let start = 0;
-        let idInterval = setInterval(() => {
-            start += 0.01;
-            this.setOpacity(start);
-            if (start >= 1) {
-                this.setOpacity(1);
-                clearInterval(idInterval);
-                if (listener) {
-                    listener();
-                }
-            }
-        }, 16);
+		this.setOpacity(1);
+		if (listener) {
+			listener();
+		}
         return this;
     };
 
@@ -284,23 +249,15 @@ class InitScene {
      * @returns {InitScene}
      */
     hide(listener) {
-        let start = 1;
-        let idInterval = setInterval(() => {
-            start -= 0.01;
-            this.setOpacity(start);
-            if (start <= 0) {
-                this.setOpacity(0);
-                clearInterval(idInterval);
-                if (listener) {
-                    listener();
-                }
-            }
-        }, 10);
+		this.setOpacity(0);
+		if (listener) {
+			listener();
+		}
+
         return this;
     };
 
     /**
-     *
      *
      * @returns {?WebGLRenderer}
      */
@@ -314,7 +271,6 @@ class InitScene {
 			renderer.toneMapping = THREE.ReinhardToneMapping;
 			renderer.gammaInput = true;
 			renderer.gammaOutput = true;
-
             return renderer;
         }
         return null;

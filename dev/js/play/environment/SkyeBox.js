@@ -22,7 +22,7 @@ class SkyeBox {
 		 * @type {number}
 		 * @private
 		 */
-		this._size = 100000;
+		this._size = 3000;
 
 		/**
 		 *
@@ -85,11 +85,14 @@ class SkyeBox {
 
 	/**
 	 *
-	 * @param {Vector3} value
+	 * @param {Vector3} v
 	 * @returns {SkyeBox}
 	 */
-	setPosition(value) {
-		this._environment.position.copy(value);
+	setPosition(v) {
+		if (this._isEnv) {
+			this._environment.position.set(v.x, 0, v.z);
+			this._plane.position.set(v.x, 0, v.z);
+		}
 		return this;
 	}
 
@@ -102,6 +105,7 @@ class SkyeBox {
 	initEnv(path) {
 		this.removeEnv();
 		let material = new THREE.ShaderMaterial({
+			depthWrite: false,
 			uniforms: {
 				texture: {type: 't', value: this._textureLoader.find(path)}
 			},
@@ -126,9 +130,8 @@ class SkyeBox {
 		});
 
 		this._environment = new THREE.Mesh(new THREE.SphereGeometry(this._size, this._wSegments, this._hSegments), material);
-		this._environment.scale.set(-1, 1, 1);
+		this._environment.scale.set(-0.2, 0.2, 0.2);
 		this._environment.rotation.order = 'XZY';
-		this._environment.renderDepth = this._size;
 		this._buildPlane();
 		this._scene.add(this._environment);
 		this._isEnv = true;
@@ -155,8 +158,9 @@ class SkyeBox {
 	 * @private
 	 */
 	_buildPlane() {
-		let geometry = new THREE.RingGeometry(1, this._size, this._wSegments);
+		let geometry = new THREE.RingGeometry(1, this._size * 10, this._wSegments);
 		let material = new THREE.MeshBasicMaterial({
+			depthWrite: false,
 			color: 0xFFFFFF,
 			side: THREE.DoubleSide,
 			transparent: true,
@@ -164,7 +168,7 @@ class SkyeBox {
 		});
 		this._plane = new THREE.Mesh(geometry, material);
 		this._plane.rotation.x = Math.PI / 2;
-		this._environment.add(this._plane);
+		this._scene.add(this._plane);
 	}
 
 	/**

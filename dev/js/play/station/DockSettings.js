@@ -60,13 +60,13 @@ class DockSettings {
 		 *
 		 * @type {number}
 		 */
-		this.orbitMaxPolarAngle = Math.PI / 3;
+		this.orbitMaxPolarAngle = Math.PI / 2.1;
 
 		/**
 		 *
 		 * @type {number}
 		 */
-		this.orbitMinPolarAngle = Math.PI / 3;
+		this.orbitMinPolarAngle = Math.PI / 2.1;
 	}
 }
 

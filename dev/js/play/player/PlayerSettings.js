@@ -34,13 +34,19 @@ class PlayerSettings {
 		 *
 		 * @type {number}
 		 */
-		this.speed = 30;
+		this.speed = 40;
 
 		/**
 		 *
 		 * @type {number}
 		 */
-		this.radius = 30;
+		this.speedRadius = 40;
+
+		/**
+		 *
+		 * @type {number}
+		 */
+		this.radius = 15;
 
         /**
 		 *
@@ -89,13 +95,13 @@ class PlayerSettings {
 		 *
 		 * @type {number}
 		 */
-		this.orbitMinDistance = 300;
+		this.orbitMinDistance = 50;
 
 		/**
 		 *
 		 * @type {Number}
 		 */
-		this.orbitMaxDistance = 800;
+		this.orbitMaxDistance = 200;
 
 		/**
 		 *
@@ -107,7 +113,7 @@ class PlayerSettings {
 		 *
 		 * @type {number}
 		 */
-		this.orbitMaxPolarAngle = Math.PI;
+		this.orbitMaxPolarAngle = Math.PI / 2.1;
 	}
 }
 

@@ -10,6 +10,12 @@ class CalculateMoving {
 		this.speed = 50;
 
 		/**
+		 *
+		 * @type {number}
+		 */
+		this.speedRadius = 25;
+
+		/**
 		 * Radius
 		 *
 		 * @type {number}
@@ -538,7 +544,7 @@ class CalculateMoving {
 	 * @returns {void}
 	 */
 	calculateCirclePoints(listener, intensity = 0.1, maxIteration = 1000) {
-		let distance = this.speed * intensity,
+		let distance = this.speedRadius * intensity,
 			angleStep = distance / this._tempRadius,
 			tempAngle = this._tempAngle,
 			circleStep,
@@ -578,9 +584,10 @@ class CalculateMoving {
 			return;
 		}
 
-		let distance = this.speed * deltaTime;
+		let distance;
 		switch (this._action) {
 			case CalculateMoving.ACTION_ARC:
+				distance = this.speedRadius * deltaTime;
 				// remember last position
 				this._po1.x = object.position.x;
 				this._po1.z = object.position.z;
@@ -605,6 +612,7 @@ class CalculateMoving {
 				break;
 
 			case CalculateMoving.ACTION_DIRECT:
+				distance = this.speed * deltaTime;
 				// remember last position
 				this._po1.x = object.position.x;
 				this._po1.z = object.position.z;

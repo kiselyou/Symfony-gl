@@ -34,6 +34,17 @@ class ShipControls extends Ship {
 	}
 
 	/**
+	 * Sets radius of speed
+	 *
+	 * @param {number} speed
+	 * @returns {ShipControls}
+	 */
+	setSpeedRadius(speed) {
+		this._calculateMoving.speedRadius = speed;
+		return this;
+	}
+
+	/**
 	 * Sets radius of radius
 	 *
 	 * @param {number} radius
