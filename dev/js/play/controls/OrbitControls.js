@@ -61,7 +61,7 @@ var OrbitControls = function ( object, domElement ) {
 
 	// Set to false to disable panning
 	this.enablePan = true;
-	this.keyPanSpeed = 7.0;	// pixels moved per arrow key push
+	this.keyPanSpeed = 30.0;	// pixels moved per arrow key push
 
 	// Set to true to automatically rotate around the target
 	// If auto-rotate is enabled, you must call controls.update() in your animation loop
@@ -134,6 +134,10 @@ var OrbitControls = function ( object, domElement ) {
 		var lastQuaternion = new THREE.Quaternion();
 
 		return function update() {
+
+			if (params.side) {
+				handleMouseSide(params.side);
+			}
 
 			var position = scope.object.position;
 
@@ -318,11 +322,25 @@ var OrbitControls = function ( object, domElement ) {
 
 		return function panUp( distance, objectMatrix ) {
 
+			// use axis Y
 			v.setFromMatrixColumn( objectMatrix, 1 ); // get Y column of objectMatrix
 			v.multiplyScalar( distance );
-
 			panOffset.add( v );
 
+		};
+
+	}();
+
+	var panFront = function() {
+
+		let v = new THREE.Vector3();
+
+		return function panFront( distance, objectMatrix ) {
+
+			v.setFromMatrixColumn( objectMatrix, 2 ); // get Z column of objectMatrix
+			v.y = 0;
+			v.multiplyScalar( -distance );
+			panOffset.add( v );
 		};
 
 	}();
@@ -348,13 +366,15 @@ var OrbitControls = function ( object, domElement ) {
 
 				// we actually don't use screenWidth, since perspective camera is fixed to screen height
 				panLeft( 2 * deltaX * targetDistance / element.clientHeight, scope.object.matrix );
-				panUp( 2 * deltaY * targetDistance / element.clientHeight, scope.object.matrix );
+				//panUp( 2 * deltaY * targetDistance / element.clientHeight, scope.object.matrix );
+				panFront( 2 * deltaY * targetDistance / element.clientHeight, scope.object.matrix );
 
 			} else if ( scope.object instanceof THREE.OrthographicCamera ) {
 
 				// orthographic
 				panLeft( deltaX * ( scope.object.right - scope.object.left ) / scope.object.zoom / element.clientWidth, scope.object.matrix );
-				panUp( deltaY * ( scope.object.top - scope.object.bottom ) / scope.object.zoom / element.clientHeight, scope.object.matrix );
+				// panUp( deltaY * ( scope.object.top - scope.object.bottom ) / scope.object.zoom / element.clientHeight, scope.object.matrix );
+				panFront( deltaY * ( scope.object.top - scope.object.bottom ) / scope.object.zoom / element.clientHeight, scope.object.matrix );
 
 			} else {
 
@@ -521,6 +541,27 @@ var OrbitControls = function ( object, domElement ) {
 
 		scope.update();
 
+	}
+
+	function handleMouseSide(side) {
+		switch ( side ) {
+			case scope.keys.UP:
+				pan(0, scope.keyPanSpeed);
+				break;
+
+			case scope.keys.BOTTOM:
+				pan(0, - scope.keyPanSpeed);
+				// scope.update();
+				break;
+
+			case scope.keys.LEFT:
+				pan(scope.keyPanSpeed, 0);
+				break;
+
+			case scope.keys.RIGHT:
+				pan(- scope.keyPanSpeed, 0);
+				break;
+		}
 	}
 
 	function handleKeyDown( event ) {
@@ -895,6 +936,53 @@ var OrbitControls = function ( object, domElement ) {
 		event.preventDefault();
 
 	}
+
+	var params = {
+		side: null
+	};
+
+	function moveCamera( event ) {
+
+		var clientY = event.clientY;
+		var clientX = event.clientX;
+		var bottom = scope.domElement.height;
+		var right = scope.domElement.width;
+
+		var min = 0;
+		var max = 65;
+
+		if (clientY >= min && clientY <= max ) { // top
+			params.side = scope.keys.UP;
+
+		} else if (clientY >= bottom - max && clientY <= bottom - min) { // bottom
+			params.side = scope.keys.BOTTOM;
+
+		} else if (clientX >= min && clientX <= max) { // left
+			params.side = scope.keys.LEFT;
+
+		} else if (clientX >= right - max && clientX <= right - min) { // right
+			params.side = scope.keys.RIGHT;
+
+		} else {
+			params.side = null;
+		}
+	}
+
+	/**
+	 *
+	 * @return {void}
+	 */
+	this.enableMouseMoveCamera = function () {
+		scope.domElement.addEventListener( 'mousemove', moveCamera, false );
+	};
+
+	/**
+	 *
+	 * @return {void}
+	 */
+	this.disableMouseMoveCamera = function () {
+		scope.domElement.removeEventListener( 'mousemove', moveCamera, false );
+	};
 
 	//
 
