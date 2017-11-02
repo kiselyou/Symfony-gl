@@ -197,13 +197,12 @@ class Player extends PlayerSettings {
 
 			this._ship.update(deltaTime);
 
-			let p = this._ship.getPosition();
-
+			this._orbitControls.update();
 			this.sector.update(this._initScene.camera.position, deltaTime);
 
 			// this._initScene.camera.position.copy(p);
 			// this._orbitControls.target.copy(this._ship.getPosition());
-			this._orbitControls.update();
+			
 		}
 
 		if (this._dock.isDock) {

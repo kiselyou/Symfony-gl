@@ -548,16 +548,12 @@ var OrbitControls = function ( object, domElement ) {
 			case scope.keys.UP:
 				pan(0, scope.keyPanSpeed);
 				break;
-
 			case scope.keys.BOTTOM:
 				pan(0, - scope.keyPanSpeed);
-				// scope.update();
 				break;
-
 			case scope.keys.LEFT:
 				pan(scope.keyPanSpeed, 0);
 				break;
-
 			case scope.keys.RIGHT:
 				pan(- scope.keyPanSpeed, 0);
 				break;
