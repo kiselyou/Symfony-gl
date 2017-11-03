@@ -38,7 +38,7 @@ class InitScene {
          *
          * @type {PerspectiveCamera}
          */
-        this._camera = new THREE.PerspectiveCamera(40, InitScene.aspect, 0.1, 15000);
+        this._camera = new THREE.PerspectiveCamera(40, InitScene.aspect, 0.1, 30000);
         this._camera.lookAt(this._scene.position);
 
         /**

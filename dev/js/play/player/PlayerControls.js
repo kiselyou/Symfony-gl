@@ -64,11 +64,26 @@ class PlayerControls extends Player {
 						this.ship.removeDashPath();
 					}
 					break;
+				case this.keyBoard.findShip.code:
+					this.findShip = true;
+					this.oc.enablePan = false;
+					break;
 			}
 		});
 
 	    window.addEventListener('keyup', (e) => {
+			switch (e.keyCode) {
+				case this.keyBoard.startOrStopMoveShip.code:
 
+					break;
+				case this.keyBoard.targetPath.code:
+
+					break;
+				case this.keyBoard.findShip.code:
+					this.findShip = false;
+					this.oc.enablePan = true;
+					break;
+			}
 	    });
 
         return this;

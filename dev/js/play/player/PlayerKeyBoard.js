@@ -30,7 +30,16 @@ class PlayerKeyBoard {
 		 */
 		this.targetPath = {
 			code: 80,
-			name: 'p'
+			name: 'P'
+		};
+
+		/**
+		 *
+		 * @type {{code: number, name: string}}
+		 */
+		this.findShip = {
+			code: 81,
+			name: 'Q'
 		};
 
 		/**

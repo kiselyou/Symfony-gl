@@ -22,7 +22,7 @@ class SkyeBox {
 		 * @type {number}
 		 * @private
 		 */
-		this._size = 3000;
+		this._size = 25000;
 
 		/**
 		 *
@@ -130,7 +130,7 @@ class SkyeBox {
 		});
 
 		this._environment = new THREE.Mesh(new THREE.SphereGeometry(this._size, this._wSegments, this._hSegments), material);
-		this._environment.scale.set(-0.2, 0.2, 0.2);
+		this._environment.scale.set(-1, 1, 1);
 		this._environment.rotation.order = 'XZY';
 		this._buildPlane();
 		this._scene.add(this._environment);

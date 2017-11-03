@@ -61,7 +61,7 @@ var OrbitControls = function ( object, domElement ) {
 
 	// Set to false to disable panning
 	this.enablePan = true;
-	this.keyPanSpeed = 30.0;	// pixels moved per arrow key push
+	this.keyPanSpeed = 60.0;	// pixels moved per arrow key push
 
 	// Set to true to automatically rotate around the target
 	// If auto-rotate is enabled, you must call controls.update() in your animation loop
@@ -938,6 +938,11 @@ var OrbitControls = function ( object, domElement ) {
 	};
 
 	function moveCamera( event ) {
+
+		if (!scope.enablePan) {
+			params.side = null;
+			return;
+		}
 
 		var clientY = event.clientY;
 		var clientX = event.clientX;
