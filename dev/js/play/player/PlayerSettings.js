@@ -77,12 +77,6 @@ class PlayerSettings {
 		 *
 		 * @type {boolean}
 		 */
-		this.orbitEnablePan = false;
-
-		/**
-		 *
-		 * @type {boolean}
-		 */
 		this.orbitEnableKeys = false;
 
 		/**

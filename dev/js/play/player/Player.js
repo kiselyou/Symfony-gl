@@ -103,14 +103,13 @@ class Player extends PlayerSettings {
 			this.initScene.scene.add(this.ship.getObject());
 			this.initScene.showGridHelper(this.girdHelperEnable);
 			this.oc.enabled = this.orbitEnabled;
-			this.oc.enablePan = this.orbitEnablePan;
-
 			this.oc.enableKeys = this.orbitEnableKeys;
 			this.oc.autoRotate = this.orbitAutoRotate;
 			this.oc.minDistance = this.orbitMinDistance;
 			this.oc.maxDistance = this.orbitMaxDistance;
 			this.oc.minPolarAngle = this.orbitMinPolarAngle;
 			this.oc.maxPolarAngle = this.orbitMaxPolarAngle;
+			this.oc.enablePan = true;
 			this.oc.enableMouseMoveCamera();
 			this.oc.update();
 			this.isSpace = true;
@@ -142,6 +141,7 @@ class Player extends PlayerSettings {
 			this.oc.maxDistance = this._dock.orbitMaxDistance;
 			this.oc.minPolarAngle = this._dock.orbitMinPolarAngle;
 			this.oc.maxPolarAngle = this._dock.orbitMaxPolarAngle;
+			this.oc.enablePan = false;
 			this.oc.update();
 			if (listener) {
 				listener();

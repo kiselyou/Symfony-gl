@@ -8,8 +8,8 @@ class PlayerKeyBoard {
 		 * @type {{code: number, name: string}}
 		 */
 		this.startOrStopMoveShip = {
-			code: 32,
-			name: 'space'
+			code: 83,
+			name: 'S'
 		};
 
 		/**
@@ -38,8 +38,8 @@ class PlayerKeyBoard {
 		 * @type {{code: number, name: string}}
 		 */
 		this.findShip = {
-			code: 81,
-			name: 'Q'
+			code: 32,
+			name: 'space'
 		};
 
 		/**
