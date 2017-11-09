@@ -88,6 +88,7 @@ class InitScene {
 	     * @private
 	     */
 	    this._mouse = new THREE.Vector2();
+
     }
 
     /**
