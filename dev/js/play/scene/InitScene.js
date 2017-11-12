@@ -266,10 +266,10 @@ class InitScene {
         if (InitScene.detectorWebGL()) {
             let renderer = new THREE.WebGLRenderer({antialias: true});
             renderer.setPixelRatio(window.devicePixelRatio);
-			renderer.toneMappingExposure = 1;
+			renderer.toneMappingExposure = 15;
 			renderer.physicallyCorrectLights = true;
 			renderer.shadowMap.enabled = true;
-			renderer.toneMapping = THREE.ReinhardToneMapping;
+			renderer.toneMapping = THREE.LinearToneMapping;
 			renderer.gammaInput = true;
 			renderer.gammaOutput = true;
             return renderer;

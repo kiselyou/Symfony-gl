@@ -22,7 +22,7 @@ class SkyeBox {
 		 * @type {number}
 		 * @private
 		 */
-		this._size = 25000;
+		this._size = 20000;
 
 		/**
 		 *
@@ -104,42 +104,14 @@ class SkyeBox {
 	 */
 	initEnv(path) {
 		this.removeEnv();
-		// let material = new THREE.ShaderMaterial({
-		// 	depthWrite: false,
-		// 	uniforms: {
-		// 		texture: {type: 't', value: this._textureLoader.find(path)}
-		// 	},
-		// 	vertexShader: Shader.get().add(`
-		// 		varying vec2 vUV;
-		//
-		// 		void main() {
-		// 		  vUV = uv;
-		// 		  vec4 pos = vec4(position, 1.0);
-		// 		  gl_Position = projectionMatrix * modelViewMatrix * pos;
-		// 		}
-		// 	`).getContent(),
-		// 	fragmentShader: Shader.get().add(`
-		// 		uniform sampler2D texture;
-		// 		varying vec2 vUV;
-		//
-		// 		void main() {
-		// 		  vec4 sample = texture2D(texture, vUV);
-		// 		  gl_FragColor = vec4(sample.xyz, sample.w);
-		// 		}
-		// 	`).getContent()
-		// });
-
-		let material = new THREE.MeshPhongMaterial({
-			map: this._textureLoader.find(path),
+		let material = new THREE.MeshStandardMaterial({
+			map: this._textureLoader.find(path)
 		});
-
 		this._environment = new THREE.Mesh(new THREE.SphereGeometry(this._size, this._wSegments, this._hSegments), material);
 		this._environment.material.side = THREE.BackSide;
-
-
-		// this._environment.scale.set(-1, 1, 1);
-		// this._environment.rotation.order = 'XZY';
-
+		this._environment.material.depthWrite = false;
+		this._environment.material.roughness = 0.30;
+		this._environment.material.metalness = 0.10;
 		this._buildPlane();
 		this._scene.add(this._environment);
 		this._isEnv = true;

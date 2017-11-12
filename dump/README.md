@@ -19,4 +19,14 @@ mysql --host=localhost --user=root -p db_name < ./dump/dump.sql
 
 # export
 mysqldump --host=localhost --user=root -p db_name > ./dump/dump.sql
+
+# Remove User
+DROP USER 'iron-war'@'localhost';
+
+# List users
+SELECT User FROM mysql.user;
+
+# create user
+CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP ON iron_war.* TO 'iron-war'@'localhost';
 ~~~

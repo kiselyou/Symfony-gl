@@ -36,11 +36,16 @@ class SectorA extends Sector {
 	 * @returns {void}
 	 */
 	_prepareLight() {
-		let hemisphereLight = new THREE.HemisphereLight(0xFFFFFF, 0xFFFFFF, 1);
-
-		// hemisphereLight.intensity = 0.3;
+		let hemisphereLight = new THREE.HemisphereLight(0xFFFFFF, 0x000000, 1);
 		hemisphereLight.position.set(2500, 200, -2000);
+		
+		// let hemiSphere = new THREE.HemisphereLightHelper(hemisphereLight, 15);
+		
 		this.lights.push(hemisphereLight);
+		
+		let directionalLight = new THREE.DirectionalLight(0xACBCFF, 0.2);
+		directionalLight.position.set(2500, 200, 25000);
+		this.lights.push(directionalLight);
 		
 		
 		// let pointLight = new THREE.PointLight(0xFFFFFF, 0.1, 0, 2);
@@ -48,6 +53,12 @@ class SectorA extends Sector {
 		// // pointLight.power = 10;
 		// pointLight.position.set(2500, 200, -2000);
 		// this.lights.push(pointLight);
+		
+		
+		// let light = new THREE.AmbientLight(0x404040, 0.5); // soft white light
+		// light.position.set(20, 20, -20);
+		// this.lights.push(light);
+		
 	}
 
 	/**

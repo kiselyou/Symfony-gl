@@ -132,6 +132,16 @@ REDIS 4.0.2
 ######https://redis.io/topics/quickstart
 
 ```
+
+# Following steps worked for me:
+#   sudo apt-get update
+#   sudo apt-get install build-essential
+#   sudo apt-get install tcl8.5
+#   wget http://download.redis.io/redis-stable.tar.gz
+#   tar xvzf redis-stable.tar.gz
+#   cd redis-stable
+#   make
+
 cd Downloads
 wget http://download.redis.io/redis-stable.tar.gz
 cd ../Programs
